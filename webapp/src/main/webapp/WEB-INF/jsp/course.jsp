@@ -4,6 +4,6 @@
 
 </head>
 <body>
-    <h1>Accessing course's profile: ${course.name}</h1>
+    <h1>Accessing course's profile: ${course}</h1>
 </body>
 </html>
