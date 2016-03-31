@@ -2,11 +2,7 @@
 <%@ page language="java" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <jsp:include page="base/head.jsp" />
-</head>
-
+<head><jsp:include page="base/head.jsp" /></head>
 <body>
 
 <div id="wrapper">
@@ -42,7 +38,4 @@
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
 </body>
-
 </html>
-
-

@@ -1,22 +1,41 @@
-<%-- Comments so as to know from where the variables come from --%>
-<%--@elvariable id="user" type="ar.edu.itba.paw.models.User"--%>
-
-<%--
-    This was the one Sotuyo gave us. The second one is the recommended one.
-<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core_rt" %>
---%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!--<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>WebApp Index</title>
-</head>
-<body>-->
+<%@ page language="java" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head><jsp:include page="base/head.jsp" /></head>
+<body>
 
-<!--<h1>Creating user: ${user.username}</h1>-->
+<div id="wrapper">
 
-<jsp:include page="./base.jsp" />
-<!--
+    <jsp:include page="base/nav.jsp" />
+
+    <div id="page-wrapper">
+
+        <div class="container-fluid">
+
+            <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        Alumnos <small>Lista de alumnos</small>
+                    </h1>
+                </div>
+            </div>
+
+            <!-- content -->
+
+            <h1>Creating user: ${user.username}</h1>
+
+            <!-- /content -->
+
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- /#page-wrapper -->
+
+</div>
+<!-- Scripts -->
+<jsp:include page="base/footer.jsp" />
 </body>
-</html>-->
+</html>
