@@ -36,14 +36,8 @@ public class CourseDaoJdbc implements CourseDao {
     @Autowired
     public CourseDaoJdbc(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-		/* TODO: export table name as a private final String */
-        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(TABLE_NAME).usingGeneratedKeyColumns(ID_COLUMN);
 
-/*		*//* TODO: export table creation as a private final String *//*
-		jdbcTemplate.execute("CREATE TABLE IF NOT EXISTS users (" +
-				"userId integer SERIAL PRIMARY KEY, " +
-				"username varchar (100), " +
-				"password varchar (100))");*/
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(TABLE_NAME).usingGeneratedKeyColumns(ID_COLUMN);
     }
 
 
