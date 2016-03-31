@@ -7,14 +7,16 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
+<!--<html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>WebApp Index</title>
 </head>
-<body>
+<body>-->
 
-<h1>Creating user: ${user.username}</h1>
+<!--<h1>Creating user: ${user.username}</h1>-->
 
+<jsp:include page="./base.jsp" />
+<!--
 </body>
-</html>
+</html>-->
