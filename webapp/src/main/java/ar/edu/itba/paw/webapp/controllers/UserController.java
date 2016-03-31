@@ -32,11 +32,4 @@ public class UserController {
 		return mav;
 	}
 
-	/*@RequestMapping(method = RequestMethod.GET, value="/static")
-	public ModelAndView stat(HttpSession session) {
-		session.invalidate();
-		//return new ModelAndView("redirect:/app/home/home");
-	    return new ModelAndView("redirect:static/");
-    }*/
-
 }
