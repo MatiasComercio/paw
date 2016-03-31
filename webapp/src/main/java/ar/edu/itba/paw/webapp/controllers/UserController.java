@@ -15,8 +15,8 @@ public class UserController {
 	@Autowired
 	private UserService us;
 
-	@Autowired
-	private CourseService cs;
+//	@Autowired
+//	private CourseService cs;
 
 	@RequestMapping("/")
 	public ModelAndView index() {
