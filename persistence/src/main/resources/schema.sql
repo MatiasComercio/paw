@@ -3,3 +3,11 @@ CREATE TABLE IF NOT EXISTS users (
 				username VARCHAR (100),
 				password VARCHAR (100)
 );
+
+CREATE TABLE IF NOT EXISTS course (
+	id INTEGER NOT NULL,
+	name VARCHAR(50) NOT NULL,
+	credits INTEGER NOT NULL,
+
+	PRIMARY KEY (id)
+);
