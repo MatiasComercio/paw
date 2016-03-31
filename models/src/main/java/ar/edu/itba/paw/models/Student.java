@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.models;
 
 import java.util.Set;
-
+/* +++x TODO: should improve this class. Extend or sth from User. A student 'is-a' user --> inheritance */
 public class Student {
 	private final int docket;
 	private final int dni;
@@ -11,6 +11,13 @@ public class Student {
 		this.dni = builder.dni;
 	}
 
+	private int getDocket() {
+		return docket;
+	}
+
+	private int getDni() {
+		return dni;
+	}
 
 	public static class Builder {
 		private final int docket;

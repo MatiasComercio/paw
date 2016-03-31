@@ -20,6 +20,30 @@ public class User {
 		this.email = builder.email;
 	}
 
+	private int getDni() {
+		return dni;
+	}
+
+	private String getFirstName() {
+		return firstName;
+	}
+
+	private String getLastName() {
+		return lastName;
+	}
+
+	private Genre getGenre() {
+		return genre;
+	}
+
+	private LocalDate getBirthday() {
+		return birthday;
+	}
+
+	private String getEmail() {
+		return email;
+	}
+
 	public static class Builder {
 		private final int dni;
 		private final String firstName;

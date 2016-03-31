@@ -1,9 +1,8 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Student;
-import ar.edu.itba.paw.models.User;
 
-public interface StudentService {
+public interface StudentDao {
 
 	/**
 	 * Gets the student with the given docket.
@@ -12,5 +11,4 @@ public interface StudentService {
 	 * @return The student with the given docket, if exists; null otherwise.
 	 */
 	Student getByDocket(final int docket);
-
 }
