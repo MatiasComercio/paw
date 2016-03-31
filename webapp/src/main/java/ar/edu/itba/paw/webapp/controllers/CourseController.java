@@ -22,7 +22,7 @@ public class CourseController {
 
     @RequestMapping("/courses/")
     public ModelAndView getAllCourses() {
-        final ModelAndView mav = new ModelAndView("course");
+        final ModelAndView mav = new ModelAndView("courses");
         mav.addObject("courses", courseService.getAllCourses());
         return mav;
     }
