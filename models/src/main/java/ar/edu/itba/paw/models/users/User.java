@@ -1,17 +1,19 @@
-package ar.edu.itba.paw.models;
+package ar.edu.itba.paw.models.users;
 
 import java.time.LocalDate;
 
+/* +++xcheck: Should this be an abstract class? */
 public class User {
 	private final int dni;
-	private final String firstName;
-	private final String lastName;
-	private final Genre genre;
-	private final LocalDate birthday;
-	private final String email;
+
+	private String firstName;
+	private String lastName;
+	private Genre genre;
+	private LocalDate birthday;
+	private String email;
 //	private final Address address; +++x TODO: have to implement this class afterwards
 
-	private User(final Builder builder) {
+	protected User(final Builder builder) {
 		this.dni = builder.dni;
 		this.firstName = builder.firstName;
 		this.lastName = builder.lastName;
@@ -44,36 +46,58 @@ public class User {
 		return email;
 	}
 
-	public static class Builder {
-		private final int dni;
-		private final String firstName;
-		private final String lastName;
-		private final Genre genre;
-		private final LocalDate birthday;
-		private final String email;
+	public static class Builder<T extends Builder> {
+		private static final String EMAIL_DOMAIN = "@bait.edu.ar";
 
-		public Builder(final int dni, final String firstName, final String lastName, final Genre genre, final LocalDate birthday) {
+		private final int dni;
+
+		private String email = "";
+		private String firstName = "";
+		private String lastName = "";
+		private Genre genre = null;
+		private LocalDate birthday = null;
+
+		public Builder(final int dni) {
 			/* +++xvalidate */
 			this.dni = dni;
-			this.firstName = firstName;
-			this.lastName = lastName;
-			this.genre = genre;
-			this.birthday = birthday;
+		}
 
-			this.email = createEmail();
+		public Builder firstName(final String firstName) {
+			this.firstName = firstName;
+			return this;
+		}
+
+		public Builder lastName(final String lastName) {
+			this.lastName = lastName;
+			return this;
+		}
+
+		public Builder genre(final Genre genre) {
+			this.genre = genre;
+			return this;
+		}
+
+		public Builder birthday(final LocalDate birthday) {
+			this.birthday = birthday;
+			return this;
 		}
 
 
 		public User build() {
+			this.email = createEmail();
 			return new User(this);
 		}
 
 
 		private String createEmail() {
+			if (firstName == null) {
+				return "student" + this.dni + EMAIL_DOMAIN;
+			}
+
 			String email = null;
 			boolean found = false;
 			for (int i = 1; i < firstName.length() && !found ; i++) {
-				email =  firstName.substring(0, i) + lastName + "@bait.edu.ar";
+				email =  firstName.substring(0, i) + lastName + EMAIL_DOMAIN;
 				if (!exists(email)) {
 					found = true;
 				}
@@ -81,7 +105,7 @@ public class User {
 			/* This is in case all email trials failed */
 			/* this, for sure, does not exists as includes the dni, which is unique */
 			if (email == null) {
-				email = firstName.charAt(0) + dni + lastName + "@bait.edu.ar";
+				email = firstName.charAt(0) + dni + lastName + EMAIL_DOMAIN;
 			}
 			return email;
 		}

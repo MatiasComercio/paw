@@ -1,31 +1,24 @@
-package ar.edu.itba.paw.models;
+package ar.edu.itba.paw.models.users;
 
-import java.util.Set;
 /* +++x TODO: should improve this class. Extend or sth from User. A student 'is-a' user --> inheritance */
-public class Student {
+public class Student extends User {
 	private final int docket;
-	private final int dni;
 
 	private Student(final Builder builder) {
+		super(builder);
 		this.docket = builder.docket;
-		this.dni = builder.dni;
 	}
 
 	private int getDocket() {
 		return docket;
 	}
 
-	private int getDni() {
-		return dni;
-	}
-
-	public static class Builder {
+	public static class Builder extends User.Builder<Builder> {
 		private final int docket;
-		private final int dni;
 
 		public Builder(final int docket, final int dni) {
+			super(dni, firstName, lastName, genre, birthday);
 			this.docket = docket;
-			this.dni = dni;
 		}
 
 		public Student build() {

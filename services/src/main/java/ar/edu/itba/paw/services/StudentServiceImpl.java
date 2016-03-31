@@ -2,7 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
-import ar.edu.itba.paw.models.Student;
+import ar.edu.itba.paw.models.users.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class StudentServiceImpl implements StudentService {

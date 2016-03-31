@@ -1,5 +1,5 @@
 <%-- Comments so as to know from where the variables come from --%>
-<%--@elvariable id="user" type="ar.edu.itba.paw.models.User"--%>
+<%--@elvariable id="user" type="ar.edu.itba.paw.models.users.User"--%>
 
 <%--
     This was the one Sotuyo gave us. The second one is the recommended one.
