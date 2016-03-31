@@ -4,14 +4,14 @@
 <html lang="en">
 
 <head>
-    <jsp:include page="./head.jsp" />
+    <jsp:include page="base/head.jsp" />
 </head>
 
 <body>
 
 <div id="wrapper">
 
-    <jsp:include page="./nav.jsp" />
+    <jsp:include page="base/nav.jsp" />
 
     <div id="page-wrapper">
 
