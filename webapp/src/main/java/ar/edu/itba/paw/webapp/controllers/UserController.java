@@ -32,11 +32,11 @@ public class UserController {
 		return mav;
 	}
 
-	@RequestMapping("/courses/{id}")
-	public ModelAndView getCourse(@PathVariable final Integer id) {
-		final ModelAndView mav = new ModelAndView("course");
-		mav.addObject("course", cs.getById(id));
-		return mav;
-	}
+//	@RequestMapping("/courses/{id}")
+//	public ModelAndView getCourse(@PathVariable final Integer id) {
+//		final ModelAndView mav = new ModelAndView("course");
+//		mav.addObject("course", cs.getById(id));
+//		return mav;
+//	}
 
 }
