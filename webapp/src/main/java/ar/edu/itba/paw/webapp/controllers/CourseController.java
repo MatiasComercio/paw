@@ -11,12 +11,12 @@ import org.springframework.web.servlet.ModelAndView;
 public class CourseController {
 
     @Autowired
-    private CourseService cs;
+    private CourseService courseService;
 
     @RequestMapping("/courses/{id}")
     public ModelAndView getCourse(@PathVariable final Integer id) {
         final ModelAndView mav = new ModelAndView("course");
-        mav.addObject("course", cs.getById(id));
+        mav.addObject("course", courseService.getById(id));
         return mav;
     }
 }
