@@ -6,6 +6,8 @@ import ar.edu.itba.paw.models.Course;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by mati on 30/03/16.
  */
@@ -23,6 +25,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course getById(int id) {
         return courseDao.getById(id);
+    }
+
+    @Override
+    public List<Course> getAllCourses() {
+        return courseDao.getAllCourses();
     }
 
 }
