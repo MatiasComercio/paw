@@ -19,4 +19,11 @@ public class CourseController {
         mav.addObject("course", courseService.getById(id));
         return mav;
     }
+
+    @RequestMapping("/courses/")
+    public ModelAndView getAllCourses() {
+        final ModelAndView mav = new ModelAndView("course");
+        mav.addObject("courses", courseService.getAllCourses());
+        return mav;
+    }
 }
