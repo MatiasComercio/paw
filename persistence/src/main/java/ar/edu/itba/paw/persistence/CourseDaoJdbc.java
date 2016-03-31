@@ -59,4 +59,12 @@ public class CourseDaoJdbc implements CourseDao {
 
         return course.isEmpty() ? null : course.get(0);
     }
+
+    @Override
+    public List<Course> getAllCourses() {
+        /* TODO: Replace `course` with TABLE_NAME identifier, but we can't use '?' because JDBC does not support it, so string concatenation seems the best choice */
+        List<Course> courses = jdbcTemplate.query("SELECT * FROM course", userRowMapper);
+
+        return courses;
+    }
 }
