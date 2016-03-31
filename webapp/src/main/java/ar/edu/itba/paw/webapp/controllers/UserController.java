@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
+import ar.edu.itba.paw.interfaces.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,9 @@ public class UserController {
 	@Autowired
 	private UserService us;
 
+	@Autowired
+	private CourseService cs;
+
 	@RequestMapping("/")
 	public ModelAndView index() {
 		final ModelAndView mav = new ModelAndView("index");
@@ -25,6 +29,13 @@ public class UserController {
 	public ModelAndView getUser(@PathVariable final String username) {
 		final ModelAndView mav = new ModelAndView("user");
 		mav.addObject("user", us.getByUsername(username));
+		return mav;
+	}
+
+	@RequestMapping("/courses/{id}")
+	public ModelAndView getCourse(@PathVariable final Integer id) {
+		final ModelAndView mav = new ModelAndView("course");
+		mav.addObject("course", cs.getById(id));
 		return mav;
 	}
 
