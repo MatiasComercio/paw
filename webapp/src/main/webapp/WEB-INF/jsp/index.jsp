@@ -14,7 +14,7 @@
 </head>
 <body>
 
-<h1>Creating user: ${user.username}</h1>
+<h1></h1>
 
 </body>
 </html>

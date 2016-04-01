@@ -16,7 +16,7 @@ import java.util.List;
 public class StudentJdbcDao implements StudentDao {
 
 	private static final String STUDENT_TABLE = "student";
-	private static final String USER_TABLE = "user";
+	private static final String USER_TABLE = "\"user\"";
 	private static final String DOCKET_COLUMN = "docket";
 	private static final String DNI_COLUMN = "dni";
 	private static final String FIRST_NAME_COLUMN = "first_name";

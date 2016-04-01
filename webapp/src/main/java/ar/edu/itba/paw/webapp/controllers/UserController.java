@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
+import ar.edu.itba.paw.models.users.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,18 +14,20 @@ public class UserController {
 	@Autowired
 	private StudentService studentService;
 
-/*	@RequestMapping("/")
-	public ModelAndView index() {
-		final ModelAndView mav = new ModelAndView("index");
-		mav.addObject("user", us.register("juan", "12345"));
-		return mav;
-	}*/
-
 	@RequestMapping("/students/{docket}")
-	public ModelAndView getUser(@PathVariable final int docket) {
-		final ModelAndView mav = new ModelAndView("student");
-		mav.addObject("student", studentService.getByDocket(docket));
+	public ModelAndView getStudent(@PathVariable final int docket) {
+		final Student student =  studentService.getByDocket(docket);
+
+		final ModelAndView mav;
+
+		if (student == null) {
+			mav = new ModelAndView("notFound");
+			mav.addObject("description", "Student with docket " + docket + " does not exists.");
+			return mav;
+		}
+
+		mav = new ModelAndView("student");
+		mav.addObject("student", student);
 		return mav;
 	}
-
 }
