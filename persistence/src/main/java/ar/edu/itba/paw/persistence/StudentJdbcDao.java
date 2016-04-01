@@ -4,14 +4,15 @@ import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.util.List;
 
+@Repository
 public class StudentJdbcDao implements StudentDao {
 
 	private static final String STUDENT_TABLE = "student";

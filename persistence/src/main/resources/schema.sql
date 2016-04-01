@@ -2,8 +2,8 @@ CREATE TABLE IF NOT EXISTS "user" (
   dni INTEGER NOT NULL ,
   first_name VARCHAR (50) NOT NULL ,
   last_name VARCHAR (50) NOT NULL ,
-  genre CHAR (1) ,
-  birthday DATE ,
+  genre CHAR (1) NOT NULL ,
+  birthday DATE NOT NULL ,
   email VARCHAR(100) NOT NULL,
 
   PRIMARY KEY (dni)
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS student (
   dni INTEGER NOT NULL ,
   password VARCHAR (100) ,
 
-  PRIMARY KEY (docket, dni),
+  PRIMARY KEY (docket),
   FOREIGN KEY (dni) REFERENCES "user"
 );
 

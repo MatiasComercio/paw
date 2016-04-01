@@ -7,8 +7,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+/* +++xchange: kept only for helping purpose. */
 public class UserServiceImplTest {
-
+/*
 	private static final String USERNAME = "Juan";
 
 	private UserServiceImpl userService;
@@ -28,5 +29,5 @@ public class UserServiceImplTest {
 		userService.getByUsername(USERNAME);
 		Mockito.verify(userDao).getByUsername(Mockito.eq(USERNAME)); // SUCCESS
 //		Mockito.verify(userDao).getByUsername(Mockito.eq("No")); // FAIL
-	}
+	}*/
 }

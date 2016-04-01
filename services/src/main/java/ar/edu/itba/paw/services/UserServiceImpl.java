@@ -6,9 +6,10 @@ import ar.edu.itba.paw.models.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/* +++xchange: kept only for helping purpose. */
 @Service
-public class UserServiceImpl implements UserService {
-
+public class UserServiceImpl /*implements UserService*/ {
+/*
 	@Autowired
 	private UserDao userDao;
 
@@ -22,8 +23,8 @@ public class UserServiceImpl implements UserService {
 		return userDao.getByUsername(username);
 	}
 
-	/* Test purpose only */
-	/* default */ void setUserDao(final UserDao userDao) {
+	*//* Test purpose only *//*
+	*//* default *//* void setUserDao(final UserDao userDao) {
 		this.userDao = userDao;
-	}
+	}*/
 }
