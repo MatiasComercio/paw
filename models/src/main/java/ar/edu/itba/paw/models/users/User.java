@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.models.users;
 
+import com.sun.istack.internal.NotNull;
+
 import java.time.LocalDate;
 
 /* +++xcheck: Should this be an abstract class? */
@@ -19,30 +21,31 @@ public abstract class User {
 		this.lastName = builder.lastName;
 		this.genre = builder.genre;
 		this.birthday = builder.birthday;
-		this.email = builder.email == null ? builder.createEmail() : null;
+		String email = builder.email == null ? builder.createEmail() : builder.email;
+		this.email = email.toLowerCase();
 	}
 
-	private int getDni() {
+	public int getDni() {
 		return dni;
 	}
 
-	private String getFirstName() {
+	public String getFirstName() {
 		return firstName;
 	}
 
-	private String getLastName() {
+	public String getLastName() {
 		return lastName;
 	}
 
-	private Genre getGenre() {
+	public Genre getGenre() {
 		return genre;
 	}
 
-	private LocalDate getBirthday() {
+	public LocalDate getBirthday() {
 		return birthday;
 	}
 
-	private String getEmail() {
+	public String getEmail() {
 		return email;
 	}
 
@@ -52,11 +55,11 @@ public abstract class User {
 		private final int dni;
 		private final T thisBuilder;
 
-		private String firstName = "";
-		private String lastName = "";
+		private String firstName = null;
+		private String lastName = null;
 		private Genre genre = null;
 		private LocalDate birthday = null;
-		private String email = "";
+		private String email = null;
 
 		public Builder(final int dni) {
 			/* +++xvalidate */
@@ -70,28 +73,38 @@ public abstract class User {
 		/* Each subclass should implement this method to return it's own builder */
 		public abstract T thisBuilder();
 
-		public T firstName(final String firstName) {
-			this.firstName = firstName;
+		public T firstName(@NotNull final String firstName) {
+			if (firstName != null) {
+				this.firstName = firstName;
+			}
 			return thisBuilder;
 		}
 
-		public T lastName(final String lastName) {
-			this.lastName = lastName;
+		public T lastName(@NotNull final String lastName) {
+			if (lastName != null) {
+				this.lastName = lastName;
+			}
 			return thisBuilder;
 		}
 
-		public T genre(final Genre genre) {
-			this.genre = genre;
+		public T genre(@NotNull final Genre genre) {
+			if (genre != null) {
+				this.genre = genre;
+			}
 			return thisBuilder;
 		}
 
-		public T birthday(final LocalDate birthday) {
-			this.birthday = birthday;
+		public T birthday(@NotNull final LocalDate birthday) {
+			if (birthday != null) {
+				this.birthday = birthday;
+			}
 			return thisBuilder;
 		}
 
-		public T email(final String email) {
-			this.email = email;
+		public T email(@NotNull final String email) {
+			if (email != null) {
+				this.email = email;
+			}
 			return thisBuilder;
 		}
 

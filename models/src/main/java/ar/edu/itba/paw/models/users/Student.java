@@ -8,7 +8,7 @@ public class Student extends User {
 		this.docket = builder.docket;
 	}
 
-	private int getDocket() {
+	public int getDocket() {
 		return docket;
 	}
 
