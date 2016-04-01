@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.CourseFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> getAllCourses() {
         return courseDao.getAllCourses();
+    }
+
+    @Override
+    public List<Course> getByFilter(CourseFilter courseFilter) {
+        if()
     }
 
 }

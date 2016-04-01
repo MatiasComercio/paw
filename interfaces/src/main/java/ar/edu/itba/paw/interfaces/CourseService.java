@@ -31,6 +31,6 @@ public interface CourseService {
      */
     List<Course> getAllCourses();
 
-    List<Course> getByFilter(CourseFilter keyword);
+    List<Course> getByFilter(CourseFilter courseFilter);
 
 }
