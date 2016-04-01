@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.models.users;
 
-/* +++x TODO: should improve this class. Extend or sth from User. A student 'is-a' user --> inheritance */
 public class Student extends User {
 	private final int docket;
 
@@ -13,16 +12,19 @@ public class Student extends User {
 		return docket;
 	}
 
-	public static class Builder extends User.Builder<Builder> {
+	public static class Builder extends User.Builder<Student, Builder> {
+
 		private final int docket;
 
 		public Builder(final int docket, final int dni) {
-			super(dni, firstName, lastName, genre, birthday);
+			super(dni);
 			this.docket = docket;
 		}
 
+		@Override
 		public Student build() {
 			return new Student(this);
 		}
+
 	}
 }

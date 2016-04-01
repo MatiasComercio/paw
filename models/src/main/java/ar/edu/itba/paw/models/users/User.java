@@ -3,7 +3,7 @@ package ar.edu.itba.paw.models.users;
 import java.time.LocalDate;
 
 /* +++xcheck: Should this be an abstract class? */
-public class User {
+public abstract class User {
 	private final int dni;
 
 	private String firstName;
@@ -19,7 +19,7 @@ public class User {
 		this.lastName = builder.lastName;
 		this.genre = builder.genre;
 		this.birthday = builder.birthday;
-		this.email = builder.email;
+		this.email = builder.createEmail();
 	}
 
 	private int getDni() {
@@ -46,12 +46,11 @@ public class User {
 		return email;
 	}
 
-	public static class Builder<T extends Builder> {
+	protected static abstract class Builder<V extends User, T extends Builder<V,T>> {
 		private static final String EMAIL_DOMAIN = "@bait.edu.ar";
 
 		private final int dni;
 
-		private String email = "";
 		private String firstName = "";
 		private String lastName = "";
 		private Genre genre = null;
@@ -82,11 +81,8 @@ public class User {
 			return this;
 		}
 
-
-		public User build() {
-			this.email = createEmail();
-			return new User(this);
-		}
+		/* Each subclass should implement how a user should be build */
+		public abstract V build();
 
 
 		private String createEmail() {

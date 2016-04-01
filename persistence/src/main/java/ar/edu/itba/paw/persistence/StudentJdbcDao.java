@@ -14,20 +14,22 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String TABLE_NAME = "student";
 	private static final String DOCKET_COLUMN = "docket";
 	private static final String DNI_COLUMN = "dni";
-
-	/* LIMIT 1 is not used, as there should be, at most, 1 student with the given docket */
 	private static final String STUDENT_QUERY =
 					"SELECT *" +
 					"FROM " + TABLE_NAME + " " +
-					"WHERE " + DOCKET_COLUMN + " = ?" +
+					"WHERE " + DOCKET_COLUMN + " = ? LIMIT 1" +
 					";";
 
-	private final RowMapper<Student> studentRowMapper = (resultSet, rowNumber) -> {
+	private final RowMapper<Student.Builder> studentRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(DOCKET_COLUMN);
 		final int dni = resultSet.getInt(DNI_COLUMN);
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
 
-		return studentBuilder.build();
+		/* +++xdoing: should retrieve student's related data (user's data) */
+
+
+
+		return studentBuilder;
 	};
 
 	private final JdbcTemplate jdbcTemplate;
@@ -50,7 +52,14 @@ public class StudentJdbcDao implements StudentDao {
 	@Override
 	public Student getByDocket(final int docket) {
 		/* This method should return 0 or 1 student. */
-		List<Student> students = jdbcTemplate.query(STUDENT_QUERY, studentRowMapper, docket);
-		return students.isEmpty() ? null : students.get(0);
+		List<Student.Builder> students = jdbcTemplate.query(STUDENT_QUERY, studentRowMapper, docket);
+
+		/* Grab student's data as a student */
+		if (students.isEmpty()) {
+			return null;
+		}
+
+		/* Grab student's data as a user */
+		return  ? null : students.get(0);
 	}
 }
