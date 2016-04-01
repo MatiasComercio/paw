@@ -29,4 +29,7 @@ public interface CourseService {
      * @return the list of the courses. If there are no courses, it returns an empty list
      */
     List<Course> getAllCourses();
+
+    /* TODO: This should recieve a filter, because if not a Builder between Service and Persistence is pointless */
+    List<Course> getByFilter(String keyword);
 }
