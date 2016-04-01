@@ -10,10 +10,15 @@ import org.springframework.stereotype.Service;
 public class StudentServiceImpl implements StudentService {
 
 	@Autowired
-	private StudentDao studentJdbcDao;
+	private StudentDao studentDao;
 
 	@Override
 	public Student getByDocket(final int docket) {
-		return docket < 0 ? null : studentJdbcDao.getByDocket(docket);
+		return docket < 0 ? null : studentDao.getByDocket(docket);
+	}
+
+	/* Test purpose only */
+	/* default */ void setStudentDao(final StudentDao studentDao) {
+		this.studentDao = studentDao;
 	}
 }
