@@ -71,6 +71,8 @@ public class CourseDaoJdbc implements CourseDao {
 
     @Override
     public List<Course> getByFilter(CourseFilter courseFilter) {
+        List<Course> courses = jdbcTemplate.query("SElECT * FROM course where name REGEXP ?", userRowMapper, courseFilter.getKeyword());
 
+        return courses;
     }
 }
