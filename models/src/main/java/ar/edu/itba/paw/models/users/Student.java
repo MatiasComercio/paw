@@ -26,5 +26,10 @@ public class Student extends User {
 			return new Student(this);
 		}
 
+		@Override
+		public Builder thisBuilder() {
+			return this;
+		}
+
 	}
 }

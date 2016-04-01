@@ -19,7 +19,7 @@ public abstract class User {
 		this.lastName = builder.lastName;
 		this.genre = builder.genre;
 		this.birthday = builder.birthday;
-		this.email = builder.createEmail();
+		this.email = builder.email == null ? builder.createEmail() : null;
 	}
 
 	private int getDni() {
@@ -50,40 +50,50 @@ public abstract class User {
 		private static final String EMAIL_DOMAIN = "@bait.edu.ar";
 
 		private final int dni;
+		private final T thisBuilder;
 
 		private String firstName = "";
 		private String lastName = "";
 		private Genre genre = null;
 		private LocalDate birthday = null;
+		private String email = "";
 
 		public Builder(final int dni) {
 			/* +++xvalidate */
 			this.dni = dni;
-		}
-
-		public Builder firstName(final String firstName) {
-			this.firstName = firstName;
-			return this;
-		}
-
-		public Builder lastName(final String lastName) {
-			this.lastName = lastName;
-			return this;
-		}
-
-		public Builder genre(final Genre genre) {
-			this.genre = genre;
-			return this;
-		}
-
-		public Builder birthday(final LocalDate birthday) {
-			this.birthday = birthday;
-			return this;
+			this.thisBuilder = thisBuilder();
 		}
 
 		/* Each subclass should implement how a user should be build */
 		public abstract V build();
 
+		/* Each subclass should implement this method to return it's own builder */
+		public abstract T thisBuilder();
+
+		public T firstName(final String firstName) {
+			this.firstName = firstName;
+			return thisBuilder;
+		}
+
+		public T lastName(final String lastName) {
+			this.lastName = lastName;
+			return thisBuilder;
+		}
+
+		public T genre(final Genre genre) {
+			this.genre = genre;
+			return thisBuilder;
+		}
+
+		public T birthday(final LocalDate birthday) {
+			this.birthday = birthday;
+			return thisBuilder;
+		}
+
+		public T email(final String email) {
+			this.email = email;
+			return thisBuilder;
+		}
 
 		private String createEmail() {
 			if (firstName == null) {
