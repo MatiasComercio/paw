@@ -35,11 +35,6 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<Course> getByFilter(CourseFilter courseFilter) {
-        if(courseFilter == null) {
-            return null;
-        } else if(courseFilter.getKeyword() == null) {
-            return null;
-        }
         return courseDao.getByFilter(courseFilter);
     }
 
