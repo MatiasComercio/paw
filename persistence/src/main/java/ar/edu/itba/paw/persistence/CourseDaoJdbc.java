@@ -70,7 +70,7 @@ public class CourseDaoJdbc implements CourseDao {
     }
 
     @Override
-    public List<Course> getByFilter(CourseFilter keyword) {
+    public List<Course> getByFilter(CourseFilter courseFilter) {
 
     }
 }
