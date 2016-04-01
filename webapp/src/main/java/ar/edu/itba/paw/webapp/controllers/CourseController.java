@@ -30,10 +30,13 @@ public class CourseController {
         return mav;
     }
 
-    @RequestMapping(value = "/courses", params = {"keyword"})
-    public ModelAndView getCoursesByFilter(@RequestParam String keyword) {
+    @RequestMapping(value = "/courses", params = {"keyword", "id"})
+    public ModelAndView getCoursesByFilter(@RequestParam String keyword, @RequestParam int id) {
         final ModelAndView mav = new ModelAndView("courses");
-        final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).build();
+        final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
+                                                keyword(keyword).
+                                                id(id).
+                                                build();
         mav.addObject("courses", courseService.getByFilter(courseFilter));
         return mav;
     }
