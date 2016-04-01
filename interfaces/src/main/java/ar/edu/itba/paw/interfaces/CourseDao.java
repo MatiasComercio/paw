@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.CourseFilter;
 
 import java.util.List;
 
@@ -14,4 +15,6 @@ public interface CourseDao {
     Course getById(int id);
 
     List<Course> getAllCourses();
+
+    List<Course> getByFilter(CourseFilter keyword);
 }
