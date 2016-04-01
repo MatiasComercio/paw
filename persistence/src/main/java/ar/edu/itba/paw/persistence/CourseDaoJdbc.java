@@ -2,7 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.CourseFilter;
+import ar.edu.itba.paw.shared.CourseFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -71,7 +71,9 @@ public class CourseDaoJdbc implements CourseDao {
 
     @Override
     public List<Course> getByFilter(CourseFilter courseFilter) {
-        List<Course> courses = jdbcTemplate.query("SELECT * FROM course where name ILIKE ?", courseRowMapper, "%" + courseFilter.getKeyword() + "%");
+        List<Course> courses = jdbcTemplate.query("SELECT * FROM course where name ILIKE ? AND id LIKE ?", courseRowMapper,
+                "%" + courseFilter.getKeyword() + "%",
+                String.valueOf(courseFilter.getId()) + "%");
 
         return courses;
     }
