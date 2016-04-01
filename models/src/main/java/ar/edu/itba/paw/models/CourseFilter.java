@@ -11,7 +11,7 @@ public class CourseFilter {
         return keyword;
     }
 
-    protected static class CourseFilterBuilder {
+    public static class CourseFilterBuilder {
         private String keyword;
 
         public CourseFilterBuilder keyword(final String keyword) {
