@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.CourseFilter;
+import ar.edu.itba.paw.shared.CourseFilter;
 
 import java.util.List;
 
