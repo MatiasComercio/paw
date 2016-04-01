@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.CourseFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -66,5 +67,10 @@ public class CourseDaoJdbc implements CourseDao {
         List<Course> courses = jdbcTemplate.query("SELECT * FROM course", userRowMapper);
 
         return courses;
+    }
+
+    @Override
+    public List<Course> getByFilter(CourseFilter keyword) {
+
     }
 }
