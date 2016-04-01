@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.CourseFilter;
 
 import java.util.List;
 
@@ -30,6 +31,6 @@ public interface CourseService {
      */
     List<Course> getAllCourses();
 
-    /* TODO: This should recieve a filter, because if not a Builder between Service and Persistence is pointless */
-    List<Course> getByFilter(String keyword);
+    List<Course> getByFilter(CourseFilter keyword);
+
 }
