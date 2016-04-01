@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.models;
 
 public class CourseFilter {
-    private String keyword;
+    private String keyword; /* TODO: Decide whether the service is obliged to create a Filter with at least one field */
 
     private CourseFilter(CourseFilterBuilder builder) {
         this.keyword = builder.keyword;
