@@ -28,7 +28,7 @@ public class CourseDaoJdbc implements CourseDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    private final RowMapper<Course> userRowMapper = (resultSet, rowNum) ->
+    private final RowMapper<Course> courseRowMapper = (resultSet, rowNum) ->
             new Course(resultSet.getInt(ID_COLUMN),
                     resultSet.getString(NAME_COLUMN),
                     resultSet.getInt(CREDITS_COLUMN));
@@ -56,7 +56,7 @@ public class CourseDaoJdbc implements CourseDao {
     @Override
     public Course getById(int id) {
 
-        List<Course> course = jdbcTemplate.query("SELECT * FROM course WHERE id = ? LIMIT 1", userRowMapper, id);
+        List<Course> course = jdbcTemplate.query("SELECT * FROM course WHERE id = ? LIMIT 1", courseRowMapper, id);
 
         return course.isEmpty() ? null : course.get(0);
     }
@@ -64,14 +64,14 @@ public class CourseDaoJdbc implements CourseDao {
     @Override
     public List<Course> getAllCourses() {
         /* TODO: Replace `course` with TABLE_NAME identifier, but we can't use '?' because JDBC does not support it, so string concatenation seems the best choice */
-        List<Course> courses = jdbcTemplate.query("SELECT * FROM course", userRowMapper);
+        List<Course> courses = jdbcTemplate.query("SELECT * FROM course", courseRowMapper);
 
         return courses;
     }
 
     @Override
     public List<Course> getByFilter(CourseFilter courseFilter) {
-        List<Course> courses = jdbcTemplate.query("SElECT * FROM course where name REGEXP ?", userRowMapper, courseFilter.getKeyword());
+        List<Course> courses = jdbcTemplate.query("SElECT * FROM course where name REGEXP ?", courseRowMapper, courseFilter.getKeyword());
 
         return courses;
     }
