@@ -7,6 +7,10 @@ public class CourseFilter {
         this.keyword = builder.keyword;
     }
 
+    public String getKeyword() {
+        return keyword;
+    }
+
     protected static class CourseFilterBuilder {
         private String keyword;
 
@@ -14,6 +18,10 @@ public class CourseFilter {
             this.keyword = keyword;
 
             return this;
+        }
+
+        public CourseFilter build() {
+            return new CourseFilter(this);
         }
     }
 }
