@@ -10,6 +10,7 @@
     <module>services</module>
     <module>models</module>
     <module>persistence</module>
+    <module>shared</module>
   </modules>
   <packaging>pom</packaging>
   <name>paw</name>
