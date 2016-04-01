@@ -1,10 +1,9 @@
 package ar.edu.itba.paw.models.users;
 
-import com.sun.istack.internal.NotNull;
+
 
 import java.time.LocalDate;
 
-/* +++xcheck: Should this be an abstract class? */
 public abstract class User {
 	private final int dni;
 
@@ -37,8 +36,8 @@ public abstract class User {
 		return lastName;
 	}
 
-	public Genre getGenre() {
-		return genre;
+	public String getGenre() {
+		return genre == null ? "" : genre.toString();
 	}
 
 	public LocalDate getBirthday() {
@@ -73,35 +72,35 @@ public abstract class User {
 		/* Each subclass should implement this method to return it's own builder */
 		public abstract T thisBuilder();
 
-		public T firstName(@NotNull final String firstName) {
+		public T firstName(final String firstName) {
 			if (firstName != null) {
 				this.firstName = firstName;
 			}
 			return thisBuilder;
 		}
 
-		public T lastName(@NotNull final String lastName) {
+		public T lastName(final String lastName) {
 			if (lastName != null) {
 				this.lastName = lastName;
 			}
 			return thisBuilder;
 		}
 
-		public T genre(@NotNull final Genre genre) {
+		public T genre(final Genre genre) {
 			if (genre != null) {
 				this.genre = genre;
 			}
 			return thisBuilder;
 		}
 
-		public T birthday(@NotNull final LocalDate birthday) {
+		public T birthday(final LocalDate birthday) {
 			if (birthday != null) {
 				this.birthday = birthday;
 			}
 			return thisBuilder;
 		}
 
-		public T email(@NotNull final String email) {
+		public T email(final String email) {
 			if (email != null) {
 				this.email = email;
 			}
@@ -136,8 +135,8 @@ public abstract class User {
 	}
 
 	public enum Genre {
-		MALE("male"),
-		FEMALE("female");
+		M("Male"),
+		F("Female");
 
 		private final String genre;
 

@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -37,17 +38,24 @@ public class StudentJdbcDao implements StudentDao {
 		final int dni = resultSet.getInt(DNI_COLUMN);
 		final String firstName = WordUtils.capitalize(resultSet.getString(FIRST_NAME_COLUMN));
 		final String lastName = WordUtils.capitalize(resultSet.getString(LAST_NAME_COLUMN));
-		/* +++xchange: have to reimplement this in a different way; causing exception:
-		* java.sql.SQLFeatureNotSupportedException:
-		*       Method org.postgresql.jdbc4.Jdbc4ResultSet.getObject(int, Class<T>) is not yet implemented. */
-
-//		final User.Genre genre = resultSet.getObject(GENRE_COLUMN, User.Genre.class);
-//		final LocalDate birthday = resultSet.getObject(BIRTHDAY_COLUMN, LocalDate.class);
+		final Date birthdayDate = resultSet.getDate(BIRTHDAY_COLUMN);
+		final LocalDate birthday;
+		if (birthdayDate != null) {
+			birthday = birthdayDate.toLocalDate();
+		} else {
+			birthday = null;
+		}
+		final String genreString = resultSet.getString(GENRE_COLUMN);
+		final User.Genre genre;
+		if (genreString != null) {
+			genre = User.Genre.valueOf(resultSet.getString(GENRE_COLUMN));
+		} else {
+			genre = null;
+		}
 		final String email = resultSet.getString(EMAIL_COLUMN);
 
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
-		/* +++xchange:  */
-		studentBuilder.firstName(firstName).lastName(lastName)./*genre(genre).birthday(birthday).*/email(email);
+		studentBuilder.firstName(firstName).lastName(lastName).genre(genre).birthday(birthday).email(email);
 
 
 		return studentBuilder.build();
