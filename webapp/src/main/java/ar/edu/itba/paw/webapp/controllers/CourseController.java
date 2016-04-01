@@ -33,7 +33,7 @@ public class CourseController {
     public ModelAndView getCoursesByFilter(@RequestParam String keyword) {
         final ModelAndView mav = new ModelAndView("courses");
         final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).build();
-        mav.addObject("courses", courseService.getByFilter(courseFilter);
+        mav.addObject("courses", courseService.getByFilter(courseFilter));
         return mav;
     }
 }
