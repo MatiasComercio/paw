@@ -14,7 +14,7 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public Student getByDocket(final int docket) {
-		return docket < 0 ? null : studentDao.getByDocket(docket);
+		return docket <= 0 ? null : studentDao.getByDocket(docket);
 	}
 
 	/* Test purpose only */
