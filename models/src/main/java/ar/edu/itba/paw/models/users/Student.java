@@ -12,6 +12,13 @@ public class Student extends User {
 		return docket;
 	}
 
+	@Override
+	public String toString() {
+		return "Student{" +
+				"docket=" + docket +
+				"} " + super.toString();
+	}
+
 	public static class Builder extends User.Builder<Student, Builder> {
 
 		private final int docket;

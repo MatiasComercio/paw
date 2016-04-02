@@ -29,11 +29,11 @@ public abstract class User {
 	}
 
 	public String getFirstName() {
-		return firstName;
+		return firstName == null ? "" : firstName;
 	}
 
 	public String getLastName() {
-		return lastName;
+		return lastName == null ? "" : lastName;
 	}
 
 	public String getGenre() {
@@ -45,7 +45,19 @@ public abstract class User {
 	}
 
 	public String getEmail() {
-		return email;
+		return email == null ? "" : email;
+	}
+
+	@Override
+	public String toString() {
+		return "User{" +
+				"dni=" + dni +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", genre=" + genre +
+				", birthday=" + birthday +
+				", email='" + email + '\'' +
+				'}';
 	}
 
 	protected static abstract class Builder<V extends User, T extends Builder<V,T>> {

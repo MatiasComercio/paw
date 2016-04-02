@@ -39,7 +39,7 @@ public class StudentJdbcDaoTest {
 	private static final String BIRTHDAY_COLUMN = "birthday";
 	private static final String EMAIL_COLUMN = "email";
 
-	/* Data to be inserted in the columns */
+	/* Data to be inserted/expected in/from the columns */
 	private static final int DNI_1 = 12345678;
 	private static final String FIRST_NAME_1 = "MaTías NIColas";
 	private static final String FIRST_NAME_1_EXPECTED = "Matías Nicolas";
@@ -49,13 +49,11 @@ public class StudentJdbcDaoTest {
 	private static final String GENRE_1_EXPECTED = "Male";
 	private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
 	private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
-	private static final int DOCKET_1 = 12345;
-	private int docket1;
+	private int docket1; /* Auto-generated field */
 
 	private static final int DNI_2 = 87654321;
-	private static final int DOCKET_2 = 12345;
-	private int docket2;
-
+	private int docket2; /* Auto-generated field */
+	/**************************************/
 
 	@Autowired
 	private DataSource dataSource;
@@ -105,26 +103,28 @@ public class StudentJdbcDaoTest {
 
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
-		final Map<String, Object> userArgs = new HashMap<>();
-		final Map<String, Object> studentArgs = new HashMap<>();
+		final Map<String, Object> userArgs1 = new HashMap<>();
+		final Map<String, Object> studentArgs1 = new HashMap<>();
+		final Map<String, Object> userArgs2 = new HashMap<>();
+		final Map<String, Object> studentArgs2 = new HashMap<>();
 
-		userArgs.put(DNI_COLUMN, DNI_1);
-		userArgs.put(FIRST_NAME_COLUMN, FIRST_NAME_1);
-		userArgs.put(LAST_NAME_COLUMN, LAST_NAME_1);
-		userArgs.put(GENRE_COLUMN, GENRE_1);
-		userArgs.put(BIRTHDAY_COLUMN, Date.valueOf(BIRTHDAY_1));
-		userArgs.put(EMAIL_COLUMN, EMAIL_1);
-		userInsert.execute(userArgs);
+		userArgs1.put(DNI_COLUMN, DNI_1);
+		userArgs1.put(FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs1.put(LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userArgs1.put(GENRE_COLUMN, GENRE_1);
+		userArgs1.put(BIRTHDAY_COLUMN, Date.valueOf(BIRTHDAY_1));
+		userArgs1.put(EMAIL_COLUMN, EMAIL_1);
+		userInsert.execute(userArgs1);
 
-		studentArgs.put(DNI_COLUMN, DNI_1);
-		Number key = studentInsert.executeAndReturnKey(studentArgs);
+		studentArgs1.put(DNI_COLUMN, DNI_1);
+		Number key = studentInsert.executeAndReturnKey(studentArgs1);
 		docket1 = key.intValue();
 
-		userArgs.put(DNI_COLUMN, DNI_2);
-		userInsert.execute(userArgs);
+		userArgs2.put(DNI_COLUMN, DNI_2);
+		userInsert.execute(userArgs2);
 
-		studentArgs.put(DNI_COLUMN, DNI_2);
-		key = studentInsert.executeAndReturnKey(studentArgs);
+		studentArgs2.put(DNI_COLUMN, DNI_2);
+		key = studentInsert.executeAndReturnKey(studentArgs2);
 		docket2 = key.intValue();
 	}
 
@@ -143,6 +143,7 @@ public class StudentJdbcDaoTest {
 
 		student = studentJdbcDao.getByDocket(docket2);
 		assertNotNull(student);
+		System.out.println(student);
 		assertEquals(docket2, student.getDocket());
 		assertEquals(DNI_2, student.getDni());
 		assertEquals("", student.getFirstName());
