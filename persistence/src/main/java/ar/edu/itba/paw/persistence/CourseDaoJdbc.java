@@ -83,7 +83,7 @@ public class CourseDaoJdbc implements CourseDao {
         return courses;
     }
 
-    private class QueryFilter {
+    private static class QueryFilter {
         private static final String WHERE = " WHERE ";
         private static final String AND = " AND ";
         private static final String ILIKE = " ILIKE ? ";
@@ -138,6 +138,10 @@ public class CourseDaoJdbc implements CourseDao {
             appendFilterConcatenation();
             query.append(filter);
             filters.add(stringFilter);
+        }
+
+        private interface FilterQueryMapper {
+            void filter(final Object filter, final String filterName);
         }
     }
 }
