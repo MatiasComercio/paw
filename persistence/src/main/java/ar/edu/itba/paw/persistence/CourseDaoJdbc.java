@@ -76,13 +76,9 @@ public class CourseDaoJdbc implements CourseDao {
         System.out.println(queryFilter.getQuery());
         System.out.println(queryFilter.getFilters());
 
-        /*List<Course> courses = jdbcTemplate.query("SELECT * FROM course where name ILIKE ? AND CAST(id as CHAR) ILIKE ?", courseRowMapper,
-                "%" + courseFilter.getKeyword() + "%",
-                courseFilter.getId());
+        List<Course> courses = jdbcTemplate.query(queryFilter.getQuery(), courseRowMapper, queryFilter.getFilters().toArray());
 
         return courses;
-        */
-        return new ArrayList<>();
     }
 
     private class QueryFilter {
@@ -91,7 +87,7 @@ public class CourseDaoJdbc implements CourseDao {
         private static final String ILIKE = " ILIKE ? ";
 
         private static final String FILTER_KEYWORD = NAME_COLUMN + ILIKE;
-        private static final String FILTER_ID = ID_COLUMN + ILIKE;
+        private static final String FILTER_ID = "CAST(" + ID_COLUMN + " AS CHAR) " + ILIKE;
 
         private final StringBuffer query = new StringBuffer("SELECT * FROM " + TABLE_NAME);
         private boolean filterApplied = false;
