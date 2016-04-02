@@ -31,9 +31,10 @@ public class CourseJdbcDao implements CourseDao {
     private final SimpleJdbcInsert jdbcInsert;
 
     private final RowMapper<Course> courseRowMapper = (resultSet, rowNum) ->
-            new Course(resultSet.getInt(ID_COLUMN),
-                    resultSet.getString(NAME_COLUMN),
-                    resultSet.getInt(CREDITS_COLUMN));
+            new Course.Builder(resultSet.getInt(ID_COLUMN))
+                        .name(resultSet.getString(NAME_COLUMN))
+                        .credits(resultSet.getInt(CREDITS_COLUMN))
+                        .build();
 
     private final RowMapper<Student> studentRowMapper = (resultSet, rowNum) ->
             new Student.Builder(resultSet.getInt(DOCKET_COLUMN), resultSet.getInt(DNI_COLUMN)).firstName(FIRST_NAME_COLUMN).lastName(LAST_NAME_COLUMN).build();
@@ -53,7 +54,10 @@ public class CourseJdbcDao implements CourseDao {
         args.put(CREDITS_COLUMN, credits);
         final Number key = jdbcInsert.executeAndReturnKey(args);
 
-        return new Course(key.intValue(), coursename, credits);
+        return new Course.Builder(key.intValue())
+                            .name(coursename)
+                            .credits(credits)
+                            .build();
     }
 
     @Override
