@@ -29,6 +29,11 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String GENRE_COLUMN = "genre";
 	private static final String BIRTHDAY_COLUMN = "birthday";
 	private static final String EMAIL_COLUMN = "email";
+	private static final String TABLE_NAME = "course";
+	private static final String ID_COLUMN = "id";
+	private static final String NAME_COLUMN = "name";
+	private static final String CREDITS_COLUMN = "credits";
+
 	private static final String STUDENT_QUERY =
 					"SELECT * " +
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
@@ -77,6 +82,12 @@ public class StudentJdbcDao implements StudentDao {
 		return studentBuilder.build();
 	};
 
+	private final RowMapper<Course> courseRowMapper = (resultSet, rowNum) ->
+			new Course.Builder(resultSet.getInt(ID_COLUMN))
+					.name(resultSet.getString(NAME_COLUMN))
+					.credits(resultSet.getInt(CREDITS_COLUMN))
+					.build();
+
 	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(EMAIL_COLUMN);
 
 	private final JdbcTemplate jdbcTemplate;
@@ -106,7 +117,7 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public List<Course> getStudentCourses(int docket) {
-		return null;
+		List<Course> courses = jdbcTemplate.query();
 	}
 
 	private String createEmail(final int dni, final String firstName, final String lastName) {
