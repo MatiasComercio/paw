@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "user" (
+CREATE TABLE IF NOT EXISTS users (
   dni INTEGER NOT NULL ,
   first_name VARCHAR (50) ,
   last_name VARCHAR (50) ,
