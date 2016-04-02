@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.StudentDao;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import org.apache.commons.lang3.text.WordUtils;
@@ -102,6 +103,11 @@ public class StudentJdbcDao implements StudentDao {
 
         return students.isEmpty() ? null : students;
     }
+
+	@Override
+	public List<Course> getStudentCourses(int docket) {
+		return null;
+	}
 
 	private String createEmail(final int dni, final String firstName, final String lastName) {
 		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
