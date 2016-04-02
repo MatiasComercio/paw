@@ -17,14 +17,14 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Alumnos <small>Lista de alumnos</small>
+                        Index <small>sample page</small>
                     </h1>
                 </div>
             </div>
 
             <!-- content -->
 
-            <h1>Creating user: ${user.username}</h1>
+            <h1>Page description: ${description}</h1>
 
             <!-- /content -->
 
