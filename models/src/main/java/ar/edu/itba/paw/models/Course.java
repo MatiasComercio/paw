@@ -6,7 +6,7 @@ public class Course {
     private String name;
     private int credits;
 
-    public Course(Builder builder) {
+    private Course(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
         this.credits = builder.credits;
