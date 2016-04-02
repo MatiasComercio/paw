@@ -12,9 +12,6 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.util.*;
 
-/**
- * Created by mati on 30/03/16.
- */
 @Repository
 public class CourseDaoJdbc implements CourseDao {
 
