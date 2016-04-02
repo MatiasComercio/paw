@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import java.util.List;
 
@@ -14,4 +15,5 @@ public interface StudentService {
 	Student getByDocket(final int docket);
 	List<Student> getAll();
 
+	List<Course> getStudentCourses(final int docket);
 }
