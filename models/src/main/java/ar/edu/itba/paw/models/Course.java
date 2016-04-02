@@ -1,8 +1,5 @@
 package ar.edu.itba.paw.models;
 
-/**
- * Created by mati on 30/03/16.
- */
 public class Course {
 
     private int id;
