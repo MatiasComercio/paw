@@ -10,10 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by mati on 30/03/16.
@@ -72,11 +69,20 @@ public class CourseDaoJdbc implements CourseDao {
 
     @Override
     public List<Course> getByFilter(CourseFilter courseFilter) {
-        List<Course> courses = jdbcTemplate.query("SELECT * FROM course where name ILIKE ? AND CAST(id as CHAR) ILIKE ?", courseRowMapper,
+        QueryFilter queryFilter = new QueryFilter();
+
+        queryFilter.filterByKeyword(courseFilter);
+        queryFilter.filterById(courseFilter);
+        System.out.println(queryFilter.getQuery());
+        System.out.println(queryFilter.getFilters());
+
+        /*List<Course> courses = jdbcTemplate.query("SELECT * FROM course where name ILIKE ? AND CAST(id as CHAR) ILIKE ?", courseRowMapper,
                 "%" + courseFilter.getKeyword() + "%",
                 courseFilter.getId());
 
         return courses;
+        */
+        return new ArrayList<>();
     }
 
     private class QueryFilter {
@@ -111,6 +117,14 @@ public class CourseDaoJdbc implements CourseDao {
                 String stringFilter = filter.toString() + "%";
                 appendFilter(FILTER_ID, stringFilter);
             }
+        }
+
+        public List<String> getFilters() {
+            return filters;
+        }
+
+        public String getQuery() {
+            return query.toString();
         }
 
         private void appendFilterConcatenation() {
