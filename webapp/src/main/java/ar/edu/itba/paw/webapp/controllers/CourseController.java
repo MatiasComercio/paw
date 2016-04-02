@@ -38,4 +38,11 @@ public class CourseController {
         mav.addObject("courses", courseService.getByFilter(courseFilter));
         return mav;
     }
+
+    @RequestMapping("/courses/{id}/students/")
+    public ModelAndView getCourseStudents(@PathVariable final Integer id){
+        final ModelAndView mav = new ModelAndView("courseStudents");
+        mav.addObject("courseStudents", courseService.getCourseStudents(id));
+        return mav;
+    }
 }

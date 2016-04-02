@@ -9,9 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * Created by mati on 30/03/16.
- */
 @Service
 public class CourseServiceImpl implements CourseService {
 
@@ -26,6 +23,11 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course getById(int id) {
         return courseDao.getById(id);
+    }
+
+    @Override
+    public Course getCourseStudents(int id) {
+        return courseDao.getCourseStudents(id);
     }
 
     @Override
