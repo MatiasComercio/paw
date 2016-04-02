@@ -2,6 +2,7 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,11 @@ public class StudentServiceImpl implements StudentService {
 	@Override
 	public List<Student> getAll() {
 		return studentDao.getAll();
+	}
+
+	@Override
+	public List<Course> getStudentCourses(int docket) {
+		return studentDao.getStudentCourses(docket);
 	}
 
 	/* Test purpose only */
