@@ -41,7 +41,7 @@ public class CourseDaoJdbc implements CourseDao {
 
 
     @Override
-    public Course create(int id, String coursename, int credits) {
+    public Course create(final int id, final String coursename, final int credits) {
         final Map<String, Object> args = new HashMap<>();
         args.put(ID_COLUMN, id);
         args.put(NAME_COLUMN, coursename);
@@ -52,7 +52,7 @@ public class CourseDaoJdbc implements CourseDao {
     }
 
     @Override
-    public Course getById(int id) {
+    public Course getById(final int id) {
 
         List<Course> course = jdbcTemplate.query("SELECT * FROM course WHERE id = ? LIMIT 1", courseRowMapper, id);
 
@@ -68,7 +68,7 @@ public class CourseDaoJdbc implements CourseDao {
     }
 
     @Override
-    public List<Course> getByFilter(CourseFilter courseFilter) {
+    public List<Course> getByFilter(final CourseFilter courseFilter) {
         QueryFilter queryFilter = new QueryFilter();
 
         queryFilter.filterByKeyword(courseFilter);
@@ -102,11 +102,11 @@ public class CourseDaoJdbc implements CourseDao {
             filters = new LinkedList<>();
         }
 
-        public void filterByKeyword(CourseFilter courseFilter) {
+        public void filterByKeyword(final CourseFilter courseFilter) {
             filterBySubword.filter(courseFilter.getKeyword(), FILTER_KEYWORD);
         }
 
-        public void filterById(CourseFilter courseFilter) {
+        public void filterById(final CourseFilter courseFilter) {
             filterBySubword.filter(courseFilter.getId(), FILTER_ID);
         }
 
@@ -127,7 +127,7 @@ public class CourseDaoJdbc implements CourseDao {
             }
         }
 
-        private void appendFilter(String filter, String stringFilter) {
+        private void appendFilter(final String filter, final String stringFilter) {
             appendFilterConcatenation();
             query.append(filter);
             filters.add(stringFilter);
