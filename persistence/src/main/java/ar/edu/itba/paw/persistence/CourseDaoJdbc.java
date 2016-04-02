@@ -27,9 +27,10 @@ public class CourseDaoJdbc implements CourseDao {
     private final SimpleJdbcInsert jdbcInsert;
 
     private final RowMapper<Course> courseRowMapper = (resultSet, rowNum) ->
-            new Course(resultSet.getInt(ID_COLUMN),
-                    resultSet.getString(NAME_COLUMN),
-                    resultSet.getInt(CREDITS_COLUMN));
+            new Course.Builder(resultSet.getInt(ID_COLUMN))
+                        .name(resultSet.getString(NAME_COLUMN))
+                        .credits(resultSet.getInt(CREDITS_COLUMN))
+                        .build();
 
 
     @Autowired
@@ -48,7 +49,10 @@ public class CourseDaoJdbc implements CourseDao {
         args.put(CREDITS_COLUMN, credits);
         final Number key = jdbcInsert.executeAndReturnKey(args);
 
-        return new Course(key.intValue(), coursename, credits);
+        return new Course.Builder(key.intValue())
+                            .name(coursename)
+                            .credits(credits)
+                            .build();
     }
 
     @Override
