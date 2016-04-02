@@ -117,7 +117,11 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public List<Course> getStudentCourses(int docket) {
-		List<Course> courses = jdbcTemplate.query();
+		List<Course> courses = jdbcTemplate.query("SELECT id, name, credits FROM inscription JOIN course on inscription.course_id = course.id"
+				+ "WHERE docket = ?",
+				courseRowMapper, docket);
+
+		return courses;
 	}
 
 	private String createEmail(final int dni, final String firstName, final String lastName) {
