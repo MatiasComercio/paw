@@ -51,10 +51,10 @@ public class StudentJdbcDaoTest {
 	private static final String GENRE_1 = "M";
 	private static final String GENRE_1_EXPECTED = "Male";
 	private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
-//	private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
 	private int docket1; /* Auto-generated field */
 
 	private static final int DNI_2 = 87654321;
+	private static final String EMAIL_2 = "mcomercio@bait.edu.ar";
 	private int docket2; /* Auto-generated field */
 	/**************************************/
 
@@ -67,36 +67,6 @@ public class StudentJdbcDaoTest {
 	private JdbcTemplate jdbcTemplate;
 	private SimpleJdbcInsert userInsert;
 	private SimpleJdbcInsert studentInsert;
-
-/*	+++x todo: try to implement what it is at the setUp method, but here, so as it is done only once.
-	@BeforeClass
-	public static void setUpClass() {
-		jdbcTemplate = new JdbcTemplate(dataSource);
-		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
-		studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE);
-
-		final Map<String, Object> userArgs = new HashMap<>();
-		final Map<String, Object> studentArgs = new HashMap<>();
-
-		userArgs.put(DNI_COLUMN, DNI_1);
-		userArgs.put(FIRST_NAME_COLUMN, FIRST_NAME_1);
-		userArgs.put(LAST_NAME_COLUMN, LAST_NAME_1);
-		userArgs.put(GENRE_COLUMN, GENRE_1);
-		userArgs.put(BIRTHDAY_COLUMN, BIRTHDAY_1);
-		userArgs.put(EMAIL_COLUMN, EMAIL_1);
-		userInsert.execute(userArgs);
-
-		studentArgs.put(DOCKET_COLUMN, DOCKET_1);
-		studentArgs.put(DNI_COLUMN, DNI_1);
-		studentInsert.execute(studentArgs);
-
-		userArgs.put(DNI_COLUMN, DNI_2);
-		userInsert.execute(userArgs);
-
-		studentArgs.put(DOCKET_COLUMN, DOCKET_2);
-		studentArgs.put(DNI_COLUMN, DNI_2);
-		studentInsert.execute(studentArgs);
-	}*/
 
 	@Before
 	public void setUp() {
@@ -116,7 +86,6 @@ public class StudentJdbcDaoTest {
 		userArgs1.put(LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs1.put(GENRE_COLUMN, GENRE_1);
 		userArgs1.put(BIRTHDAY_COLUMN, Date.valueOf(BIRTHDAY_1));
-//		userArgs1.put(EMAIL_COLUMN, EMAIL_1);
 		userInsert.execute(userArgs1);
 
 		studentArgs1.put(DNI_COLUMN, DNI_1);
@@ -124,6 +93,7 @@ public class StudentJdbcDaoTest {
 		docket1 = key.intValue();
 
 		userArgs2.put(DNI_COLUMN, DNI_2);
+		userArgs2.put(EMAIL_COLUMN, EMAIL_2);
 		userInsert.execute(userArgs2);
 
 		studentArgs2.put(DNI_COLUMN, DNI_2);
@@ -148,18 +118,13 @@ public class StudentJdbcDaoTest {
 
 		student = studentJdbcDao.getByDocket(docket2);
 		assertNotNull(student);
-		System.out.println(student);
 		assertEquals(docket2, student.getDocket());
 		assertEquals(DNI_2, student.getDni());
 		assertEquals("", student.getFirstName());
 		assertEquals("", student.getLastName());
 		assertEquals("", student.getGenre());
 		assertEquals(null, student.getBirthday());
-		assertEquals(getDefaultEmail(DNI_2), student.getEmail());
-	}
-
-	private String getDefaultEmail(final int dni) {
-		return "student" + dni + EMAIL_DOMAIN;
+		assertEquals(EMAIL_2, student.getEmail());
 	}
 
 	private List<Matcher<? super String>> possibleEmails(final int dni, final String firstName, final String lastName) {
@@ -175,12 +140,10 @@ public class StudentJdbcDaoTest {
 		/* Add all possible emails */
 		final String initChar = firstName.substring(0, 1).toLowerCase();
 
-		final StringBuilder email = new StringBuilder(initChar);
-
 		final String[] lastNames = lastName.toLowerCase().split(" ");
 		StringBuilder currentEmail;
 		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
-			currentEmail = email;
+			currentEmail = new StringBuilder(initChar);
 			for (int j = 0 ; j <= i; j++) {
 				currentEmail.append(lastNames[j]);
 			}

@@ -33,6 +33,10 @@ public class StudentJdbcDao implements StudentDao {
 							" ON " + STUDENT_TABLE + "." + DNI_COLUMN + " = " + USER_TABLE + "." + DNI_COLUMN + " " +
 					"WHERE " + DOCKET_COLUMN + " = ? LIMIT 1" +
 					";";
+	private static final String EMAILS_QUERY =
+					"SELECT " + EMAIL_COLUMN + " " +
+					"FROM " + USER_TABLE + " " +
+					";";
 
 	private final RowMapper<Student> studentRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(DOCKET_COLUMN);
@@ -66,6 +70,8 @@ public class StudentJdbcDao implements StudentDao {
 		return studentBuilder.build();
 	};
 
+	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(EMAIL_COLUMN);
+
 	private final JdbcTemplate jdbcTemplate;
 
 	@Autowired
@@ -92,12 +98,10 @@ public class StudentJdbcDao implements StudentDao {
 
 		final String initChar = firstName.substring(0, 1).toLowerCase();
 
-		final StringBuilder email = new StringBuilder(initChar);
-
 		final String[] lastNames = lastName.toLowerCase().split(" ");
 		StringBuilder currentEmail;
 		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
-			currentEmail = email;
+			currentEmail = new StringBuilder(initChar);
 			for (int j = 0 ; j <= i; j++) {
 				currentEmail.append(lastNames[j]);
 			}
@@ -114,6 +118,8 @@ public class StudentJdbcDao implements StudentDao {
 
 	/* ++x TODO: implement real email comparator */
 	private boolean exists(final StringBuilder email) {
-		return false;
+		List<String> students = jdbcTemplate.query(EMAILS_QUERY, emailRowMapper);
+
+		return students.contains(String.valueOf(email));
 	}
 }
