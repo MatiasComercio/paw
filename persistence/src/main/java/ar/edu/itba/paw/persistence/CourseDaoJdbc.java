@@ -73,6 +73,8 @@ public class CourseDaoJdbc implements CourseDao {
 
         queryFilter.filterByKeyword(courseFilter);
         queryFilter.filterById(courseFilter);
+
+        //TODO: Remove when having optional parameters in CourseController working
         System.out.println(queryFilter.getQuery());
         System.out.println(queryFilter.getFilters());
 
