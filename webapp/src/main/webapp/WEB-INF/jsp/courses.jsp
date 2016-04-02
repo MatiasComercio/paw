@@ -13,5 +13,8 @@
 </head>
 <body>
 
+
+<!-- Scripts -->
+<jsp:include page="base/footer.jsp" />
 </body>
 </html>
