@@ -26,6 +26,7 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
+                    <th>Legajo</th>
                     <th>Nombre</th>
                     <th>Email</th>
                     <th>Acciones</th>
@@ -34,6 +35,7 @@
                 <tbody>
                 <c:forEach items="${students}" var="student">
                     <tr>
+                        <td>${ student.docket }</td>
                         <td>${ student.fullName }</td>
                         <td>${ student.email }</td>
                         <td><a href="<c:url value="students/${student.docket}" />">Ver</a></td>
