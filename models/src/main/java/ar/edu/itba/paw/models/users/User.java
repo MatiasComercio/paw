@@ -36,6 +36,10 @@ public abstract class User {
 		return lastName == null ? "" : lastName;
 	}
 
+	public String getFullName() {
+		return getFirstName() + " " + getLastName();
+	}
+
 	public String getGenre() {
 		return genre == null ? "" : genre.toString();
 	}

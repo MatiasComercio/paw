@@ -22,7 +22,7 @@ public class IndexController {
 
 		mav.addObject("description", "Lista de alumnos");
         mav.addObject("students", students);
-        
+
 		return mav;
 	}
 }
