@@ -95,26 +95,23 @@ public class CourseDaoJdbc implements CourseDao {
         private boolean filterApplied = false;
         private final List<String> filters;
 
+        private final FilterQueryMapper filterBySubword = (filter, filterName) -> {
+            if(filter != null) {
+                String stringFilter = "%" + filter.toString() + "%";
+                appendFilter(filterName, stringFilter);
+            }
+        };
+
         private QueryFilter() {
             filters = new LinkedList<>();
         }
 
         public void filterByKeyword(CourseFilter courseFilter) {
-            String filter = courseFilter.getKeyword();
-
-            if(filter != null) {
-                String stringFilter = "%" + filter + "%";
-                appendFilter(FILTER_KEYWORD, stringFilter);
-            }
+            filterBySubword.filter(courseFilter.getKeyword(), FILTER_KEYWORD);
         }
 
         public void filterById(CourseFilter courseFilter) {
-            Integer filter = courseFilter.getId();
-
-            if(filter != null) {
-                String stringFilter = filter.toString() + "%";
-                appendFilter(FILTER_ID, stringFilter);
-            }
+            filterBySubword.filter(courseFilter.getId(), FILTER_ID);
         }
 
         public List<String> getFilters() {
