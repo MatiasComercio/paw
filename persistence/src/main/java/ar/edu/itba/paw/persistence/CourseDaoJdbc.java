@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -85,8 +86,58 @@ public class CourseDaoJdbc implements CourseDao {
         */
         List<Course> courses = jdbcTemplate.query("SELECT * FROM course where name ILIKE ? AND CAST(id as CHAR) ILIKE ?", courseRowMapper,
                 "%" + courseFilter.getKeyword() + "%",
-                courseFilter.getId() + "%");
+                courseFilter.getId());
 
         return courses;
+    }
+
+    private class QueryFilter {
+        private static final String WHERE = " WHERE ";
+        private static final String AND = " AND ";
+        private static final String ILIKE = " ILIKE ? ";
+
+        private static final String FILTER_KEYWORD = NAME_COLUMN + ILIKE;
+        private static final String FILTER_ID = ID_COLUMN + ILIKE;
+
+        private final StringBuffer query = new StringBuffer("SELECT * FROM " + TABLE_NAME);
+        private boolean filterApplied = false;
+        private final List<String> filters;
+
+        private QueryFilter() {
+            filters = new LinkedList<>();
+        }
+
+        public void filterByKeyword(CourseFilter courseFilter) {
+            String filter = courseFilter.getKeyword();
+
+            if(filter != null) {
+                String stringFilter = "%" + filter + "%";
+                appendFilter(FILTER_KEYWORD, stringFilter);
+            }
+        }
+
+        public void filterById(CourseFilter courseFilter) {
+            Integer filter = courseFilter.getId();
+
+            if(filter != null) {
+                String stringFilter = filter.toString() + "%";
+                appendFilter(FILTER_ID, stringFilter);
+            }
+        }
+
+        private void appendFilterConcatenation() {
+            if(!filterApplied) {
+                filterApplied = true;
+                query.append(WHERE);
+            } else {
+                query.append(AND);
+            }
+        }
+
+        private void appendFilter(String filter, String stringFilter) {
+            appendFilterConcatenation();
+            query.append(filter);
+            filters.add(stringFilter);
+        }
     }
 }
