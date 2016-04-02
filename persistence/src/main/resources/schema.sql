@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS address (
   dni INTEGER NOT NULL ,
 
   PRIMARY KEY (country, city, neighborhood, street, number, dni),
-  FOREIGN KEY (dni) REFERENCES "user" ON DELETE CASCADE
+  FOREIGN KEY (dni) REFERENCES "users" ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS student (
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS student (
   password VARCHAR (100) ,
 
   PRIMARY KEY (docket),
-  FOREIGN KEY (dni) REFERENCES "user"
+  FOREIGN KEY (dni) REFERENCES "users"
 );
 
 CREATE TABLE IF NOT EXISTS course (

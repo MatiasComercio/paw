@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.users.Student;
+import java.util.List;
 
 public interface StudentService {
 
@@ -11,5 +12,6 @@ public interface StudentService {
 	 * @return The student with the given docket, if exists; null otherwise.
 	 */
 	Student getByDocket(final int docket);
+	List<Student> getAll();
 
 }

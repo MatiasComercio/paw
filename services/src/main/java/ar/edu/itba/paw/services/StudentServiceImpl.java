@@ -6,6 +6,9 @@ import ar.edu.itba.paw.models.users.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class StudentServiceImpl implements StudentService {
 
@@ -15,6 +18,11 @@ public class StudentServiceImpl implements StudentService {
 	@Override
 	public Student getByDocket(final int docket) {
 		return docket <= 0 ? null : studentDao.getByDocket(docket);
+	}
+
+	@Override
+	public List<Student> getAll() {
+		return studentDao.getAll();
 	}
 
 	/* Test purpose only */

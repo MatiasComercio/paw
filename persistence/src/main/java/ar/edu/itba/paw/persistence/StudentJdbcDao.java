@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -32,6 +33,8 @@ public class StudentJdbcDao implements StudentDao {
 							" ON " + STUDENT_TABLE + "." + DNI_COLUMN + " = " + USER_TABLE + "." + DNI_COLUMN + " " +
 					"WHERE " + DOCKET_COLUMN + " = ? LIMIT 1" +
 					";";
+	private static final String QUERY_STUDENT_GET_ALL = "SELECT * FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
+					" ON " + STUDENT_TABLE + "." + DNI_COLUMN + " = " + USER_TABLE + "." + DNI_COLUMN + ";";
 
 	private final RowMapper<Student> studentRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(DOCKET_COLUMN);
@@ -76,5 +79,13 @@ public class StudentJdbcDao implements StudentDao {
 		List<Student> students = jdbcTemplate.query(STUDENT_QUERY, studentRowMapper, docket);
 
 		return students.isEmpty() ? null : students.get(0);
+	}
+
+	@Override
+	public List<Student> getAll() {
+
+		List<Student> students = jdbcTemplate.query(QUERY_STUDENT_GET_ALL, studentRowMapper);
+
+		return students.isEmpty() ? null : students;
 	}
 }
