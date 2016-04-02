@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS address (
   dni INTEGER NOT NULL ,
 
   PRIMARY KEY (country, city, neighborhood, street, number, dni),
+
   FOREIGN KEY (dni) REFERENCES users ON DELETE CASCADE
 );
 

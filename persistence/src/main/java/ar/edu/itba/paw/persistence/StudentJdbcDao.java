@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -33,10 +34,15 @@ public class StudentJdbcDao implements StudentDao {
 							" ON " + STUDENT_TABLE + "." + DNI_COLUMN + " = " + USER_TABLE + "." + DNI_COLUMN + " " +
 					"WHERE " + DOCKET_COLUMN + " = ? LIMIT 1" +
 					";";
+
+	private static final String QUERY_STUDENT_GET_ALL = "SELECT * FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
+					" ON " + STUDENT_TABLE + "." + DNI_COLUMN + " = " + USER_TABLE + "." + DNI_COLUMN + ";";
+
 	private static final String EMAILS_QUERY =
 					"SELECT " + EMAIL_COLUMN + " " +
 					"FROM " + USER_TABLE + " " +
 					";";
+
 
 	private final RowMapper<Student> studentRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(DOCKET_COLUMN);
@@ -89,6 +95,14 @@ public class StudentJdbcDao implements StudentDao {
 		return students.isEmpty() ? null : students.get(0);
 	}
 
+	@Override
+	public List<Student> getAll() {
+
+        List<Student> students = jdbcTemplate.query(QUERY_STUDENT_GET_ALL, studentRowMapper);
+
+        return students.isEmpty() ? null : students;
+    }
+
 	private String createEmail(final int dni, final String firstName, final String lastName) {
 		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
 
@@ -121,5 +135,6 @@ public class StudentJdbcDao implements StudentDao {
 		List<String> students = jdbcTemplate.query(EMAILS_QUERY, emailRowMapper);
 
 		return students.contains(String.valueOf(email));
+
 	}
 }
