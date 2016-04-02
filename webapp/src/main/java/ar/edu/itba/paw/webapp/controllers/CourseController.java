@@ -32,7 +32,7 @@ public class CourseController {
 
     @RequestMapping(value = "/courses", params = {"keyword", "id"})
     public ModelAndView getCoursesByFilter(@RequestParam String keyword,
-                                           @RequestParam(value = "i", required = false) Integer id) {
+                                           @RequestParam Integer id) {
         final ModelAndView mav = new ModelAndView("courses");
         final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).id(id).build();
         mav.addObject("courses", courseService.getByFilter(courseFilter));
