@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.users.Student;
+import org.hamcrest.Matcher;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -19,10 +20,13 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -39,6 +43,8 @@ public class StudentJdbcDaoTest {
 	private static final String BIRTHDAY_COLUMN = "birthday";
 	private static final String EMAIL_COLUMN = "email";
 
+	private static final String EMAIL_DOMAIN = "@bait.edu.ar";
+
 	/* Data to be inserted/expected in/from the columns */
 	private static final int DNI_1 = 12345678;
 	private static final String FIRST_NAME_1 = "MaTías NIColas";
@@ -48,7 +54,7 @@ public class StudentJdbcDaoTest {
 	private static final String GENRE_1 = "M";
 	private static final String GENRE_1_EXPECTED = "Male";
 	private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
-	private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
+//	private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
 	private int docket1; /* Auto-generated field */
 
 	private static final int DNI_2 = 87654321;
@@ -113,7 +119,7 @@ public class StudentJdbcDaoTest {
 		userArgs1.put(LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs1.put(GENRE_COLUMN, GENRE_1);
 		userArgs1.put(BIRTHDAY_COLUMN, Date.valueOf(BIRTHDAY_1));
-		userArgs1.put(EMAIL_COLUMN, EMAIL_1);
+//		userArgs1.put(EMAIL_COLUMN, EMAIL_1);
 		userInsert.execute(userArgs1);
 
 		studentArgs1.put(DNI_COLUMN, DNI_1);
@@ -139,7 +145,9 @@ public class StudentJdbcDaoTest {
 		assertEquals(LAST_NAME_1_EXPECTED, student.getLastName());
 		assertEquals(GENRE_1_EXPECTED, student.getGenre());
 		assertEquals(BIRTHDAY_1, student.getBirthday());
-		assertEquals(EMAIL_1, student.getEmail());
+		assertThat(student.getEmail(), anyOf(possibleEmails(DNI_1,
+				FIRST_NAME_1.toLowerCase(),
+				LAST_NAME_1.toLowerCase())));
 
 		student = studentJdbcDao.getByDocket(docket2);
 		assertNotNull(student);
@@ -154,7 +162,29 @@ public class StudentJdbcDaoTest {
 	}
 
 	private String getDefaultEmail(final int dni) {
-		return "student" + dni + "@bait.edu.ar";
+		return "student" + dni + EMAIL_DOMAIN;
 	}
 
+	private List<Matcher<? super String>> possibleEmails(final int dni, final String firstName, final String lastName) {
+		List<Matcher<? super String>> matchers = new LinkedList<>();
+
+		/* In case firstName == null */
+		if (firstName == null) {
+			matchers.add(is("student" + dni + EMAIL_DOMAIN));
+			return matchers;
+		}
+
+		/* Add all possible emails */
+		String email;
+		for (int i = 1; i < firstName.length() ; i++) {
+			email =  firstName.substring(0, i) + lastName + EMAIL_DOMAIN;
+			matchers.add(is(email));
+		}
+
+		/* In case all email trials failed */
+		/* This, for sure, does not exists as includes the dni, which is unique */
+		matchers.add(is(firstName.charAt(0) + dni + lastName + EMAIL_DOMAIN));
+
+		return matchers;
+	}
 }
