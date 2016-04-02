@@ -1,33 +1,33 @@
 package ar.edu.itba.paw.shared;
 
 public class CourseFilter {
-    private String keyword; /* TODO: Decide whether the service is obliged to create a Filter with at least one field */
-    private Integer id;
+    private Object keyword; /* TODO: Decide whether the service is obliged to create a Filter with at least one field */
+    private Object id;
 
     private CourseFilter(CourseFilterBuilder builder) {
         this.keyword = builder.keyword;
         this.id = builder.id;
     }
 
-    public String getKeyword() {
+    public Object getKeyword() {
         return keyword;
     }
 
-    public Integer getId() {
+    public Object getId() {
         return id;
     }
 
     public static class CourseFilterBuilder {
-        private String keyword;
-        private Integer id;
+        private Object keyword;
+        private Object id;
 
-        public CourseFilterBuilder keyword(final String keyword) {
+        public CourseFilterBuilder keyword(final Object keyword) {
             this.keyword = keyword;
 
             return this;
         }
 
-        public CourseFilterBuilder id(final Integer id) {
+        public CourseFilterBuilder id(final Object id) {
             this.id = id;
 
             return this;
