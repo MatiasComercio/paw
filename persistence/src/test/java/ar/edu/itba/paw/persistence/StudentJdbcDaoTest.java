@@ -2,9 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.users.Student;
 import org.hamcrest.Matcher;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,6 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 import javax.sql.DataSource;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -166,24 +163,34 @@ public class StudentJdbcDaoTest {
 	}
 
 	private List<Matcher<? super String>> possibleEmails(final int dni, final String firstName, final String lastName) {
-		List<Matcher<? super String>> matchers = new LinkedList<>();
+		final List<Matcher<? super String>> matchers = new LinkedList<>();
+		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
 
 		/* In case firstName == null */
-		if (firstName == null) {
-			matchers.add(is("student" + dni + EMAIL_DOMAIN));
+		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
+			matchers.add(is(defaultEmail));
 			return matchers;
 		}
 
 		/* Add all possible emails */
-		String email;
-		for (int i = 1; i < firstName.length() ; i++) {
-			email =  firstName.substring(0, i) + lastName + EMAIL_DOMAIN;
-			matchers.add(is(email));
+		final String initChar = firstName.substring(0, 1).toLowerCase();
+
+		final StringBuilder email = new StringBuilder(initChar);
+
+		final String[] lastNames = lastName.toLowerCase().split(" ");
+		StringBuilder currentEmail;
+		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
+			currentEmail = email;
+			for (int j = 0 ; j <= i; j++) {
+				currentEmail.append(lastNames[j]);
+			}
+			currentEmail.append(EMAIL_DOMAIN);
+			matchers.add(is(String.valueOf(currentEmail)));
 		}
 
 		/* In case all email trials failed */
 		/* This, for sure, does not exists as includes the dni, which is unique */
-		matchers.add(is(firstName.charAt(0) + dni + lastName + EMAIL_DOMAIN));
+		matchers.add(is(defaultEmail));
 
 		return matchers;
 	}

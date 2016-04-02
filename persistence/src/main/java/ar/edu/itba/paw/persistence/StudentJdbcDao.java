@@ -16,6 +16,7 @@ import java.util.List;
 
 @Repository
 public class StudentJdbcDao implements StudentDao {
+	private static final String EMAIL_DOMAIN = "@bait.edu.ar";
 
 	private static final String STUDENT_TABLE = "student";
 	private static final String USER_TABLE = "users";
@@ -52,7 +53,11 @@ public class StudentJdbcDao implements StudentDao {
 		} else {
 			genre = null;
 		}
-		final String email = resultSet.getString(EMAIL_COLUMN);
+
+		String email = resultSet.getString(EMAIL_COLUMN);
+		if (email == null) {
+			email = createEmail(dni, firstName, lastName);
+		}
 
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
 		studentBuilder.firstName(firstName).lastName(lastName).genre(genre).birthday(birthday).email(email);
@@ -76,5 +81,39 @@ public class StudentJdbcDao implements StudentDao {
 		List<Student> students = jdbcTemplate.query(STUDENT_QUERY, studentRowMapper, docket);
 
 		return students.isEmpty() ? null : students.get(0);
+	}
+
+	private String createEmail(final int dni, final String firstName, final String lastName) {
+		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
+
+		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
+			return defaultEmail;
+		}
+
+		final String initChar = firstName.substring(0, 1).toLowerCase();
+
+		final StringBuilder email = new StringBuilder(initChar);
+
+		final String[] lastNames = lastName.toLowerCase().split(" ");
+		StringBuilder currentEmail;
+		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
+			currentEmail = email;
+			for (int j = 0 ; j <= i; j++) {
+				currentEmail.append(lastNames[j]);
+			}
+			currentEmail.append(EMAIL_DOMAIN);
+			if (!exists(currentEmail)) {
+				return String.valueOf(currentEmail);
+			}
+		}
+
+		/* This is in case all email trials failed */
+		/* This, for sure, does not exists as includes the dni, which is unique */
+		return defaultEmail;
+	}
+
+	/* ++x TODO: implement real email comparator */
+	private boolean exists(final StringBuilder email) {
+		return false;
 	}
 }
