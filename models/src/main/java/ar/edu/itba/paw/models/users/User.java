@@ -20,8 +20,7 @@ public abstract class User {
 		this.lastName = builder.lastName;
 		this.genre = builder.genre;
 		this.birthday = builder.birthday;
-		String email = builder.email == null ? builder.createEmail() : builder.email;
-		this.email = email.toLowerCase();
+		this.email = builder.email;
 	}
 
 	public int getDni() {
@@ -65,8 +64,6 @@ public abstract class User {
 	}
 
 	protected static abstract class Builder<V extends User, T extends Builder<V,T>> {
-		private static final String EMAIL_DOMAIN = "@bait.edu.ar";
-
 		private final int dni;
 		private final T thisBuilder;
 
@@ -121,32 +118,6 @@ public abstract class User {
 				this.email = email;
 			}
 			return thisBuilder;
-		}
-
-		private String createEmail() {
-			if (firstName == null) {
-				return "student" + this.dni + EMAIL_DOMAIN;
-			}
-
-			String email = null;
-			boolean found = false;
-			for (int i = 1; i < firstName.length() && !found ; i++) {
-				email =  firstName.substring(0, i) + lastName + EMAIL_DOMAIN;
-				if (!exists(email)) {
-					found = true;
-				}
-			}
-			/* This is in case all email trials failed */
-			/* this, for sure, does not exists as includes the dni, which is unique */
-			if (email == null) {
-				email = firstName.charAt(0) + dni + lastName + EMAIL_DOMAIN;
-			}
-			return email;
-		}
-
-		/* ++x TODO: implement real email comparator */
-		private boolean exists(final String email) {
-			return false;
 		}
 	}
 
