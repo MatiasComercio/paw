@@ -91,7 +91,7 @@ public class StudentJdbcDao implements StudentDao {
 
 		String email = resultSet.getString(USER__EMAIL_COLUMN);
 		if (email == null) {
-			email = createEmail(dni, firstName, lastName);
+			email = createEmail(docket, firstName, lastName);
 		}
 
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
@@ -115,7 +115,7 @@ public class StudentJdbcDao implements StudentDao {
 
 		String email = resultSet.getString(USER__EMAIL_COLUMN);
 		if (email == null) {
-			email = createEmail(dni, firstName, lastName);
+			email = createEmail(docket, firstName, lastName);
 		}
 
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
@@ -199,8 +199,8 @@ public class StudentJdbcDao implements StudentDao {
 		return courses;
 	}
 
-	private String createEmail(final int dni, final String firstName, final String lastName) {
-		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
+	private String createEmail(final int docket, final String firstName, final String lastName) {
+		final String defaultEmail = "student" + docket + EMAIL_DOMAIN;
 
 		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
 			return defaultEmail;
@@ -222,7 +222,7 @@ public class StudentJdbcDao implements StudentDao {
 		}
 
 		/* This is in case all email trials failed */
-		/* This, for sure, does not exists as includes the dni, which is unique */
+		/* This, for sure, does not exists as includes the docket, which is unique */
 		return defaultEmail;
 	}
 

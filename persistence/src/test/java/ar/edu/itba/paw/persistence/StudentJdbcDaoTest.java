@@ -149,7 +149,7 @@ public class StudentJdbcDaoTest {
 		assertEquals(LAST_NAME_1_EXPECTED, student.getLastName());
 		assertEquals(GENRE_1_EXPECTED, student.getGenre());
 		assertEquals(BIRTHDAY_1, student.getBirthday());
-		assertThat(student.getEmail(), anyOf(possibleEmails(DNI_1,
+		assertThat(student.getEmail(), anyOf(possibleEmails(docket1,
 				FIRST_NAME_1.toLowerCase(),
 				LAST_NAME_1.toLowerCase())));
 
@@ -241,9 +241,9 @@ public class StudentJdbcDaoTest {
 		/***********************************/
 	}
 
-	private List<Matcher<? super String>> possibleEmails(final int dni, final String firstName, final String lastName) {
+	private List<Matcher<? super String>> possibleEmails(final int docket, final String firstName, final String lastName) {
 		final List<Matcher<? super String>> matchers = new LinkedList<>();
-		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
+		final String defaultEmail = "student" + docket + EMAIL_DOMAIN;
 
 		/* In case firstName == null */
 		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
@@ -266,7 +266,7 @@ public class StudentJdbcDaoTest {
 		}
 
 		/* In case all email trials failed */
-		/* This, for sure, does not exists as includes the dni, which is unique */
+		/* This, for sure, does not exists as includes the docket, which is unique */
 		matchers.add(is(defaultEmail));
 
 		return matchers;

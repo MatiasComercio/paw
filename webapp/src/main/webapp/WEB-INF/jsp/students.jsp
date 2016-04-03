@@ -28,6 +28,7 @@
                 <tr>
                     <th>Legajo</th>
                     <th>Nombre</th>
+                    <th>Apellido</th>
                     <th>Email</th>
                     <th>Acciones</th>
                 </tr>
@@ -36,7 +37,8 @@
                 <c:forEach items="${students}" var="student">
                     <tr>
                         <td>${ student.docket }</td>
-                        <td>${ student.fullName }</td>
+                        <td>${ student.firstName }</td>
+                        <td>${ student.lastName }</td>
                         <td>${ student.email }</td>
                         <td><a href="<c:url value="/app/students/${student.docket}/info" />">Ver</a></td>
                     </tr>
