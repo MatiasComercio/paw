@@ -2,10 +2,12 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -53,6 +55,18 @@ public class UserController {
 	public ModelAndView getStudentsCourse(@PathVariable final Integer docket){
 		final ModelAndView mav = new ModelAndView("courses");
 		mav.addObject("courses", studentService.getStudentCourses(docket));
+		return mav;
+	}
+
+	@RequestMapping("/students")
+	public ModelAndView getStudentsByFilter(@RequestParam(defaultValue = "") final Integer docket,
+											@RequestParam(defaultValue = "") final String genre) {
+		final ModelAndView mav = new ModelAndView("index");
+		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+				.docket(docket)
+				.genre(genre)
+				.build();
+		mav.addObject("students", studentService.getByFilter(studentFilter));
 		return mav;
 	}
 }
