@@ -14,10 +14,11 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    @RequestMapping("/courses/{id}")
+    @RequestMapping("/courses/{id}/info")
     public ModelAndView getCourse(@PathVariable final Integer id) {
         final ModelAndView mav = new ModelAndView("course");
         mav.addObject("course", courseService.getById(id));
+        mav.addObject("section", "courses");
         return mav;
     }
 
@@ -25,6 +26,7 @@ public class CourseController {
     public ModelAndView getAllCourses() {
         final ModelAndView mav = new ModelAndView("courses");
         mav.addObject("courses", courseService.getAllCourses());
+        mav.addObject("section", "courses");
         return mav;
     }
 
@@ -37,7 +39,7 @@ public class CourseController {
         return mav;
     }
 
-    @RequestMapping("/courses/{id}/students/")
+    @RequestMapping("/courses/{id}/students")
     public ModelAndView getCourseStudents(@PathVariable final Integer id){
         final ModelAndView mav = new ModelAndView("courseStudents");
         mav.addObject("courseStudents", courseService.getCourseStudents(id));

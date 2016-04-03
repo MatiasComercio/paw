@@ -28,6 +28,7 @@ public class UserController {
 
 		mav = new ModelAndView("student");
 		mav.addObject("student", student);
+		mav.addObject("section", "index");
 		return mav;
 	}
 

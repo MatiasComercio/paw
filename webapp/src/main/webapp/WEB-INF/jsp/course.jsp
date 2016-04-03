@@ -1,10 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
-
+<%@ page language="java" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <title> ${course.name}</title>
     <jsp:include page="base/head.jsp" />
-    <title>Course ${course.name}</title>
+    <link href="<c:url value="/static/css/course-detail.css" />" rel="stylesheet" type="text/css"/>
 </head>
+
 <body>
     <div id="wrapper">
         <jsp:include page="base/nav.jsp" />
@@ -17,20 +20,36 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Accessing course's profile:
+                            Informacion de la Materia
                         </h1>
                     </div>
                 </div>
                 <!-- Content -->
+               <div class="row">
+                   <div class="col-md-6">
+                       <div class="well">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="right-effect pull-right">
+                                    <b>
+                                    <div class="row">ID</div>
+                                    <div class="row">Nombre</div>
+                                    <div class="row">Creditos</div>
+                                    </b>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-lg-offset-1">
+                                    <div class="row">${course.id}</div>
+                                    <div class="row">${course.name}</div>
+                                    <div class="row">${course.credits}</div>
+                                </div>
+                            </div>
+                       </div>
+                   </div>
+               </div>
+
                 <div class="row">
-                    <dl>
-                        <dt>ID:</dt>
-                        <dd>${course.id}</dd>
-                        <dt>Course Name:</dt>
-                        <dd>${course.name}</dd>
-                        <dt>Credits:</dt>
-                        <dd>${course.credits}</dd>
-                    </dl>
+                    <a href="<c:url value="/app/courses/${course.id}/students" />">Ver Alumnos Inscriptos</a>
                 </div>
                 <!-- Content -->
             </div>
