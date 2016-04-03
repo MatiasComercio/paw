@@ -17,13 +17,13 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Informacion del Alumno
+                        Información del Alumno
                     </h1>
                 </div>
             </div>
             <!-- Content -->
             <div class="row">
-                <div class="col-xs-9">
+                <div class="col-xs-12 col-md-6">
                     <div class="well">
                         <div class="row">
 
@@ -83,6 +83,16 @@
                                     ${student.email}
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <a href="#" type="button" class="btn btn-link">Ver Materias actuales</a>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <a href="grades" type="button" class="btn btn-link">Ver Historial de Notas</a>
                         </div>
                     </div>
                 </div>
