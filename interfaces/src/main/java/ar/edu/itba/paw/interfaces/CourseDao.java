@@ -24,6 +24,15 @@ public interface CourseDao {
      */
     Course getById(int id);
 
+
+
+    /**
+     * Gets the desired course by the identifier with the inscribed students
+     * @param id the id of the course
+     * @return the course created, with a list of the inscribed students
+     */
+    Course getCourseStudents(int id);
+
     /**
      * Get all the courses in the storage
      * @return all the courses stored.
@@ -36,4 +45,6 @@ public interface CourseDao {
      * @return all the courses that complied with the filters
      */
     List<Course> getByFilter(CourseFilter courseFilter);
+
+
 }

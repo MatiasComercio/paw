@@ -26,11 +26,19 @@ public interface CourseService {
     Course getById(int id);
 
     /**
+     * Gets the desired course by the identifier with the inscribed students
+     * @param id the id of the course
+     * @return the course created, with a list of the inscribed students
+     */
+    Course getCourseStudents(int id);
+
+    /**
      * Requests a list of all the courses available
      * @return the list of the courses. If there are no courses, it returns an empty list
      */
     List<Course> getAllCourses();
 
     List<Course> getByFilter(CourseFilter courseFilter);
+
 
 }

@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,12 +14,18 @@ import javax.sql.DataSource;
 import java.util.*;
 
 @Repository
-public class CourseDaoJdbc implements CourseDao {
+public class CourseJdbcDao implements CourseDao {
 
     private static final String TABLE_NAME = "course";
     private static final String ID_COLUMN = "id";
     private static final String NAME_COLUMN = "name";
     private static final String CREDITS_COLUMN = "credits";
+
+    private static final String DOCKET_COLUMN = "docket";
+    private static final String DNI_COLUMN = "dni";
+    private static final String FIRST_NAME_COLUMN = "firstName";
+    private static final String LAST_NAME_COLUMN = "lastName";
+
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
@@ -29,11 +36,12 @@ public class CourseDaoJdbc implements CourseDao {
                         .credits(resultSet.getInt(CREDITS_COLUMN))
                         .build();
 
+    private final RowMapper<Student> studentRowMapper = (resultSet, rowNum) ->
+            new Student.Builder(resultSet.getInt(DOCKET_COLUMN), resultSet.getInt(DNI_COLUMN)).firstName(FIRST_NAME_COLUMN).lastName(LAST_NAME_COLUMN).build();
 
     @Autowired
-    public CourseDaoJdbc(final DataSource dataSource) {
+    public CourseJdbcDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(TABLE_NAME).usingGeneratedKeyColumns(ID_COLUMN);
     }
 
@@ -66,6 +74,21 @@ public class CourseDaoJdbc implements CourseDao {
         List<Course> courses = jdbcTemplate.query("SELECT * FROM course", courseRowMapper);
 
         return courses;
+    }
+
+    @Override
+    public Course getCourseStudents(int id) {
+
+        List<Course> courseList = jdbcTemplate.query("SELECT * FROM course WHERE id = ? LIMIT 1", courseRowMapper, id);
+        Course course = courseList.isEmpty() ? null : courseList.get(0);
+
+        if(course != null){
+            List<Student> students = jdbcTemplate.query("SELECT * FROM inscription,student,users " +
+                    " WHERE inscription.docket=student.docket AND " +
+                    "student.dni=users.dni AND inscription.course_id = ?", studentRowMapper, id);
+            course.setStudents(students);
+        }
+        return course;
     }
 
     @Override

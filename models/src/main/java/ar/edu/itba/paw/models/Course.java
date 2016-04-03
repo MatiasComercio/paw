@@ -1,10 +1,15 @@
 package ar.edu.itba.paw.models;
 
+import ar.edu.itba.paw.models.users.Student;
+
+import java.util.List;
+
 public class Course {
 
     private int id;
     private String name;
     private int credits;
+    private List<Student> students;
 
     private Course(Builder builder) {
         this.id = builder.id;
@@ -22,6 +27,14 @@ public class Course {
 
     public int getCredits() {
         return credits;
+    }
+
+    public List<Student> getStudents() {
+        return this.students;
+    }
+
+    public void setStudents(List<Student> students){
+        this.students = students;
     }
 
     @Override
