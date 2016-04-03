@@ -8,11 +8,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @Controller
 public class UserController {
 
 	@Autowired
 	private StudentService studentService;
+
+	@RequestMapping("/students")
+	public ModelAndView getAllStudents() {
+		final ModelAndView mav = new ModelAndView("index");
+        final List<Student> students =  studentService.getAll();
+
+		mav.addObject("description", "Lista de alumnos");
+        mav.addObject("students", students);
+		mav.addObject("section", "index");
+		return mav;
+	}
 
 	@RequestMapping("/students/{docket}/info")
 	public ModelAndView getStudent(@PathVariable final int docket) {

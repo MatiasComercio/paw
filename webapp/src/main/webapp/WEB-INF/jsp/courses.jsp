@@ -20,7 +20,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Cursos
+                        Materias
                     </h1>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
-                    <th>Creditos</th>
+                    <th>Créditos</th>
                 </tr>
                 </thead>
                 <tbody>
