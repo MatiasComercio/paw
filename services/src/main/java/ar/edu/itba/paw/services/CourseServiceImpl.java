@@ -34,10 +34,6 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.getCourseStudents(id);
     }
 
-    @Override
-    public List<Course> getAllCourses() {
-        return courseDao.getAllCourses();
-    }
 
     @Override
     public List<Course> getByFilter(CourseFilter courseFilter) {

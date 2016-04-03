@@ -20,7 +20,8 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Cursos
+                        Materias
+                        <a href="<c:url value="courses/add_course"/>" class="btn btn-info pull-right" role="button">Agregar materia</a>
                     </h1>
                 </div>
             </div>
@@ -57,7 +58,7 @@
                         <td>${ course.id }</td>
                         <td>${ course.name }</td>
                         <td>${ course.credits }</td>
-                        <td><a href="<c:url value="courses/${course.id}" />">Ver</a></td>
+                        <td><a href="<c:url value="courses/${course.id}/info" />">Ver</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>

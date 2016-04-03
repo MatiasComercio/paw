@@ -29,6 +29,18 @@ public class Course {
         return credits;
     }
 
+    public void setCredits(int credits) {
+        this.credits = credits;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public List<Student> getStudents() {
         return this.students;
     }
@@ -55,6 +67,10 @@ public class Course {
             this.id = id;
         }
 
+        public Builder() {
+
+        }
+
         public Builder id(int id) {
             this.id = id;
             return this;
@@ -69,6 +85,30 @@ public class Course {
         public Builder credits(int credits) {
             this.credits = credits;
             return this;
+        }
+
+        public int getCredits() {
+            return credits;
+        }
+
+        public void setCredits(int credits) {
+            this.credits = credits;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
         }
 
         public Course build() {
