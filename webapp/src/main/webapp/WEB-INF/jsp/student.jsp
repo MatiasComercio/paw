@@ -9,52 +9,87 @@
     <link href="<c:url value="/static/css/course-detail.css" />" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-    <div id="wrapper">
-        <jsp:include page="base/nav.jsp" />
-        <div id="page-wrapper">
-            <div class="container-fluid">
-                <!-- Page Heading -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h1 class="page-header">
-                            Informacion del Alumno
-                        </h1>
-                    </div>
+<div id="wrapper">
+    <jsp:include page="base/nav.jsp" />
+    <div id="page-wrapper">
+        <div class="container-fluid">
+            <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        Informacion del Alumno
+                    </h1>
                 </div>
-                <!-- Content -->
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="well">
+            </div>
+            <!-- Content -->
+            <div class="row">
+                <div class="col-xs-9">
+                    <div class="well">
+                        <div class="row">
+
                             <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="right-effect pull-right">
-                                    <b>
-                                    <div class="row">Legajo</div>
-                                    <div class="row">DNI</div>
-                                    <div class="row">Primer Nombre</div>
-                                    <div class="row">Segundo Nombre</div>
-                                    <div class="row">Genero</div>
-                                    <div class="row">Cumpleaños</div>
-                                    <div class="row">Email</div>
-                                    </b>
-                                    </div>
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Legajo</strong>
                                 </div>
-                                <div class="col-lg-3 col-lg-offset-1">
-                                    <div class="row">${student.docket}</div>
-                                    <div class="row">${student.dni}</div>
-                                    <div class="row">${student.firstName}</div>
-                                    <div class="row">${student.lastName}</div>
-                                    <div class="row">${student.genre}</div>
-                                    <div class="row">${student.birthday}</div>
-                                    <div class="row">${student.email}</div>
+                                <div class="col-xs-9">
+                                    ${student.docket}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>DNI</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.dni}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Nombre</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.firstName}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Apellido</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.lastName}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Género</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.genre}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Cumpleaños</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.birthday}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Email</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.email}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- Content -->
             </div>
+            <!-- Content -->
         </div>
     </div>
+</div>
 </body>
 </html>
