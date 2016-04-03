@@ -58,7 +58,7 @@ public class UserController {
 		return mav;
 	}
 
-	@RequestMapping("/students")
+	@RequestMapping(value = "/students")
 	public ModelAndView getStudentsByFilter(@RequestParam(defaultValue = "") final Integer docket,
 											@RequestParam(defaultValue = "") final String genre) {
 		final ModelAndView mav = new ModelAndView("index");

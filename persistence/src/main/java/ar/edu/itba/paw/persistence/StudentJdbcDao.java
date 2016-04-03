@@ -133,13 +133,7 @@ public class StudentJdbcDao implements StudentDao {
 		final String firstName = WordUtils.capitalize(resultSet.getString(USER__FIRST_NAME_COLUMN));
 		final String lastName = WordUtils.capitalize(resultSet.getString(USER__LAST_NAME_COLUMN));
 
-		String email = resultSet.getString(USER__EMAIL_COLUMN);
-		if (email == null) {
-			email = createEmail(dni, firstName, lastName);
-		}
-
-		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
-		studentBuilder.firstName(firstName).lastName(lastName).email(email);
+		final Student.Builder studentBuilder = new Student.Builder(docket, dni).firstName(firstName).lastName(lastName);
 
 
 		return studentBuilder.build();
