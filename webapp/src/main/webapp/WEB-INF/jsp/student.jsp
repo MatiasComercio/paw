@@ -23,7 +23,7 @@
             </div>
             <!-- Content -->
             <div class="row">
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-4">
                     <div class="well">
                         <div class="row">
 
@@ -86,7 +86,86 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-4">
+                    <div class="well">
+                        <div class="row">
+
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>País</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.address.country}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Ciudad</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.address.city}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Localidad</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.address.neighborhood}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Calle</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.address.street}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Altura</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.address.number}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Piso Nº</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.address.floor}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Dpto. Nº</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.address.door}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Teléfono</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.address.telephone}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3 right-effect">
+                                    <strong>Código Postal</strong>
+                                </div>
+                                <div class="col-xs-9">
+                                    ${student.address.zipCode}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-4">
                     <div class="row">
                         <div class="col-xs-12 col-md-6">
                             <a href="courses" type="button" class="btn btn-link">Ver Materias actuales</a>

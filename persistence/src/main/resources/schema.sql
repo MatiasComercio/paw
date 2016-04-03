@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS address (
   street VARCHAR(100) NOT NULL,
   number INTEGER NOT NULL,
   floor INTEGER,
-  door INTEGER,
+  door VARCHAR(10),
   telephone INTEGER,
   zip_code INTEGER,
 

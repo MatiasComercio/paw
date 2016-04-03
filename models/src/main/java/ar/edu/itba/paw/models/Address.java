@@ -7,7 +7,7 @@ public class Address {
 	private final String street;
 	private final String number;
 	private final int floor;
-	private final int door;
+	private final String door;
 	private final long telephone;
 	private final int zipCode;
 
@@ -47,7 +47,7 @@ public class Address {
 		return floor;
 	}
 
-	public int getDoor() {
+	public String getDoor() {
 		return door;
 	}
 
@@ -67,7 +67,7 @@ public class Address {
 		private final String number;
 
 		private int floor;
-		private int door;
+		private String door;
 		private long telephone;
 		private int zipCode;
 
@@ -85,7 +85,7 @@ public class Address {
 			return this;
 		}
 
-		public Builder door(final int door) {
+		public Builder door(final String door) {
 			this.door = door;
 			return this;
 		}

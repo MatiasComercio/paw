@@ -2,17 +2,18 @@ package ar.edu.itba.paw.models.users;
 
 
 
+import ar.edu.itba.paw.models.Address;
+
 import java.time.LocalDate;
 
 public abstract class User {
 	private final int dni;
-
-	private String firstName;
-	private String lastName;
-	private Genre genre;
-	private LocalDate birthday;
-	private String email;
-//	private final Address address; +++x TODO: have to implement this class afterwards
+	private final String firstName;
+	private final String lastName;
+	private final Genre genre;
+	private final LocalDate birthday;
+	private final String email;
+	private final Address address;
 
 	protected User(final Builder builder) {
 		this.dni = builder.dni;
@@ -21,6 +22,7 @@ public abstract class User {
 		this.genre = builder.genre;
 		this.birthday = builder.birthday;
 		this.email = builder.email;
+		this.address = builder.address;
 	}
 
 	public int getDni() {
@@ -51,6 +53,15 @@ public abstract class User {
 		return email == null ? "" : email;
 	}
 
+	/**
+	 * Address will not be null if the Controller requests all the user's information.
+	 *
+	 * @return The user's address, if any; null otherwise.
+	 */
+	public Address getAddress() {
+		return address;
+	}
+
 	@Override
 	public boolean equals(final Object o) {
 		if (this == o) return true;
@@ -63,7 +74,8 @@ public abstract class User {
 		if (lastName != null ? !lastName.equals(user.lastName) : user.lastName != null) return false;
 		if (genre != user.genre) return false;
 		if (birthday != null ? !birthday.equals(user.birthday) : user.birthday != null) return false;
-		return email != null ? email.equals(user.email) : user.email == null;
+		if (email != null ? !email.equals(user.email) : user.email != null) return false;
+		return address != null ? address.equals(user.address) : user.address == null;
 
 	}
 
@@ -75,6 +87,7 @@ public abstract class User {
 		result = 31 * result + (genre != null ? genre.hashCode() : 0);
 		result = 31 * result + (birthday != null ? birthday.hashCode() : 0);
 		result = 31 * result + (email != null ? email.hashCode() : 0);
+		result = 31 * result + (address != null ? address.hashCode() : 0);
 		return result;
 	}
 
@@ -99,9 +112,9 @@ public abstract class User {
 		private Genre genre = null;
 		private LocalDate birthday = null;
 		private String email = null;
+		private Address address = null;
 
 		public Builder(final int dni) {
-			/* +++xvalidate */
 			this.dni = dni;
 			this.thisBuilder = thisBuilder();
 		}
@@ -143,6 +156,13 @@ public abstract class User {
 		public T email(final String email) {
 			if (email != null) {
 				this.email = email;
+			}
+			return thisBuilder;
+		}
+
+		public T address(final Address address) {
+			if (address != null) {
+				this.address = address;
 			}
 			return thisBuilder;
 		}
