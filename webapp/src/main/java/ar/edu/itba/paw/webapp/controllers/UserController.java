@@ -21,6 +21,7 @@ public class UserController {
 		final ModelAndView mav = new ModelAndView("students");
         final List<Student> students =  studentService.getAll();
         mav.addObject("students", students);
+		mav.addObject("section", "students");
 		return mav;
 	}
 
@@ -38,7 +39,7 @@ public class UserController {
 
 		mav = new ModelAndView("student");
 		mav.addObject("student", student);
-		mav.addObject("section", "index");
+		mav.addObject("section", "students");
 		return mav;
 	}
 
@@ -56,6 +57,7 @@ public class UserController {
 
 		mav = new ModelAndView("grades");
 		mav.addObject("student", student);
+		mav.addObject("section", "students");
 		return mav;
 	}
 
@@ -63,6 +65,7 @@ public class UserController {
 	public ModelAndView getStudentsCourse(@PathVariable final Integer docket){
 		final ModelAndView mav = new ModelAndView("courses");
 		mav.addObject("courses", studentService.getStudentCourses(docket));
+		mav.addObject("section", "students");
 		return mav;
 	}
 }

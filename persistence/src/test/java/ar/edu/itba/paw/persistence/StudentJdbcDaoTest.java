@@ -51,6 +51,7 @@ public class StudentJdbcDaoTest {
 	private static final String GRADE__DOCKET_COLUMN = "docket";
 	private static final String GRADE__COURSE_ID_COLUMN = "course_id";
 	private static final String GRADE__GRADE_COLUMN = "grade";
+	private static final String GRADE__MODIFIED_COLUMN = "modified";
 
 	private static final String COURSE__ID_COLUMN = "id";
 	private static final String COURSE__NAME_COLUMN = "name";
@@ -105,7 +106,7 @@ public class StudentJdbcDaoTest {
 		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
 		studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
 		courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
-		gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE);
+		gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);
 
 		/* Order of deletation is important so as not to remove tables referenced by others */
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, GRADE_TABLE);
@@ -208,6 +209,7 @@ public class StudentJdbcDaoTest {
 		gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
 		gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_1);
 		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_1);
+//		gradeArgs.put(GRADE__MODIFIED_COLUMN, );
 		gradeInsert.execute(gradeArgs);
 		Grade[] expectedGrades = new Grade[] {
 				new Grade.Builder(docket1, COURSE_ID_1, GRADE_1).courseName(COURSE_NAME_1).build()
