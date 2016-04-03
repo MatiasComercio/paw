@@ -55,6 +55,6 @@ public class CourseController {
         System.out.println(course.toString());
         System.out.println(course.getId());
         courseService.create(course.getId(), course.getName(), course.getCredits());
-        return "redirect:";
+        return "redirect:/app/courses";
     }
 }

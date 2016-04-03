@@ -23,33 +23,27 @@
                 </div>
             </div>
 
-            <!-- content -->
+            <!-- -->
+            <div class="container">
+                <h2>Agregar curso</h2>
+                <form:form role="form" method="post" action="/app/courses/add_course">
+                    <div class="form-group">
+                        <form:label for="id" path="id">ID:</form:label>
+                        <form:input type="text" class="form-control" id="id" path="id"/>
+                    </div>
+                    <div class="form-group">
+                        <form:label for="name" path="name">Nombre:</form:label>
+                        <form:input type="text" class="form-control" id="name" path="name"/>
+                    </div>
+                    <div class="form-group">
+                        <form:label for="credits" path="credits">Créditos:</form:label>
+                        <form:input type="text" class="form-control" id="credits" path="credits"/>
+                    </div>
+                    <input type="submit" class="btn btn-info" value="Agregar materia"/>
+                </form:form>
+            </div>
 
-            <form:form method="post" action="/app/courses/add_course">
-
-                <table>
-                    <tr>
-                        <td><form:label path="id">ID</form:label></td>
-                        <td><form:input path="id" /></td>
-                    </tr>
-                    <tr>
-                        <td><form:label path="name">Nombre</form:label></td>
-                        <td><form:input path="name" /></td>
-                    </tr>
-                    <tr>
-                        <td><form:label path="credits">Créditos</form:label></td>
-                        <td><form:input path="credits" /></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <input type="submit" value="Agregar materia"/>
-                        </td>
-                    </tr>
-                </table>
-
-            </form:form>
-
-            <!-- /content -->
+            <!-- -->
 
         </div>
         <!-- /.container-fluid -->
