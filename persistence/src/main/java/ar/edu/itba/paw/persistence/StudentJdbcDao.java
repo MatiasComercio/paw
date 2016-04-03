@@ -127,6 +127,24 @@ public class StudentJdbcDao implements StudentDao {
 		return studentBuilder;
 	};
 
+	private final RowMapper<Student> studentRowMapper = (resultSet, rowNumber) -> {
+		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
+		final int dni = resultSet.getInt(STUDENT__DNI_COLUMN);
+		final String firstName = WordUtils.capitalize(resultSet.getString(USER__FIRST_NAME_COLUMN));
+		final String lastName = WordUtils.capitalize(resultSet.getString(USER__LAST_NAME_COLUMN));
+
+		String email = resultSet.getString(USER__EMAIL_COLUMN);
+		if (email == null) {
+			email = createEmail(dni, firstName, lastName);
+		}
+
+		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
+		studentBuilder.firstName(firstName).lastName(lastName).email(email);
+
+
+		return studentBuilder.build();
+	};
+
 	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(USER__EMAIL_COLUMN);
 
 	private final RowMapper<Grade> gradesRowMapper = (resultSet, rowNumber) -> {
@@ -207,6 +225,10 @@ public class StudentJdbcDao implements StudentDao {
 		QueryFilter queryFilter = new QueryFilter();
 
 		queryFilter.filterByDocket(studentFilter);
+
+		List<Student> students = jdbcTemplate.query(queryFilter.getQuery(), studentRowMapper, queryFilter.getFilters().toArray());
+
+		return students;
 	}
 
 	private String createEmail(final int dni, final String firstName, final String lastName) {
@@ -250,7 +272,10 @@ public class StudentJdbcDao implements StudentDao {
 
 		private static final String FILTER_DOCKET = "CAST(" + STUDENT__DOCKET_COLUMN + " AS CHAR) "+ ILIKE;
 
-		private final StringBuffer query = new StringBuffer("SELECT * FROM " + STUDENT_TABLE);
+		private final StringBuffer query = new StringBuffer(
+				"SELECT student.docket, student.dni, users.first_name, users.last_name " +
+				"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
+				" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN);
 		private boolean filterApplied = false;
 		private final List<String> filters;
 
