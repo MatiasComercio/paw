@@ -2,6 +2,8 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.StudentFilter;
+
 import java.util.List;
 
 public interface StudentService {
@@ -27,5 +29,8 @@ public interface StudentService {
 	 * @return The student with the given docket, if exists; null otherwise.
 	 */
 	Student getGrades(final int docket);
+
 	List<Course> getStudentCourses(final int docket);
+
+	List<Student> getByFilter(StudentFilter studentFilter);
 }
