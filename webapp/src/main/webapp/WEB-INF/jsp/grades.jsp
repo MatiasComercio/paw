@@ -15,9 +15,10 @@
 
             <!-- Page Heading -->
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-xs-12">
                     <h1 class="page-header">
-                        Index <small>${description}</small>
+                         ${student.docket} - ${student.firstName} ${student.lastName}
+                             <small>(${student.email})</small> - Grades
                     </h1>
                 </div>
             </div>
@@ -26,19 +27,17 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Legajo</th>
-                    <th>Nombre</th>
-                    <th>Email</th>
-                    <th>Acciones</th>
+                    <th>Materia</th>
+                    <th>Nota</th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${students}" var="student">
+                <c:forEach items="${student.grades}" var="grade">
                     <tr>
-                        <td>${ student.docket }</td>
-                        <td>${ student.fullName }</td>
-                        <td>${ student.email }</td>
-                        <td><a href="<c:url value="students/${student.docket}/info" />">Ver</a></td>
+                        <td><a href="<c:url value="/app/courses/${grade.courseId}" />">
+                            ${ grade.courseId } - ${grade.courseName}
+                        </td>
+                        <td>${ grade.grade }</td>
                     </tr>
                 </c:forEach>
                 </tbody>
