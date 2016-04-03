@@ -40,4 +40,10 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.getByFilter(courseFilter);
     }
 
+    /* +++xtest method */
+    public void setCourseDao(CourseDao courseDao) {
+        this.courseDao = courseDao;
+    }
+
+
 }
