@@ -3,6 +3,8 @@ package ar.edu.itba.paw.models.users;
 
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class User {
 	private final int dni;
@@ -151,8 +153,25 @@ public abstract class User {
 	public enum Genre {
 		M("Male"),
 		F("Female");
+		/* Every time we add a value to the Enum, we have to add the map
+		a lowerCase representation of the toString of the Genre
+		 */
+		private static final Map<String, Genre> map = new HashMap<>();
+		static {
+			map.put("male", M);
+			map.put("female", F);
+		}
 
 		private final String genre;
+
+		public static Genre getGenre(final String genre) {
+			if(genre == null) {
+				return null;
+			}
+			final String filterLowerCase = genre.toLowerCase();
+
+			return map.get(filterLowerCase);
+		}
 
 		Genre(final String genre) {
 			this.genre = genre;
