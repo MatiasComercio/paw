@@ -27,6 +27,7 @@ public class CourseController {
     public ModelAndView getAllCourses() {
         final ModelAndView mav = new ModelAndView("courses");
         mav.addObject("courses", courseService.getAllCourses());
+        mav.addObject("section", "courses");
         return mav;
     }
 

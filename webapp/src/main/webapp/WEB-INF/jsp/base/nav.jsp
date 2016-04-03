@@ -37,10 +37,21 @@
     <!-- navbar-collapse -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
+            <c:choose>
+            <c:when test="${section=='index'}">
             <li class="active">
+            </c:when>
+                <c:otherwise><li></c:otherwise>
+            </c:choose>
                 <a href="<c:url value="/app/" />"><i class="fa fa-fw fa-dashboard"></i> Alumnos</a>
             </li>
-            <li>
+
+            <c:choose>
+                <c:when test="${section=='courses'}">
+            <li class="active">
+                </c:when>
+                <c:otherwise><li></c:otherwise>
+            </c:choose>
                 <a href="<c:url value="/app/courses/" />"><i class="fa fa-fw fa-edit"></i> Materias</a>
             </li>
             <li>
