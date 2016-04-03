@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import org.apache.commons.lang3.text.WordUtils;
@@ -42,6 +43,7 @@ public class StudentJdbcDao implements StudentDao {
 
 	private static final String COURSE__ID_COLUMN = "id";
 	private static final String COURSE__NAME_COLUMN = "name";
+	private static final String COURSE__CREDITS_COLUMN = "credits";
 
 	private static final String GET_BY_DOCKET =
 					"SELECT * " +
@@ -98,6 +100,12 @@ public class StudentJdbcDao implements StudentDao {
 
 		return studentBuilder.build();
 	};
+
+	private final RowMapper<Course> courseRowMapper = (resultSet, rowNum) ->
+			new Course.Builder(resultSet.getInt(COURSE__ID_COLUMN))
+					.name(resultSet.getString(COURSE__NAME_COLUMN))
+					.credits(resultSet.getInt(COURSE__CREDITS_COLUMN))
+					.build();
 
 	private final RowMapper<Student.Builder> studentBasicRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
@@ -180,6 +188,15 @@ public class StudentJdbcDao implements StudentDao {
 		studentBuilder.addGrades(grades);
 
 		return studentBuilder.build();
+	}
+
+	@Override
+	public List<Course> getStudentCourses(int docket) {
+		List<Course> courses = jdbcTemplate.query("SELECT id, name, credits FROM inscription JOIN course on inscription.course_id = course.id"
+				+ " WHERE docket = ?",
+				courseRowMapper, docket);
+
+		return courses;
 	}
 
 	private String createEmail(final int dni, final String firstName, final String lastName) {

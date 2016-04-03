@@ -22,7 +22,11 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course getById(int id) {
-        return courseDao.getById(id);
+        if(id >= 1) {
+            return courseDao.getById(id);
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -39,5 +43,11 @@ public class CourseServiceImpl implements CourseService {
     public List<Course> getByFilter(CourseFilter courseFilter) {
         return courseDao.getByFilter(courseFilter);
     }
+
+    /* +++xtest method */
+    public void setCourseDao(CourseDao courseDao) {
+        this.courseDao = courseDao;
+    }
+
 
 }
