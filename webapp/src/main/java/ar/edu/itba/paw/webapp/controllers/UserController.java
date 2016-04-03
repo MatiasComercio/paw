@@ -35,7 +35,7 @@ public class UserController {
 		mav.addObject("student", student);
 		return mav;
 	}
-/*
+
 	@RequestMapping("/students/{docket}/grades")
 	public ModelAndView getStudentGrades(@PathVariable final int docket) {
 		final Student student =  studentService.getGrades(docket);
@@ -51,5 +51,5 @@ public class UserController {
 		mav = new ModelAndView("grades");
 		mav.addObject("student", student);
 		return mav;
-	}*/
+	}
 }

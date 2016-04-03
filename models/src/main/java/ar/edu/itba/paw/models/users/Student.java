@@ -1,5 +1,10 @@
 package ar.edu.itba.paw.models.users;
 
+import ar.edu.itba.paw.models.Grade;
+
+import java.util.LinkedList;
+import java.util.List;
+
 public class Student extends User {
 	private final int docket;
 
@@ -22,10 +27,20 @@ public class Student extends User {
 	public static class Builder extends User.Builder<Student, Builder> {
 
 		private final int docket;
+		private final List<Grade> grades;
 
 		public Builder(final int docket, final int dni) {
 			super(dni);
 			this.docket = docket;
+			this.grades = new LinkedList<>();
+		}
+
+		public Builder addGrade(final Grade grade) {
+			if (grade != null) {
+				grades.add(grade);
+			}
+
+			return this;
 		}
 
 		@Override
