@@ -31,6 +31,11 @@ public class StudentServiceImpl implements StudentService {
 		return studentDao.getStudentCourses(docket);
 	}
 
+	@Override
+	public Student getGrades(final int docket) {
+		return docket <= 0 ? null : studentDao.getGrades(docket);
+	}
+
 	/* Test purpose only */
 	/* default */ void setStudentDao(final StudentDao studentDao) {
 		this.studentDao = studentDao;
