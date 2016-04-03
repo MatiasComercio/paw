@@ -219,6 +219,8 @@ public class StudentJdbcDao implements StudentDao {
 		QueryFilter queryFilter = new QueryFilter();
 
 		queryFilter.filterByDocket(studentFilter);
+		queryFilter.filterByFirstName(studentFilter);
+		queryFilter.filterByLastName(studentFilter);
 
 		List<Student> students = jdbcTemplate.query(queryFilter.getQuery(), studentRowMapper, queryFilter.getFilters().toArray());
 
@@ -265,6 +267,8 @@ public class StudentJdbcDao implements StudentDao {
 		private static final String ILIKE = " ILIKE ? ";
 
 		private static final String FILTER_DOCKET = "CAST(" + STUDENT__DOCKET_COLUMN + " AS CHAR) "+ ILIKE;
+		private static final String FILTER_NAME_FIRST = USER__FIRST_NAME_COLUMN + ILIKE;
+		private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN + ILIKE;
 
 		private final StringBuffer query = new StringBuffer(
 				"SELECT student.docket, student.dni, users.first_name, users.last_name " +
@@ -286,6 +290,14 @@ public class StudentJdbcDao implements StudentDao {
 
 		public void filterByDocket(final StudentFilter courseFilter) {
 			filterBySubword.filter(courseFilter.getDocket(), FILTER_DOCKET);
+		}
+
+		public void filterByFirstName(final StudentFilter courseFilter) {
+			filterBySubword.filter(courseFilter.getFirstName(), FILTER_NAME_FIRST);
+		}
+
+		public void filterByLastName(final StudentFilter courseFilter) {
+			filterBySubword.filter(courseFilter.getLastName(), FILTER_NAME_LAST);
 		}
 
 		public List<String> getFilters() {
