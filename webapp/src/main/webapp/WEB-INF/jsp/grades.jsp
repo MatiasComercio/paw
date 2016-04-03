@@ -17,7 +17,8 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h1 class="page-header">
-                         ${student.docket} - ${student.firstName} ${student.lastName} - <small>Grades</small>
+                         ${student.docket} - ${student.firstName} ${student.lastName}
+                             <small>(${student.email})</small> - Grades
                     </h1>
                 </div>
             </div>
@@ -33,7 +34,7 @@
                 <tbody>
                 <c:forEach items="${student.grades}" var="grade">
                     <tr>
-                        <td><a href="<c:url value="courses/${grade.courseId}" />">
+                        <td><a href="<c:url value="/app/courses/${grade.courseId}" />">
                             ${ grade.courseId } - ${grade.courseName}
                         </td>
                         <td>${ grade.grade }</td>

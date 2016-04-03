@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 
 @Repository
@@ -58,22 +59,15 @@ public class StudentJdbcDao implements StudentDao {
 					"SELECT " + USER__EMAIL_COLUMN + " " +
 					"FROM " + USER_TABLE + " " +
 					";";
+
 	private static final String GET_GRADES =
-			"SELECT " + STUDENT__DOCKET_COLUMN + " , " + STUDENT__DNI_COLUMN + " , " +
-					USER_FIRST_NAME_COLUMN + " , " +  USER__LAST_NAME_COLUMN +
-					" , " + GRADE__COURSE_ID_COLUMN + " , " + COURSE__NAME_COLUMN + " , " + GRADE__GRADE_COLUMN  + " " +
-			"FROM " + STUDENT_TABLE + " JOIN " + GRADE_TABLE +
-			 " ON " + STUDENT_TABLE + "." +  STUDENT__DOCKET_COLUMN + " = " + GRADE_TABLE + "." + GRADE__DOCKET_COLUMN +
-			 " JOIN " + COURSE_TABLE +
-				" ON " + COURSE_TABLE + "." +  COURSE__ID_COLUMN + " = " + GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN +
-			" WHERE " + STUDENT__DOCKET_COLUMN + " = ? " +
-			";";
+				"SELECT * " +
+				"FROM " + GRADE_TABLE + " JOIN " + COURSE_TABLE + " ON " +
+						GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." +  COURSE__ID_COLUMN +
+				" WHERE " + GRADE__DOCKET_COLUMN + " = ? " +
+				";";
 
-
-			;
-
-
-	private final RowMapper<Student> studentRowMapper = (resultSet, rowNumber) -> {
+	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
 		final int dni = resultSet.getInt(STUDENT__DNI_COLUMN);
 		final String firstName = WordUtils.capitalize(resultSet.getString(USER_FIRST_NAME_COLUMN));
@@ -105,25 +99,36 @@ public class StudentJdbcDao implements StudentDao {
 		return studentBuilder.build();
 	};
 
-	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(USER__EMAIL_COLUMN);
-
-	private final RowMapper<Student> gradesRowMapper = (resultSet, rowNumber) -> {
+	private final RowMapper<Student.Builder> studentBasicRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
 		final int dni = resultSet.getInt(STUDENT__DNI_COLUMN);
 		final String firstName = WordUtils.capitalize(resultSet.getString(USER_FIRST_NAME_COLUMN));
 		final String lastName = WordUtils.capitalize(resultSet.getString(USER__LAST_NAME_COLUMN));
+
+		String email = resultSet.getString(USER__EMAIL_COLUMN);
+		if (email == null) {
+			email = createEmail(dni, firstName, lastName);
+		}
+
+		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
+		studentBuilder.firstName(firstName).lastName(lastName).email(email);
+
+
+		return studentBuilder;
+	};
+
+	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(USER__EMAIL_COLUMN);
+
+	private final RowMapper<Grade> gradesRowMapper = (resultSet, rowNumber) -> {
+		final int docket = resultSet.getInt(GRADE__DOCKET_COLUMN);
 		final int courseId = resultSet.getInt(GRADE__COURSE_ID_COLUMN);
 		final String courseName = resultSet.getString(COURSE__NAME_COLUMN);
 		final BigDecimal grade = resultSet.getBigDecimal(GRADE__GRADE_COLUMN);
 
-		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
 		final Grade.Builder gradeBuilder = new Grade.Builder(docket, courseId, grade);
 		gradeBuilder.courseName(courseName);
 
-		studentBuilder.firstName(firstName).lastName(lastName).addGrade(gradeBuilder.build());
-
-
-		return studentBuilder.build();
+		return gradeBuilder.build();
 	};
 
 	private final JdbcTemplate jdbcTemplate;
@@ -138,7 +143,7 @@ public class StudentJdbcDao implements StudentDao {
 
 		/* This method should return 0 or 1 student. */
 		/* Grab student's data */
-		final List<Student> students = jdbcTemplate.query(GET_BY_DOCKET, studentRowMapper, docket);
+		final List<Student> students = jdbcTemplate.query(GET_BY_DOCKET, infoRowMapper, docket);
 
 		return students.isEmpty() ? null : students.get(0);
 	}
@@ -146,15 +151,35 @@ public class StudentJdbcDao implements StudentDao {
 	@Override
 	public List<Student> getAll() {
 
-		final List<Student> students = jdbcTemplate.query(GET_ALL, studentRowMapper);
+		final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_ALL, studentBasicRowMapper);
 
-		return students.isEmpty() ? null : students;
+		if (studentBuilders.isEmpty()) {
+			return null;
+		}
+
+		final List<Student> students = new LinkedList<>();
+		for (Student.Builder each : studentBuilders) {
+			students.add(each.build());
+		}
+
+		return students;
 	}
 
 	@Override
 	public Student getGrades(final int docket) {
-		final List<Student> students = jdbcTemplate.query(GET_GRADES, gradesRowMapper, docket);
-		return null;
+		final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_BY_DOCKET, studentBasicRowMapper, docket);
+
+		if (studentBuilders.isEmpty()) {
+			return null;
+		}
+
+		final Student.Builder studentBuilder = studentBuilders.get(0);
+
+		final List<Grade> grades = jdbcTemplate.query(GET_GRADES, gradesRowMapper, docket);
+
+		studentBuilder.addGrades(grades);
+
+		return studentBuilder.build();
 	}
 
 	private String createEmail(final int dni, final String firstName, final String lastName) {

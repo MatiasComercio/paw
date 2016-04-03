@@ -19,27 +19,27 @@ public class Grade {
 		this.grade = builder.grade;
 	}
 
-	private int getStudentDocket() {
+	public int getStudentDocket() {
 		return studentDocket;
 	}
 
-	private String getStudentFirstName() {
+	public String getStudentFirstName() {
 		return studentFirstName;
 	}
 
-	private String getStudentLastName() {
+	public String getStudentLastName() {
 		return studentLastName;
 	}
 
-	private int getCourseId() {
+	public int getCourseId() {
 		return courseId;
 	}
 
-	private String getCourseName() {
+	public String getCourseName() {
 		return courseName;
 	}
 
-	private BigDecimal getGrade() {
+	public BigDecimal getGrade() {
 		return grade;
 	}
 

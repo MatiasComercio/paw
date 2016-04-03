@@ -38,7 +38,7 @@
                         <td>${ student.docket }</td>
                         <td>${ student.fullName }</td>
                         <td>${ student.email }</td>
-                        <td><a href="<c:url value="students/${student.docket}" />">Ver</a></td>
+                        <td><a href="<c:url value="students/${student.docket}/info" />">Ver</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
