@@ -22,7 +22,11 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course getById(int id) {
-        return courseDao.getById(id);
+        if(id >= 1) {
+            return courseDao.getById(id);
+        } else {
+            return null;
+        }
     }
 
     @Override
