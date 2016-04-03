@@ -22,22 +22,24 @@
                 </div>
                 <!-- Content -->
                 <div class="row">
-                    <dl>
-                        <dt>Legajo</dt>
-                        <dd>${student.docket}</dd>
-                        <dt>DNI</dt>
-                        <dd>${student.dni}</dd>
-                        <dt>Primer Nombre</dt>
-                        <dd>${student.firstName}</dd>
-                        <dt>Segundo Nombre</dt>
-                        <dd>${student.lastName}</dd>
-                        <dt>Genero</dt>
-                        <dd>${student.genre}</dd>
-                        <dt>Cumpleaños</dt>
-                        <dd>${student.birthday}</dd>
-                        <dt>Email</dt>
-                        <dd>${student.email}</dd>
-                    </dl>
+                    <div class="col-lg-3">
+                        <div class="row">Legajo</div>
+                        <div class="row">DNI</div>
+                        <div class="row">Primer Nombre</div>
+                        <div class="row">Segundo Nombre</div>
+                        <div class="row">Genero</div>
+                        <div class="row">Cumpleaños</div>
+                        <div class="row">Email</div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="row">${student.docket}</div>
+                        <div class="row">${student.dni}</div>
+                        <div class="row">${student.firstName}</div>
+                        <div class="row">${student.lastName}</div>
+                        <div class="row">${student.genre}</div>
+                        <div class="row">${student.birthday}</div>
+                        <div class="row">${student.email}</div>
+                    </div>
                 </div>
                 <!-- Content -->
             </div>

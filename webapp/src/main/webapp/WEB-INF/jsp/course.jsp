@@ -26,14 +26,18 @@
                 </div>
                 <!-- Content -->
                 <div class="row">
-                    <dl>
-                        <dt>ID:</dt>
-                        <dd>${course.id}</dd>
-                        <dt>Course Name:</dt>
-                        <dd>${course.name}</dd>
-                        <dt>Credits:</dt>
-                        <dd>${course.credits}</dd>
-                    </dl>
+                    <div class="col-lg-3">
+                        <div class="row">ID</div>
+                        <div class="row">Nombre</div>
+                        <div class="row">Creditos</div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="row">${course.id}</div>
+                        <div class="row">${course.name}</div>
+                        <div class="row">${course.credits}</div>
+                    </div>
+                </div>
+                <div class="row">
                     <a href="<c:url value="/app/courses/${course.id}/students" />">Ver Alumnos Inscriptos</a>
                 </div>
                 <!-- Content -->
