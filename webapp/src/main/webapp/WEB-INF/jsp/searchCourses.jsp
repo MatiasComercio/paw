@@ -26,12 +26,19 @@
             </div>
 
             <!-- search -->
-            <div class="input-group">
-                <input id="search_text" type="text" class="form-control" aria-label="...">
-                <div class="input-group-btn">
-                    <!-- Buttons -->
-                    <div id="id_search" type="button" class="btn btn-default">Buscar por ID</div>
-                    <div id="name_search" type="button" class="btn btn-default">Buscar por Nombre</div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="sizing-addon">Id</span>
+                            <input id="id_text" type="text" class="form-control" placeholder="Buscar por id" aria-describedby="sizing-addon2">
+                            <span class="input-group-addon" id="sizing-addon2">Nombre</span>
+                            <input id="name_text" type="text" class="form-control" placeholder="Buscar por nombre" aria-describedby="sizing-addon2">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div id="search" type="button" class="btn btn-default">Buscar</div>
                 </div>
             </div>
 
@@ -70,10 +77,13 @@
 <jsp:include page="base/footer.jsp" />
 <script>
     $( document ).ready(function() {
-        $('#id_search').click(function(){
-            var text = $("#search_text").text();
+        $('#search').click(function(){
+            var id_text = $("#id_text").val();
+            var name_text = $("#name_text").val();
+
+            document.location.href = "?keyword=" + name_text + "&" + "id=" + id_text;
+
         });
-        $('#name_search')
     });
 </script>
 </body>
