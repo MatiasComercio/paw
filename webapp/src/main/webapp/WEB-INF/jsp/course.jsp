@@ -20,37 +20,52 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Informacion de la Materia
+                            Información de la Materia
                         </h1>
                     </div>
                 </div>
                 <!-- Content -->
                <div class="row">
-                   <div class="col-md-6">
+                   <div class="col-xs-12 col-md-6">
                        <div class="well">
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <div class="right-effect pull-right">
-                                    <b>
-                                    <div class="row">ID</div>
-                                    <div class="row">Nombre</div>
-                                    <div class="row">Creditos</div>
-                                    </b>
-                                    </div>
-                                </div>
-                                <div class="col-lg-3 col-lg-offset-1">
-                                    <div class="row">${course.id}</div>
-                                    <div class="row">${course.name}</div>
-                                    <div class="row">${course.credits}</div>
-                                </div>
-                            </div>
+                           <div class="row">
+
+                               <div class="row">
+                                   <div class="col-xs-3 right-effect">
+                                       <strong>ID</strong>
+                                   </div>
+                                   <div class="col-xs-9">
+                                       ${course.id}
+                                   </div>
+                               </div>
+                               <div class="row">
+                                   <div class="col-xs-3 right-effect">
+                                       <strong>Nombre</strong>
+                                   </div>
+                                   <div class="col-xs-9">
+                                       ${course.name}
+                                   </div>
+                               </div>
+                               <div class="row">
+                                   <div class="col-xs-3 right-effect">
+                                       <strong>Créditos</strong>
+                                   </div>
+                                   <div class="col-xs-9">
+                                       ${course.credits}
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                   <div class="col-xs-12 col-md-6">
+                       <div class="row">
+                           <div class="col-xs-12 col-md-6">
+                               <a href="<c:url value="/app/courses/${course.id}/students" />" type="button" class="btn btn-link">Ver Alumnos Inscriptos</a>
+                           </div>
                        </div>
                    </div>
                </div>
 
-                <div class="row">
-                    <a href="<c:url value="/app/courses/${course.id}/students" />">Ver Alumnos Inscriptos</a>
-                </div>
                 <!-- Content -->
             </div>
         </div>
