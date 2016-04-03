@@ -38,6 +38,7 @@ public class CourseController {
     public ModelAndView getCourseStudents(@PathVariable final Integer id){
         final ModelAndView mav = new ModelAndView("courseStudents");
         mav.addObject("courseStudents", courseService.getCourseStudents(id));
+        mav.addObject("section", "courses");
         return mav;
     }
 

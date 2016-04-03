@@ -51,6 +51,7 @@ public class StudentJdbcDaoTest {
 	private static final String GRADE__DOCKET_COLUMN = "docket";
 	private static final String GRADE__COURSE_ID_COLUMN = "course_id";
 	private static final String GRADE__GRADE_COLUMN = "grade";
+	private static final String GRADE__MODIFIED_COLUMN = "modified";
 
 	private static final String COURSE__ID_COLUMN = "id";
 	private static final String COURSE__NAME_COLUMN = "name";
@@ -105,7 +106,7 @@ public class StudentJdbcDaoTest {
 		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
 		studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
 		courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
-		gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE);
+		gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);
 
 		/* Order of deletation is important so as not to remove tables referenced by others */
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, GRADE_TABLE);
@@ -149,7 +150,7 @@ public class StudentJdbcDaoTest {
 		assertEquals(LAST_NAME_1_EXPECTED, student.getLastName());
 		assertEquals(GENRE_1_EXPECTED, student.getGenre());
 		assertEquals(BIRTHDAY_1, student.getBirthday());
-		assertThat(student.getEmail(), anyOf(possibleEmails(DNI_1,
+		assertThat(student.getEmail(), anyOf(possibleEmails(docket1,
 				FIRST_NAME_1.toLowerCase(),
 				LAST_NAME_1.toLowerCase())));
 
@@ -208,6 +209,7 @@ public class StudentJdbcDaoTest {
 		gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
 		gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_1);
 		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_1);
+//		gradeArgs.put(GRADE__MODIFIED_COLUMN, );
 		gradeInsert.execute(gradeArgs);
 		Grade[] expectedGrades = new Grade[] {
 				new Grade.Builder(docket1, COURSE_ID_1, GRADE_1).courseName(COURSE_NAME_1).build()
@@ -241,9 +243,9 @@ public class StudentJdbcDaoTest {
 		/***********************************/
 	}
 
-	private List<Matcher<? super String>> possibleEmails(final int dni, final String firstName, final String lastName) {
+	private List<Matcher<? super String>> possibleEmails(final int docket, final String firstName, final String lastName) {
 		final List<Matcher<? super String>> matchers = new LinkedList<>();
-		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
+		final String defaultEmail = "student" + docket + EMAIL_DOMAIN;
 
 		/* In case firstName == null */
 		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
@@ -266,7 +268,7 @@ public class StudentJdbcDaoTest {
 		}
 
 		/* In case all email trials failed */
-		/* This, for sure, does not exists as includes the dni, which is unique */
+		/* This, for sure, does not exists as includes the docket, which is unique */
 		matchers.add(is(defaultEmail));
 
 		return matchers;

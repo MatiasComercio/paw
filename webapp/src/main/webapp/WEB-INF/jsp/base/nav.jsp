@@ -38,7 +38,7 @@
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
             <c:choose>
-            <c:when test="${section=='index'}">
+            <c:when test="${section=='students'}">
             <li class="active">
             </c:when>
                 <c:otherwise><li></c:otherwise>
@@ -52,7 +52,7 @@
                 </c:when>
                 <c:otherwise><li></c:otherwise>
             </c:choose>
-                <a href="<c:url value="/app/courses/" />"><i class="fa fa-fw fa-edit"></i> Materias</a>
+                <a href="<c:url value="/app/courses" />"><i class="fa fa-fw fa-edit"></i> Materias</a>
             </li>
             <!--<li>
                 <a href="#"><i class="fa fa-fw fa-bar-chart-o"></i> Buscar Alumno</a>
