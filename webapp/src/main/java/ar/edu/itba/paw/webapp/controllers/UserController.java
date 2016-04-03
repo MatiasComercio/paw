@@ -65,7 +65,8 @@ public class UserController {
 		final ModelAndView mav = new ModelAndView("index");
 		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
 				.docket(docket)
-				.genre(genre)
+				.firstName(firstname)
+				.lastName(lastname)
 				.build();
 		mav.addObject("students", studentService.getByFilter(studentFilter));
 		return mav;
