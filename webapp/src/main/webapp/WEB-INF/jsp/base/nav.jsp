@@ -47,25 +47,20 @@
             </li>
 
             <c:choose>
-                <c:when test="${section=='courses'}">
+                <c:when test="${section=='search_courses'}">
             <li class="active">
                 </c:when>
                 <c:otherwise><li></c:otherwise>
             </c:choose>
                 <a href="<c:url value="/app/courses" />"><i class="fa fa-fw fa-edit"></i> Materias</a>
             </li>
-            <li>
+            <!--<li>
                 <a href="#"><i class="fa fa-fw fa-bar-chart-o"></i> Buscar Alumno</a>
             </li>
-            <c:choose>
-            <c:when test="${section=='search_courses'}">
-            <li class="active">
-                </c:when>
-            <c:otherwise><li></c:otherwise>
-            </c:choose>
-                <a href="<c:url value="/app/courses" />"><i class="fa fa-fw fa-desktop"></i> Buscar Materia</a>
+            <li>
+                <a href="#" />"><i class="fa fa-fw fa-desktop"></i> Buscar Materia</a>
             </li>
-            <!--<li>
+            <li>
             <a href="#"><i class="fa fa-fw fa-wrench"></i> Settings</a>
             </li>
              <li>
