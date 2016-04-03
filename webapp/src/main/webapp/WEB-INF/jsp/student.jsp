@@ -1,26 +1,47 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
+<%@ page language="java" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <jsp:include page="base/head.jsp" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Student ${student.docket}</title>
+    <title>Alumno ${student.docket}</title>
 </head>
 <body>
-<h1>Student Information</h1>
-<dl>
-    <dt>Docket</dt>
-    <dd>${student.docket}</dd>
-    <dt>DNI</dt>
-    <dd>${student.dni}</dd>
-    <dt>First Name</dt>
-    <dd>${student.firstName}</dd>
-    <dt>Last Name</dt>
-    <dd>${student.lastName}</dd>
-    <dt>Genre</dt>
-    <dd>${student.genre}</dd>
-    <dt>Birthday</dt>
-    <dd>${student.birthday}</dd>
-    <dt>Email</dt>
-    <dd>${student.email}</dd>
-</dl>
+    <div id="wrapper">
+        <jsp:include page="base/nav.jsp" />
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Informacion del Alumno
+                        </h1>
+                    </div>
+                </div>
+                <!-- Content -->
+                <div class="row">
+                    <dl>
+                        <dt>Legajo</dt>
+                        <dd>${student.docket}</dd>
+                        <dt>DNI</dt>
+                        <dd>${student.dni}</dd>
+                        <dt>Primer Nombre</dt>
+                        <dd>${student.firstName}</dd>
+                        <dt>Segundo Nombre</dt>
+                        <dd>${student.lastName}</dd>
+                        <dt>Genero</dt>
+                        <dd>${student.genre}</dd>
+                        <dt>Cumpleaños</dt>
+                        <dd>${student.birthday}</dd>
+                        <dt>Email</dt>
+                        <dd>${student.email}</dd>
+                    </dl>
+                </div>
+                <!-- Content -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -1,10 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
-
+<%@ page language="java" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <jsp:include page="base/head.jsp" />
-    <title>Course ${course.name}</title>
+    <title> Curso ${course.name}</title>
+    <link href="<c:url value="/static/css/course-detail.css" />" rel="stylesheet" type="text/css"/>
 </head>
+
 <body>
     <div id="wrapper">
         <jsp:include page="base/nav.jsp" />
