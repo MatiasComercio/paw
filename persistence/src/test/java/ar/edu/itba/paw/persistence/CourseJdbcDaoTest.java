@@ -16,8 +16,6 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -82,32 +80,28 @@ public class CourseJdbcDaoTest {
         courseInsert.execute(courseArgs1);
         courseInsert.execute(courseArgs2);
         courseInsert.execute(courseArgs3);
-
-        id1 = courseInsert.executeAndReturnKey(courseArgs1).intValue();
-        id2 = courseInsert.executeAndReturnKey(courseArgs2).intValue();
-        id3 = courseInsert.executeAndReturnKey(courseArgs3).intValue();
     }
 
     @Test
     public void getById() {
-        Course course = courseJdbcDao.getById(id1);
+        Course course = courseJdbcDao.getById(ID_1);
 
         assertNotNull(course);
-        assertEquals(id1, course.getId());
+        assertEquals(ID_1, course.getId());
         assertEquals(NAME_1, course.getName());
         assertEquals(CREDITS_1, course.getCredits());
 
-        course = courseJdbcDao.getById(id2);
+        course = courseJdbcDao.getById(ID_2);
 
         assertNotNull(course);
-        assertEquals(id2, course.getId());
+        assertEquals(ID_2, course.getId());
         assertEquals(NAME_2, course.getName());
         assertEquals(CREDITS_2, course.getCredits());
 
-        course = courseJdbcDao.getById(id3);
+        course = courseJdbcDao.getById(ID_3);
 
         assertNotNull(course);
-        assertEquals(id3, course.getId());
+        assertEquals(ID_3, course.getId());
         assertEquals(NAME_3, course.getName());
         assertEquals(CREDITS_3, course.getCredits());
     }
