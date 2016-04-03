@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.StudentFilter;
 
 import java.util.List;
 
@@ -30,5 +31,9 @@ public interface StudentDao {
 	 */
 	Student getGrades(int docket);
 
+	/* +++xdocument */
 	List<Course> getStudentCourses(final int docket);
+
+	/* +++xdocument */
+	List<Student> getByFilter(StudentFilter studentFilter);
 }
