@@ -33,9 +33,10 @@ public class CourseController {
     @RequestMapping(value = "/courses")
     public ModelAndView getCoursesByFilter(@RequestParam(defaultValue = "") String keyword,
                                            @RequestParam(defaultValue = "") Integer id) {
-        final ModelAndView mav = new ModelAndView("courses");
+        final ModelAndView mav = new ModelAndView("searchCourses");
         final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).id(id).build();
         mav.addObject("courses", courseService.getByFilter(courseFilter));
+        mav.addObject("section", "search_courses");
         return mav;
     }
 
