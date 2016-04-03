@@ -43,6 +43,34 @@ public class Grade {
 		return grade;
 	}
 
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Grade)) return false;
+
+		final Grade grade1 = (Grade) o;
+
+		if (studentDocket != grade1.studentDocket) return false;
+		if (courseId != grade1.courseId) return false;
+		if (studentFirstName != null ? !studentFirstName.equals(grade1.studentFirstName) : grade1.studentFirstName != null)
+			return false;
+		if (studentLastName != null ? !studentLastName.equals(grade1.studentLastName) : grade1.studentLastName != null)
+			return false;
+		if (courseName != null ? !courseName.equals(grade1.courseName) : grade1.courseName != null) return false;
+		return grade.equals(grade1.grade);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = studentDocket;
+		result = 31 * result + (studentFirstName != null ? studentFirstName.hashCode() : 0);
+		result = 31 * result + (studentLastName != null ? studentLastName.hashCode() : 0);
+		result = 31 * result + courseId;
+		result = 31 * result + (courseName != null ? courseName.hashCode() : 0);
+		result = 31 * result + grade.hashCode();
+		return result;
+	}
+
 	public static class Builder {
 		private final int studentDocket;
 		private final int courseId;
@@ -76,6 +104,5 @@ public class Grade {
 		public Grade build() {
 			return new Grade(this);
 		}
-
 	}
 }

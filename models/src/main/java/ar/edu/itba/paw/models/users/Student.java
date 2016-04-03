@@ -25,6 +25,27 @@ public class Student extends User {
 	}
 
 	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (!(o instanceof Student)) return false;
+		if (!super.equals(o)) return false;
+
+		final Student student = (Student) o;
+
+		if (docket != student.docket) return false;
+		return grades != null ? grades.equals(student.grades) : student.grades == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + docket;
+		result = 31 * result + (grades != null ? grades.hashCode() : 0);
+		return result;
+	}
+
+	@Override
 	public String toString() {
 		return "Student{" +
 				"docket=" + docket +

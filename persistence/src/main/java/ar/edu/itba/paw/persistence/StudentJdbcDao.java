@@ -30,7 +30,7 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String STUDENT__DNI_COLUMN = "dni";
 
 	private static final String USER__DNI_COLUMN = "dni";
-	private static final String USER_FIRST_NAME_COLUMN = "first_name";
+	private static final String USER__FIRST_NAME_COLUMN = "first_name";
 	private static final String USER__LAST_NAME_COLUMN = "last_name";
 	private static final String USER__GENRE_COLUMN = "genre";
 	private static final String USER__BIRTHDAY_COLUMN = "birthday";
@@ -70,7 +70,7 @@ public class StudentJdbcDao implements StudentDao {
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
 		final int dni = resultSet.getInt(STUDENT__DNI_COLUMN);
-		final String firstName = WordUtils.capitalize(resultSet.getString(USER_FIRST_NAME_COLUMN));
+		final String firstName = WordUtils.capitalize(resultSet.getString(USER__FIRST_NAME_COLUMN));
 		final String lastName = WordUtils.capitalize(resultSet.getString(USER__LAST_NAME_COLUMN));
 		final Date birthdayDate = resultSet.getDate(USER__BIRTHDAY_COLUMN);
 		final LocalDate birthday;
@@ -102,7 +102,7 @@ public class StudentJdbcDao implements StudentDao {
 	private final RowMapper<Student.Builder> studentBasicRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
 		final int dni = resultSet.getInt(STUDENT__DNI_COLUMN);
-		final String firstName = WordUtils.capitalize(resultSet.getString(USER_FIRST_NAME_COLUMN));
+		final String firstName = WordUtils.capitalize(resultSet.getString(USER__FIRST_NAME_COLUMN));
 		final String lastName = WordUtils.capitalize(resultSet.getString(USER__LAST_NAME_COLUMN));
 
 		String email = resultSet.getString(USER__EMAIL_COLUMN);
