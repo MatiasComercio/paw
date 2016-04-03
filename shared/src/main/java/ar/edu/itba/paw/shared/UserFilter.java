@@ -1,16 +1,19 @@
 package ar.edu.itba.paw.shared;
 
+import ar.edu.itba.paw.models.users.User;
+
 public class UserFilter {
     private final Object dni;
 
     private final Object firstName;
     private final Object lastName;
-//    private final Object genre;
+    private final Object genre;
 
     protected UserFilter(final UserFilterBuilder builder) {
         this.dni = builder.dni;
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
+        this.genre = builder.genre;
     }
 
     public Object getDni() {
@@ -25,11 +28,16 @@ public class UserFilter {
         return lastName;
     }
 
+    public Object getGenre() {
+        return genre;
+    }
+
     protected static abstract class UserFilterBuilder<V extends UserFilter, T extends UserFilterBuilder<V,T>> {
-        private final Object dni;
+        private Object dni;
 
         private Object firstName;
         private Object lastName;
+        private Object genre;
 
         private final T thisBuilder;
 
@@ -37,9 +45,14 @@ public class UserFilter {
 
         public abstract T thisBuilder();
 
-        public UserFilterBuilder(final Object dni) {
-            this.dni = dni;
+        public UserFilterBuilder() {
             this.thisBuilder = thisBuilder();
+        }
+
+        public T dni(final Object dni) {
+            this.dni = dni;
+
+            return thisBuilder;
         }
 
         public T firstName(final Object firstName) {
@@ -51,6 +64,13 @@ public class UserFilter {
         public T lastName(final Object lastName) {
             this.lastName = lastName;
 
+            return thisBuilder;
+        }
+
+        public T genre(final Object genre) {
+            if(genre != null) {
+                this.genre = User.Genre.getGenre(genre.toString());
+            }
             return thisBuilder;
         }
     }
