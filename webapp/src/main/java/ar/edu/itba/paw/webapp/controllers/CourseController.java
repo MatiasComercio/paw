@@ -41,14 +41,14 @@ public class CourseController {
         return mav;
     }
 
-    @RequestMapping(value = "/courses/addCourse", method = RequestMethod.GET)
+    @RequestMapping(value = "/courses/add_course", method = RequestMethod.GET)
     public ModelAndView addCourse(){
         final Course course = new Course.Builder(0).build();
         final ModelAndView mav = new ModelAndView("addCourse", "command", course);
         return mav;
     }
 
-    @RequestMapping(value = "/courses/addCourse", method = RequestMethod.POST)
+    @RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
     public String addCourse(@ModelAttribute("addCourse") Course.Builder courseBuilder) {
 
         final Course course = courseBuilder.build();

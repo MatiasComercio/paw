@@ -25,7 +25,7 @@
 
             <!-- content -->
 
-            <form:form method="post" action="/app/courses/addCourse">
+            <form:form method="post" action="/app/courses/add_course">
 
                 <table>
                     <tr>
