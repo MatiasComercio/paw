@@ -38,10 +38,10 @@
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
             <li class="active">
-                <a href="#"><i class="fa fa-fw fa-dashboard"></i> Alumnos</a>
+                <a href="<c:url value="/app/" />"><i class="fa fa-fw fa-dashboard"></i> Alumnos</a>
             </li>
             <li>
-                <a href="#"><i class="fa fa-fw fa-edit"></i> Materias</a>
+                <a href="<c:url value="/app/courses/" />"><i class="fa fa-fw fa-edit"></i> Materias</a>
             </li>
             <li>
                 <a href="#"><i class="fa fa-fw fa-bar-chart-o"></i> Buscar Alumno</a>

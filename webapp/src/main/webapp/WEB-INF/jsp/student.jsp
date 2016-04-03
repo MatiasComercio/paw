@@ -1,26 +1,49 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
+<%@ page language="java" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <title>Alumno ${student.docket}</title>
+    <jsp:include page="base/head.jsp" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Student ${student.docket}</title>
 </head>
 <body>
-<h1>Student Information</h1>
-<dl>
-    <dt>Docket</dt>
-    <dd>${student.docket}</dd>
-    <dt>DNI</dt>
-    <dd>${student.dni}</dd>
-    <dt>First Name</dt>
-    <dd>${student.firstName}</dd>
-    <dt>Last Name</dt>
-    <dd>${student.lastName}</dd>
-    <dt>Genre</dt>
-    <dd>${student.genre}</dd>
-    <dt>Birthday</dt>
-    <dd>${student.birthday}</dd>
-    <dt>Email</dt>
-    <dd>${student.email}</dd>
-</dl>
+    <div id="wrapper">
+        <jsp:include page="base/nav.jsp" />
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <!-- Page Heading -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h1 class="page-header">
+                            Informacion del Alumno
+                        </h1>
+                    </div>
+                </div>
+                <!-- Content -->
+                <div class="row">
+                    <div class="col-lg-3">
+                        <div class="row">Legajo</div>
+                        <div class="row">DNI</div>
+                        <div class="row">Primer Nombre</div>
+                        <div class="row">Segundo Nombre</div>
+                        <div class="row">Genero</div>
+                        <div class="row">Cumpleaños</div>
+                        <div class="row">Email</div>
+                    </div>
+                    <div class="col-lg-3">
+                        <div class="row">${student.docket}</div>
+                        <div class="row">${student.dni}</div>
+                        <div class="row">${student.firstName}</div>
+                        <div class="row">${student.lastName}</div>
+                        <div class="row">${student.genre}</div>
+                        <div class="row">${student.birthday}</div>
+                        <div class="row">${student.email}</div>
+                    </div>
+                </div>
+                <!-- Content -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>

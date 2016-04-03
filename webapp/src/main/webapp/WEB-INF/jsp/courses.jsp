@@ -1,18 +1,60 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: gonzalo
-  Date: 3/31/16
-  Time: 4:35 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
+<%@ page language="java" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Courses</title>
-    <h1>Accessing course's profile: ${courses}</h1>
+    <title>Cursos</title>
+    <jsp:include page="base/head.jsp" />
 </head>
 <body>
 
+<div id="wrapper">
+
+    <jsp:include page="base/nav.jsp" />
+
+    <div id="page-wrapper">
+
+        <div class="container-fluid">
+
+            <!-- Page Heading -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">
+                        Cursos
+                    </h1>
+                </div>
+            </div>
+
+            <!-- content -->
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Creditos</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${courses}" var="course">
+                    <tr>
+                        <td>${ course.id }</td>
+                        <td>${ course.name }</td>
+                        <td>${ course.credits }</td>
+                        <td><a href="<c:url value="courses/${course.id}" />">Ver</a></td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+
+            <!-- /content -->
+
+        </div>
+        <!-- /.container-fluid -->
+
+    </div>
+    <!-- /#page-wrapper -->
+
+</div>
 
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />

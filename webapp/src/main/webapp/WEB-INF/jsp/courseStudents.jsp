@@ -1,8 +1,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
+<%@ page language="java" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <title>Alumnos de ${courseStudents.name}</title>
     <jsp:include page="base/head.jsp" />
-    <title>${courseStudents.name}</title>
 </head>
 <body>
 <div id="wrapper">
@@ -16,15 +18,31 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Accessing course's profile:
+                        Lista de Alumnos de ${courseStudents.name}
                     </h1>
                 </div>
             </div>
             <!-- Content -->
-            <div class="row">
-                <h1>Accessing ${courseStudents.name}.</h1>
-                <h1> Students: ${courseStudents.students}</h1>
-            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Legajo</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${courseStudents.students}" var="student">
+                    <tr>
+                        <td>${ student.docket }</td>
+                        <td>${ student.firstName }</td>
+                        <td>${ student.lastName }</td>
+                        <td><a href="<c:url value="/app/students/${student.docket}" />">Ver</a></td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
             <!-- Content -->
         </div>
     </div>
