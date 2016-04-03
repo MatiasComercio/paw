@@ -204,6 +204,9 @@ public class StudentJdbcDao implements StudentDao {
 	@Override
 	public List<Student> getByFilter(StudentFilter studentFilter) {
 //		List<Student> students = jdbcTemplate.query("SELECT docket", studentBasicRowMapper, );
+		QueryFilter queryFilter = new QueryFilter();
+
+		queryFilter.filterByDocket(studentFilter);
 	}
 
 	private String createEmail(final int dni, final String firstName, final String lastName) {
@@ -262,8 +265,8 @@ public class StudentJdbcDao implements StudentDao {
 			filters = new LinkedList<>();
 		}
 
-		public void filterByDocket(final CourseFilter courseFilter) {
-			filterBySubword.filter(courseFilter.getKeyword(), FILTER_DOCKET);
+		public void filterByDocket(final StudentFilter courseFilter) {
+			filterBySubword.filter(courseFilter.getDocket(), FILTER_DOCKET);
 		}
 
 		public List<String> getFilters() {
