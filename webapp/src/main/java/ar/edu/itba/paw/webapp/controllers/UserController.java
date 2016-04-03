@@ -49,7 +49,7 @@ public class UserController {
 		return mav;
 	}
 
-	@RequestMapping("/students/{docket}/courses/")
+	@RequestMapping("/students/{docket}/courses")
 	public ModelAndView getStudentsCourse(@PathVariable final Integer docket){
 		final ModelAndView mav = new ModelAndView("courses");
 		mav.addObject("courses", studentService.getStudentCourses(docket));

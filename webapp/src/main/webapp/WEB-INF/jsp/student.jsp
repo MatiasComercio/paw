@@ -89,7 +89,7 @@
                 <div class="col-xs-12 col-md-6">
                     <div class="row">
                         <div class="col-xs-12 col-md-6">
-                            <a href="#" type="button" class="btn btn-link">Ver Materias actuales</a>
+                            <a href="courses" type="button" class="btn btn-link">Ver Materias actuales</a>
                         </div>
                         <div class="col-xs-12 col-md-6">
                             <a href="grades" type="button" class="btn btn-link">Ver Historial de Notas</a>
