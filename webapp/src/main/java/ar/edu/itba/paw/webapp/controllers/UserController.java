@@ -18,12 +18,9 @@ public class UserController {
 
 	@RequestMapping("/students")
 	public ModelAndView getAllStudents() {
-		final ModelAndView mav = new ModelAndView("index");
+		final ModelAndView mav = new ModelAndView("students");
         final List<Student> students =  studentService.getAll();
-
-		mav.addObject("description", "Lista de alumnos");
         mav.addObject("students", students);
-		mav.addObject("section", "index");
 		return mav;
 	}
 
