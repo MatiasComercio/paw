@@ -3,8 +3,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title> ${course.name}</title>
     <jsp:include page="base/head.jsp" />
-    <title> Curso ${course.name}</title>
     <link href="<c:url value="/static/css/course-detail.css" />" rel="stylesheet" type="text/css"/>
 </head>
 
@@ -20,7 +20,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Accessing course's profile:
+                            Informacion de la Materia
                         </h1>
                     </div>
                 </div>
@@ -34,6 +34,7 @@
                         <dt>Credits:</dt>
                         <dd>${course.credits}</dd>
                     </dl>
+                    <a href="<c:url value="/app/courses/${course.id}/students" />">Ver Alumnos Inscriptos</a>
                 </div>
                 <!-- Content -->
             </div>

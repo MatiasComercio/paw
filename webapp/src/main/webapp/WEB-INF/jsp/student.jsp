@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>Alumno ${student.docket}</title>
     <jsp:include page="base/head.jsp" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Alumno ${student.docket}</title>
 </head>
 <body>
     <div id="wrapper">

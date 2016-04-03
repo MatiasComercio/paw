@@ -23,8 +23,8 @@ public class CourseJdbcDao implements CourseDao {
 
     private static final String DOCKET_COLUMN = "docket";
     private static final String DNI_COLUMN = "dni";
-    private static final String FIRST_NAME_COLUMN = "firstName";
-    private static final String LAST_NAME_COLUMN = "lastName";
+    private static final String FIRST_NAME_COLUMN = "first_name";
+    private static final String LAST_NAME_COLUMN = "last_name";
 
 
     private final JdbcTemplate jdbcTemplate;
@@ -37,7 +37,7 @@ public class CourseJdbcDao implements CourseDao {
                         .build();
 
     private final RowMapper<Student> studentRowMapper = (resultSet, rowNum) ->
-            new Student.Builder(resultSet.getInt(DOCKET_COLUMN), resultSet.getInt(DNI_COLUMN)).firstName(FIRST_NAME_COLUMN).lastName(LAST_NAME_COLUMN).build();
+            new Student.Builder(resultSet.getInt(DOCKET_COLUMN), resultSet.getInt(DNI_COLUMN)).firstName(resultSet.getString(FIRST_NAME_COLUMN)).lastName(resultSet.getString(LAST_NAME_COLUMN)).build();
 
     @Autowired
     public CourseJdbcDao(final DataSource dataSource) {
