@@ -5,6 +5,8 @@ import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
+import ar.edu.itba.paw.shared.CourseFilter;
+import ar.edu.itba.paw.shared.StudentFilter;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -199,6 +201,11 @@ public class StudentJdbcDao implements StudentDao {
 		return courses;
 	}
 
+	@Override
+	public List<Student> getByFilter(StudentFilter studentFilter) {
+//		List<Student> students = jdbcTemplate.query("SELECT docket", studentBasicRowMapper, );
+	}
+
 	private String createEmail(final int dni, final String firstName, final String lastName) {
 		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
 
@@ -231,5 +238,59 @@ public class StudentJdbcDao implements StudentDao {
 
 		return students.contains(String.valueOf(email));
 
+	}
+
+	private static class QueryFilter {
+		private static final String WHERE = " WHERE ";
+		private static final String AND = " AND ";
+		private static final String ILIKE = " ILIKE ? ";
+
+		private static final String FILTER_DOCKET = "CAST(" + STUDENT__DOCKET_COLUMN + " AS CHAR) "+ ILIKE;
+
+		private final StringBuffer query = new StringBuffer("SELECT * FROM " + STUDENT_TABLE);
+		private boolean filterApplied = false;
+		private final List<String> filters;
+
+		private final FilterQueryMapper filterBySubword = (filter, filterName) -> {
+			if(filter != null) {
+				String stringFilter = "%" + filter.toString() + "%";
+				appendFilter(filterName, stringFilter);
+			}
+		};
+
+		private QueryFilter() {
+			filters = new LinkedList<>();
+		}
+
+		public void filterByDocket(final CourseFilter courseFilter) {
+			filterBySubword.filter(courseFilter.getKeyword(), FILTER_DOCKET);
+		}
+
+		public List<String> getFilters() {
+			return filters;
+		}
+
+		public String getQuery() {
+			return query.toString();
+		}
+
+		private void appendFilterConcatenation() {
+			if(!filterApplied) {
+				filterApplied = true;
+				query.append(WHERE);
+			} else {
+				query.append(AND);
+			}
+		}
+
+		private void appendFilter(final String filter, final String stringFilter) {
+			appendFilterConcatenation();
+			query.append(filter);
+			filters.add(stringFilter);
+		}
+
+		private interface FilterQueryMapper {
+			void filter(final Object filter, final String filterName);
+		}
 	}
 }
