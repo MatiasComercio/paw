@@ -27,6 +27,7 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
+                    <th>ID</th>
                     <th>Materia</th>
                     <th>Nota</th>
                 </tr>
@@ -34,10 +35,10 @@
                 <tbody>
                 <c:forEach items="${student.grades}" var="grade">
                     <tr>
-                        <td><a href="<c:url value="/app/courses/${grade.courseId}/info" />">
-                            ${ grade.courseId } - ${grade.courseName}
-                        </td>
+                        <td>${ grade.courseId }</td>
+                        <td>${ grade.courseName }</td>
                         <td>${ grade.grade }</td>
+                        <td><a href="<c:url value="/app/courses/${grade.courseId}/info" />">Ver Materia</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>

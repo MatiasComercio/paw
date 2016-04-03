@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Index <small>${description}</small>
+                        Lista de Alumnos
                     </h1>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                         <td>${ student.docket }</td>
                         <td>${ student.fullName }</td>
                         <td>${ student.email }</td>
-                        <td><a href="<c:url value="students/${student.docket}/info" />">Ver</a></td>
+                        <td><a href="<c:url value="/app/students/${student.docket}/info" />">Ver</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
