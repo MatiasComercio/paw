@@ -32,13 +32,6 @@ public interface CourseService {
      */
     Course getCourseStudents(int id);
 
-    /**
-     * Requests a list of all the courses available
-     * @return the list of the courses. If there are no courses, it returns an empty list
-     */
-    List<Course> getAllCourses();
-
     List<Course> getByFilter(CourseFilter courseFilter);
-
 
 }
