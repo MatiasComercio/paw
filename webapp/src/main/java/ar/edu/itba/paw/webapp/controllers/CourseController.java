@@ -22,14 +22,6 @@ public class CourseController {
         return mav;
     }
 
-    @RequestMapping("/courses/")
-    public ModelAndView getAllCourses() {
-        final ModelAndView mav = new ModelAndView("courses");
-        mav.addObject("courses", courseService.getAllCourses());
-        mav.addObject("section", "courses");
-        return mav;
-    }
-
     @RequestMapping(value = "/courses")
     public ModelAndView getCoursesByFilter(@RequestParam(defaultValue = "") String keyword,
                                            @RequestParam(defaultValue = "") Integer id) {
