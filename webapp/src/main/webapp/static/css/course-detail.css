@@ -33,3 +33,7 @@ dl{
     border-left: 1px solid black;
     min-height: 100%;
 }
+
+.right-effect{
+    text-align: right;
+}

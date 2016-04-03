@@ -6,6 +6,7 @@
     <title>Alumno ${student.docket}</title>
     <jsp:include page="base/head.jsp" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="<c:url value="/static/css/course-detail.css" />" rel="stylesheet" type="text/css"/>
 </head>
 <body>
     <div id="wrapper">
@@ -22,23 +23,33 @@
                 </div>
                 <!-- Content -->
                 <div class="row">
-                    <div class="col-lg-3">
-                        <div class="row">Legajo</div>
-                        <div class="row">DNI</div>
-                        <div class="row">Primer Nombre</div>
-                        <div class="row">Segundo Nombre</div>
-                        <div class="row">Genero</div>
-                        <div class="row">Cumpleaños</div>
-                        <div class="row">Email</div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="row">${student.docket}</div>
-                        <div class="row">${student.dni}</div>
-                        <div class="row">${student.firstName}</div>
-                        <div class="row">${student.lastName}</div>
-                        <div class="row">${student.genre}</div>
-                        <div class="row">${student.birthday}</div>
-                        <div class="row">${student.email}</div>
+                    <div class="col-md-6">
+                        <div class="well">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="right-effect pull-right">
+                                    <b>
+                                    <div class="row">Legajo</div>
+                                    <div class="row">DNI</div>
+                                    <div class="row">Primer Nombre</div>
+                                    <div class="row">Segundo Nombre</div>
+                                    <div class="row">Genero</div>
+                                    <div class="row">Cumpleaños</div>
+                                    <div class="row">Email</div>
+                                    </b>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-lg-offset-1">
+                                    <div class="row">${student.docket}</div>
+                                    <div class="row">${student.dni}</div>
+                                    <div class="row">${student.firstName}</div>
+                                    <div class="row">${student.lastName}</div>
+                                    <div class="row">${student.genre}</div>
+                                    <div class="row">${student.birthday}</div>
+                                    <div class="row">${student.email}</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Content -->
