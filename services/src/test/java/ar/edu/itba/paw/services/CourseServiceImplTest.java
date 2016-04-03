@@ -34,7 +34,7 @@ public class CourseServiceImplTest {
         verify(courseDao, times(1)).getById(ID_VALID);
 
         courseService.getById(ID_VALID_LIMIT);
-        verify(courseDao, times(1)).getById(ID_INVALID_LIMIT);
+        verify(courseDao, times(1)).getById(ID_VALID);
 
         courseService.getById(ID_INVALID_LIMIT);
         verify(courseDao, times(0)).getById(ID_INVALID_LIMIT);
