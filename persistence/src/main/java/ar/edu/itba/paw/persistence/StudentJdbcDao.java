@@ -43,6 +43,7 @@ public class StudentJdbcDao implements StudentDao {
 
 	private static final String COURSE__ID_COLUMN = "id";
 	private static final String COURSE__NAME_COLUMN = "name";
+	private static final String COURSE__CREDITS_COLUMN = "credits";
 
 	private static final String GET_BY_DOCKET =
 					"SELECT * " +
@@ -101,12 +102,11 @@ public class StudentJdbcDao implements StudentDao {
 	};
 
 	private final RowMapper<Course> courseRowMapper = (resultSet, rowNum) ->
-			new Course.Builder(resultSet.getInt(ID_COLUMN))
-					.name(resultSet.getString(NAME_COLUMN))
-					.credits(resultSet.getInt(CREDITS_COLUMN))
+			new Course.Builder(resultSet.getInt(COURSE__ID_COLUMN))
+					.name(resultSet.getString(COURSE__NAME_COLUMN))
+					.credits(resultSet.getInt(COURSE__ID_COLUMN))
 					.build();
 
-	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(EMAIL_COLUMN);
 	private final RowMapper<Student.Builder> studentBasicRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
 		final int dni = resultSet.getInt(STUDENT__DNI_COLUMN);
