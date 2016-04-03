@@ -14,7 +14,7 @@ public class CourseServiceImplTest {
     private static final int ID_VALID = 10;
     private static final int ID_VALID_LIMIT = 1;
     private static final int ID_INVALID_LIMIT = 0;
-    private static final int ID_INVALID = 0;
+    private static final int ID_INVALID = -1;
 
     @Mock
     private CourseDao courseDao;
