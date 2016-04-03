@@ -5,7 +5,7 @@ public class StudentFilter extends UserFilter {
 
     private StudentFilter(final StudentFilterBuilder builder) {
         super(builder);
-        this.docket = builder;
+        this.docket = builder.docket;
     }
 
     public Object getDocket() {
