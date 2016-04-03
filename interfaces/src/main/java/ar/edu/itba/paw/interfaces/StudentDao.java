@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public interface StudentDao {
 	 * Gets all the students within the database
 	 * @return all the students within the database
 	 */
+
 	List<Student> getAll();
 
 	/**
@@ -27,4 +29,6 @@ public interface StudentDao {
 	 * @return The student with the given docket, if exists; null otherwise.
 	 */
 	Student getGrades(int docket);
+
+	List<Course> getStudentCourses(final int docket);
 }
