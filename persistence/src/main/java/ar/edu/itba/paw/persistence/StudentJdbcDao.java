@@ -118,7 +118,7 @@ public class StudentJdbcDao implements StudentDao {
 	@Override
 	public List<Course> getStudentCourses(int docket) {
 		List<Course> courses = jdbcTemplate.query("SELECT id, name, credits FROM inscription JOIN course on inscription.course_id = course.id"
-				+ "WHERE docket = ?",
+				+ " WHERE docket = ?",
 				courseRowMapper, docket);
 
 		return courses;
