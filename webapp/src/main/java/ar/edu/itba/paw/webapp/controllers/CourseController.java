@@ -16,7 +16,7 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    @RequestMapping("/courses/{id}")
+    @RequestMapping("/courses/{id}/info")
     public ModelAndView getCourse(@PathVariable final Integer id) {
         final ModelAndView mav = new ModelAndView("course");
         mav.addObject("course", courseService.getById(id));

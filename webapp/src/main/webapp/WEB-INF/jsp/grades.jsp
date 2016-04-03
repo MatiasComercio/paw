@@ -34,7 +34,7 @@
                 <tbody>
                 <c:forEach items="${student.grades}" var="grade">
                     <tr>
-                        <td><a href="<c:url value="/app/courses/${grade.courseId}" />">
+                        <td><a href="<c:url value="/app/courses/${grade.courseId}/info" />">
                             ${ grade.courseId } - ${grade.courseName}
                         </td>
                         <td>${ grade.grade }</td>

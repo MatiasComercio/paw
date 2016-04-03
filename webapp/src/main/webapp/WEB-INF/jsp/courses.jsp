@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Cursos</title>
+    <title>Materias</title>
     <jsp:include page="base/head.jsp" />
 </head>
 <body>
@@ -40,7 +40,7 @@
                         <td>${ course.id }</td>
                         <td>${ course.name }</td>
                         <td>${ course.credits }</td>
-                        <td><a href="<c:url value="/app/courses/${course.id}" />">Ver</a></td>
+                        <td><a href="<c:url value="courses/${course.id}" />">Ver</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
