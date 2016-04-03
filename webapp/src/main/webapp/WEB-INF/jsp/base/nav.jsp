@@ -10,7 +10,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#"><strong>SGA</strong> Sistema de gestión académica</a>
+        <a class="navbar-brand" href="/app/"><strong>SGA</strong> Sistema de gestión académica</a>
     </div>
     <!-- Top Menu Items -->
     <ul class="nav navbar-right top-nav">
@@ -47,7 +47,7 @@
             </li>
 
             <c:choose>
-                <c:when test="${section=='search_courses'}">
+                <c:when test="${section=='courses'}">
             <li class="active">
                 </c:when>
                 <c:otherwise><li></c:otherwise>
