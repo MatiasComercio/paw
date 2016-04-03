@@ -104,7 +104,7 @@ public class StudentJdbcDao implements StudentDao {
 	private final RowMapper<Course> courseRowMapper = (resultSet, rowNum) ->
 			new Course.Builder(resultSet.getInt(COURSE__ID_COLUMN))
 					.name(resultSet.getString(COURSE__NAME_COLUMN))
-					.credits(resultSet.getInt(COURSE__ID_COLUMN))
+					.credits(resultSet.getInt(COURSE__CREDITS_COLUMN))
 					.build();
 
 	private final RowMapper<Student.Builder> studentBasicRowMapper = (resultSet, rowNumber) -> {
