@@ -68,8 +68,16 @@ public class UserFilter {
         }
 
         public T genre(final Object genre) {
-            if(genre != null) {
+            if(genre == null) {
+                return thisBuilder;
+            }
+            if(genre.toString().equals("")) {
+                this.genre = null;
+            } else {
                 this.genre = User.Genre.getGenre(genre.toString());
+                if(this.genre == null) {
+                    this.genre = "";
+                }
             }
             return thisBuilder;
         }
