@@ -21,7 +21,8 @@
                 <div class="col-lg-12">
                     <h1 class="page-header">
                         Materias
-                        <a href="<c:url value="courses/add_course"/>" class="btn btn-info pull-right" role="button">Agregar materia</a>
+                        <%-- +++xfix TODO: currently, if you want to add a course, and write invalid input --> DB exception not catched --> exception 500 --%>
+                        <%--<a href="<c:url value="courses/add_course"/>" class="btn btn-info pull-right" role="button">Agregar materia</a>--%>
                     </h1>
                 </div>
             </div>

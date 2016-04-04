@@ -35,6 +35,7 @@ public class StudentJdbcDaoTest {
 
 	private static final String STUDENT_TABLE = "student";
 	private static final String USER_TABLE = "users";
+	private static final String ADDRESS_TABLE = "address";
 	private static final String GRADE_TABLE = "grade";
 	private static final String COURSE_TABLE = "course";
 
@@ -47,6 +48,17 @@ public class StudentJdbcDaoTest {
 	private static final String USER__GENRE_COLUMN = "genre";
 	private static final String USER__BIRTHDAY_COLUMN = "birthday";
 	private static final String USER__EMAIL_COLUMN = "email";
+
+	private static final String ADDRESS__DNI_COLUMN = "dni";
+	private static final String ADDRESS__COUNTRY_COLUMN = "country";
+	private static final String ADDRESS__CITY_COLUMN = "city";
+	private static final String ADDRESS__NEIGHBORHOOD_COLUMN = "neighborhood";
+	private static final String ADDRESS__STREET_COLUMN = "street";
+	private static final String ADDRESS__NUMBER_COLUMN = "number";
+	private static final String ADDRESS__FLOOR_COLUMN = "floor";
+	private static final String ADDRESS__DOOR_COLUMN = "door";
+	private static final String ADDRESS__TELEPHONE_COLUMN = "telephone";
+	private static final String ADDRESS__ZIP_CODE_COLUMN = "zip_code";
 
 	private static final String GRADE__DOCKET_COLUMN = "docket";
 	private static final String GRADE__COURSE_ID_COLUMN = "course_id";
@@ -75,6 +87,36 @@ public class StudentJdbcDaoTest {
 	private static final String EMAIL_2 = "mcomercio@bait.edu.ar";
 	private int docket2; /* Auto-generated field */
 
+	private static final String ADDRESS__COUNTRY_VALUE = "ArgEnTINA";
+	private static final String ADDRESS__CITY_VALUE = "BS. as.";
+	private static final String ADDRESS__NEIGHBORHOOD_VALUE = "MonTECasTro";
+	private static final String ADDRESS__STREET_VALUE = "santo TOME";
+	private static final int ADDRESS__NUMBER_VALUE = 0;
+	private static final int ADDRESS__FLOOR_VALUE = 15;
+	private static final String ADDRESS__DOOR_VALUE = "Zav";
+	private static final long ADDRESS__TELEPHONE_VALUE = 45666666;
+	private static final int ADDRESS__ZIP_CODE_VALUE = 1418;
+
+	private static final String ADDRESS__COUNTRY_EXPECTED = "Argentina";
+	private static final String ADDRESS__CITY_EXPECTED = "Bs. As.";
+	private static final String ADDRESS__NEIGHBORHOOD_EXPECTED = "Montecastro";
+	private static final String ADDRESS__STREET_EXPECTED = "Santo Tome";
+	private static final String ADDRESS__NUMBER_EXPECTED = "0";
+	private static final String ADDRESS__FLOOR_EXPECTED = "15";
+	private static final String ADDRESS__DOOR_EXPECTED = "ZAV";
+	private static final String ADDRESS__TELEPHONE_EXPECTED = "45666666";
+	private static final String ADDRESS__ZIP_CODE_EXPECTED = "1418";
+
+	private static final String ADDRESS__COUNTRY_EXPECTED_EMPTY = "";
+	private static final String ADDRESS__CITY_EXPECTED_EMPTY = "";
+	private static final String ADDRESS__NEIGHBORHOOD_EXPECTED_EMPTY = "";
+	private static final String ADDRESS__STREET_EXPECTED_EMPTY = "";
+	private static final String ADDRESS__NUMBER_EXPECTED_EMPTY = "";
+	private static final String ADDRESS__FLOOR_EXPECTED_EMPTY = "";
+	private static final String ADDRESS__DOOR_EXPECTED_EMPTY = "";
+	private static final String ADDRESS__TELEPHONE_EXPECTED_EMPTY = "";
+	private static final String ADDRESS__ZIP_CODE_EXPECTED_EMPTY = "";
+
 	private static final int COURSE_ID_1 = 1;
 	private static final String COURSE_NAME_1 = "Course 1";
 	private static final int COURSE_CREDITS_1 = 1;
@@ -97,6 +139,7 @@ public class StudentJdbcDaoTest {
 	private JdbcTemplate jdbcTemplate;
 	private SimpleJdbcInsert userInsert;
 	private SimpleJdbcInsert studentInsert;
+	private SimpleJdbcInsert addressInsert;
 	private SimpleJdbcInsert courseInsert;
 	private SimpleJdbcInsert gradeInsert;
 
@@ -105,6 +148,7 @@ public class StudentJdbcDaoTest {
 		jdbcTemplate = new JdbcTemplate(dataSource);
 		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
 		studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
+		addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
 		courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
 		gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);
 
@@ -119,6 +163,7 @@ public class StudentJdbcDaoTest {
 	public void getByDocket() {
 		final Map<String, Object> userArgs1 = new HashMap<>();
 		final Map<String, Object> studentArgs1 = new HashMap<>();
+		final Map<String, Object> addressArgs1 = new HashMap<>();
 		final Map<String, Object> userArgs2 = new HashMap<>();
 		final Map<String, Object> studentArgs2 = new HashMap<>();
 
@@ -132,6 +177,18 @@ public class StudentJdbcDaoTest {
 		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
 		Number key = studentInsert.executeAndReturnKey(studentArgs1);
 		docket1 = key.intValue();
+
+		addressArgs1.put(ADDRESS__DNI_COLUMN, DNI_1);
+		addressArgs1.put(ADDRESS__COUNTRY_COLUMN, ADDRESS__COUNTRY_VALUE);
+		addressArgs1.put(ADDRESS__CITY_COLUMN, ADDRESS__CITY_VALUE);
+		addressArgs1.put(ADDRESS__NEIGHBORHOOD_COLUMN, ADDRESS__NEIGHBORHOOD_VALUE);
+		addressArgs1.put(ADDRESS__STREET_COLUMN, ADDRESS__STREET_VALUE);
+		addressArgs1.put(ADDRESS__NUMBER_COLUMN, ADDRESS__NUMBER_VALUE);
+		addressArgs1.put(ADDRESS__FLOOR_COLUMN, ADDRESS__FLOOR_VALUE);
+		addressArgs1.put(ADDRESS__DOOR_COLUMN, ADDRESS__DOOR_VALUE);
+		addressArgs1.put(ADDRESS__TELEPHONE_COLUMN, ADDRESS__TELEPHONE_VALUE);
+		addressArgs1.put(ADDRESS__ZIP_CODE_COLUMN, ADDRESS__ZIP_CODE_VALUE);
+		addressInsert.execute(addressArgs1);
 
 		userArgs2.put(USER__DNI_COLUMN, DNI_2);
 		userArgs2.put(USER__EMAIL_COLUMN, EMAIL_2);
@@ -150,9 +207,16 @@ public class StudentJdbcDaoTest {
 		assertEquals(LAST_NAME_1_EXPECTED, student.getLastName());
 		assertEquals(GENRE_1_EXPECTED, student.getGenre());
 		assertEquals(BIRTHDAY_1, student.getBirthday());
-		assertThat(student.getEmail(), anyOf(possibleEmails(docket1,
-				FIRST_NAME_1.toLowerCase(),
-				LAST_NAME_1.toLowerCase())));
+		assertThat(student.getEmail(), anyOf(possibleEmails(docket1, FIRST_NAME_1.toLowerCase(), LAST_NAME_1.toLowerCase())));
+		assertEquals(ADDRESS__COUNTRY_EXPECTED, student.getAddress().getCountry());
+		assertEquals(ADDRESS__CITY_EXPECTED, student.getAddress().getCity());
+		assertEquals(ADDRESS__NEIGHBORHOOD_EXPECTED, student.getAddress().getNeighborhood());
+		assertEquals(ADDRESS__STREET_EXPECTED, student.getAddress().getStreet());
+		assertEquals(ADDRESS__NUMBER_EXPECTED, student.getAddress().getNumber());
+		assertEquals(ADDRESS__FLOOR_EXPECTED, student.getAddress().getFloor());
+		assertEquals(ADDRESS__DOOR_EXPECTED, student.getAddress().getDoor());
+		assertEquals(ADDRESS__TELEPHONE_EXPECTED, student.getAddress().getTelephone());
+		assertEquals(ADDRESS__ZIP_CODE_EXPECTED, student.getAddress().getZipCode());
 
 		student = studentJdbcDao.getByDocket(docket2);
 		assertNotNull(student);
@@ -163,6 +227,15 @@ public class StudentJdbcDaoTest {
 		assertEquals("", student.getGenre());
 		assertEquals(null, student.getBirthday());
 		assertEquals(EMAIL_2, student.getEmail());
+		assertEquals(ADDRESS__COUNTRY_EXPECTED_EMPTY, student.getAddress().getCountry());
+		assertEquals(ADDRESS__CITY_EXPECTED_EMPTY, student.getAddress().getCity());
+		assertEquals(ADDRESS__NEIGHBORHOOD_EXPECTED_EMPTY, student.getAddress().getNeighborhood());
+		assertEquals(ADDRESS__STREET_EXPECTED_EMPTY, student.getAddress().getStreet());
+		assertEquals(ADDRESS__NUMBER_EXPECTED_EMPTY, student.getAddress().getNumber());
+		assertEquals(ADDRESS__FLOOR_EXPECTED_EMPTY, student.getAddress().getFloor());
+		assertEquals(ADDRESS__DOOR_EXPECTED_EMPTY, student.getAddress().getDoor());
+		assertEquals(ADDRESS__TELEPHONE_EXPECTED_EMPTY, student.getAddress().getTelephone());
+		assertEquals(ADDRESS__ZIP_CODE_EXPECTED_EMPTY, student.getAddress().getZipCode());
 	}
 
 	// +++x TODO: write getAll test

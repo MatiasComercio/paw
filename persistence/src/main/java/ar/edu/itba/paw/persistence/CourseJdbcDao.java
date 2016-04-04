@@ -114,7 +114,7 @@ public class CourseJdbcDao implements CourseDao {
         private static final String ILIKE = " ILIKE ? ";
 
         private static final String FILTER_KEYWORD = NAME_COLUMN + ILIKE;
-        private static final String FILTER_ID = "CAST(" + ID_COLUMN + " AS CHAR) " + ILIKE;
+        private static final String FILTER_ID = "CAST(" + ID_COLUMN + " AS TEXT) " + ILIKE;
 
         private final StringBuffer query = new StringBuffer("SELECT * FROM " + TABLE_NAME);
         private boolean filterApplied = false;

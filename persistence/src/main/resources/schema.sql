@@ -13,16 +13,18 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS address (
+  dni INTEGER NOT NULL ,
   country VARCHAR(50) NOT NULL ,
   city VARCHAR(50) NOT NULL ,
   neighborhood VARCHAR(50) NOT NULL ,
   street VARCHAR(100) NOT NULL,
   number INTEGER NOT NULL,
   floor INTEGER,
-  door INTEGER,
-  dni INTEGER NOT NULL ,
+  door VARCHAR(10),
+  telephone INTEGER,
+  zip_code INTEGER,
 
-  PRIMARY KEY (country, city, neighborhood, street, number, dni),
+  PRIMARY KEY (dni),
   FOREIGN KEY (dni) REFERENCES users ON DELETE CASCADE
 );
 
@@ -62,5 +64,6 @@ CREATE TABLE IF NOT EXISTS grade (
 
   PRIMARY KEY (docket, course_id, grade, modified),
   FOREIGN KEY (docket) REFERENCES student ON DELETE CASCADE,
-  FOREIGN KEY (course_id) REFERENCES course ON DELETE RESTRICT
+  FOREIGN KEY (course_id) REFERENCES course ON DELETE RESTRICT,
+  CHECK (grade >= 0)
 );
