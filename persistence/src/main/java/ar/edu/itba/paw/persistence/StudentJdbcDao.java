@@ -266,12 +266,13 @@ public class StudentJdbcDao implements StudentDao {
 		private static final String WHERE = " WHERE ";
 		private static final String AND = " AND ";
 		private static final String ILIKE = " ILIKE ? ";
+		private static final String EQUAL = " = ? ";
 
 		/* TODO: ILIKE should be appended at the FilterQueryMapper, not here */
 		private static final String FILTER_DOCKET = "CAST(" + STUDENT__DOCKET_COLUMN + " AS TEXT) "+ ILIKE;
 		private static final String FILTER_NAME_FIRST = USER__FIRST_NAME_COLUMN + ILIKE;
 		private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN + ILIKE;
-		private static final String FILTER_GENRE = USER__GENRE_COLUMN + "=";
+		private static final String FILTER_GENRE = USER__GENRE_COLUMN + EQUAL;
 
 		private final StringBuffer query = new StringBuffer(
 				"SELECT student.docket, student.dni, users.first_name, users.last_name " +
