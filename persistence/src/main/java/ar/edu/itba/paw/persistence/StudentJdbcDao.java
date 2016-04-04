@@ -215,7 +215,6 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public List<Student> getByFilter(StudentFilter studentFilter) {
-//		List<Student> students = jdbcTemplate.query("SELECT docket", studentBasicRowMapper, );
 		QueryFilter queryFilter = new QueryFilter();
 
 		queryFilter.filterByDocket(studentFilter);
