@@ -170,7 +170,12 @@ public abstract class User {
 			}
 			final String filterLowerCase = genre.toLowerCase();
 
-			return map.get(filterLowerCase).name();
+			Genre returnGenre =  map.get(filterLowerCase);
+
+			if(returnGenre != null) {
+				return returnGenre.name();
+			}
+			return null;
 		}
 
 		Genre(final String genre) {
