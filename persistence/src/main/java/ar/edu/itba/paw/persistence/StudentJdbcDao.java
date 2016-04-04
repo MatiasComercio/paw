@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.StudentDao;
+import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
@@ -24,6 +25,7 @@ public class StudentJdbcDao implements StudentDao {
 
 	private static final String STUDENT_TABLE = "student";
 	private static final String USER_TABLE = "users";
+	private static final String ADDRESS_TABLE = "address";
 	private static final String GRADE_TABLE = "grade";
 	private static final String COURSE_TABLE = "course";
 
@@ -37,6 +39,17 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String USER__BIRTHDAY_COLUMN = "birthday";
 	private static final String USER__EMAIL_COLUMN = "email";
 
+	private static final String ADDRESS__DNI_COLUMN = "dni";
+	private static final String ADDRESS__COUNTRY_COLUMN = "country";
+	private static final String ADDRESS__CITY_COLUMN = "city";
+	private static final String ADDRESS__NEIGHBORHOOD_COLUMN = "neighborhood";
+	private static final String ADDRESS__STREET_COLUMN = "street";
+	private static final String ADDRESS__NUMBER_COLUMN = "number";
+	private static final String ADDRESS__FLOOR_COLUMN = "floor";
+	private static final String ADDRESS__DOOR_COLUMN = "floor";
+	private static final String ADDRESS__TELEPHONE_COLUMN = "telephone";
+	private static final String ADDRESS__ZIP_CODE_COLUMN = "zip_code";
+
 	private static final String GRADE__DOCKET_COLUMN = "docket";
 	private static final String GRADE__COURSE_ID_COLUMN = "course_id";
 	private static final String GRADE__GRADE_COLUMN = "grade";
@@ -48,7 +61,8 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String GET_BY_DOCKET =
 					"SELECT * " +
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
-							" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN + " " +
+						" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN + " " +
+						" LEFT JOIN " + ADDRESS_TABLE + " ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + ADDRESS_TABLE + "." + ADDRESS__DNI_COLUMN + " " +
 					"WHERE " + STUDENT__DOCKET_COLUMN + " = ? LIMIT 1" +
 					";";
 
@@ -76,11 +90,13 @@ public class StudentJdbcDao implements StudentDao {
 		final String lastName = WordUtils.capitalize(resultSet.getString(USER__LAST_NAME_COLUMN));
 		final Date birthdayDate = resultSet.getDate(USER__BIRTHDAY_COLUMN);
 		final LocalDate birthday;
+
 		if (birthdayDate != null) {
 			birthday = birthdayDate.toLocalDate();
 		} else {
 			birthday = null;
 		}
+
 		final String genreString = resultSet.getString(USER__GENRE_COLUMN);
 		final User.Genre genre;
 		if (genreString != null) {
@@ -94,9 +110,34 @@ public class StudentJdbcDao implements StudentDao {
 			email = createEmail(docket, firstName, lastName);
 		}
 
-		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
-		studentBuilder.firstName(firstName).lastName(lastName).genre(genre).birthday(birthday).email(email);
+		final String country = resultSet.getString(ADDRESS__COUNTRY_COLUMN);
+		final String city = resultSet.getString(ADDRESS__CITY_COLUMN);
+		final String neighborhood = resultSet.getString(ADDRESS__NEIGHBORHOOD_COLUMN);
+		final String street = resultSet.getString(ADDRESS__STREET_COLUMN);
+		int number = resultSet.getInt(ADDRESS__NUMBER_COLUMN);
+		if (resultSet.wasNull()) {
+			number = Integer.MIN_VALUE;
+		}
+		int floor = resultSet.getInt(ADDRESS__FLOOR_COLUMN);
+		if (resultSet.wasNull()) {
+			floor = Integer.MIN_VALUE;
+		}
+		final String door = resultSet.getString(ADDRESS__DOOR_COLUMN);
+		long telephone = resultSet.getLong(ADDRESS__TELEPHONE_COLUMN);
+		if (resultSet.wasNull()) {
+			telephone = Long.MIN_VALUE;
+		}
+		int zipCode = resultSet.getInt(ADDRESS__ZIP_CODE_COLUMN);
+		if (resultSet.wasNull()) {
+			zipCode = Integer.MIN_VALUE;
+		}
+		final Address.Builder addressBuilder = new Address.Builder(country, city, neighborhood, street, number);
+		addressBuilder.floor(floor).door(door).telephone(telephone).zipCode(zipCode);
+		final Address address = addressBuilder.build();
 
+		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
+		studentBuilder.firstName(firstName).lastName(lastName).
+				genre(genre).birthday(birthday).email(email).address(address);
 
 		return studentBuilder.build();
 	};

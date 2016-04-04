@@ -23,143 +23,139 @@
             </div>
             <!-- Content -->
             <div class="row">
-                <div class="col-xs-12 col-md-4">
+                <div class="col-xs-12 col-md-8">
                     <div class="well">
                         <div class="row">
-
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Legajo</strong>
+                            <div class="col-xs-12 col-md-6">
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Legajo</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.docket}
+                                    </div>
                                 </div>
-                                <div class="col-xs-9">
-                                    ${student.docket}
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>DNI</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.dni}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>DNI</strong>
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Nombre</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.firstName}
+                                    </div>
                                 </div>
-                                <div class="col-xs-9">
-                                    ${student.dni}
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Apellido</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.lastName}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Nombre</strong>
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Género</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.genre}
+                                    </div>
                                 </div>
-                                <div class="col-xs-9">
-                                    ${student.firstName}
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Cumpleaños</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.birthday}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Apellido</strong>
-                                </div>
-                                <div class="col-xs-9">
-                                    ${student.lastName}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Género</strong>
-                                </div>
-                                <div class="col-xs-9">
-                                    ${student.genre}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Cumpleaños</strong>
-                                </div>
-                                <div class="col-xs-9">
-                                    ${student.birthday}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Email</strong>
-                                </div>
-                                <div class="col-xs-9">
-                                    ${student.email}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-md-4">
-                    <div class="well">
-                        <div class="row">
-
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>País</strong>
-                                </div>
-                                <div class="col-xs-9">
-                                    ${student.address.country}
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Email</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.email}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Ciudad</strong>
+                            <div class="col-xs-12 col-md-6">
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>País</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.address.country}
+                                    </div>
                                 </div>
-                                <div class="col-xs-9">
-                                    ${student.address.city}
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Ciudad</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.address.city}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Localidad</strong>
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Localidad</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.address.neighborhood}
+                                    </div>
                                 </div>
-                                <div class="col-xs-9">
-                                    ${student.address.neighborhood}
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Calle</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.address.street}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Calle</strong>
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Altura</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.address.number}
+                                    </div>
                                 </div>
-                                <div class="col-xs-9">
-                                    ${student.address.street}
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Piso Nº</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.address.floor}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Altura</strong>
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Dpto. Nº</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.address.door}
+                                    </div>
                                 </div>
-                                <div class="col-xs-9">
-                                    ${student.address.number}
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Teléfono</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.address.telephone}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Piso Nº</strong>
-                                </div>
-                                <div class="col-xs-9">
-                                    ${student.address.floor}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Dpto. Nº</strong>
-                                </div>
-                                <div class="col-xs-9">
-                                    ${student.address.door}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Teléfono</strong>
-                                </div>
-                                <div class="col-xs-9">
-                                    ${student.address.telephone}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong>Código Postal</strong>
-                                </div>
-                                <div class="col-xs-9">
-                                    ${student.address.zipCode}
+                                <div class="row">
+                                    <div class="col-xs-4 right-effect">
+                                        <strong>Código Postal</strong>
+                                    </div>
+                                    <div class="col-xs-8">
+                                        ${student.address.zipCode}
+                                    </div>
                                 </div>
                             </div>
                         </div>
