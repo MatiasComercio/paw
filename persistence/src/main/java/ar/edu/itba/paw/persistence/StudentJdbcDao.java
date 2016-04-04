@@ -275,9 +275,10 @@ public class StudentJdbcDao implements StudentDao {
 		private static final String FILTER_GENRE = USER__GENRE_COLUMN;
 
 		private final StringBuffer query = new StringBuffer(
-				"SELECT student.docket, student.dni, users.first_name, users.last_name " +
-				"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
-				" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN);
+				"SELECT " + STUDENT__DOCKET_COLUMN + "," + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + ","
+						+ USER__FIRST_NAME_COLUMN + "," + USER__LAST_NAME_COLUMN
+						+ " FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE
+						+ " ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN);
 		private boolean filterApplied = false;
 		private final List<String> filters;
 
