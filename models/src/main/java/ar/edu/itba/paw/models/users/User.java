@@ -164,13 +164,13 @@ public abstract class User {
 
 		private final String genre;
 
-		public static Genre getGenre(final String genre) {
+		public static String getGenre(final String genre) {
 			if(genre == null) {
 				return null;
 			}
 			final String filterLowerCase = genre.toLowerCase();
 
-			return map.get(filterLowerCase);
+			return map.get(filterLowerCase).name();
 		}
 
 		Genre(final String genre) {
