@@ -61,12 +61,14 @@ public class UserController {
 	@RequestMapping(value = "/students")
 	public ModelAndView getStudentsByFilter(@RequestParam(defaultValue = "") final Integer docket,
 											@RequestParam(defaultValue = "") final String firstname,
-											@RequestParam(defaultValue = "") final String lastname) {
+											@RequestParam(defaultValue = "") final String lastname,
+											@RequestParam(defaultValue = "") final String genre) {
 		final ModelAndView mav = new ModelAndView("index");
 		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
 				.docket(docket)
 				.firstName(firstname)
 				.lastName(lastname)
+				.genre(genre)
 				.build();
 		mav.addObject("students", studentService.getByFilter(studentFilter));
 		return mav;
