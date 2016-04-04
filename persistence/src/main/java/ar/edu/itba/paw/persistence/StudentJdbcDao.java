@@ -266,7 +266,7 @@ public class StudentJdbcDao implements StudentDao {
 		private static final String AND = " AND ";
 		private static final String ILIKE = " ILIKE ? ";
 
-		private static final String FILTER_DOCKET = "CAST(" + STUDENT__DOCKET_COLUMN + " AS CHAR) "+ ILIKE;
+		private static final String FILTER_DOCKET = "CAST(" + STUDENT__DOCKET_COLUMN + " AS TEXT) "+ ILIKE;
 		private static final String FILTER_NAME_FIRST = USER__FIRST_NAME_COLUMN + ILIKE;
 		private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN + ILIKE;
 
