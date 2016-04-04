@@ -46,7 +46,7 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String ADDRESS__STREET_COLUMN = "street";
 	private static final String ADDRESS__NUMBER_COLUMN = "number";
 	private static final String ADDRESS__FLOOR_COLUMN = "floor";
-	private static final String ADDRESS__DOOR_COLUMN = "floor";
+	private static final String ADDRESS__DOOR_COLUMN = "door";
 	private static final String ADDRESS__TELEPHONE_COLUMN = "telephone";
 	private static final String ADDRESS__ZIP_CODE_COLUMN = "zip_code";
 
@@ -86,8 +86,8 @@ public class StudentJdbcDao implements StudentDao {
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
 		final int dni = resultSet.getInt(STUDENT__DNI_COLUMN);
-		final String firstName = WordUtils.capitalize(resultSet.getString(USER__FIRST_NAME_COLUMN));
-		final String lastName = WordUtils.capitalize(resultSet.getString(USER__LAST_NAME_COLUMN));
+		final String firstName = WordUtils.capitalizeFully(resultSet.getString(USER__FIRST_NAME_COLUMN));
+		final String lastName = WordUtils.capitalizeFully(resultSet.getString(USER__LAST_NAME_COLUMN));
 		final Date birthdayDate = resultSet.getDate(USER__BIRTHDAY_COLUMN);
 		final LocalDate birthday;
 
@@ -110,10 +110,10 @@ public class StudentJdbcDao implements StudentDao {
 			email = createEmail(docket, firstName, lastName);
 		}
 
-		final String country = resultSet.getString(ADDRESS__COUNTRY_COLUMN);
-		final String city = resultSet.getString(ADDRESS__CITY_COLUMN);
-		final String neighborhood = resultSet.getString(ADDRESS__NEIGHBORHOOD_COLUMN);
-		final String street = resultSet.getString(ADDRESS__STREET_COLUMN);
+		final String country = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__COUNTRY_COLUMN));
+		final String city = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__CITY_COLUMN));
+		final String neighborhood = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__NEIGHBORHOOD_COLUMN));
+		final String street = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__STREET_COLUMN));
 		int number = resultSet.getInt(ADDRESS__NUMBER_COLUMN);
 		if (resultSet.wasNull()) {
 			number = Integer.MIN_VALUE;
@@ -122,7 +122,10 @@ public class StudentJdbcDao implements StudentDao {
 		if (resultSet.wasNull()) {
 			floor = Integer.MIN_VALUE;
 		}
-		final String door = resultSet.getString(ADDRESS__DOOR_COLUMN);
+		String door = resultSet.getString(ADDRESS__DOOR_COLUMN);
+		if (door != null) {
+			door = door.toUpperCase();
+		}
 		long telephone = resultSet.getLong(ADDRESS__TELEPHONE_COLUMN);
 		if (resultSet.wasNull()) {
 			telephone = Long.MIN_VALUE;
