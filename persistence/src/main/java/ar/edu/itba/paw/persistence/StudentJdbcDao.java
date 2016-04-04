@@ -269,10 +269,10 @@ public class StudentJdbcDao implements StudentDao {
 		private static final String EQUAL = " = ? ";
 
 		/* TODO: ILIKE should be appended at the FilterQueryMapper, not here */
-		private static final String FILTER_DOCKET = "CAST(" + STUDENT__DOCKET_COLUMN + " AS TEXT) "+ ILIKE;
-		private static final String FILTER_NAME_FIRST = USER__FIRST_NAME_COLUMN + ILIKE;
-		private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN + ILIKE;
-		private static final String FILTER_GENRE = USER__GENRE_COLUMN + EQUAL;
+		private static final String FILTER_DOCKET = "CAST(" + STUDENT__DOCKET_COLUMN + " AS TEXT) ";
+		private static final String FILTER_NAME_FIRST = USER__FIRST_NAME_COLUMN;
+		private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN;
+		private static final String FILTER_GENRE = USER__GENRE_COLUMN;
 
 		private final StringBuffer query = new StringBuffer(
 				"SELECT student.docket, student.dni, users.first_name, users.last_name " +
@@ -300,19 +300,19 @@ public class StudentJdbcDao implements StudentDao {
 		}
 
 		public void filterByDocket(final StudentFilter courseFilter) {
-			filterBySubword.filter(courseFilter.getDocket(), FILTER_DOCKET);
+			filterBySubword.filter(courseFilter.getDocket(), FILTER_DOCKET + ILIKE);
 		}
 
 		public void filterByFirstName(final StudentFilter courseFilter) {
-			filterBySubword.filter(courseFilter.getFirstName(), FILTER_NAME_FIRST);
+			filterBySubword.filter(courseFilter.getFirstName(), FILTER_NAME_FIRST + ILIKE);
 		}
 
 		public void filterByLastName(final StudentFilter courseFilter) {
-			filterBySubword.filter(courseFilter.getLastName(), FILTER_NAME_LAST);
+			filterBySubword.filter(courseFilter.getLastName(), FILTER_NAME_LAST + ILIKE);
 		}
 
 		public void filterByGenre(StudentFilter studentFilter) {
-			filterByExactWord.filter(studentFilter.getGenre(), FILTER_GENRE);
+			filterByExactWord.filter(studentFilter.getGenre(), FILTER_GENRE + EQUAL);
 		}
 
 		public List<String> getFilters() {
