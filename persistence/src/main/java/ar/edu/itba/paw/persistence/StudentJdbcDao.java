@@ -266,7 +266,7 @@ public class StudentJdbcDao implements StudentDao {
 		queryFilter.filterByFirstName(studentFilter);
 		queryFilter.filterByLastName(studentFilter);
 		queryFilter.filterByGenre(studentFilter);
-
+		/* +++xdoing: falta el email. Resolve how to pass a function to a rowmapper */
 		List<Student> students = jdbcTemplate.query(queryFilter.getQuery(), studentRowMapper, queryFilter.getFilters().toArray());
 
 		return students;

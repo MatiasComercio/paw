@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
-
 @Controller
 public class UserController {
 	private static final String STUDENTS_SECTION = "students";
@@ -19,12 +17,31 @@ public class UserController {
 	@Autowired
 	private StudentService studentService;
 
+/*
 	@RequestMapping("/students")
 	public ModelAndView getAllStudents() {
 		final ModelAndView mav = new ModelAndView("students");
         final List<Student> students =  studentService.getAll();
         mav.addObject("students", students);
 		mav.addObject("section", STUDENTS_SECTION);
+		return mav;
+	}
+*/
+
+	@RequestMapping("/students")
+	public ModelAndView getStudentsByFilter(@RequestParam(defaultValue = "") final Integer docket,
+	                                        @RequestParam(defaultValue = "") final String firstName,
+	                                        @RequestParam(defaultValue = "") final String lastName,
+	                                        @RequestParam(defaultValue = "") final String genre) {
+		final ModelAndView mav = new ModelAndView("students");
+		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+				.docket(docket)
+				.firstName(firstName)
+				.lastName(lastName)
+				.genre(genre)
+				.build();
+		/* +++x TODO: falta el email */
+		mav.addObject("students", studentService.getByFilter(studentFilter));
 		return mav;
 	}
 
@@ -69,22 +86,6 @@ public class UserController {
 		final ModelAndView mav = new ModelAndView("courses");
 		mav.addObject("courses", studentService.getStudentCourses(docket));
 		mav.addObject("section", STUDENTS_SECTION);
-		return mav;
-	}
-
-	@RequestMapping(value = "/students")
-	public ModelAndView getStudentsByFilter(@RequestParam(defaultValue = "") final Integer docket,
-											@RequestParam(defaultValue = "") final String firstname,
-											@RequestParam(defaultValue = "") final String lastname,
-											@RequestParam(defaultValue = "") final String genre) {
-		final ModelAndView mav = new ModelAndView("index");
-		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
-				.docket(docket)
-				.firstName(firstname)
-				.lastName(lastname)
-				.genre(genre)
-				.build();
-		mav.addObject("students", studentService.getByFilter(studentFilter));
 		return mav;
 	}
 }
