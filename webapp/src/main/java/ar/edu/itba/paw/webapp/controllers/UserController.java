@@ -10,23 +10,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @Controller
 public class UserController {
 	private static final String STUDENTS_SECTION = "students";
 
 	@Autowired
 	private StudentService studentService;
-
-/*
-	@RequestMapping("/students")
-	public ModelAndView getAllStudents() {
-		final ModelAndView mav = new ModelAndView("students");
-        final List<Student> students =  studentService.getAll();
-        mav.addObject("students", students);
-		mav.addObject("section", STUDENTS_SECTION);
-		return mav;
-	}
-*/
 
 	@RequestMapping("/students")
 	public ModelAndView getStudentsByFilter(@RequestParam(defaultValue = "") final Integer docket,
@@ -40,8 +31,9 @@ public class UserController {
 				.lastName(lastName)
 				.genre(genre)
 				.build();
-		/* +++x TODO: falta el email */
-		mav.addObject("students", studentService.getByFilter(studentFilter));
+		final List<Student> students = studentService.getByFilter(studentFilter);
+		mav.addObject("students", students);
+		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 

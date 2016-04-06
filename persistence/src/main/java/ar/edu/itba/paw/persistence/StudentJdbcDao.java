@@ -6,7 +6,6 @@ import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
-import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,8 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,8 +72,7 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String GET_ALL =
 					"SELECT * " +
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
-							" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN +
-					";";
+							" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN;
 	private static final String EMAILS_QUERY =
 					"SELECT " + USER__EMAIL_COLUMN + " " +
 					"FROM " + USER_TABLE + " " +
@@ -153,7 +153,11 @@ public class StudentJdbcDao implements StudentDao {
 					.credits(resultSet.getInt(COURSE__CREDITS_COLUMN))
 					.build();
 
-	private final RowMapper<Student.Builder> studentBasicRowMapper = (resultSet, rowNumber) -> {
+	private final RowMapper<Student.Builder> studentBasicRowMapper = this::getStudentBasicInfo;
+	private final RowMapper<Student> studentRowMapper = (resultSet, rowNumber) ->
+			getStudentBasicInfo(resultSet, rowNumber).build();
+
+	private Student.Builder getStudentBasicInfo(final ResultSet resultSet, final int rowNumber) throws SQLException {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
 		final int dni = resultSet.getInt(STUDENT__DNI_COLUMN);
 		final String firstName = WordUtils.capitalize(resultSet.getString(USER__FIRST_NAME_COLUMN));
@@ -167,22 +171,9 @@ public class StudentJdbcDao implements StudentDao {
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
 		studentBuilder.firstName(firstName).lastName(lastName).email(email);
 
-
 		return studentBuilder;
-	};
+	}
 
-	/* +++xcheck: if it has to be removed */
-	private final RowMapper<Student> studentRowMapper = (resultSet, rowNumber) -> {
-		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
-		final int dni = resultSet.getInt(STUDENT__DNI_COLUMN);
-		final String firstName = WordUtils.capitalize(resultSet.getString(USER__FIRST_NAME_COLUMN));
-		final String lastName = WordUtils.capitalize(resultSet.getString(USER__LAST_NAME_COLUMN));
-
-		final Student.Builder studentBuilder = new Student.Builder(docket, dni).firstName(firstName).lastName(lastName);
-
-
-		return studentBuilder.build();
-	};
 
 	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(USER__EMAIL_COLUMN);
 
@@ -266,10 +257,8 @@ public class StudentJdbcDao implements StudentDao {
 		queryFilter.filterByFirstName(studentFilter);
 		queryFilter.filterByLastName(studentFilter);
 		queryFilter.filterByGenre(studentFilter);
-		/* +++xdoing: falta el email. Resolve how to pass a function to a rowmapper */
-		List<Student> students = jdbcTemplate.query(queryFilter.getQuery(), studentRowMapper, queryFilter.getFilters().toArray());
 
-		return students;
+		return jdbcTemplate.query(queryFilter.getQuery(), studentRowMapper, queryFilter.getFilters().toArray());
 	}
 
 	private String createEmail(final int dni, final String firstName, final String lastName) {
@@ -300,9 +289,9 @@ public class StudentJdbcDao implements StudentDao {
 	}
 
 	private boolean exists(final StringBuilder email) {
-		List<String> students = jdbcTemplate.query(EMAILS_QUERY, emailRowMapper);
+		List<String> emails = jdbcTemplate.query(EMAILS_QUERY, emailRowMapper);
 
-		return students.contains(String.valueOf(email));
+		return emails.contains(String.valueOf(email));
 
 	}
 
@@ -312,21 +301,16 @@ public class StudentJdbcDao implements StudentDao {
 		private static final String ILIKE = " ILIKE ? ";
 		private static final String EQUAL = " = ? ";
 
-		/* TODO: ILIKE should be appended at the FilterQueryMapper, not here */
 		private static final String FILTER_DOCKET = "CAST(" + STUDENT__DOCKET_COLUMN + " AS TEXT) ";
 		private static final String FILTER_NAME_FIRST = USER__FIRST_NAME_COLUMN;
 		private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN;
 		private static final String FILTER_GENRE = USER__GENRE_COLUMN;
 
-		private final StringBuffer query = new StringBuffer(
-				"SELECT " + STUDENT__DOCKET_COLUMN + "," + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + ","
-						+ USER__FIRST_NAME_COLUMN + "," + USER__LAST_NAME_COLUMN
-						+ " FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE
-						+ " ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN);
+		private final StringBuffer query = new StringBuffer(GET_ALL);
 		private boolean filterApplied = false;
 		private final List<String> filters;
 
-		private final FilterQueryMapper filterBySubword = (filter, filterName) -> {
+		private final FilterQueryMapper filterBySubWord = (filter, filterName) -> {
 			if(filter != null) {
 				String stringFilter = "%" + filter.toString() + "%";
 				appendFilter(filterName, stringFilter);
@@ -345,15 +329,15 @@ public class StudentJdbcDao implements StudentDao {
 		}
 
 		public void filterByDocket(final StudentFilter courseFilter) {
-			filterBySubword.filter(courseFilter.getDocket(), FILTER_DOCKET + ILIKE);
+			filterBySubWord.filter(courseFilter.getDocket(), FILTER_DOCKET + ILIKE);
 		}
 
 		public void filterByFirstName(final StudentFilter courseFilter) {
-			filterBySubword.filter(courseFilter.getFirstName(), FILTER_NAME_FIRST + ILIKE);
+			filterBySubWord.filter(courseFilter.getFirstName(), FILTER_NAME_FIRST + ILIKE);
 		}
 
 		public void filterByLastName(final StudentFilter courseFilter) {
-			filterBySubword.filter(courseFilter.getLastName(), FILTER_NAME_LAST + ILIKE);
+			filterBySubWord.filter(courseFilter.getLastName(), FILTER_NAME_LAST + ILIKE);
 		}
 
 		public void filterByGenre(StudentFilter studentFilter) {
