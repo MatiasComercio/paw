@@ -42,19 +42,24 @@ public class CourseJdbcDao implements CourseDao {
     @Autowired
     public CourseJdbcDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(TABLE_NAME).usingGeneratedKeyColumns(ID_COLUMN);
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName(TABLE_NAME)
+                .usingColumns(ID_COLUMN, NAME_COLUMN, CREDITS_COLUMN);
     }
 
 
     @Override
     public Course create(final int id, final String coursename, final int credits) {
         final Map<String, Object> args = new HashMap<>();
+
         args.put(ID_COLUMN, id);
         args.put(NAME_COLUMN, coursename);
         args.put(CREDITS_COLUMN, credits);
-        final Number key = jdbcInsert.executeAndReturnKey(args);
 
-        return new Course.Builder(key.intValue())
+
+        jdbcInsert.execute(args);
+
+        return new Course.Builder(id)
                             .name(coursename)
                             .credits(credits)
                             .build();
@@ -109,7 +114,7 @@ public class CourseJdbcDao implements CourseDao {
         private static final String ILIKE = " ILIKE ? ";
 
         private static final String FILTER_KEYWORD = NAME_COLUMN + ILIKE;
-        private static final String FILTER_ID = "CAST(" + ID_COLUMN + " AS CHAR) " + ILIKE;
+        private static final String FILTER_ID = "CAST(" + ID_COLUMN + " AS TEXT) " + ILIKE;
 
         private final StringBuffer query = new StringBuffer("SELECT * FROM " + TABLE_NAME);
         private boolean filterApplied = false;

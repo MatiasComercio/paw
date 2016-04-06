@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Index <small>${description}</small>
+                        Alumnos
                     </h1>
                 </div>
             </div>
@@ -28,6 +28,7 @@
                 <tr>
                     <th>Legajo</th>
                     <th>Nombre</th>
+                    <th>Apellido</th>
                     <th>Email</th>
                     <th>Acciones</th>
                 </tr>
@@ -36,9 +37,10 @@
                 <c:forEach items="${students}" var="student">
                     <tr>
                         <td>${ student.docket }</td>
-                        <td>${ student.fullName }</td>
+                        <td>${ student.firstName }</td>
+                        <td>${ student.lastName }</td>
                         <td>${ student.email }</td>
-                        <td><a href="<c:url value="students/${student.docket}/info" />">Ver</a></td>
+                        <td><a href="<c:url value="/app/students/${student.docket}/info" />">Ver</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>

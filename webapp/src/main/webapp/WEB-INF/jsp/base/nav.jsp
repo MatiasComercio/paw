@@ -10,7 +10,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#"><strong>SGA</strong> Sistema de gestión académica</a>
+        <a class="navbar-brand" href="/app/"><strong>SGA</strong> Sistema de gestión académica</a>
     </div>
     <!-- Top Menu Items -->
     <ul class="nav navbar-right top-nav">
@@ -38,7 +38,7 @@
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
             <c:choose>
-            <c:when test="${section=='index'}">
+            <c:when test="${section=='students'}">
             <li class="active">
             </c:when>
                 <c:otherwise><li></c:otherwise>
@@ -52,15 +52,15 @@
                 </c:when>
                 <c:otherwise><li></c:otherwise>
             </c:choose>
-                <a href="<c:url value="/app/courses/" />"><i class="fa fa-fw fa-edit"></i> Materias</a>
+                <a href="<c:url value="/app/courses" />"><i class="fa fa-fw fa-edit"></i> Materias</a>
             </li>
-            <li>
+            <!--<li>
                 <a href="#"><i class="fa fa-fw fa-bar-chart-o"></i> Buscar Alumno</a>
             </li>
             <li>
-                <a href="#"><i class="fa fa-fw fa-desktop"></i> Buscar Materia</a>
+                <a href="#" />"><i class="fa fa-fw fa-desktop"></i> Buscar Materia</a>
             </li>
-            <!--<li>
+            <li>
             <a href="#"><i class="fa fa-fw fa-wrench"></i> Settings</a>
             </li>
              <li>

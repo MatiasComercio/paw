@@ -10,11 +10,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
+
 @Controller
 public class UserController {
+	private static final String STUDENTS_SECTION = "students";
 
 	@Autowired
 	private StudentService studentService;
+
+	@RequestMapping("/students")
+	public ModelAndView getAllStudents() {
+		final ModelAndView mav = new ModelAndView("students");
+        final List<Student> students =  studentService.getAll();
+        mav.addObject("students", students);
+		mav.addObject("section", STUDENTS_SECTION);
+		return mav;
+	}
 
 	@RequestMapping("/students/{docket}/info")
 	public ModelAndView getStudent(@PathVariable final int docket) {
@@ -30,7 +42,7 @@ public class UserController {
 
 		mav = new ModelAndView("student");
 		mav.addObject("student", student);
-		mav.addObject("section", "index");
+		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
@@ -48,13 +60,15 @@ public class UserController {
 
 		mav = new ModelAndView("grades");
 		mav.addObject("student", student);
+		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
-	@RequestMapping("/students/{docket}/courses/")
+	@RequestMapping("/students/{docket}/courses")
 	public ModelAndView getStudentsCourse(@PathVariable final Integer docket){
 		final ModelAndView mav = new ModelAndView("courses");
 		mav.addObject("courses", studentService.getStudentCourses(docket));
+		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 

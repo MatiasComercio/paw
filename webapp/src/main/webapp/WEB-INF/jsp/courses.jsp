@@ -20,7 +20,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Cursos
+                        Materias
                     </h1>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                 <tr>
                     <th>ID</th>
                     <th>Nombre</th>
-                    <th>Creditos</th>
+                    <th>Créditos</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -40,7 +40,7 @@
                         <td>${ course.id }</td>
                         <td>${ course.name }</td>
                         <td>${ course.credits }</td>
-                        <td><a href="<c:url value="courses/${course.id}" />">Ver</a></td>
+                        <td><a href="<c:url value="/app/courses/${course.id}/info" />">Ver</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>

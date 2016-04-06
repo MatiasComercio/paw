@@ -17,12 +17,8 @@ public class IndexController {
 
 	@RequestMapping("/")
 	public ModelAndView index() {
-		final ModelAndView mav = new ModelAndView("index");
-        final List<Student> students =  studentService.getAll();
-
-		mav.addObject("description", "Lista de alumnos");
-        mav.addObject("students", students);
-		mav.addObject("section", "index");
-		return mav;
+		/* +++xchange: implement the index later */
+		/* tmp solution */
+		return new ModelAndView("redirect:/app/students/");
 	}
 }
