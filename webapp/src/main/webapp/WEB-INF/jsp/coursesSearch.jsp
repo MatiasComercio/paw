@@ -81,13 +81,27 @@
 <jsp:include page="base/footer.jsp" />
 <script>
     $( document ).ready(function() {
-        $('#search').click(function(){
+
+        var urlWithFilters = function() {
             var id_text = $("#id_text").val();
             var name_text = $("#name_text").val();
 
             document.location.href = "?keyword=" + name_text + "&" + "id=" + id_text;
+        }
 
-        });
+        $('#search').click(urlWithFilters);
+
+        /* source: http://stackoverflow.com/questions/10905345/pressing-enter-on-a-input-type-text-how */
+        $("input").bind("keypress", {}, keypressInBox);
+
+        function keypressInBox(e) {
+            var code = (e.keyCode ? e.keyCode : e.which);
+            if (code == 13) { //Enter keycode
+                e.preventDefault();
+               urlWithFilters();
+            }
+        };
+
     });
 </script>
 </body>

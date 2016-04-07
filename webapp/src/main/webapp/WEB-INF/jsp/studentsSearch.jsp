@@ -78,15 +78,26 @@
 <jsp:include page="base/footer.jsp" />
 <script>
     $( document ).ready(function() {
-        $('#search').click(function(){
+        var urlWithFilters = function() {
             var docket_text = $("#docket_text").val();
             var first_name_text = $("#first_name_text").val();
             var last_name_text = $("#last_name_text").val();
 
             document.location.href = "?docket=" + docket_text + "&" + "firstName=" + first_name_text + "&" + "lastName=" + last_name_text;
-        });
+        }
 
+        $('#search').click(urlWithFilters);
 
+        /* source: http://stackoverflow.com/questions/10905345/pressing-enter-on-a-input-type-text-how */
+        $("input").bind("keypress", {}, keypressInBox);
+
+        function keypressInBox(e) {
+            var code = (e.keyCode ? e.keyCode : e.which);
+            if (code == 13) { //Enter keycode
+                e.preventDefault();
+                urlWithFilters();
+            }
+        };
     });
 </script>
 </body>
