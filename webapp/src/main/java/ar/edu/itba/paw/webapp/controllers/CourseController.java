@@ -55,11 +55,6 @@ public class CourseController {
     public String addCourse(@ModelAttribute("addCourse") Course.Builder courseBuilder) {
 
         final Course course = courseBuilder.build();
-
-        /* +++xdebug: remove this */
-        System.out.println(course.toString());
-        System.out.println(course.getId());
-
         courseService.create(course.getId(), course.getName(), course.getCredits());
         return "redirect:/app/courses";
     }

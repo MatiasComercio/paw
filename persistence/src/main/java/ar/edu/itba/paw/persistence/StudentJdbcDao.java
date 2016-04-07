@@ -207,7 +207,7 @@ public class StudentJdbcDao implements StudentDao {
 		return students.isEmpty() ? null : students.get(0);
 	}
 
-	@Override
+/*	@Override
 	public List<Student> getAll() {
 
 		final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_ALL, studentBasicRowMapper);
@@ -222,7 +222,7 @@ public class StudentJdbcDao implements StudentDao {
 		}
 
 		return students;
-	}
+	}*/
 
 	@Override
 	public Student getGrades(final int docket) {

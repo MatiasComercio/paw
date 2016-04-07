@@ -238,7 +238,7 @@ public class StudentJdbcDaoTest {
 		assertEquals(ADDRESS__ZIP_CODE_EXPECTED_EMPTY, student.getAddress().getZipCode());
 	}
 
-	// +++x TODO: write getAll test
+	// +++x TODO: write remaining test
 
 	@Test
 	public void getGrades() {

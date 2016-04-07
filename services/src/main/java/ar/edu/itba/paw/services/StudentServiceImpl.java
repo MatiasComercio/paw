@@ -23,11 +23,6 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public List<Student> getAll() {
-		return studentDao.getAll();
-	}
-
-	@Override
 	public List<Course> getStudentCourses(int docket) {
 		return studentDao.getStudentCourses(docket);
 	}

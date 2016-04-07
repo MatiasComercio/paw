@@ -17,12 +17,6 @@ public interface StudentService {
 	Student getByDocket(final int docket);
 
 	/**
-	 * Gets all the students within the database
-	 * @return all the students within the database
-	 */
-	List<Student> getAll();
-
-	/**
 	 * Gets the student with the given docket containing all the grades of the courses they took.
 	 * If no student exists with that docket, null is returned.
 	 * @param docket The student's docket
@@ -30,7 +24,9 @@ public interface StudentService {
 	 */
 	Student getGrades(final int docket);
 
+	/* +++xdocument *//* +++xtest */
 	List<Course> getStudentCourses(final int docket);
 
+	/* +++xdocument *//* +++xtest */
 	List<Student> getByFilter(StudentFilter studentFilter);
 }
