@@ -20,11 +20,11 @@ public class UserController {
 	private StudentService studentService;
 
 	@RequestMapping("/students")
-	public ModelAndView getStudentsByFilter(@RequestParam(defaultValue = "") final Integer docket,
-	                                        @RequestParam(defaultValue = "") final String firstName,
-	                                        @RequestParam(defaultValue = "") final String lastName,
-	                                        @RequestParam(defaultValue = "") final String genre) {
-		final ModelAndView mav = new ModelAndView("students");
+	public ModelAndView getStudentsByFilter(@RequestParam(required = false) final Integer docket,
+	                                        @RequestParam(required = false) final String firstName,
+	                                        @RequestParam(required = false) final String lastName,
+	                                        @RequestParam(required = false) final String genre) {
+		final ModelAndView mav = new ModelAndView("studentsSearch");
 		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
 				.docket(docket)
 				.firstName(firstName)

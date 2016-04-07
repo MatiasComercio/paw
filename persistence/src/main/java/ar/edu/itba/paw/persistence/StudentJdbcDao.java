@@ -73,6 +73,7 @@ public class StudentJdbcDao implements StudentDao {
 					"SELECT * " +
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
 							" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN;
+
 	private static final String EMAILS_QUERY =
 					"SELECT " + USER__EMAIL_COLUMN + " " +
 					"FROM " + USER_TABLE + " " +
@@ -311,14 +312,14 @@ public class StudentJdbcDao implements StudentDao {
 		private final List<String> filters;
 
 		private final FilterQueryMapper filterBySubWord = (filter, filterName) -> {
-			if(filter != null) {
+			if(filter != null && !filter.toString().equals("")) {
 				String stringFilter = "%" + filter.toString() + "%";
 				appendFilter(filterName, stringFilter);
 			}
 		};
 
 		private final FilterQueryMapper filterByExactWord = (filter, filterName) -> {
-			if(filter != null) {
+			if(filter != null && !filter.toString().equals("")) {
 				String stringFilter = filter.toString();
 				appendFilter(filterName, stringFilter);
 			}

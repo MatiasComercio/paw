@@ -22,6 +22,25 @@
                 </div>
             </div>
 
+            <!-- search -->
+            <div class="row">
+                <div class="col-xs-10">
+                    <div class="row">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="sizing-addon">Legajo</span>
+                            <input id="docket_text" type="text" class="form-control" placeholder="Buscar por legajo..." aria-describedby="sizing-addon2">
+                            <span class="input-group-addon" id="sizing-addon2">Nombre</span>
+                            <input id="first_name_text" type="text" class="form-control" placeholder="Buscar por nombre..." aria-describedby="sizing-addon2">
+                            <span class="input-group-addon" id="sizing-addon3">Apellido</span>
+                            <input id="last_name_text" type="text" class="form-control" placeholder="Buscar por apellido..." aria-describedby="sizing-addon2">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div id="search" type="button" class="btn btn-default">Buscar</div>
+                </div>
+            </div>
+
             <!-- content -->
             <table class="table table-striped">
                 <thead>
@@ -57,5 +76,18 @@
 </div>
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
+<script>
+    $( document ).ready(function() {
+        $('#search').click(function(){
+            var docket_text = $("#docket_text").val();
+            var first_name_text = $("#first_name_text").val();
+            var last_name_text = $("#last_name_text").val();
+
+            document.location.href = "?docket=" + docket_text + "&" + "firstName=" + first_name_text + "&" + "lastName=" + last_name_text;
+        });
+
+
+    });
+</script>
 </body>
 </html>

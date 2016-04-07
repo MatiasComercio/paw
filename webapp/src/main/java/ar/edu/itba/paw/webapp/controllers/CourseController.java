@@ -17,20 +17,20 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    @RequestMapping("/courses/{id}/info")
-    public ModelAndView getCourse(@PathVariable final Integer id) {
-        final ModelAndView mav = new ModelAndView("course");
-        mav.addObject("course", courseService.getById(id));
+    @RequestMapping(value = "/courses")
+    public ModelAndView getCoursesByFilter(@RequestParam(required = false) String keyword,
+                                           @RequestParam(required = false) Integer id) {
+        final ModelAndView mav = new ModelAndView("coursesSearch");
+        final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).id(id).build();
+        mav.addObject("courses", courseService.getByFilter(courseFilter));
         mav.addObject("section", COURSES_SECTION);
         return mav;
     }
 
-    @RequestMapping(value = "/courses")
-    public ModelAndView getCoursesByFilter(@RequestParam(defaultValue = "") String keyword,
-                                           @RequestParam(defaultValue = "") Integer id) {
-        final ModelAndView mav = new ModelAndView("searchCourses");
-        final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).id(id).build();
-        mav.addObject("courses", courseService.getByFilter(courseFilter));
+    @RequestMapping("/courses/{id}/info")
+    public ModelAndView getCourse(@PathVariable final Integer id) {
+        final ModelAndView mav = new ModelAndView("course");
+        mav.addObject("course", courseService.getById(id));
         mav.addObject("section", COURSES_SECTION);
         return mav;
     }

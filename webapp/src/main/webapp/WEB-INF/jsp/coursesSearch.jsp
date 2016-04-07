@@ -31,11 +31,13 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="row">
-                        <div class="input-group">
-                            <span class="input-group-addon" id="sizing-addon">Id</span>
-                            <input id="id_text" type="text" class="form-control" placeholder="Buscar por id" aria-describedby="sizing-addon2">
-                            <span class="input-group-addon" id="sizing-addon2">Nombre</span>
-                            <input id="name_text" type="text" class="form-control" placeholder="Buscar por nombre" aria-describedby="sizing-addon2">
+                        <div class="col-xs-12">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="sizing-addon">Id</span>
+                                <input id="id_text" type="text" class="form-control" placeholder="Buscar por id..." aria-describedby="sizing-addon2">
+                                <span class="input-group-addon" id="sizing-addon2">Nombre</span>
+                                <input id="name_text" type="text" class="form-control" placeholder="Buscar por nombre..." aria-describedby="sizing-addon2">
+                            </div>
                         </div>
                     </div>
                 </div>
