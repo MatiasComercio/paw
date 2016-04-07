@@ -207,23 +207,6 @@ public class StudentJdbcDao implements StudentDao {
 		return students.isEmpty() ? null : students.get(0);
 	}
 
-/*	@Override
-	public List<Student> getAll() {
-
-		final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_ALL, studentBasicRowMapper);
-
-		if (studentBuilders.isEmpty()) {
-			return null;
-		}
-
-		final List<Student> students = new LinkedList<>();
-		for (Student.Builder each : studentBuilders) {
-			students.add(each.build());
-		}
-
-		return students;
-	}*/
-
 	@Override
 	public Student getGrades(final int docket) {
 		final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_BY_DOCKET, studentBasicRowMapper, docket);
