@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.CourseService;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.forms.CourseForm;
 import ar.edu.itba.paw.shared.CourseFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,22 +46,16 @@ public class CourseController {
 
     @RequestMapping(value = "/courses/add_course", method = RequestMethod.GET)
     public ModelAndView addCourse(){
-        final Course course = new Course.Builder(0).build();
-        final ModelAndView mav = new ModelAndView("addCourse", "command", course);
+        final ModelAndView mav = new ModelAndView("addCourse", "command", new CourseForm());
         mav.addObject("section", COURSES_SECTION);
         return mav;
     }
 
     @RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
-    public String addCourse(@ModelAttribute("addCourse") Course.Builder courseBuilder) {
-
-        final Course course = courseBuilder.build();
-
-        /* +++xdebug: remove this */
-        System.out.println(course.toString());
-        System.out.println(course.getId());
-
-        courseService.create(course.getId(), course.getName(), course.getCredits());
+    public String addCourse(@ModelAttribute("addCourse") CourseForm courseForm){
+        final Course course = courseForm.build();
+        courseService.create(course);
         return "redirect:/app/courses";
     }
+
 }

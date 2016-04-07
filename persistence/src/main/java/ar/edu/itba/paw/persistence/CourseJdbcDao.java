@@ -28,7 +28,7 @@ public class CourseJdbcDao implements CourseDao {
 
 
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert jdbcInsert;
+    private final SimpleJdbcInsert courseInsert;
 
     private final RowMapper<Course> courseRowMapper = (resultSet, rowNum) ->
             new Course.Builder(resultSet.getInt(ID_COLUMN))
@@ -42,27 +42,22 @@ public class CourseJdbcDao implements CourseDao {
     @Autowired
     public CourseJdbcDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+        this.courseInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME)
                 .usingColumns(ID_COLUMN, NAME_COLUMN, CREDITS_COLUMN);
     }
 
 
     @Override
-    public Course create(final int id, final String coursename, final int credits) {
+    public void create(Course course) {
         final Map<String, Object> args = new HashMap<>();
 
-        args.put(ID_COLUMN, id);
-        args.put(NAME_COLUMN, coursename);
-        args.put(CREDITS_COLUMN, credits);
+        args.put(ID_COLUMN, course.getId());
+        args.put(NAME_COLUMN, course.getName());
+        args.put(CREDITS_COLUMN, course.getCredits());
 
+        courseInsert.execute(args);
 
-        jdbcInsert.execute(args);
-
-        return new Course.Builder(id)
-                            .name(coursename)
-                            .credits(credits)
-                            .build();
     }
 
     @Override

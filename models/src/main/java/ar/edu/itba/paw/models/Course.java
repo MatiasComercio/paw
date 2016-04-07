@@ -67,15 +67,10 @@ public class Course {
             this.id = id;
         }
 
-        public Builder() {
-
-        }
-
         public Builder id(int id) {
             this.id = id;
             return this;
         }
-
 
         public Builder name(String name) {
             this.name = name;

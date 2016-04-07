@@ -8,14 +8,10 @@ import java.util.List;
 public interface CourseDao {
 
     /**
-     * Create a new course and store it
-     * @param id of the new course
-     * @param coursename the name of the course
-     * @param credits the number of credits which are assigned to the course
-     * @return the course with the desired properties, if the id does not collide with another course's id which
-     * already exists; null otherwise
+     *
+     * @param course The course to be persisted in the database.
      */
-    Course create(int id, String coursename, int credits);
+    void create(Course course);
 
     /**
      * Get the course identified by an ID

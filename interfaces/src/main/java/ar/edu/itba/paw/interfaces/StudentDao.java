@@ -36,7 +36,7 @@ public interface StudentDao {
 
 	/**
 	 *
-	 * @param student An instance of the student to be persisted in the Data Base
+	 * @param student The student to be persisted in the database.
      */
 	void create(Student student);
 

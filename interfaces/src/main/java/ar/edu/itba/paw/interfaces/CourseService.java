@@ -10,13 +10,10 @@ import java.util.List;
  */
 public interface CourseService {
     /**
-     * Creates a new Course
-     * @param id the id of the course
-     * @param coursename the name of the course
-     * @param credits the number of credits assigned to the course
-     * @return the course created, if the id does not exist in another course; else null
+     *
+     * @param course The course to be persisted in the database.
      */
-    Course create(int id, String coursename, int credits);
+    void create(Course course);
 
     /**
      * Gets the desired course by the identifier
