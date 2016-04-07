@@ -103,9 +103,9 @@ public abstract class User {
 				'}';
 	}
 
-	protected static abstract class Builder<V extends User, T extends Builder<V,T>> {
-		private final int dni;
-		private final T thisBuilder;
+	public static abstract class Builder<V extends User, T extends Builder<V,T>> {
+		private int dni;
+		private T thisBuilder;
 
 		private String firstName = null;
 		private String lastName = null;

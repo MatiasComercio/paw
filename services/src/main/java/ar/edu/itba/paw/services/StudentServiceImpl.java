@@ -32,6 +32,11 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
+	public void create(Student student) {
+		studentDao.create(student);
+	}
+
+	@Override
 	public Student getGrades(final int docket) {
 		return docket <= 0 ? null : studentDao.getGrades(docket);
 	}

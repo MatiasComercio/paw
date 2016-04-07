@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface StudentDao {
@@ -31,4 +33,11 @@ public interface StudentDao {
 	Student getGrades(int docket);
 
 	List<Course> getStudentCourses(final int docket);
+
+	/**
+	 *
+	 * @param student An instance of the student to be persisted in the Data Base
+     */
+	void create(Student student);
+
 }

@@ -1,11 +1,16 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
+import ar.edu.itba.paw.models.Address;
+import ar.edu.itba.paw.models.forms.StudentForm;
 import ar.edu.itba.paw.models.users.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -69,4 +74,19 @@ public class UserController {
 		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
+
+	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
+	public ModelAndView addStudent(){
+		final ModelAndView mav = new ModelAndView("addStudent", "command", new StudentForm());
+		mav.addObject("section", STUDENTS_SECTION);
+		return mav;
+	}
+
+	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
+	public String addStudent(@ModelAttribute("addStudent") StudentForm studentForm) {
+		Student student = studentForm.build();
+		studentService.create(student);
+		return "redirect:/app/students";
+	}
+
 }

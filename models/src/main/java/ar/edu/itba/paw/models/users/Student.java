@@ -54,8 +54,8 @@ public class Student extends User {
 
 	public static class Builder extends User.Builder<Student, Builder> {
 
-		private final int docket;
-		private final List<Grade> grades;
+		private int docket;
+		private List<Grade> grades;
 
 		public Builder(final int docket, final int dni) {
 			super(dni);
@@ -70,7 +70,6 @@ public class Student extends User {
 
 			return this;
 		}
-
 
 		public Builder addGrades(final List<Grade> grades) {
 			if (grades != null) {

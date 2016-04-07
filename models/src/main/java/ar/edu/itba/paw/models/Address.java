@@ -60,11 +60,11 @@ public class Address {
 	}
 
 	public static class Builder {
-		private final String country;
-		private final String city;
-		private final String neighborhood;
-		private final String street;
-		private final int number;
+		private String country;
+		private String city;
+		private String neighborhood;
+		private String street;
+		private int number;
 
 		private int floor;
 		private String door = "";

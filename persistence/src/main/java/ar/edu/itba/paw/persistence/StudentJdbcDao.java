@@ -10,14 +10,17 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class StudentJdbcDao implements StudentDao {
@@ -184,10 +187,17 @@ public class StudentJdbcDao implements StudentDao {
 	};
 
 	private final JdbcTemplate jdbcTemplate;
+	private SimpleJdbcInsert userInsert;
+	private SimpleJdbcInsert studentInsert;
+	private SimpleJdbcInsert addressInsert;
 
 	@Autowired
 	public StudentJdbcDao (final DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
+		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
+		studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
+		addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
+
 	}
 
 	@Override
@@ -241,6 +251,55 @@ public class StudentJdbcDao implements StudentDao {
 				courseRowMapper, docket);
 
 		return courses;
+	}
+
+	@Override
+	public void create(Student student) {
+		//TODO: Add further data validation
+
+		final Map<String, Object> userArgs = new HashMap<>();
+		final Map<String, Object> studentArgs = new HashMap<>();
+		final Map<String, Object> addressArgs = new HashMap<>();
+
+		/* Store User Data */
+		//TODO: DNI > 0 and UNIQUE(email) are guaranteed by the DB. How do we handle in case insertion fails?
+		if(student.getDni() > 0) {
+			userArgs.put(USER__DNI_COLUMN, student.getDni());
+			userArgs.put(USER__FIRST_NAME_COLUMN, student.getFirstName());
+			userArgs.put(USER__LAST_NAME_COLUMN, student.getLastName());
+			//TODO: Check genre length eq 1 (Again this is verified by the db)
+			if(student.getGenre() == "Female")
+				userArgs.put(USER__GENRE_COLUMN, "F");
+			else
+				userArgs.put(USER__GENRE_COLUMN, "M");
+			userArgs.put(USER__BIRTHDAY_COLUMN, student.getBirthday());
+			//TODO: Get default email
+			userArgs.put(USER__EMAIL_COLUMN, student.getEmail());
+			userInsert.execute(userArgs);
+		}
+
+		/* Store Student Data */
+		if(student.getDocket() > 0 && student.getDni()>0) {
+			studentArgs.put(STUDENT__DOCKET_COLUMN, student.getDocket());
+			studentArgs.put(STUDENT__DNI_COLUMN, student.getDni());
+			//PASSWORD??? userArgs.put(ID_COLUMN, student);
+			studentInsert.execute(studentArgs);
+		}
+
+		/* Store Address Data */
+		if(student.getDni() > 0 && student.getAddress() != null) {
+			addressArgs.put(ADDRESS__DNI_COLUMN, student.getDni());
+			addressArgs.put(ADDRESS__COUNTRY_COLUMN, student.getAddress().getCountry());
+			addressArgs.put(ADDRESS__CITY_COLUMN, student.getAddress().getCity());
+			addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, student.getAddress().getNeighborhood());
+			addressArgs.put(ADDRESS__STREET_COLUMN, student.getAddress().getStreet());
+			addressArgs.put(ADDRESS__NUMBER_COLUMN, student.getAddress().getNumber());
+			addressArgs.put(ADDRESS__FLOOR_COLUMN, student.getAddress().getFloor());
+			addressArgs.put(ADDRESS__DOOR_COLUMN, student.getAddress().getDoor());
+			addressArgs.put(ADDRESS__TELEPHONE_COLUMN, student.getAddress().getTelephone());
+			addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, student.getAddress().getZipCode());
+			addressInsert.execute(addressArgs);
+		}
 	}
 
 	private String createEmail(final int docket, final String firstName, final String lastName) {

@@ -28,4 +28,11 @@ public interface StudentService {
 	 */
 	Student getGrades(final int docket);
 	List<Course> getStudentCourses(final int docket);
+
+
+	/**
+	 *
+	 * @param student An instance of the student to be persisted in the Data Base
+	 */
+	void create(Student student);
 }
