@@ -24,7 +24,12 @@ public interface StudentService {
 	 */
 	Student getGrades(final int docket);
 
-	/* +++xdocument *//* +++xtest */
+	/**
+	 * Gets the courses which match to a student, given a docket.
+	 * @param docket The student's docket
+	 * @return the list of courses, if the student exists. If the docket doesn't match to a student,
+	 * it returns null
+     */
 	List<Course> getStudentCourses(final int docket);
 
 	/* +++xdocument *//* +++xtest */
