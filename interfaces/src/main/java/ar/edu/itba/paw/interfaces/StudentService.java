@@ -24,6 +24,7 @@ public interface StudentService {
 	 */
 	Student getGrades(final int docket);
 
+	/* +++xtest */
 	/**
 	 * Gets the courses which match to a student, given a docket.
 	 * @param docket The student's docket
@@ -32,6 +33,12 @@ public interface StudentService {
      */
 	List<Course> getStudentCourses(final int docket);
 
-	/* +++xdocument *//* +++xtest */
+	/* +++xtest */
+	/**
+	 * Gets the students that comply to a list of filters
+	 * @param studentFilter The list of filters to apply
+	 * @return the list of students that match the list of filters. If no student matches the filters, it returns
+	 * an empty list.
+     */
 	List<Student> getByFilter(StudentFilter studentFilter);
 }
