@@ -31,6 +31,7 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String ADDRESS_TABLE = "address";
 	private static final String GRADE_TABLE = "grade";
 	private static final String COURSE_TABLE = "course";
+	private static final String INSCRIPTION_TABLE = "inscription";
 
 	private static final String STUDENT__DOCKET_COLUMN = "docket";
 	private static final String STUDENT__DNI_COLUMN = "dni";
@@ -61,6 +62,9 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String COURSE__NAME_COLUMN = "name";
 	private static final String COURSE__CREDITS_COLUMN = "credits";
 
+	private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
+	private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
+
 	private static final String GET_BY_DOCKET =
 					"SELECT * " +
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
@@ -85,6 +89,13 @@ public class StudentJdbcDao implements StudentDao {
 						GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." +  COURSE__ID_COLUMN +
 				" WHERE " + GRADE__DOCKET_COLUMN + " = ? " +
 				";";
+
+
+	private static final String GET_COURSES =
+				"SELECT * " +
+				"FROM " + INSCRIPTION_TABLE + " JOIN " + COURSE_TABLE + " ON " +
+					INSCRIPTION_TABLE + "." + INSCRIPTION__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." + COURSE__ID_COLUMN
+				+ " WHERE " + INSCRIPTION_TABLE + "." + INSCRIPTION__DOCKET_COLUMN + " = ?";
 
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
@@ -232,9 +243,7 @@ public class StudentJdbcDao implements StudentDao {
 			return null;
 		}
 
-		List<Course> courses = jdbcTemplate.query("SELECT id, name, credits FROM inscription JOIN course on inscription.course_id = course.id"
-		+ " WHERE docket = ?",
-		courseRowMapper, docket);
+		List<Course> courses = jdbcTemplate.query(GET_COURSES, courseRowMapper, docket);
 
 		return courses;
 	}
