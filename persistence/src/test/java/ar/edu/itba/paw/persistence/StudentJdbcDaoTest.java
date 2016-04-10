@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import org.hamcrest.Matcher;
@@ -193,6 +194,11 @@ public class StudentJdbcDaoTest {
 		inscriptionArgs1.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
 		inscriptionArgs1.put(INSCRIPTION__DOCKET_COLUMN, docket1);
 		inscriptionInsert.execute(inscriptionArgs1);
+
+		/* Invalid student */
+		List<Course> courses = studentJdbcDao.getStudentCourses(DOCKET_INVALID);
+		assertNull(courses);
+		/******************/
 	}
 
 	@Test
