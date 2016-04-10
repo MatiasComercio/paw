@@ -158,7 +158,7 @@ public class StudentJdbcDaoTest {
 		addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
 		courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
 		gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);
-		inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE);
+		inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE).usingColumns(INSCRIPTION__COURSE_ID_COLUMN, INSCRIPTION__DOCKET_COLUMN);
 		/* Order of deletation is important so as not to remove tables referenced by others */
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, INSCRIPTION_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, GRADE_TABLE);
@@ -182,9 +182,10 @@ public class StudentJdbcDaoTest {
 		userArgs1.put(USER__BIRTHDAY_COLUMN, Date.valueOf(BIRTHDAY_1));
 		userInsert.execute(userArgs1);
 
-		studentArgs1.put(STUDENT__DOCKET_COLUMN, DOCKET_1);
+
 		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
-		studentInsert.execute(studentArgs1);
+		Number key = studentInsert.executeAndReturnKey(studentArgs1);
+		docket1 = key.intValue();
 
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
@@ -192,7 +193,7 @@ public class StudentJdbcDaoTest {
 		courseInsert.execute(courseArgs);
 
 		inscriptionArgs1.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
-		inscriptionArgs1.put(INSCRIPTION__DOCKET_COLUMN, DOCKET_1);
+		inscriptionArgs1.put(INSCRIPTION__DOCKET_COLUMN, docket1);
 		inscriptionInsert.execute(inscriptionArgs1);
 	}
 
