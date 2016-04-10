@@ -163,6 +163,7 @@ public class StudentJdbcDaoTest {
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, INSCRIPTION_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, GRADE_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, COURSE_TABLE);
+		JdbcTestUtils.deleteFromTables(jdbcTemplate, ADDRESS_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
 	}
@@ -190,8 +191,8 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
 		courseInsert.execute(courseArgs);
 
-		inscriptionArgs1.put(INSCRIPTION__DOCKET_COLUMN, DOCKET_1);
 		inscriptionArgs1.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
+		inscriptionArgs1.put(INSCRIPTION__DOCKET_COLUMN, DOCKET_1);
 		inscriptionInsert.execute(inscriptionArgs1);
 	}
 
