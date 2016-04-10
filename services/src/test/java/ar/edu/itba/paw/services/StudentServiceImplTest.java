@@ -83,5 +83,4 @@ public class StudentServiceImplTest {
 		studentService.getStudentCourses(DOCKET_INVALID);
 		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID);
 	}
-
 }

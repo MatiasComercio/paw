@@ -346,4 +346,8 @@ public class StudentJdbcDaoTest {
 
 		return matchers;
 	}
+
+	public void getStudentCourses() {
+
+	}
 }
