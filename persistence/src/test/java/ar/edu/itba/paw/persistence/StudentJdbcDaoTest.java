@@ -159,6 +159,18 @@ public class StudentJdbcDaoTest {
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
 	}
 
+	public void getStudentCourses() {
+		final Map<String, Object> studentArgs1 = new HashMap<>();
+		final Map<String, Object> studentArgs2 = new HashMap<>();
+
+		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
+		Number key = studentInsert.executeAndReturnKey(studentArgs1);
+		studentArgs2.put(STUDENT__DNI_COLUMN, DNI_2);
+		key = studentInsert.executeAndReturnKey(studentArgs2);
+
+
+	}
+
 	@Test
 	public void getByDocket() {
 		final Map<String, Object> userArgs1 = new HashMap<>();
@@ -345,9 +357,5 @@ public class StudentJdbcDaoTest {
 		matchers.add(is(defaultEmail));
 
 		return matchers;
-	}
-
-	public void getStudentCourses() {
-
 	}
 }
