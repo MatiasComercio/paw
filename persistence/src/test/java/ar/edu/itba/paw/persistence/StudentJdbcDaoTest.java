@@ -178,8 +178,6 @@ public class StudentJdbcDaoTest {
 		userArgs1.put(USER__DNI_COLUMN, DNI_1);
 		userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
-		userArgs1.put(USER__GENRE_COLUMN, GENRE_1);
-		userArgs1.put(USER__BIRTHDAY_COLUMN, Date.valueOf(BIRTHDAY_1));
 		userInsert.execute(userArgs1);
 
 
