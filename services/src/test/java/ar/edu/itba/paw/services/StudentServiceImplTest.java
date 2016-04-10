@@ -66,4 +66,22 @@ public class StudentServiceImplTest {
 		verify(studentDao, times(0)).getGrades(DOCKET_INVALID);
 	}
 
+	@Test
+	public void testGetCourseStudents() {
+		studentService.getStudentCourses(DOCKET_VALID);
+		verify(studentDao, times(1)).getStudentCourses(DOCKET_VALID);
+
+		/* Checks that studentDao.getGrades() is called 1 time when input is valid */
+		studentService.getStudentCourses(DOCKET_VALID_LIMIT);
+		verify(studentDao, times(1)).getStudentCourses(DOCKET_VALID_LIMIT);
+
+		/* Checks that studentDao.getGrades() is no called (0 times) when input is invalid */
+		studentService.getStudentCourses(DOCKET_INVALID_LIMIT);
+		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID_LIMIT);
+
+		/* Checks that studentDao.getGrades() is no called (0 times) when input is invalid */
+		studentService.getStudentCourses(DOCKET_INVALID);
+		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID);
+	}
+
 }
