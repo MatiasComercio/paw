@@ -168,16 +168,22 @@ public class StudentJdbcDaoTest {
 
 	@Test
 	public void getStudentCourses() {
+		final Map<String, Object> userArgs1 = new HashMap<>();
 		final Map<String, Object> studentArgs1 = new HashMap<>();
-		final Map<String, Object> studentArgs2 = new HashMap<>();
 		final Map<String, Object> inscriptionArgs1 = new HashMap<>();
 		final Map<String, Object> inscriptionArgs2 = new HashMap<>();
 		final Map<String, Object> inscriptionArgs3 = new HashMap<>();
 
+		userArgs1.put(USER__DNI_COLUMN, DNI_1);
+		userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userArgs1.put(USER__GENRE_COLUMN, GENRE_1);
+		userArgs1.put(USER__BIRTHDAY_COLUMN, Date.valueOf(BIRTHDAY_1));
+		userInsert.execute(userArgs1);
+
 		studentArgs1.put(STUDENT__DOCKET_COLUMN, DOCKET_1);
+		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
 		Number key = studentInsert.executeAndReturnKey(studentArgs1);
-		studentArgs2.put(STUDENT__DOCKET_COLUMN, DOCKET_2);
-		key = studentInsert.executeAndReturnKey(studentArgs2);
 
 		// Create first subject of student 1
 		inscriptionArgs1.put(INSCRIPTION__DOCKET_COLUMN, DOCKET_1);
