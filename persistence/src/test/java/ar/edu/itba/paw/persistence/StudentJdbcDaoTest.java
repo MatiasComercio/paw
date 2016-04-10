@@ -164,15 +164,16 @@ public class StudentJdbcDaoTest {
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, COURSE_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
+		JdbcTestUtils.deleteFromTables(jdbcTemplate, INSCRIPTION_TABLE);
 	}
 
 	@Test
 	public void getStudentCourses() {
 		final Map<String, Object> userArgs1 = new HashMap<>();
 		final Map<String, Object> studentArgs1 = new HashMap<>();
+		final Map<String, Object> courseArgs = new HashMap<>();
 		final Map<String, Object> inscriptionArgs1 = new HashMap<>();
 		final Map<String, Object> inscriptionArgs2 = new HashMap<>();
-		final Map<String, Object> inscriptionArgs3 = new HashMap<>();
 
 		userArgs1.put(USER__DNI_COLUMN, DNI_1);
 		userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
@@ -181,6 +182,15 @@ public class StudentJdbcDaoTest {
 		userArgs1.put(USER__BIRTHDAY_COLUMN, Date.valueOf(BIRTHDAY_1));
 		userInsert.execute(userArgs1);
 
+		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
+		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
+		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseInsert.execute(courseArgs);
+		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
+		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
+		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+		courseInsert.execute(courseArgs);
+
 		studentArgs1.put(STUDENT__DOCKET_COLUMN, DOCKET_1);
 		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
 		Number key = studentInsert.executeAndReturnKey(studentArgs1);
@@ -188,16 +198,11 @@ public class StudentJdbcDaoTest {
 		// Create first subject of student 1
 		inscriptionArgs1.put(INSCRIPTION__DOCKET_COLUMN, DOCKET_1);
 		inscriptionArgs1.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
-		// Create first subject of student 2
-		inscriptionArgs2.put(INSCRIPTION__DOCKET_COLUMN, DOCKET_2);
-		inscriptionArgs2.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
-		// Create second subject of student 2
-		inscriptionArgs3.put(INSCRIPTION__DOCKET_COLUMN, DOCKET_2);
-		inscriptionArgs3.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_2);
-
 		inscriptionInsert.execute(inscriptionArgs1);
+		// Create first subject of student 2
+		inscriptionArgs2.put(INSCRIPTION__DOCKET_COLUMN, DOCKET_1);
+		inscriptionArgs2.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_2);
 		inscriptionInsert.execute(inscriptionArgs2);
-		inscriptionInsert.execute(inscriptionArgs3);
 	}
 
 	@Test
