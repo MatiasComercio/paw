@@ -24,7 +24,6 @@ public interface StudentDao {
 	 */
 	Student getGrades(int docket);
 
-	/* +++xtest */
 	/**
 	 * Gets the courses which match to a student, given a docket.
 	 * @param docket The student's docket
