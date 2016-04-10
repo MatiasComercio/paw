@@ -38,6 +38,7 @@ public class StudentJdbcDaoTest {
 	private static final String ADDRESS_TABLE = "address";
 	private static final String GRADE_TABLE = "grade";
 	private static final String COURSE_TABLE = "course";
+	private static final String INSCRIPTION_TABLE = "inscription";
 
 	private static final String STUDENT__DOCKET_COLUMN = "docket";
 	private static final String STUDENT__DNI_COLUMN = "dni";
@@ -69,8 +70,13 @@ public class StudentJdbcDaoTest {
 	private static final String COURSE__NAME_COLUMN = "name";
 	private static final String COURSE__CREDITS_COLUMN = "credits";
 
+	private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
+	private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
+
 
 	/* Data to be inserted/expected in/from the columns */
+	private static final int DOCKET_1 = 1;
+	private static final int DOCKET_2 = 2;
 	private static final int DOCKET_INVALID = -1;
 
 	private static final int DNI_1 = 12345678;
@@ -162,12 +168,24 @@ public class StudentJdbcDaoTest {
 	public void getStudentCourses() {
 		final Map<String, Object> studentArgs1 = new HashMap<>();
 		final Map<String, Object> studentArgs2 = new HashMap<>();
+		final Map<String, Object> inscriptionArgs1 = new HashMap<>();
+		final Map<String, Object> inscriptionArgs2 = new HashMap<>();
+		final Map<String, Object> inscriptionArgs3 = new HashMap<>();
 
-		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
+		studentArgs1.put(STUDENT__DOCKET_COLUMN, DOCKET_1);
 		Number key = studentInsert.executeAndReturnKey(studentArgs1);
-		studentArgs2.put(STUDENT__DNI_COLUMN, DNI_2);
+		studentArgs2.put(STUDENT__DOCKET_COLUMN, DOCKET_2);
 		key = studentInsert.executeAndReturnKey(studentArgs2);
 
+		// Create first subject of student 1
+		inscriptionArgs1.put(INSCRIPTION__DOCKET_COLUMN, DOCKET_1);
+		inscriptionArgs1.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
+		// Create first subject of student 2
+		inscriptionArgs2.put(INSCRIPTION__DOCKET_COLUMN, DOCKET_2);
+		inscriptionArgs2.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
+		// Create second subject of student 2
+		inscriptionArgs3.put(INSCRIPTION__DOCKET_COLUMN, DOCKET_2);
+		inscriptionArgs3.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_2);
 
 	}
 
