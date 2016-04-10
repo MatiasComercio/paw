@@ -32,7 +32,6 @@ public interface StudentDao {
 	 */
 	List<Course> getStudentCourses(final int docket);
 
-	/* +++xtest */
 	/**
 	 * Gets the students that comply to a list of filters
 	 * @param studentFilter The list of filters to apply
