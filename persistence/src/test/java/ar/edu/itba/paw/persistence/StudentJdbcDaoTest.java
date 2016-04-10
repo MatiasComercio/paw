@@ -19,10 +19,7 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -219,10 +216,17 @@ public class StudentJdbcDaoTest {
 		/* Student with no courses */
 		courses = studentJdbcDao.getStudentCourses(docket1);
 		assertNotNull(courses);
-		assertEquals(true, courses.isEmpty());
+		assertTrue(courses.isEmpty());
 
 		/* Student with courses */
+		Course[] expectedCourses = new Course[] {
+				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).build(),
+				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).build()
+		};
 		courses = studentJdbcDao.getStudentCourses(docket2);
+		assertNotNull(courses);
+		assertFalse(courses.isEmpty());
+		assertArrayEquals(expectedCourses, courses.toArray());
 	}
 
 	@Test
