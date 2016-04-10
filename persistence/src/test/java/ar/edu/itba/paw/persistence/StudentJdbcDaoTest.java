@@ -166,6 +166,7 @@ public class StudentJdbcDaoTest {
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
 	}
 
+	@Test
 	public void getStudentCourses() {
 		final Map<String, Object> studentArgs1 = new HashMap<>();
 		final Map<String, Object> studentArgs2 = new HashMap<>();
@@ -188,6 +189,9 @@ public class StudentJdbcDaoTest {
 		inscriptionArgs3.put(INSCRIPTION__DOCKET_COLUMN, DOCKET_2);
 		inscriptionArgs3.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_2);
 
+		inscriptionInsert.execute(inscriptionArgs1);
+		inscriptionInsert.execute(inscriptionArgs2);
+		inscriptionInsert.execute(inscriptionArgs3);
 	}
 
 	@Test
