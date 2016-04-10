@@ -172,33 +172,57 @@ public class StudentJdbcDaoTest {
 	@Test
 	public void getStudentCourses() {
 		final Map<String, Object> userArgs1 = new HashMap<>();
+		final Map<String, Object> userArgs2 = new HashMap<>();
 		final Map<String, Object> studentArgs1 = new HashMap<>();
-		final Map<String, Object> courseArgs = new HashMap<>();
-		final Map<String, Object> inscriptionArgs1 = new HashMap<>();
+		final Map<String, Object> studentArgs2 = new HashMap<>();
+		final Map<String, Object> courseArgs1 = new HashMap<>();
+		final Map<String, Object> courseArgs2 = new HashMap<>();
+		final Map<String, Object> inscriptionArgs = new HashMap<>();
 
 		userArgs1.put(USER__DNI_COLUMN, DNI_1);
 		userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userInsert.execute(userArgs1);
-
+		userArgs2.put(USER__DNI_COLUMN, DNI_2);
+		userArgs2.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs2.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userInsert.execute(userArgs2);
 
 		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
 		Number key = studentInsert.executeAndReturnKey(studentArgs1);
 		docket1 = key.intValue();
+		studentArgs2.put(STUDENT__DNI_COLUMN, DNI_2);
+		key = studentInsert.executeAndReturnKey(studentArgs2);
+		docket2 = key.intValue();
 
-		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
-		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
-		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
-		courseInsert.execute(courseArgs);
+		/* add the courses to respective students */
+		courseArgs1.put(COURSE__ID_COLUMN, COURSE_ID_1);
+		courseArgs1.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
+		courseArgs1.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseInsert.execute(courseArgs1);
+		courseArgs2.put(COURSE__ID_COLUMN, COURSE_ID_2);
+		courseArgs2.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
+		courseArgs2.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+		courseInsert.execute(courseArgs2);
 
-		inscriptionArgs1.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
-		inscriptionArgs1.put(INSCRIPTION__DOCKET_COLUMN, docket1);
-		inscriptionInsert.execute(inscriptionArgs1);
+		inscriptionArgs.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
+		inscriptionArgs.put(INSCRIPTION__DOCKET_COLUMN, docket2);
+		inscriptionInsert.execute(inscriptionArgs);
+		inscriptionArgs.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_2);
+		inscriptionArgs.put(INSCRIPTION__DOCKET_COLUMN, docket2);
+		inscriptionInsert.execute(inscriptionArgs);
 
 		/* Invalid student */
 		List<Course> courses = studentJdbcDao.getStudentCourses(DOCKET_INVALID);
 		assertNull(courses);
-		/******************/
+
+		/* Student with no courses */
+		courses = studentJdbcDao.getStudentCourses(docket1);
+		assertNotNull(courses);
+		assertEquals(true, courses.isEmpty());
+
+		/* Student with courses */
+		courses = studentJdbcDao.getStudentCourses(docket2);
 	}
 
 	@Test
