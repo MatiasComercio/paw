@@ -148,6 +148,7 @@ public class StudentJdbcDaoTest {
 	private SimpleJdbcInsert addressInsert;
 	private SimpleJdbcInsert courseInsert;
 	private SimpleJdbcInsert gradeInsert;
+	private SimpleJdbcInsert inscriptionInsert;
 
 	@Before
 	public void setUp() {
@@ -157,7 +158,7 @@ public class StudentJdbcDaoTest {
 		addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
 		courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
 		gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);
-
+		inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE);
 		/* Order of deletation is important so as not to remove tables referenced by others */
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, GRADE_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, COURSE_TABLE);
