@@ -226,9 +226,15 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public List<Course> getStudentCourses(int docket) {
+		Student student = getByDocket(docket);
+
+		if(student == null) {
+			return null;
+		}
+
 		List<Course> courses = jdbcTemplate.query("SELECT id, name, credits FROM inscription JOIN course on inscription.course_id = course.id"
-				+ " WHERE docket = ?",
-				courseRowMapper, docket);
+		+ " WHERE docket = ?",
+		courseRowMapper, docket);
 
 		return courses;
 	}
