@@ -32,6 +32,12 @@ public interface CourseService {
      */
     Course getCourseStudents(int id);
 
+    /**
+     * Gets the courses that comply with the list of filters
+     * @param courseFilter the list of filters to apply
+     * @return the list of courses that match the list of filters. If no course matches the filters, it returns
+     * an empty list.
+     */
     List<Course> getByFilter(CourseFilter courseFilter);
 
 }
