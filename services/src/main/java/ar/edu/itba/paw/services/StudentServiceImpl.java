@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +23,13 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public List<Student> getAll() {
-		return studentDao.getAll();
+	public List<Course> getStudentCourses(int docket) {
+		return docket <= 0 ? null : studentDao.getStudentCourses(docket);
 	}
 
 	@Override
-	public List<Course> getStudentCourses(int docket) {
-		return studentDao.getStudentCourses(docket);
+	public List<Student> getByFilter(StudentFilter studentFilter) {
+		return studentDao.getByFilter(studentFilter);
 	}
 
 	@Override

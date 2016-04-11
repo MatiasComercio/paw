@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import org.hamcrest.Matcher;
@@ -18,10 +19,7 @@ import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -38,6 +36,7 @@ public class StudentJdbcDaoTest {
 	private static final String ADDRESS_TABLE = "address";
 	private static final String GRADE_TABLE = "grade";
 	private static final String COURSE_TABLE = "course";
+	private static final String INSCRIPTION_TABLE = "inscription";
 
 	private static final String STUDENT__DOCKET_COLUMN = "docket";
 	private static final String STUDENT__DNI_COLUMN = "dni";
@@ -69,8 +68,13 @@ public class StudentJdbcDaoTest {
 	private static final String COURSE__NAME_COLUMN = "name";
 	private static final String COURSE__CREDITS_COLUMN = "credits";
 
+	private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
+	private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
+
 
 	/* Data to be inserted/expected in/from the columns */
+	private static final int DOCKET_1 = 1;
+	private static final int DOCKET_2 = 2;
 	private static final int DOCKET_INVALID = -1;
 
 	private static final int DNI_1 = 12345678;
@@ -142,6 +146,7 @@ public class StudentJdbcDaoTest {
 	private SimpleJdbcInsert addressInsert;
 	private SimpleJdbcInsert courseInsert;
 	private SimpleJdbcInsert gradeInsert;
+	private SimpleJdbcInsert inscriptionInsert;
 
 	@Before
 	public void setUp() {
@@ -151,12 +156,77 @@ public class StudentJdbcDaoTest {
 		addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
 		courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
 		gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);
-
+		inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE).usingColumns(INSCRIPTION__COURSE_ID_COLUMN, INSCRIPTION__DOCKET_COLUMN);
 		/* Order of deletation is important so as not to remove tables referenced by others */
+		JdbcTestUtils.deleteFromTables(jdbcTemplate, INSCRIPTION_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, GRADE_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, COURSE_TABLE);
+		JdbcTestUtils.deleteFromTables(jdbcTemplate, ADDRESS_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
+	}
+
+	@Test
+	public void getStudentCourses() {
+		final Map<String, Object> userArgs1 = new HashMap<>();
+		final Map<String, Object> userArgs2 = new HashMap<>();
+		final Map<String, Object> studentArgs1 = new HashMap<>();
+		final Map<String, Object> studentArgs2 = new HashMap<>();
+		final Map<String, Object> courseArgs1 = new HashMap<>();
+		final Map<String, Object> courseArgs2 = new HashMap<>();
+		final Map<String, Object> inscriptionArgs = new HashMap<>();
+
+		userArgs1.put(USER__DNI_COLUMN, DNI_1);
+		userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userInsert.execute(userArgs1);
+		userArgs2.put(USER__DNI_COLUMN, DNI_2);
+		userArgs2.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs2.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userInsert.execute(userArgs2);
+
+		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
+		Number key = studentInsert.executeAndReturnKey(studentArgs1);
+		docket1 = key.intValue();
+		studentArgs2.put(STUDENT__DNI_COLUMN, DNI_2);
+		key = studentInsert.executeAndReturnKey(studentArgs2);
+		docket2 = key.intValue();
+
+		/* add the courses to respective students */
+		courseArgs1.put(COURSE__ID_COLUMN, COURSE_ID_1);
+		courseArgs1.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
+		courseArgs1.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseInsert.execute(courseArgs1);
+		courseArgs2.put(COURSE__ID_COLUMN, COURSE_ID_2);
+		courseArgs2.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
+		courseArgs2.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+		courseInsert.execute(courseArgs2);
+
+		inscriptionArgs.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
+		inscriptionArgs.put(INSCRIPTION__DOCKET_COLUMN, docket2);
+		inscriptionInsert.execute(inscriptionArgs);
+		inscriptionArgs.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_2);
+		inscriptionArgs.put(INSCRIPTION__DOCKET_COLUMN, docket2);
+		inscriptionInsert.execute(inscriptionArgs);
+
+		/* Invalid student */
+		List<Course> courses = studentJdbcDao.getStudentCourses(DOCKET_INVALID);
+		assertNull(courses);
+
+		/* Student with no courses */
+		courses = studentJdbcDao.getStudentCourses(docket1);
+		assertNotNull(courses);
+		assertTrue(courses.isEmpty());
+
+		/* Student with courses */
+		Course[] expectedCourses = new Course[] {
+				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).build(),
+				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).build()
+		};
+		courses = studentJdbcDao.getStudentCourses(docket2);
+		assertNotNull(courses);
+		assertFalse(courses.isEmpty());
+		assertArrayEquals(expectedCourses, courses.toArray());
 	}
 
 	@Test
@@ -238,7 +308,7 @@ public class StudentJdbcDaoTest {
 		assertEquals(ADDRESS__ZIP_CODE_EXPECTED_EMPTY, student.getAddress().getZipCode());
 	}
 
-	// +++x TODO: write getAll test
+	// +++x TODO: write remaining test
 
 	@Test
 	public void getGrades() {

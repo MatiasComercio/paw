@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Page not found
+                        ${page_header}
                     </h1>
                 </div>
             </div>
@@ -25,6 +25,11 @@
             <!-- content -->
 
             <h3>${description}</h3>
+            <ul class="list-group">
+                <c:forEach items="${details}" var="detail">
+                <li class="list-group-item">${detail}</li>
+                </c:forEach>
+            </ul>
             <!-- /content -->
 
         </div>

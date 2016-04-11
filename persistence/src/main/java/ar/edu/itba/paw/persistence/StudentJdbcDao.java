@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
+import ar.edu.itba.paw.shared.StudentFilter;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,6 +31,7 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String ADDRESS_TABLE = "address";
 	private static final String GRADE_TABLE = "grade";
 	private static final String COURSE_TABLE = "course";
+	private static final String INSCRIPTION_TABLE = "inscription";
 
 	private static final String STUDENT__DOCKET_COLUMN = "docket";
 	private static final String STUDENT__DNI_COLUMN = "dni";
@@ -58,6 +62,9 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String COURSE__NAME_COLUMN = "name";
 	private static final String COURSE__CREDITS_COLUMN = "credits";
 
+	private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
+	private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
+
 	private static final String GET_BY_DOCKET =
 					"SELECT * " +
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
@@ -69,8 +76,8 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String GET_ALL =
 					"SELECT * " +
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
-							" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN +
-					";";
+							" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN;
+
 	private static final String EMAILS_QUERY =
 					"SELECT " + USER__EMAIL_COLUMN + " " +
 					"FROM " + USER_TABLE + " " +
@@ -82,6 +89,13 @@ public class StudentJdbcDao implements StudentDao {
 						GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." +  COURSE__ID_COLUMN +
 				" WHERE " + GRADE__DOCKET_COLUMN + " = ? " +
 				";";
+
+
+	private static final String GET_COURSES =
+				"SELECT * " +
+				"FROM " + INSCRIPTION_TABLE + " JOIN " + COURSE_TABLE + " ON " +
+					INSCRIPTION_TABLE + "." + INSCRIPTION__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." + COURSE__ID_COLUMN
+				+ " WHERE " + INSCRIPTION_TABLE + "." + INSCRIPTION__DOCKET_COLUMN + " = ?";
 
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
@@ -151,7 +165,11 @@ public class StudentJdbcDao implements StudentDao {
 					.credits(resultSet.getInt(COURSE__CREDITS_COLUMN))
 					.build();
 
-	private final RowMapper<Student.Builder> studentBasicRowMapper = (resultSet, rowNumber) -> {
+	private final RowMapper<Student.Builder> studentBasicRowMapper = this::getStudentBasicInfo;
+	private final RowMapper<Student> studentRowMapper = (resultSet, rowNumber) ->
+			getStudentBasicInfo(resultSet, rowNumber).build();
+
+	private Student.Builder getStudentBasicInfo(final ResultSet resultSet, final int rowNumber) throws SQLException {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
 		final int dni = resultSet.getInt(STUDENT__DNI_COLUMN);
 		final String firstName = WordUtils.capitalize(resultSet.getString(USER__FIRST_NAME_COLUMN));
@@ -165,9 +183,9 @@ public class StudentJdbcDao implements StudentDao {
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
 		studentBuilder.firstName(firstName).lastName(lastName).email(email);
 
-
 		return studentBuilder;
-	};
+	}
+
 
 	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(USER__EMAIL_COLUMN);
 
@@ -201,23 +219,6 @@ public class StudentJdbcDao implements StudentDao {
 	}
 
 	@Override
-	public List<Student> getAll() {
-
-		final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_ALL, studentBasicRowMapper);
-
-		if (studentBuilders.isEmpty()) {
-			return null;
-		}
-
-		final List<Student> students = new LinkedList<>();
-		for (Student.Builder each : studentBuilders) {
-			students.add(each.build());
-		}
-
-		return students;
-	}
-
-	@Override
 	public Student getGrades(final int docket) {
 		final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_BY_DOCKET, studentBasicRowMapper, docket);
 
@@ -236,15 +237,31 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public List<Course> getStudentCourses(int docket) {
-		List<Course> courses = jdbcTemplate.query("SELECT id, name, credits FROM inscription JOIN course on inscription.course_id = course.id"
-				+ " WHERE docket = ?",
-				courseRowMapper, docket);
+		Student student = getByDocket(docket);
+
+		if(student == null) {
+			return null;
+		}
+
+		List<Course> courses = jdbcTemplate.query(GET_COURSES, courseRowMapper, docket);
 
 		return courses;
 	}
 
-	private String createEmail(final int docket, final String firstName, final String lastName) {
-		final String defaultEmail = "student" + docket + EMAIL_DOMAIN;
+	@Override
+	public List<Student> getByFilter(StudentFilter studentFilter) {
+		QueryFilter queryFilter = new QueryFilter();
+
+		queryFilter.filterByDocket(studentFilter);
+		queryFilter.filterByFirstName(studentFilter);
+		queryFilter.filterByLastName(studentFilter);
+		queryFilter.filterByGenre(studentFilter);
+
+		return jdbcTemplate.query(queryFilter.getQuery(), studentRowMapper, queryFilter.getFilters().toArray());
+	}
+
+	private String createEmail(final int dni, final String firstName, final String lastName) {
+		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
 
 		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
 			return defaultEmail;
@@ -271,9 +288,86 @@ public class StudentJdbcDao implements StudentDao {
 	}
 
 	private boolean exists(final StringBuilder email) {
-		List<String> students = jdbcTemplate.query(EMAILS_QUERY, emailRowMapper);
+		List<String> emails = jdbcTemplate.query(EMAILS_QUERY, emailRowMapper);
 
-		return students.contains(String.valueOf(email));
+		return emails.contains(String.valueOf(email));
 
+	}
+
+	private static class QueryFilter {
+		private static final String WHERE = " WHERE ";
+		private static final String AND = " AND ";
+		private static final String ILIKE = " ILIKE ? ";
+		private static final String EQUAL = " = ? ";
+
+		private static final String FILTER_DOCKET = "CAST(" + STUDENT__DOCKET_COLUMN + " AS TEXT) ";
+		private static final String FILTER_NAME_FIRST = USER__FIRST_NAME_COLUMN;
+		private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN;
+		private static final String FILTER_GENRE = USER__GENRE_COLUMN;
+
+		private final StringBuffer query = new StringBuffer(GET_ALL);
+		private boolean filterApplied = false;
+		private final List<String> filters;
+
+		private final FilterQueryMapper filterBySubWord = (filter, filterName) -> {
+			if(filter != null && !filter.toString().equals("")) {
+				String stringFilter = "%" + filter.toString() + "%";
+				appendFilter(filterName, stringFilter);
+			}
+		};
+
+		private final FilterQueryMapper filterByExactWord = (filter, filterName) -> {
+			if(filter != null && !filter.toString().equals("")) {
+				String stringFilter = filter.toString();
+				appendFilter(filterName, stringFilter);
+			}
+		};
+
+		private QueryFilter() {
+			filters = new LinkedList<>();
+		}
+
+		public void filterByDocket(final StudentFilter courseFilter) {
+			filterBySubWord.filter(courseFilter.getDocket(), FILTER_DOCKET + ILIKE);
+		}
+
+		public void filterByFirstName(final StudentFilter courseFilter) {
+			filterBySubWord.filter(courseFilter.getFirstName(), FILTER_NAME_FIRST + ILIKE);
+		}
+
+		public void filterByLastName(final StudentFilter courseFilter) {
+			filterBySubWord.filter(courseFilter.getLastName(), FILTER_NAME_LAST + ILIKE);
+		}
+
+		public void filterByGenre(StudentFilter studentFilter) {
+			filterByExactWord.filter(studentFilter.getGenre(), FILTER_GENRE + EQUAL);
+		}
+
+		public List<String> getFilters() {
+			return filters;
+		}
+
+		public String getQuery() {
+			return query.toString();
+		}
+
+		private void appendFilterConcatenation() {
+			if(!filterApplied) {
+				filterApplied = true;
+				query.append(WHERE);
+			} else {
+				query.append(AND);
+			}
+		}
+
+		private void appendFilter(final String filter, final String stringFilter) {
+			appendFilterConcatenation();
+			query.append(filter);
+			filters.add(stringFilter);
+		}
+
+		private interface FilterQueryMapper {
+			void filter(final Object filter, final String filterName);
+		}
 	}
 }

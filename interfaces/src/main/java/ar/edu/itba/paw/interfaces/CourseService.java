@@ -5,9 +5,6 @@ import ar.edu.itba.paw.shared.CourseFilter;
 
 import java.util.List;
 
-/**
- * Created by mati on 30/03/16.
- */
 public interface CourseService {
     /**
      * Creates a new Course
@@ -32,6 +29,12 @@ public interface CourseService {
      */
     Course getCourseStudents(int id);
 
+    /**
+     * Gets the courses that comply with the list of filters
+     * @param courseFilter the list of filters to apply
+     * @return the list of courses that match the list of filters. If no course matches the filters, it returns
+     * an empty list.
+     */
     List<Course> getByFilter(CourseFilter courseFilter);
 
 }
