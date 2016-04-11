@@ -5,9 +5,6 @@ import ar.edu.itba.paw.shared.CourseFilter;
 
 import java.util.List;
 
-/**
- * Created by mati on 30/03/16.
- */
 public interface CourseService {
     /**
      * Creates a new Course
