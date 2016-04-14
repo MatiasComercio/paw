@@ -50,12 +50,26 @@ public class Course {
     }
 
     @Override
-    public String toString() {
-        return "Course{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", credits=" + credits +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Course course = (Course) o;
+
+        if (id != course.id) return false;
+        if (credits != course.credits) return false;
+        if (name != null ? !name.equals(course.name) : course.name != null) return false;
+        return students != null ? students.equals(course.students) : course.students == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + credits;
+        result = 31 * result + (students != null ? students.hashCode() : 0);
+        return result;
     }
 
     public static class Builder {
