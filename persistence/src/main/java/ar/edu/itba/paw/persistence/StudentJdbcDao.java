@@ -270,8 +270,7 @@ public class StudentJdbcDao implements StudentDao {
 		return jdbcTemplate.query(queryFilter.getQuery(), studentRowMapper, queryFilter.getFilters().toArray());
 	}
 
-	private String createEmail(final int dni, final String firstName, final String lastName) {
-		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
+
 	@Override
 	public void create(Student student) {
 		//TODO: Add further data validation
