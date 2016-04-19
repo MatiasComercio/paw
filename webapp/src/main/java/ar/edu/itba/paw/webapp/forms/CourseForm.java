@@ -1,9 +1,13 @@
 package ar.edu.itba.paw.webapp.forms;
 
 import ar.edu.itba.paw.models.Course;
+import org.hibernate.validator.constraints.Length;
+import javax.validation.constraints.NotNull;
 
 public class CourseForm {
 
+    @NotNull
+    @Length
     private int id;
     private String name;
     private int credits;
