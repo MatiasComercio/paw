@@ -3,11 +3,10 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.CourseService;
 
 import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.forms.CourseForm;
+import ar.edu.itba.paw.webapp.forms.CourseForm;
 import ar.edu.itba.paw.shared.CourseFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 

@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.models.forms;
+package ar.edu.itba.paw.webapp.forms;
 
 import ar.edu.itba.paw.models.Course;
 
