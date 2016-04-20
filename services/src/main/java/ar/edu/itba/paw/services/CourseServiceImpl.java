@@ -42,6 +42,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public boolean deleteCourse(Integer id) {
+        if(id >= 0) {
+            return courseDao.deleteCourse(id);
+        }
         return false;
     }
 
