@@ -169,6 +169,9 @@
                         <div class="col-xs-12 col-md-6">
                             <a href="grades" type="button" class="btn btn-link">Ver Historial de Notas</a>
                         </div>
+                        <div class="col-xs-12 col-md-6">
+                            <a href="inscription" type="button" class="btn btn-link">Inscribirse en Materia</a>
+                        </div>
                     </div>
                 </div>
             </div>

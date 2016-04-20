@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.webapp.forms.InscriptionForm;
 import ar.edu.itba.paw.webapp.forms.StudentForm;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -19,7 +20,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Controller
-public class UserController {
+public class UserController { /* +++xchange: see if it's necessary to call this StudentController */
+
 	private static final String STUDENTS_SECTION = "students";
 
 	@Autowired
@@ -96,6 +98,28 @@ public class UserController {
 		return mav;
 	}
 
+	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.GET)
+	public ModelAndView studentInscription(@PathVariable final int docket,
+	                                       @ModelAttribute("inscriptionForm") final InscriptionForm inscriptionForm){
+		//final ModelAndView mav = new ModelAndView("addStudent", "command", new StudentForm());
+		inscriptionForm.setStudentDocket(docket);
+		ModelAndView mav = new ModelAndView("inscription");
+		mav.addObject("section", STUDENTS_SECTION);
+		return mav;
+	}
+
+	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.POST)
+	public ModelAndView studentInscription(@PathVariable final int docket,
+											@Valid @ModelAttribute("studentForm") InscriptionForm inscriptionForm,
+	                               final BindingResult errors) {
+		if (errors.hasErrors()){
+			return studentInscription(docket, inscriptionForm);
+		}
+
+//		studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId()); +++xdoing
+		return new ModelAndView("redirect:/app/students/" + docket + "/info"); /* TODO: add feedback of success */
+	}
+
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm){
 		//final ModelAndView mav = new ModelAndView("addStudent", "command", new StudentForm());
@@ -110,7 +134,6 @@ public class UserController {
 		if (!errors.hasErrors()){
 			Student student = studentForm.build();
 			studentService.create(student);
-			//return "redirect:/app/students";
 			return new ModelAndView("redirect:/app/students");
 		}
 		else{
