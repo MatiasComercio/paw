@@ -35,11 +35,10 @@ public interface CourseService {
      */
     List<Course> getByFilter(CourseFilter courseFilter);
 
-    /* +++xchange boolean to enum */
     /**
      * Attempts to delete the course with the given id
      * @param id of the course to delete
-     * @return true if the course was deleted; false in other case
+     * @return +++xdocument
      */
     Result deleteCourse(Integer id);
 }
