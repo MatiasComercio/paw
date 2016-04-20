@@ -68,4 +68,9 @@ public class CourseController {
             return addCourse(courseForm);
         }
     }
+
+    @RequestMapping(value = "/courses/{id}/delete", method = RequestMethod.POST)
+    public ModelAndView deleteCourse(@PathVariable final Integer id) {
+        final int result = courseService.deleteCourse(id);
+    }
 }
