@@ -5,7 +5,8 @@ public enum Result {
     COURSE_EXISTS_GRADE("Existen alumnos que poseen notas de este curso."),
     COURSE_EXISTS_INSCRIPTION("Existen alumnos que están inscriptos en este curso."),
     ERROR_UNKNOWN("Un error desconocido ha ocurrido"),
-    ERROR_ID_OUT_OF_BOUNDS("El ID está fuera de los límites permitidos");
+    ERROR_ID_OUT_OF_BOUNDS("El ID está fuera de los límites permitidos"),
+    ERROR_DOCKET_OUT_OF_BOUNDS("El legajo está fuera de los límites permitidos");
 
     private final String message;
 
