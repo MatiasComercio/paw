@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.shared.CourseFilter;
+import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
 
@@ -40,5 +41,5 @@ public interface CourseService {
      * @param id of the course to delete
      * @return true if the course was deleted; false in other case
      */
-    boolean deleteCourse(Integer id);
+    Result deleteCourse(Integer id);
 }
