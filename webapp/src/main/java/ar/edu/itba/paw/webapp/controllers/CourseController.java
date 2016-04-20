@@ -60,13 +60,13 @@ public class CourseController {
                                   @Valid @ModelAttribute("courseForm") CourseForm courseForm,
                                   final BindingResult errors){
         if (!errors.hasErrors()){
-            //TODO: SHOW GREEN FEEDBACK.
-            System.out.println("EDITAR " + courseForm.getName());
-            Course course = courseForm.build();
-            courseService.update(courseId, course);
-        } else {
             return editCourse(courseId, courseForm);
         }
+
+        //TODO: SHOW GREEN FEEDBACK.
+
+        Course course = courseForm.build();
+        courseService.update(courseId, course);
 
         return new ModelAndView("redirect:/app/courses");
     }
@@ -94,14 +94,14 @@ public class CourseController {
     @RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
     public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
                             final BindingResult errors){
-        if(!errors.hasErrors()){
-            final Course course = courseForm.build();
-            courseService.create(course);
-            //return "redirect:/app/courses";
-            return new ModelAndView("redirect:/app/courses");
-        }
-        else{
+
+        if(errors.hasErrors()){
             return addCourse(courseForm);
         }
+
+        final Course course = courseForm.build();
+        courseService.create(course);
+
+        return new ModelAndView("redirect:/app/courses");
     }
 }

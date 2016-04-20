@@ -59,7 +59,7 @@
                         <form:label for="credits" path="credits">Créditos:</form:label>
                         <form:input type="text" class="form-control" id="credits" path="credits"/>
                     </div>
-                    <input type="submit" class="btn btn-info" value="Agregar materia"/>
+                    <input type="submit" class="btn btn-info" value="Guardar cambios"/>
                 </form:form>
             </c:if>
             </div>
