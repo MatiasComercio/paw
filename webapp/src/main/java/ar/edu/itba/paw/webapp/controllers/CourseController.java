@@ -72,7 +72,8 @@ public class CourseController {
     @RequestMapping(value = "/courses/{id}/delete", method = RequestMethod.POST)
     public ModelAndView deleteCourse(@PathVariable final Integer id) {
         final boolean result = courseService.deleteCourse(id);
+        ModelAndView mav = new ModelAndView("redirect:/app/courses");
 
-        /* +++xadd return model and view */
+        return mav;
     }
 }
