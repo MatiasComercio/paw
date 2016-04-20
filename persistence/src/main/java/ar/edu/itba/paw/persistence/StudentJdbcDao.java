@@ -131,25 +131,25 @@ public class StudentJdbcDao implements StudentDao {
 		final String city = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__CITY_COLUMN));
 		final String neighborhood = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__NEIGHBORHOOD_COLUMN));
 		final String street = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__STREET_COLUMN));
-		int number = resultSet.getInt(ADDRESS__NUMBER_COLUMN);
+		Integer number = resultSet.getInt(ADDRESS__NUMBER_COLUMN);
 		if (resultSet.wasNull()) {
-			number = Integer.MIN_VALUE;
+			number = null;
 		}
-		int floor = resultSet.getInt(ADDRESS__FLOOR_COLUMN);
+		Integer floor = resultSet.getInt(ADDRESS__FLOOR_COLUMN);
 		if (resultSet.wasNull()) {
-			floor = Integer.MIN_VALUE;
+			floor = null;
 		}
 		String door = resultSet.getString(ADDRESS__DOOR_COLUMN);
 		if (door != null) {
 			door = door.toUpperCase();
 		}
-		long telephone = resultSet.getLong(ADDRESS__TELEPHONE_COLUMN);
+		Long telephone = resultSet.getLong(ADDRESS__TELEPHONE_COLUMN);
 		if (resultSet.wasNull()) {
-			telephone = Long.MIN_VALUE;
+			telephone = null;
 		}
-		int zipCode = resultSet.getInt(ADDRESS__ZIP_CODE_COLUMN);
+		Integer zipCode = resultSet.getInt(ADDRESS__ZIP_CODE_COLUMN);
 		if (resultSet.wasNull()) {
-			zipCode = Integer.MIN_VALUE;
+			zipCode = null;
 		}
 		final Address.Builder addressBuilder = new Address.Builder(country, city, neighborhood, street, number);
 		addressBuilder.floor(floor).door(door).telephone(telephone).zipCode(zipCode);
