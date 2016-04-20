@@ -43,4 +43,11 @@ public interface CourseDao {
     List<Course> getByFilter(CourseFilter courseFilter);
 
 
+    /**
+     * Attempts to delete the course with the given id
+     * @param id of the course to delete
+     * @return true if the course was deleted; false in other case
+     */
+    boolean deleteCourse(Integer id);
+
 }
