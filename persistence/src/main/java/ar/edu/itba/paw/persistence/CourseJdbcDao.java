@@ -103,6 +103,11 @@ public class CourseJdbcDao implements CourseDao {
         return courses;
     }
 
+    @Override
+    public boolean deleteCourse(Integer id) {
+
+    }
+
     private static class QueryFilter {
         private static final String WHERE = " WHERE ";
         private static final String AND = " AND ";
