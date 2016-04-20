@@ -293,6 +293,7 @@ public class StudentJdbcDao implements StudentDao {
 		} catch (DataAccessException dae) {
 			return Result.ERROR_UNKNOWN;
 		}
+	}
 
 
 	@Override
