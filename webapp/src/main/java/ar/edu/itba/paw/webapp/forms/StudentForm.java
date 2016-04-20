@@ -32,10 +32,12 @@ public class StudentForm {
     public StudentForm(){}
 
     public Student build(){
-        this.address = new Address.Builder(country, city, neighborhood, street, Integer.valueOf(number)).floor(Integer.valueOf(floor)).
-                door(door).telephone(Long.valueOf(telephone)).zipCode(Integer.valueOf(zipCode)).build();
-        return new Student.Builder(docket, dni).firstName(firstName).lastName(lastName).genre(genre).birthday(birthday)
-                .email(email).address(address).build();
+        //this.address = new Address.Builder(country, city, neighborhood, street, Integer.valueOf(number)).floor(Integer.valueOf(floor)).
+        //        door(door).telephone(Long.valueOf(telephone)).zipCode(Integer.valueOf(zipCode)).build();
+        //return new Student.Builder(docket, dni).firstName(firstName).lastName(lastName).genre(genre).birthday(birthday)
+        //        .email(email).address(address).build();
+        return new Student.Builder(docket, dni).firstName(firstName).lastName(lastName).build();
+
     }
 
     public int getDni() {

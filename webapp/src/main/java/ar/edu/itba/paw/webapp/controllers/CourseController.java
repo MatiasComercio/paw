@@ -7,8 +7,11 @@ import ar.edu.itba.paw.webapp.forms.CourseForm;
 import ar.edu.itba.paw.shared.CourseFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.validation.Valid;
 
 @Controller
 public class CourseController {
@@ -44,16 +47,25 @@ public class CourseController {
     }
 
     @RequestMapping(value = "/courses/add_course", method = RequestMethod.GET)
-    public ModelAndView addCourse(){
-        final ModelAndView mav = new ModelAndView("addCourse", "command", new CourseForm());
+    public ModelAndView addCourse(@ModelAttribute("courseForm") final CourseForm courseForm){
+
+        //final ModelAndView mav = new ModelAndView("addCourse", "command", new CourseForm());
+        ModelAndView mav = new ModelAndView("addCourse");
         mav.addObject("section", COURSES_SECTION);
         return mav;
     }
 
     @RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
-    public String addCourse(@ModelAttribute("addCourse") CourseForm courseForm){
-        final Course course = courseForm.build();
-        courseService.create(course);
-        return "redirect:/app/courses";
+    public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
+                            final BindingResult errors){
+        if(!errors.hasErrors()){
+            final Course course = courseForm.build();
+            courseService.create(course);
+            //return "redirect:/app/courses";
+            return new ModelAndView("redirect:/app/courses");
+        }
+        else{
+            return addCourse(courseForm);
+        }
     }
 }

@@ -26,10 +26,11 @@
             <!-- -->
             <div class="container">
                 <h2>Agregar curso</h2>
-                <form:form role="form" method="post" action="/app/courses/add_course">
+                <form:form modelAttribute="courseForm" method="post" action="/app/courses/add_course">
                     <div class="form-group">
-                        <form:label for="id" path="id">ID:</form:label>
-                        <form:input type="text" class="form-control" id="id" path="id"/>
+                        <form:label path="id">ID:</form:label>
+                        <form:input path="id" type="text" class="form-control" />
+                        <form:errors path="id" cssStyle="color: red;" element="div"/>
                     </div>
                     <div class="form-group">
                         <form:label for="name" path="name">Nombre:</form:label>
