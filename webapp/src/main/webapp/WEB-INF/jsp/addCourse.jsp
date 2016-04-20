@@ -33,12 +33,12 @@
                         <form:errors path="id" cssStyle="color: red;" element="div"/>
                     </div>
                     <div class="form-group">
-                        <form:label for="name" path="name">Nombre:</form:label>
-                        <form:input type="text" class="form-control" id="name" path="name"/>
+                        <form:label path="name">Nombre:</form:label>
+                        <form:input type="text" class="form-control" path="name"/>
                     </div>
                     <div class="form-group">
-                        <form:label for="credits" path="credits">Créditos:</form:label>
-                        <form:input type="text" class="form-control" id="credits" path="credits"/>
+                        <form:label path="credits">Créditos:</form:label>
+                        <form:input type="text" class="form-control" path="credits"/>
                     </div>
                     <input type="submit" class="btn btn-info" value="Agregar materia"/>
                 </form:form>
