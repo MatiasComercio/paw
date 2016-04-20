@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.CourseService;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.forms.CourseForm;
 import ar.edu.itba.paw.shared.CourseFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ public class CourseController {
 
     @RequestMapping(value = "/courses/{id}/delete", method = RequestMethod.POST)
     public ModelAndView deleteCourse(@PathVariable final Integer id) {
-        final boolean result = courseService.deleteCourse(id);
+        final Result result = courseService.deleteCourse(id);
         ModelAndView mav = new ModelAndView("redirect:/app/courses");
 
         return mav;
