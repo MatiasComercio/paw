@@ -10,6 +10,7 @@ import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -282,13 +283,16 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result deleteStudent(Integer docket) {
-		int gradeRowsAffected = jdbcTemplate.update(DELETE_STUDENT_GRADES, docket);
-		int inscriptionRowsAffected = jdbcTemplate.update(DELETE_STUDENT_INSCRIPTIONS, docket);
-		/* +++xcheck exceptions */
-		int studentRowsAffected = jdbcTemplate.update(DELETE_STUDENT, docket);
+		try {
+			int gradeRowsAffected = jdbcTemplate.update(DELETE_STUDENT_GRADES, docket);
+			int inscriptionRowsAffected = jdbcTemplate.update(DELETE_STUDENT_INSCRIPTIONS, docket);
+			/* +++xcheck exceptions */
+			int studentRowsAffected = jdbcTemplate.update(DELETE_STUDENT, docket);
 
-		return studentRowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
-	}
+			return studentRowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+		} catch (DataAccessException dae) {
+			return Result.ERROR_UNKNOWN;
+		}
 
 
 	@Override
