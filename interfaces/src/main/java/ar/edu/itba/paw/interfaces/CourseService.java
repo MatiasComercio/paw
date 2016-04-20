@@ -34,4 +34,10 @@ public interface CourseService {
      */
     List<Course> getByFilter(CourseFilter courseFilter);
 
+    /**
+     * Attempts to delete the course with the given id
+     * @param id of the course to delete
+     * @return
+     */
+    boolean deleteCourse(Integer id);
 }
