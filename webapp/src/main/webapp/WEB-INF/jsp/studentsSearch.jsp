@@ -70,6 +70,9 @@
                         <td>${ student.lastName }</td>
                         <td>${ student.email }</td>
                         <td><a href="<c:url value="/app/students/${student.docket}/info" />">Ver</a></td>
+                        <form action="courses/${student.docket}/delete" method="post">
+                            <button type="submit" value="students/${student.id}/delete">Eliminar</button>
+                        </form>
                     </tr>
                 </c:forEach>
                 </tbody>
