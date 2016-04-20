@@ -28,8 +28,20 @@ public class CourseJdbcDao implements CourseDao {
     private static final String FIRST_NAME_COLUMN = "first_name";
     private static final String LAST_NAME_COLUMN = "last_name";
 
+    private static final String INSCRIPTION_TABLE_NAME = "inscription";
+    private static final String INSCRIPTION_ID_COURSE = "course_id";
+
+    private static final String GRADES_TABLE_NAME = "grade";
+    private static final String GRADES_ID_COURSE = "course_id";
+
     private static final String QUERY_DELETE = "DELETE FROM " + TABLE_NAME
             + " WHERE " + ID_COLUMN + " = ?";
+
+    private static final String QUERY_COUNT_INSCRIPTION = "SELECT COUNT(*) FROM " + INSCRIPTION_TABLE_NAME
+            + " WHERE " + INSCRIPTION_ID_COURSE + " = ?";
+
+    private static final String QUERY_COUNT_GRADES = "SELECT COUNT(*) FROM " + GRADES_TABLE_NAME
+            + " WHERE " + GRADES_ID_COURSE + " = ?";
 
 
     private final JdbcTemplate jdbcTemplate;
@@ -113,6 +125,20 @@ public class CourseJdbcDao implements CourseDao {
      */
     @Override
     public boolean deleteCourse(Integer id) {
+        Object[] idWrapped = new Object[]{id};
+        int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_INSCRIPTION, idWrapped, Integer.class);
+
+        if(courseNumber > 0) {
+            System.out.println("Inscription exist");
+            return false;
+        }
+
+        courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_GRADES, idWrapped, Integer.class);
+
+        if(courseNumber > 0) {
+            System.out.println("Grades exist");
+            return false;
+        }
         int rowsAffected = jdbcTemplate.update(QUERY_DELETE, id);
 
         return rowsAffected == 1;
