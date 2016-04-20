@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 
 import java.util.List;
@@ -46,4 +47,11 @@ public interface StudentService {
 	 * @param student The student to be persisted in the database.
 	 */
 	void create(Student student);
+
+	/**
+	 *
+	 * @param id
+	 * @return
+     */
+	Result deleteCourse(Integer id);
 }
