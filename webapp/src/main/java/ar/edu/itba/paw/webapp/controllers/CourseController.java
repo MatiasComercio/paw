@@ -75,7 +75,7 @@ public class CourseController {
         final Result result = courseService.deleteCourse(id);
 //        ModelAndView mav = new ModelAndView("redirect:/app/courses");
         ModelAndView mav = new ModelAndView("coursesSearch");
-        mav.addObject("errorMessage", result.getMessage());
+        mav.addObject("message", result.getMessage());
 
         return mav;
     }
