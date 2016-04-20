@@ -123,7 +123,7 @@ public class UserController {
 	public ModelAndView removeStudent(@PathVariable final Integer docket) {
 		final Result result = studentService.deleteCourse(docket);
 		ModelAndView mav = new ModelAndView("studentsSearch");
-		mav.addObject("errorMessage", result.getMessage());
+		mav.addObject("message", result.getMessage());
 
 		return mav;
 	}
