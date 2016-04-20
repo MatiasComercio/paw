@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -71,12 +72,12 @@ public class CourseController {
     }
 
     @RequestMapping(value = "/courses/{id}/delete", method = RequestMethod.POST)
-    public ModelAndView deleteCourse(@PathVariable final Integer id) {
+    public ModelAndView deleteCourse(@PathVariable final Integer id, RedirectAttributes redirectAttributes) {
         final Result result = courseService.deleteCourse(id);
 //        ModelAndView mav = new ModelAndView("redirect:/app/courses");
-        ModelAndView mav = new ModelAndView("coursesSearch");
-        mav.addObject("message", result.getMessage());
+//        ModelAndView mav = new ModelAndView("coursesSearch");
+        redirectAttributes.addFlashAttribute("message", result.getMessage());
 
-        return mav;
+        return new ModelAndView("redirect:/app/courses");
     }
 }

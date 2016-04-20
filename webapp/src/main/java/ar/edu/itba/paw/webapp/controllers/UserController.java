@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -120,11 +121,11 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
-	public ModelAndView removeStudent(@PathVariable final Integer docket) {
+	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes) {
 		final Result result = studentService.deleteCourse(docket);
-		ModelAndView mav = new ModelAndView("studentsSearch");
-		mav.addObject("message", result.getMessage());
+//		ModelAndView mav = new ModelAndView("studentsSearch");
+		redirectAttributes.addFlashAttribute("message", result.getMessage());
 
-		return mav;
+		return new ModelAndView("redirect:/app/students");
 	}
 }
