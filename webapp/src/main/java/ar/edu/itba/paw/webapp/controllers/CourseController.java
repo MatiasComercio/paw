@@ -59,8 +59,6 @@ public class CourseController {
     public ModelAndView editCourse(@PathVariable final Integer courseId,
                                   @Valid @ModelAttribute("courseForm") CourseForm courseForm,
                                   final BindingResult errors){
-        final ModelAndView mav = new ModelAndView("addCourse");
-
         if (!errors.hasErrors()){
             //TODO: SHOW GREEN FEEDBACK.
             System.out.println("EDITAR " + courseForm.getName());
