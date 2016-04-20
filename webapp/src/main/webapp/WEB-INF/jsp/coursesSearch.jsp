@@ -27,6 +27,13 @@
                 </div>
             </div>
 
+            <!-- Result Message -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <h1>${errorMessage}</h1>
+                </div>
+            </div>
+
             <!-- search -->
             <div class="row">
                 <div class="col-md-6">
