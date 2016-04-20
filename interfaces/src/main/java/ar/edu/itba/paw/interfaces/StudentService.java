@@ -50,8 +50,8 @@ public interface StudentService {
 
 	/**
 	 *
-	 * @param id
+	 * @param docket
 	 * @return
      */
-	Result deleteCourse(Integer id);
+	Result deleteCourse(Integer docket);
 }
