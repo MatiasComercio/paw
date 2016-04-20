@@ -76,6 +76,7 @@ public class CourseController {
 //        ModelAndView mav = new ModelAndView("redirect:/app/courses");
         ModelAndView mav = new ModelAndView("coursesSearch");
         mav.addObject("errorMessage", result.getMessage());
+
         return mav;
     }
 }
