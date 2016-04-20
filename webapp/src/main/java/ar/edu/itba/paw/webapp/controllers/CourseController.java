@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -58,15 +59,17 @@ public class CourseController {
     @RequestMapping(value = "/courses/{courseId}/edit", method = RequestMethod.POST)
     public ModelAndView editCourse(@PathVariable final Integer courseId,
                                   @Valid @ModelAttribute("courseForm") CourseForm courseForm,
-                                  final BindingResult errors){
-        if (!errors.hasErrors()){
+                                  final BindingResult errors,
+                                  RedirectAttributes redirectAttributes){
+        if (errors.hasErrors()){
             return editCourse(courseId, courseForm);
         }
 
-        //TODO: SHOW GREEN FEEDBACK.
-
         Course course = courseForm.build();
         courseService.update(courseId, course);
+
+        redirectAttributes.addFlashAttribute("alert", "success");
+        redirectAttributes.addFlashAttribute("message", "La materia se ha guardado correctamente.");
 
         return new ModelAndView("redirect:/app/courses");
     }
