@@ -108,6 +108,9 @@ public class CourseJdbcDao implements CourseDao {
         return courses;
     }
 
+    /* +++xreference
+        http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
+     */
     @Override
     public boolean deleteCourse(Integer id) {
         int rowsAffected = jdbcTemplate.update(QUERY_DELETE, id);
