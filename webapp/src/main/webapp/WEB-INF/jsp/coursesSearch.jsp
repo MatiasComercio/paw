@@ -64,7 +64,12 @@
                         <td>${ course.id }</td>
                         <td>${ course.name }</td>
                         <td>${ course.credits }</td>
-                        <td><a href="<c:url value="courses/${course.id}/info" />">Ver</a></td>
+                        <td>
+                            <a href="<c:url value="courses/${course.id}/info" />">Ver</a>
+                            <form action="courses/${course.id}/delete" method="post">
+                                <button type="submit" value="courses/${course.id}/delete">Eliminar</button>
+                            </form>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>
