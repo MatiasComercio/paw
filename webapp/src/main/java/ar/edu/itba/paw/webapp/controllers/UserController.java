@@ -117,4 +117,9 @@ public class UserController {
 			return addStudent(studentForm);
 		}
 	}
+
+	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
+	public ModelAndView removeStudent(@PathVariable final Integer docket) {
+
+	}
 }
