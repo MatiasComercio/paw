@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -140,9 +141,13 @@ public class CourseJdbcDao implements CourseDao {
             System.out.println("Grades exist");
             return Result.COURSE_EXISTS_GRADE;
         }
-        int rowsAffected = jdbcTemplate.update(QUERY_DELETE, id);
+        try {
+            int rowsAffected = jdbcTemplate.update(QUERY_DELETE, id);
 
-        return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+            return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+        } catch (DataAccessException dae) {
+            return Result.ERROR_UNKNOWN;
+        }
     }
 
     private static class QueryFilter {
