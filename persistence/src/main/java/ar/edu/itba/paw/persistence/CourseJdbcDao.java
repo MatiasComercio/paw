@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.nativejdbc.SimpleNativeJdbcExtractor;
 import org.springframework.stereotype.Repository;
+import sun.management.jdp.JdpController;
 
 import javax.sql.DataSource;
 import java.util.*;
@@ -25,6 +27,9 @@ public class CourseJdbcDao implements CourseDao {
     private static final String DNI_COLUMN = "dni";
     private static final String FIRST_NAME_COLUMN = "first_name";
     private static final String LAST_NAME_COLUMN = "last_name";
+
+    private static final String QUERY_DELETE = "DELETE FROM " + TABLE_NAME
+            + " WHERE " + ID_COLUMN + " = ?";
 
 
     private final JdbcTemplate jdbcTemplate;
