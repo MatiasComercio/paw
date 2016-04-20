@@ -26,6 +26,7 @@
             <!-- -->
             <div class="container">
                 <h2>Agregar curso</h2>
+            <c:if test="${task == 'add' }">
                 <form:form modelAttribute="courseForm" method="post" action="/app/courses/add_course">
                     <div class="form-group">
                         <form:label path="id">ID:</form:label>
@@ -42,6 +43,25 @@
                     </div>
                     <input type="submit" class="btn btn-info" value="Agregar materia"/>
                 </form:form>
+            </c:if>
+            <c:if test="${task == 'edit' }">
+                <form:form modelAttribute="courseForm" method="post" action="/app/courses/${courseId}/edit">
+                    <div class="form-group">
+                        <form:label path="id">ID:</form:label>
+                        <form:input path="id" type="text" class="form-control" />
+                        <form:errors path="id" cssStyle="color: red;" element="div"/>
+                    </div>
+                    <div class="form-group">
+                        <form:label for="name" path="name">Nombre:</form:label>
+                        <form:input type="text" class="form-control" id="name" path="name"/>
+                    </div>
+                    <div class="form-group">
+                        <form:label for="credits" path="credits">Créditos:</form:label>
+                        <form:input type="text" class="form-control" id="credits" path="credits"/>
+                    </div>
+                    <input type="submit" class="btn btn-info" value="Agregar materia"/>
+                </form:form>
+            </c:if>
             </div>
 
             <!-- -->

@@ -20,6 +20,11 @@ public class CourseServiceImpl implements CourseService {
         courseDao.create(course);
     }
 
+   @Override
+   public void update(Integer id, Course course){
+       courseDao.update(id, course);
+   }
+
     @Override
     public Course getById(int id) {
         if(id >= 1) {

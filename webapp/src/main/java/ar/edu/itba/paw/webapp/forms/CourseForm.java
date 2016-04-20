@@ -10,7 +10,6 @@ public class CourseForm {
 
 
     @NotNull
-    @Min(30)
     private int id;
 
     @NotNull
@@ -47,5 +46,11 @@ public class CourseForm {
 
     public void setCredits(int credits) {
         this.credits = credits;
+    }
+
+    public void loadFromCourse(final Course course){
+        this.id = course.getId();
+        this.name = course.getName();
+        this.credits = course.getCredits();
     }
 }

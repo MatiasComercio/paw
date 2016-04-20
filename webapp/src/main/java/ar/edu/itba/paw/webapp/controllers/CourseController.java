@@ -17,6 +17,9 @@ import javax.validation.Valid;
 public class CourseController {
     private static final String COURSES_SECTION = "courses";
 
+    private static String TASK_FORM_ADD = "add";
+    private static String TASK_FORM_EDIT = "edit";
+
     @Autowired
     private CourseService courseService;
 
@@ -38,6 +41,39 @@ public class CourseController {
         return mav;
     }
 
+    @RequestMapping("/courses/{courseId}/edit")
+    public ModelAndView editCourse(@PathVariable final Integer courseId, @ModelAttribute("courseForm") final CourseForm courseForm) {
+        final ModelAndView mav = new ModelAndView("addCourse");
+        mav.addObject("section", COURSES_SECTION);
+
+        Course course = courseService.getById(courseId);
+        courseForm.loadFromCourse(course);
+
+        mav.addObject("courseId", courseId);
+        mav.addObject("task", TASK_FORM_EDIT);
+
+        return mav;
+    }
+
+    @RequestMapping(value = "/courses/{courseId}/edit", method = RequestMethod.POST)
+    public ModelAndView editCourse(@PathVariable final Integer courseId,
+                                  @Valid @ModelAttribute("courseForm") CourseForm courseForm,
+                                  final BindingResult errors){
+        final ModelAndView mav = new ModelAndView("addCourse");
+
+        if (!errors.hasErrors()){
+            //TODO: SHOW GREEN FEEDBACK.
+            System.out.println("EDITAR " + courseForm.getName());
+            Course course = courseForm.build();
+            courseService.update(courseId, course);
+        } else {
+            return editCourse(courseId, courseForm);
+        }
+
+        return new ModelAndView("redirect:/app/courses");
+    }
+
+
     @RequestMapping("/courses/{id}/students")
     public ModelAndView getCourseStudents(@PathVariable final Integer id){
         final ModelAndView mav = new ModelAndView("courseStudents");
@@ -52,6 +88,8 @@ public class CourseController {
         //final ModelAndView mav = new ModelAndView("addCourse", "command", new CourseForm());
         ModelAndView mav = new ModelAndView("addCourse");
         mav.addObject("section", COURSES_SECTION);
+        mav.addObject("task", TASK_FORM_ADD);
+
         return mav;
     }
 
