@@ -114,6 +114,8 @@ public class CourseJdbcDao implements CourseDao {
     @Override
     public boolean deleteCourse(Integer id) {
         int rowsAffected = jdbcTemplate.update(QUERY_DELETE, id);
+
+        return rowsAffected == 1;
     }
 
     private static class QueryFilter {
