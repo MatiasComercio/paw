@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
+import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -124,24 +125,24 @@ public class CourseJdbcDao implements CourseDao {
         http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
      */
     @Override
-    public boolean deleteCourse(Integer id) {
+    public Result deleteCourse(Integer id) {
         Object[] idWrapped = new Object[]{id};
         int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_INSCRIPTION, idWrapped, Integer.class);
 
         if(courseNumber > 0) {
             System.out.println("Inscription exist");
-            return false;
+            return Result.COURSE_EXISTS_INSCRIPTION;
         }
 
         courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_GRADES, idWrapped, Integer.class);
 
         if(courseNumber > 0) {
             System.out.println("Grades exist");
-            return false;
+            return Result.COURSE_EXISTS_GRADE;
         }
         int rowsAffected = jdbcTemplate.update(QUERY_DELETE, id);
 
-        return rowsAffected == 1;
+        return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
     }
 
     private static class QueryFilter {
