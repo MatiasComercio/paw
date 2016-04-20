@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.forms.StudentForm;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -120,6 +121,10 @@ public class UserController {
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
 	public ModelAndView removeStudent(@PathVariable final Integer docket) {
+		final Result result = studentService.deleteCourse(docket);
+		ModelAndView mav = new ModelAndView("studentsSearch");
+		mav.addObject("errorMessage", result.getMessage());
 
+		return mav;
 	}
 }
