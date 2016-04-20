@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
+import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +100,15 @@ public class StudentJdbcDao implements StudentDao {
 				"FROM " + INSCRIPTION_TABLE + " JOIN " + COURSE_TABLE + " ON " +
 					INSCRIPTION_TABLE + "." + INSCRIPTION__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." + COURSE__ID_COLUMN
 				+ " WHERE " + INSCRIPTION_TABLE + "." + INSCRIPTION__DOCKET_COLUMN + " = ?";
+
+	private static final String DELETE_STUDENT_GRADES = "DELETE FROM " + GRADE_TABLE
+			+ " WHERE " + GRADE__DOCKET_COLUMN + " = ?";
+
+	private static final String DELETE_STUDENT_INSCRIPTIONS = "DELETE FROM " + INSCRIPTION_TABLE
+			+ " WHERE " + INSCRIPTION__DOCKET_COLUMN + " = ?";
+
+	private static final String DELETE_STUDENT = "DELETE FROM " + STUDENT_TABLE
+			+ " WHERE " + STUDENT__DOCKET_COLUMN + " = ?";
 
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
@@ -268,6 +278,16 @@ public class StudentJdbcDao implements StudentDao {
 		queryFilter.filterByGenre(studentFilter);
 
 		return jdbcTemplate.query(queryFilter.getQuery(), studentRowMapper, queryFilter.getFilters().toArray());
+	}
+
+	@Override
+	public Result deleteStudent(Integer docket) {
+		int gradeRowsAffected = jdbcTemplate.update(DELETE_STUDENT_GRADES, docket);
+		int inscriptionRowsAffected = jdbcTemplate.update(DELETE_STUDENT_INSCRIPTIONS, docket);
+		/* +++xcheck exceptions */
+		int studentRowsAffected = jdbcTemplate.update(DELETE_STUDENT, docket);
+
+		return studentRowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 	}
 
 
