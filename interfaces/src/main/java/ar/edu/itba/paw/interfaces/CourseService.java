@@ -34,6 +34,7 @@ public interface CourseService {
      */
     List<Course> getByFilter(CourseFilter courseFilter);
 
+    /* +++xchange boolean to enum */
     /**
      * Attempts to delete the course with the given id
      * @param id of the course to delete
