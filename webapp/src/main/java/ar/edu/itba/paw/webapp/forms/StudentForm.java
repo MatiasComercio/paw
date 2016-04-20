@@ -3,26 +3,59 @@ package ar.edu.itba.paw.webapp.forms;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class StudentForm {
 
+    @NotNull
+    @Min(1)
     private int dni;
+
+    @NotNull
+    @Size(min=2, max=50)
     private String firstName;
+
+    @NotNull
+    @Size(min=2, max=50)
     private String lastName;
+
     private User.Genre genre;
+
+    @DateTimeFormat(pattern="yyyy/MM/dd/")
     private LocalDate birthday;
+
+    @Size(min=0, max=50)
     private String email;
 
+    @NotNull
+    @Min(1)
     private int docket;
 
     private Address address;
+    @NotNull
+    @Size(min=2, max=50)
     private String country;
+    @NotNull
+    @Size(min=2, max=50)
     private String city;
+    @NotNull
+    @Size(min=2, max=50)
     private String neighborhood;
+    @NotNull
+    @Size(min=2, max=100)
     private String street;
+
+    @NotNull
+    @Min(0)
     private String number;
+
+    @Min(0)
     private String floor;
     private String door;
     private String telephone;
@@ -32,11 +65,26 @@ public class StudentForm {
     public StudentForm(){}
 
     public Student build(){
-        //this.address = new Address.Builder(country, city, neighborhood, street, Integer.valueOf(number)).floor(Integer.valueOf(floor)).
-        //        door(door).telephone(Long.valueOf(telephone)).zipCode(Integer.valueOf(zipCode)).build();
-        //return new Student.Builder(docket, dni).firstName(firstName).lastName(lastName).genre(genre).birthday(birthday)
-        //        .email(email).address(address).build();
-        return new Student.Builder(docket, dni).firstName(firstName).lastName(lastName).build();
+        this.number = number.equals("") ? String.valueOf(Integer.MIN_VALUE) : number;
+        this.floor = floor.equals("") ? String.valueOf(Integer.MIN_VALUE) : floor;
+
+        System.out.println("telephone: " + telephone);
+        if(telephone.equals("")){
+            System.out.println("telephone es vacio");
+        }
+        if(telephone == null){
+            System.out.println("telephone es null");
+        }
+        this.telephone = telephone.equals("") ? String.valueOf(Long.MIN_VALUE) : telephone;
+
+        System.out.println("Cambio: telephone es " + telephone);
+        this.zipCode = zipCode.equals("") ? String.valueOf(Integer.MIN_VALUE) : zipCode;
+
+        this.address = new Address.Builder(country, city, neighborhood, street, Integer.valueOf(number)).floor(Integer.valueOf(floor)).
+                door(door).telephone(Long.valueOf(telephone)).zipCode(Integer.valueOf(zipCode)).build();
+        return new Student.Builder(docket, dni).firstName(firstName).lastName(lastName).genre(genre).birthday(birthday)
+                .email(email).address(address).build();
+        //return new Student.Builder(docket, dni).firstName(firstName).lastName(lastName).build();
 
     }
 

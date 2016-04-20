@@ -35,10 +35,12 @@
                     <div class="form-group">
                         <form:label path="name">Nombre:</form:label>
                         <form:input type="text" class="form-control" path="name"/>
+                        <form:errors path="name" cssStyle="color: red;" element="div"/>
                     </div>
                     <div class="form-group">
                         <form:label path="credits">Créditos:</form:label>
                         <form:input type="text" class="form-control" path="credits"/>
+                        <form:errors path="credits" cssStyle="color: red;" element="div"/>
                     </div>
                     <input type="submit" class="btn btn-info" value="Agregar materia"/>
                 </form:form>
