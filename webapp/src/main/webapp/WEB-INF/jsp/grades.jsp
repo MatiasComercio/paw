@@ -10,9 +10,6 @@
     <jsp:include page="base/nav.jsp" />
 
     <div id="page-wrapper">
-
-        <div class="container-fluid">
-
             <!-- Page Heading -->
             <div class="row">
                 <div class="col-xs-12">
@@ -20,6 +17,12 @@
                          ${student.docket} - ${student.firstName} ${student.lastName}
                              <small>(${student.email})</small> - Notas
                     </h1>
+                </div>
+            </div>
+
+            <div class="container-fluid">
+                <div class="col-md-1">
+                    <a href="/app/students/${student.docket}/grades/add" id="addGrade" type="button" class="btn btn-default">Agregar Nota</a>
                 </div>
             </div>
 
