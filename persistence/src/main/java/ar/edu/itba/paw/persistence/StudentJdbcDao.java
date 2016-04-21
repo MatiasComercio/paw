@@ -340,12 +340,13 @@ public class StudentJdbcDao implements StudentDao {
 
 		try {
 			int rowsAffected = gradesInsert.execute(gradeArgs);
+
+			return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 		} catch(DuplicateKeyException e) { /* +++xremove when we add date to grade DB this catch should be removed */
 			return Result.GRADE_EXISTS;
 		} catch(DataIntegrityViolationException e) {
 			return Result.ERROR_UNKNOWN;
 		}
-		return Result.OK;
 	}
 
 
