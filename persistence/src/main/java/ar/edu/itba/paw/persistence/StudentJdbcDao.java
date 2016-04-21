@@ -297,6 +297,11 @@ public class StudentJdbcDao implements StudentDao {
 		}
 	}
 
+	@Override
+	public Result addGrade(Grade grade) {
+		return null;
+	}
+
 
 	@Override
 	public Result create(Student student) {
