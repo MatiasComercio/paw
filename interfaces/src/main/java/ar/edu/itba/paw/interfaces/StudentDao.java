@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 
 import java.time.LocalDate;
@@ -48,4 +49,13 @@ public interface StudentDao {
 	 * an empty list.
 	 */
 	List<Student> getByFilter(StudentFilter studentFilter);
+
+	/**
+	 * Enrolls the student with the given docket into the course with the specified id.
+	 *
+	 * @param studentDocket The student's docket
+	 * @param courseId The course id
+	 * @return a Result object containing information of the operation carried out
+	 */
+	Result enroll(final int studentDocket, final int courseId);
 }

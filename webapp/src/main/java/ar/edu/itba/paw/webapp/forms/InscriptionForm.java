@@ -1,10 +1,10 @@
 package ar.edu.itba.paw.webapp.forms;
 
 public class InscriptionForm {
-	private int studentDocket;
-	private int courseId;
+	private Integer studentDocket;
+	private Integer courseId;
 
-	public int getStudentDocket() {
+	public Integer getStudentDocket() {
 		return studentDocket;
 	}
 
@@ -12,7 +12,7 @@ public class InscriptionForm {
 		this.studentDocket = studentDocket;
 	}
 
-	public int getCourseId() {
+	public Integer getCourseId() {
 		return courseId;
 	}
 

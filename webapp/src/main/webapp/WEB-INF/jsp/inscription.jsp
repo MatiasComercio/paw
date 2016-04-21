@@ -37,15 +37,15 @@
             <form:form modelAttribute="inscriptionForm" action="/app/students/${inscriptionForm.studentDocket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
                 <div>
                     <form:label path="studentDocket">Legajo del Alumno</form:label>
-                    <form:input path="studentDocket" disabled="true" value="${inscriptionForm.studentDocket}"/>
+                    <form:input class="form-control" path="studentDocket" value="${inscriptionForm.studentDocket}" readonly="true"/>
                 </div>
                 <div>
                     <form:label path="courseId">ID del Curso</form:label>
-                    <form:input path="courseId" type="text"/>
+                    <form:input class="form-control" path="courseId" type="text"/>
                     <form:errors path="courseId" cssStyle="color: red;" element="div"/>
                 </div>
                 <div>
-                    <input type="submit" value="Login"/>
+                    <input class="form-control" type="submit" value="Inscribirse"/>
                 </div>
             </form:form>
 

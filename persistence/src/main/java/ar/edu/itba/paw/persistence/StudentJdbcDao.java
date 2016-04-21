@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
+import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,6 +209,7 @@ public class StudentJdbcDao implements StudentDao {
 	private SimpleJdbcInsert userInsert;
 	private SimpleJdbcInsert studentInsert;
 	private SimpleJdbcInsert addressInsert;
+	private SimpleJdbcInsert inscriptionInsert;
 
 	@Autowired
 	public StudentJdbcDao (final DataSource dataSource) {
@@ -215,6 +217,7 @@ public class StudentJdbcDao implements StudentDao {
 		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
 		studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
 		addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
+		inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE);
 
 	}
 
@@ -270,7 +273,7 @@ public class StudentJdbcDao implements StudentDao {
 		return jdbcTemplate.query(queryFilter.getQuery(), studentRowMapper, queryFilter.getFilters().toArray());
 	}
 
-
+	/* +++xchange: TODO: sacar la validacion de dni y docket > 0 (se hace en la capa de servicios */
 	@Override
 	public void create(Student student) {
 		//TODO: Add further data validation
@@ -318,6 +321,17 @@ public class StudentJdbcDao implements StudentDao {
 			addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, student.getAddress().getZipCode());
 			addressInsert.execute(addressArgs);
 		}
+	}
+
+	@Override
+	public Result enroll(final int studentDocket, final int courseId) {
+		/* +++xdoing */
+		final Map<String, Object> inscriptionArgs = new HashMap<>();
+		inscriptionArgs.put(INSCRIPTION__DOCKET_COLUMN, studentDocket);
+		inscriptionArgs.put(INSCRIPTION__COURSE_ID_COLUMN, courseId);
+		inscriptionInsert.execute(inscriptionArgs);
+
+		return Result.OK;
 	}
 
 	private String createEmail(final int docket, final String firstName, final String lastName) {

@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.forms.InscriptionForm;
 import ar.edu.itba.paw.webapp.forms.StudentForm;
 import ar.edu.itba.paw.models.users.Student;
@@ -100,8 +101,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.GET)
 	public ModelAndView studentInscription(@PathVariable final int docket,
-	                                       @ModelAttribute("inscriptionForm") final InscriptionForm inscriptionForm){
-		//final ModelAndView mav = new ModelAndView("addStudent", "command", new StudentForm());
+											@ModelAttribute("inscriptionForm") final InscriptionForm inscriptionForm){
 		inscriptionForm.setStudentDocket(docket);
 		ModelAndView mav = new ModelAndView("inscription");
 		mav.addObject("section", STUDENTS_SECTION);
@@ -110,13 +110,25 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.POST)
 	public ModelAndView studentInscription(@PathVariable final int docket,
-											@Valid @ModelAttribute("studentForm") InscriptionForm inscriptionForm,
+											@Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
 	                               final BindingResult errors) {
 		if (errors.hasErrors()){
 			return studentInscription(docket, inscriptionForm);
 		}
 
-//		studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId()); +++xdoing
+//		+++xdebug
+		if (inscriptionForm.getStudentDocket() <= 0){
+			System.out.println("docket");
+			System.out.println(inscriptionForm.getStudentDocket());
+		}
+		if (inscriptionForm.getCourseId()<= 0) {
+			System.out.println("courseId");
+		}
+		final Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
+		if (result == null || !result.equals(Result.OK)) {
+			return studentInscription(docket, inscriptionForm); /* +++ximprove: redirect to an error page, explaining why it failed */
+//			return new ModelAndView("redirect:/app/students/" + docket + "/inscription");
+		}
 		return new ModelAndView("redirect:/app/students/" + docket + "/info"); /* TODO: add feedback of success */
 	}
 
