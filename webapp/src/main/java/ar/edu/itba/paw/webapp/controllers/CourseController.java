@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @Controller
 public class CourseController {
@@ -85,10 +86,16 @@ public class CourseController {
     }
 
     @RequestMapping(value = "/courses/add_course", method = RequestMethod.GET)
-    public ModelAndView addCourse(@ModelAttribute("courseForm") final CourseForm courseForm){
-
-        //final ModelAndView mav = new ModelAndView("addCourse", "command", new CourseForm());
+    public ModelAndView addCourse(@ModelAttribute("courseForm") final CourseForm courseForm,
+                                  RedirectAttributes redirectAttributes){
         ModelAndView mav = new ModelAndView("addCourse");
+        if(redirectAttributes != null) {
+            Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
+            if (raMap.get("alert") != null) {
+                mav.addObject("alert", raMap.get("alert"));
+                mav.addObject("message", raMap.get("message"));
+            }
+        }
         mav.addObject("section", COURSES_SECTION);
         mav.addObject("task", TASK_FORM_ADD);
 
@@ -97,17 +104,20 @@ public class CourseController {
 
     @RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
     public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
-                            final BindingResult errors){
+                            final BindingResult errors, RedirectAttributes redirectAttributes){
         if(errors.hasErrors()){
-            return addCourse(courseForm);
+            return addCourse(courseForm, null);
         }
         else{
             final Course course = courseForm.build();
             Result result = courseService.create(course);
             if(!result.equals(Result.OK)){
-                System.out.println("Lo rompiste: " + result.getMessage());
-                return addCourse(courseForm);
+                redirectAttributes.addFlashAttribute("alert", "danger");
+                redirectAttributes.addFlashAttribute("message", result.getMessage());
+                return addCourse(courseForm, redirectAttributes);
             }
+            redirectAttributes.addFlashAttribute("alert", "success");
+            redirectAttributes.addFlashAttribute("message", "El curso se ha guardado correctamente.");
             return new ModelAndView("redirect:/app/courses");
         }
     }

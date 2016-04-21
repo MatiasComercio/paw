@@ -25,6 +25,7 @@
 
             <!-- -->
             <div class="container">
+                <jsp:include page="base/alerts.jsp" />
                 <h2>Agregar alumno</h2>
                 <form:form modelAttribute="studentForm" method="post" action="/app/students/add_student">
                     <!-- User Data -->

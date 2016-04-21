@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -98,26 +100,36 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
-	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm){
-		//final ModelAndView mav = new ModelAndView("addStudent", "command", new StudentForm());
+	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
+								   RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("addStudent");
+		if(redirectAttributes != null) {
+			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
+			if (raMap.get("alert") != null) {
+				mav.addObject("alert", raMap.get("alert"));
+				mav.addObject("message", raMap.get("message"));
+			}
+		}
 		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
 	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
-								   final BindingResult errors) {
+								   final BindingResult errors, RedirectAttributes redirectAttributes) {
 		if (errors.hasErrors()){
-			return addStudent(studentForm);
+			return addStudent(studentForm, null);
 		}
 		else{
 			Student student = studentForm.build();
 			Result result = studentService.create(student);
 			if(!result.equals(Result.OK)){
-				System.out.println("Lo rompiste: " + result.getMessage());
-				return addStudent(studentForm);
+				redirectAttributes.addFlashAttribute("alert", "danger");
+				redirectAttributes.addFlashAttribute("message", result.getMessage());
+				return addStudent(studentForm, redirectAttributes);
 			}
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message", "El alumno se ha guardado correctamente.");
 			return new ModelAndView("redirect:/app/students");
 		}
 	}

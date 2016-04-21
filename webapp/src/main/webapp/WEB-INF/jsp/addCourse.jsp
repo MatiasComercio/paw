@@ -25,6 +25,7 @@
 
             <!-- -->
             <div class="container">
+                <jsp:include page="base/alerts.jsp" />
                 <h2>Agregar curso</h2>
             <c:if test="${task == 'add' }">
                 <form:form modelAttribute="courseForm" method="post" action="/app/courses/add_course">
