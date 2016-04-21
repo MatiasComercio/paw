@@ -42,8 +42,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <div id="search" type="button" class="btn btn-default">Buscar</div>
+                </div>
+                <div class="col-md-2">
+                    <div id="addCourse" type="button" class="btn btn-default">Agregar</div>
                 </div>
             </div>
 
@@ -91,6 +94,9 @@
         }
 
         $('#search').click(urlWithFilters);
+
+        var addCourse = function(){window.location="/app/courses/add_course";}
+        $('#addCourse').on("click", addCourse);
 
         /* source: http://stackoverflow.com/questions/10905345/pressing-enter-on-a-input-type-text-how */
         $("input").bind("keypress", {}, keypressInBox);

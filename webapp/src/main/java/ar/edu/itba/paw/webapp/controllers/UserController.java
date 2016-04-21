@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -95,17 +97,24 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
-	public ModelAndView addStudent(){
-		final ModelAndView mav = new ModelAndView("addStudent", "command", new StudentForm());
+	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm){
+		//final ModelAndView mav = new ModelAndView("addStudent", "command", new StudentForm());
+		ModelAndView mav = new ModelAndView("addStudent");
 		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
-	public String addStudent(@ModelAttribute("addStudent") StudentForm studentForm) {
-		Student student = studentForm.build();
-		studentService.create(student);
-		return "redirect:/app/students";
+	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
+								   final BindingResult errors) {
+		if (!errors.hasErrors()){
+			Student student = studentForm.build();
+			studentService.create(student);
+			//return "redirect:/app/students";
+			return new ModelAndView("redirect:/app/students");
+		}
+		else{
+			return addStudent(studentForm);
+		}
 	}
-
 }

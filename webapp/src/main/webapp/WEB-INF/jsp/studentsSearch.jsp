@@ -24,7 +24,7 @@
 
             <!-- search -->
             <div class="row">
-                <div class="col-xs-10">
+                <div class="col-xs-9">
                     <div class="row">
                         <div class="input-group">
                             <span class="input-group-addon" id="sizing-addon">Legajo</span>
@@ -36,8 +36,11 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-1">
                     <div id="search" type="button" class="btn btn-default">Buscar</div>
+                </div>
+                <div class="col-md-1">
+                    <div id="addStudent" type="button" class="btn btn-default">Agregar</div>
                 </div>
             </div>
 
@@ -87,6 +90,9 @@
         }
 
         $('#search').click(urlWithFilters);
+
+        var addStudent = function(){window.location="/app/students/add_student";}
+        $('#addStudent').on("click", addStudent);
 
         /* source: http://stackoverflow.com/questions/10905345/pressing-enter-on-a-input-type-text-how */
         $("input").bind("keypress", {}, keypressInBox);
