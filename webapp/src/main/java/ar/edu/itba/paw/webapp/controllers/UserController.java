@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.forms.GradeForm;
 import ar.edu.itba.paw.webapp.forms.StudentForm;
@@ -156,6 +157,21 @@ public class UserController {
 	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.POST)
 	public ModelAndView addGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
 								 final BindingResult errors, RedirectAttributes redirectAttributes) {
+		if(errors.hasErrors()) {
+			return addGrade(gradeForm, null);
+		}
+		Grade grade = gradeForm.build();
+		Result result = studentService.addGrade(grade);
+
+		if(!result.equals(Result.OK)) {
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			return addGrade(gradeForm, redirectAttributes);
+		}
+		redirectAttributes.addFlashAttribute("alert", "success");
+		redirectAttributes.addFlashAttribute("message", "La nota se ha guardado correctamente.");
+		/* +++xchange redirect */
+		return new ModelAndView("redirect:/app/students/");
 	}
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
