@@ -116,14 +116,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			return studentInscription(docket, inscriptionForm);
 		}
 
-//		+++xdebug
-		if (inscriptionForm.getStudentDocket() <= 0){
-			System.out.println("docket");
-			System.out.println(inscriptionForm.getStudentDocket());
-		}
-		if (inscriptionForm.getCourseId()<= 0) {
-			System.out.println("courseId");
-		}
 		final Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
 		if (result == null || !result.equals(Result.OK)) {
 			return studentInscription(docket, inscriptionForm); /* +++ximprove: redirect to an error page, explaining why it failed */

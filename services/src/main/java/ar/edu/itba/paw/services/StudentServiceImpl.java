@@ -44,9 +44,11 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public Result enroll(final int studentDocket, final int courseId) {
-		if (studentDocket <= 0 || courseId <= 0) {
-			System.out.println("Here");
-			return Result.ERROR_UNKNOWN;
+		if (studentDocket <= 0 ) {
+			return Result.ERROR_DOCKET_OUT_OF_BOUNDS;
+		}
+		if (courseId <= 0) {
+			return Result.ERROR_ID_OUT_OF_BOUNDS;
 		}
 
 		Result result;
@@ -58,7 +60,6 @@ public class StudentServiceImpl implements StudentService {
 		*/
 
 		result = studentDao.enroll(studentDocket, courseId);
-		System.out.println(result); /* +++xdebug */
 		if (result == null) {
 			return Result.ERROR_UNKNOWN;
 		}

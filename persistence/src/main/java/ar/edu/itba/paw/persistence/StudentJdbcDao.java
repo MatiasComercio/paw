@@ -10,6 +10,7 @@ import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -325,11 +326,15 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result enroll(final int studentDocket, final int courseId) {
-		/* +++xdoing */
 		final Map<String, Object> inscriptionArgs = new HashMap<>();
 		inscriptionArgs.put(INSCRIPTION__DOCKET_COLUMN, studentDocket);
 		inscriptionArgs.put(INSCRIPTION__COURSE_ID_COLUMN, courseId);
-		inscriptionInsert.execute(inscriptionArgs);
+
+		try {
+			inscriptionInsert.execute(inscriptionArgs);
+		} catch (final DuplicateKeyException e) {
+			return Result.ALREADY_ENROLLED;
+		}
 
 		return Result.OK;
 	}
