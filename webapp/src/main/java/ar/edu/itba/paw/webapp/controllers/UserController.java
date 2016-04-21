@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -111,17 +112,21 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.POST)
 	public ModelAndView studentInscription(@PathVariable final int docket,
 											@Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
-	                               final BindingResult errors) {
+											final BindingResult errors,
+											final RedirectAttributes redirectAttributes) {
 		if (errors.hasErrors()){
 			return studentInscription(docket, inscriptionForm);
 		}
 
 		final Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
 		if (result == null || !result.equals(Result.OK)) {
-			return studentInscription(docket, inscriptionForm); /* +++ximprove: redirect to an error page, explaining why it failed */
-//			return new ModelAndView("redirect:/app/students/" + docket + "/inscription");
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			return new ModelAndView("redirect:/app/students/" + docket + "/inscription");
 		}
-		return new ModelAndView("redirect:/app/students/" + docket + "/info"); /* TODO: add feedback of success */
+		redirectAttributes.addFlashAttribute("alert", "success");
+		redirectAttributes.addFlashAttribute("message", "Inscripción realizada con éxito.");
+		return new ModelAndView("redirect:/app/students/" + docket + "/info");
 	}
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)

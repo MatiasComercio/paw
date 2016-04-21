@@ -33,7 +33,11 @@
             </div>
 
             <!-- content -->
-
+            <div class="row">
+                <div class="col-xs-12">
+                    <jsp:include page="base/alerts.jsp" />
+                </div>
+            </div>
             <form:form modelAttribute="inscriptionForm" action="/app/students/${inscriptionForm.studentDocket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
                 <div>
                     <form:label path="studentDocket">Legajo del Alumno</form:label>

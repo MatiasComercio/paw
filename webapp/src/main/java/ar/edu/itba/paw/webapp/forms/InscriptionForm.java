@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.forms;
 
 public class InscriptionForm {
+
 	private Integer studentDocket;
 	private Integer courseId;
 

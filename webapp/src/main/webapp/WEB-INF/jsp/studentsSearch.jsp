@@ -24,6 +24,9 @@
 
             <!-- search -->
             <div class="row">
+                <div class="col-xs-12">
+                    <jsp:include page="base/alerts.jsp" />
+                </div>
                 <div class="col-xs-9">
                     <div class="row">
                         <div class="input-group">

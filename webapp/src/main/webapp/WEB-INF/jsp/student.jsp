@@ -23,6 +23,9 @@
             </div>
             <!-- Content -->
             <div class="row">
+                <div class="col-xs-12">
+                    <jsp:include page="base/alerts.jsp" />
+                </div>
                 <div class="col-xs-12 col-md-8">
                     <div class="well">
                         <div class="row">
