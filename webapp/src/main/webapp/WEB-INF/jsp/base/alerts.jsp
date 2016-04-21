@@ -5,14 +5,14 @@
     <c:if test="${alert == 'success'}">
         <div class="alert alert-success">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Éxito!</strong> ${message}
+            <strong>¡Éxito!</strong> ${message}
         </div>
     </c:if>
 
     <c:if test="${alert == 'info'}">
         <div class="alert alert-info">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Atención!</strong> ${message}
+            <strong>¡Atención!</strong> ${message}
         </div>
     </c:if>
 

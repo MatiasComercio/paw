@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Inscripción de Alumno <small></small>
+                        Inscribirse en Materia - <small>Legajo del alumno: ${docket}</small>
                     </h1>
                 </div>
             </div>
@@ -36,20 +36,23 @@
                 <div class="col-xs-12">
                     <jsp:include page="base/alerts.jsp" />
                 </div>
+                <div class="col-xs-12">
+                    <h3>Materias en las que puede inscribirse:</h3>
+                </div>
             </div>
             <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/app/students/${inscriptionForm.studentDocket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
                 <div>
-                    <form:label path="studentDocket">Legajo del Alumno</form:label>
-                    <form:input class="form-control" path="studentDocket" value="${inscriptionForm.studentDocket}" readonly="true"/>
+                    <%--<form:label path="studentDocket">Legajo del Alumno</form:label>--%>
+                    <form:input class="form-control" path="studentDocket" value="${inscriptionForm.studentDocket}" readonly="true" type="hidden"/>
                 </div>
                 <div>
-                    <form:label path="courseId">ID del Curso</form:label>
-                    <form:input id="courseInput" class="form-control" path="courseId" type="text"/>
-                    <form:errors path="courseId" cssStyle="color: red;" element="div"/>
+                    <%--<form:label path="courseId">ID del Curso</form:label>--%>
+                    <form:input id="courseInput" class="form-control" path="courseId" type="hidden"/>
+                    <%--<form:errors path="courseId" cssStyle="color: red;" element="div"/>--%>
                 </div>
-                <div>
+<%--                <div>
                     <input class="form-control" type="submit" value="Inscribirse"/>
-                </div>
+                </div>--%>
             </form:form>
 
             <!-- search -->

@@ -117,6 +117,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).id(id).build();
 		mav.addObject("courses", courseService.getByFilter(courseFilter));
+		mav.addObject("docket", docket);
 
 		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
@@ -140,7 +141,8 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			return new ModelAndView("redirect:/app/students/" + docket + "/inscription");
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", "Inscripción realizada con éxito.");
+		redirectAttributes.addFlashAttribute("message", "El alumno ahora se encuentra inscripto en la materia "
+				+ inscriptionForm.getCourseId() + ".");
 		return new ModelAndView("redirect:/app/students/" + docket + "/info");
 	}
 
