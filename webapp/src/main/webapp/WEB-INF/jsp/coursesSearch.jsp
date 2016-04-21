@@ -36,6 +36,7 @@
 
             <!-- search -->
             <div class="row">
+                <jsp:include page="base/alerts.jsp" />
                 <div class="col-md-6">
                     <div class="row">
                         <div class="col-xs-12">

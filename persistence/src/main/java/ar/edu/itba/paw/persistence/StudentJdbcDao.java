@@ -9,8 +9,10 @@ import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.apache.commons.lang3.text.WordUtils;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -142,25 +144,25 @@ public class StudentJdbcDao implements StudentDao {
 		final String city = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__CITY_COLUMN));
 		final String neighborhood = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__NEIGHBORHOOD_COLUMN));
 		final String street = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__STREET_COLUMN));
-		int number = resultSet.getInt(ADDRESS__NUMBER_COLUMN);
+		Integer number = resultSet.getInt(ADDRESS__NUMBER_COLUMN);
 		if (resultSet.wasNull()) {
-			number = Integer.MIN_VALUE;
+			number = null;
 		}
-		int floor = resultSet.getInt(ADDRESS__FLOOR_COLUMN);
+		Integer floor = resultSet.getInt(ADDRESS__FLOOR_COLUMN);
 		if (resultSet.wasNull()) {
-			floor = Integer.MIN_VALUE;
+			floor = null;
 		}
 		String door = resultSet.getString(ADDRESS__DOOR_COLUMN);
 		if (door != null) {
 			door = door.toUpperCase();
 		}
-		long telephone = resultSet.getLong(ADDRESS__TELEPHONE_COLUMN);
+		Long telephone = resultSet.getLong(ADDRESS__TELEPHONE_COLUMN);
 		if (resultSet.wasNull()) {
-			telephone = Long.MIN_VALUE;
+			telephone = null;
 		}
-		int zipCode = resultSet.getInt(ADDRESS__ZIP_CODE_COLUMN);
+		Integer zipCode = resultSet.getInt(ADDRESS__ZIP_CODE_COLUMN);
 		if (resultSet.wasNull()) {
-			zipCode = Integer.MIN_VALUE;
+			zipCode = null;
 		}
 		final Address.Builder addressBuilder = new Address.Builder(country, city, neighborhood, street, number);
 		addressBuilder.floor(floor).door(door).telephone(telephone).zipCode(zipCode);
@@ -297,7 +299,7 @@ public class StudentJdbcDao implements StudentDao {
 
 
 	@Override
-	public void create(Student student) {
+	public Result create(Student student) {
 		//TODO: Add further data validation
 
 		final Map<String, Object> userArgs = new HashMap<>();
@@ -306,27 +308,33 @@ public class StudentJdbcDao implements StudentDao {
 
 		/* Store User Data */
 		//TODO: DNI > 0 and UNIQUE(email) are guaranteed by the DB. How do we handle in case insertion fails?
-		if(student.getDni() > 0) {
-			userArgs.put(USER__DNI_COLUMN, student.getDni());
-			userArgs.put(USER__FIRST_NAME_COLUMN, student.getFirstName());
-			userArgs.put(USER__LAST_NAME_COLUMN, student.getLastName());
-			//TODO: Check genre length eq 1 (Again this is verified by the db)
-			if(student.getGenre() == "Female")
-				userArgs.put(USER__GENRE_COLUMN, "F");
-			else
-				userArgs.put(USER__GENRE_COLUMN, "M");
-			userArgs.put(USER__BIRTHDAY_COLUMN, student.getBirthday());
-			//TODO: Get default email
-			userArgs.put(USER__EMAIL_COLUMN, student.getEmail());
+
+		userArgs.put(USER__DNI_COLUMN, student.getDni());
+		userArgs.put(USER__FIRST_NAME_COLUMN, student.getFirstName());
+		userArgs.put(USER__LAST_NAME_COLUMN, student.getLastName());
+		//TODO: Check genre length eq 1 (Again this is verified by the db)
+		if(student.getGenre() == "Female")
+			userArgs.put(USER__GENRE_COLUMN, "F");
+		else
+			userArgs.put(USER__GENRE_COLUMN, "M");
+		userArgs.put(USER__BIRTHDAY_COLUMN, student.getBirthday());
+		//TODO: Get default email
+		userArgs.put(USER__EMAIL_COLUMN, student.getEmail());
+		try {
 			userInsert.execute(userArgs);
+		}catch(DuplicateKeyException e){
+			return Result.STUDENT_EXISTS_DNI;
 		}
 
 		/* Store Student Data */
-		if(student.getDocket() > 0 && student.getDni()>0) {
-			studentArgs.put(STUDENT__DOCKET_COLUMN, student.getDocket());
-			studentArgs.put(STUDENT__DNI_COLUMN, student.getDni());
-			//PASSWORD??? userArgs.put(ID_COLUMN, student);
+		studentArgs.put(STUDENT__DOCKET_COLUMN, student.getDocket());
+		studentArgs.put(STUDENT__DNI_COLUMN, student.getDni());
+		//PASSWORD??? userArgs.put(ID_COLUMN, student);
+
+		try {
 			studentInsert.execute(studentArgs);
+		}catch(DuplicateKeyException e){
+			return Result.STUDENT_EXISTS_DOCKET;
 		}
 
 		/* Store Address Data */
@@ -343,6 +351,8 @@ public class StudentJdbcDao implements StudentDao {
 			addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, student.getAddress().getZipCode());
 			addressInsert.execute(addressArgs);
 		}
+
+		return Result.OK;
 	}
 
 	private String createEmail(final int docket, final String firstName, final String lastName) {

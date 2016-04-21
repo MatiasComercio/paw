@@ -19,6 +19,9 @@ import javax.validation.Valid;
 public class CourseController {
     private static final String COURSES_SECTION = "courses";
 
+    private static String TASK_FORM_ADD = "add";
+    private static String TASK_FORM_EDIT = "edit";
+
     @Autowired
     private CourseService courseService;
 
@@ -40,6 +43,39 @@ public class CourseController {
         return mav;
     }
 
+    @RequestMapping("/courses/{courseId}/edit")
+    public ModelAndView editCourse(@PathVariable final Integer courseId, @ModelAttribute("courseForm") final CourseForm courseForm) {
+        final ModelAndView mav = new ModelAndView("addCourse");
+        mav.addObject("section", COURSES_SECTION);
+
+        Course course = courseService.getById(courseId);
+        courseForm.loadFromCourse(course);
+
+        mav.addObject("courseId", courseId);
+        mav.addObject("task", TASK_FORM_EDIT);
+
+        return mav;
+    }
+
+    @RequestMapping(value = "/courses/{courseId}/edit", method = RequestMethod.POST)
+    public ModelAndView editCourse(@PathVariable final Integer courseId,
+                                  @Valid @ModelAttribute("courseForm") CourseForm courseForm,
+                                  final BindingResult errors,
+                                  RedirectAttributes redirectAttributes){
+        if (errors.hasErrors()){
+            return editCourse(courseId, courseForm);
+        }
+
+        Course course = courseForm.build();
+        courseService.update(courseId, course);
+
+        redirectAttributes.addFlashAttribute("alert", "success");
+        redirectAttributes.addFlashAttribute("message", "La materia se ha guardado correctamente.");
+
+        return new ModelAndView("redirect:/app/courses");
+    }
+
+
     @RequestMapping("/courses/{id}/students")
     public ModelAndView getCourseStudents(@PathVariable final Integer id){
         final ModelAndView mav = new ModelAndView("courseStudents");
@@ -54,20 +90,25 @@ public class CourseController {
         //final ModelAndView mav = new ModelAndView("addCourse", "command", new CourseForm());
         ModelAndView mav = new ModelAndView("addCourse");
         mav.addObject("section", COURSES_SECTION);
+        mav.addObject("task", TASK_FORM_ADD);
+
         return mav;
     }
 
     @RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
     public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
                             final BindingResult errors){
-        if(!errors.hasErrors()){
-            final Course course = courseForm.build();
-            courseService.create(course);
-            //return "redirect:/app/courses";
-            return new ModelAndView("redirect:/app/courses");
+        if(errors.hasErrors()){
+            return addCourse(courseForm);
         }
         else{
-            return addCourse(courseForm);
+            final Course course = courseForm.build();
+            Result result = courseService.create(course);
+            if(!result.equals(Result.OK)){
+                System.out.println("Lo rompiste: " + result.getMessage());
+                return addCourse(courseForm);
+            }
+            return new ModelAndView("redirect:/app/courses");
         }
     }
 

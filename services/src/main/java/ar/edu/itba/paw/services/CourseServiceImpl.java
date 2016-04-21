@@ -17,9 +17,14 @@ public class CourseServiceImpl implements CourseService {
     private CourseDao courseDao;
 
     @Override
-    public void create(Course course) {
-        courseDao.create(course);
+    public Result create(Course course) {
+        return courseDao.create(course);
     }
+
+   @Override
+   public void update(Integer id, Course course){
+       courseDao.update(id, course);
+   }
 
     @Override
     public Course getById(int id) {

@@ -5,19 +5,21 @@ import ar.edu.itba.paw.models.Course;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class CourseForm {
 
+    @Min(1)
+    @NotNull
+    private Integer id;
 
     @NotNull
-    @Min(30)
-    private int id;
-
-    @NotNull
+    @Size(min=2, max=50)
     private String name;
 
     @NotNull
-    private int credits;
+    @Min(0)
+    private Integer credits;
 
     public CourseForm(){}
 
@@ -25,11 +27,11 @@ public class CourseForm {
         return new Course.Builder(id).name(name).credits(credits).build();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -41,11 +43,17 @@ public class CourseForm {
         this.name = name;
     }
 
-    public int getCredits() {
+    public Integer getCredits() {
         return credits;
     }
 
-    public void setCredits(int credits) {
+    public void setCredits(Integer credits) {
         this.credits = credits;
+    }
+
+    public void loadFromCourse(final Course course){
+        this.id = course.getId();
+        this.name = course.getName();
+        this.credits = course.getCredits();
     }
 }

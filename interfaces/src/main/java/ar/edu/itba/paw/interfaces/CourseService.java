@@ -10,8 +10,16 @@ public interface CourseService {
     /**
      *
      * @param course The course to be persisted in the database.
+     * @return The Result code of the insertion.
      */
-    void create(Course course);
+    Result create(Course course);
+
+    /**
+     * Update a course
+     * @param id Id the previous course
+     * @param course Modified course
+     */
+    void update(final Integer id, final Course course);
 
     /**
      * Gets the desired course by the identifier

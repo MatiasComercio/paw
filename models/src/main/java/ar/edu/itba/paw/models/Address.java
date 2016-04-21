@@ -5,22 +5,22 @@ public class Address {
 	private final String city;
 	private final String neighborhood;
 	private final String street;
-	private final String number;
-	private final String floor;
+	private final Integer number;
+	private final Integer floor;
 	private final String door;
-	private final String telephone;
-	private final String zipCode;
+	private final Long telephone;
+	private final Integer zipCode;
 
 	private Address(final Builder builder) {
 		this.country = builder.country;
 		this.city = builder.city;
 		this.neighborhood = builder.neighborhood;
 		this.street = builder.street;
-		this.number = builder.number == Integer.MIN_VALUE ? "" : String.valueOf(builder.number);
-		this.floor = builder.floor == Integer.MIN_VALUE ? "" : String.valueOf(builder.floor);
+		this.number = builder.number;
+		this.floor = builder.floor;
 		this.door = builder.door;
-		this.telephone = builder.telephone == Long.MIN_VALUE ? "" : String.valueOf(builder.telephone);
-		this.zipCode = builder.zipCode == Integer.MIN_VALUE ? "" : String.valueOf(builder.zipCode);
+		this.telephone = builder.telephone;
+		this.zipCode = builder.zipCode;
 	}
 
 	public String getCountry() {
@@ -39,11 +39,11 @@ public class Address {
 		return street;
 	}
 
-	public String getNumber() {
+	public Integer getNumber() {
 		return number;
 	}
 
-	public String getFloor() {
+	public Integer getFloor() {
 		return floor;
 	}
 
@@ -51,11 +51,11 @@ public class Address {
 		return door;
 	}
 
-	public String getTelephone() {
+	public Long getTelephone() {
 		return telephone;
 	}
 
-	public String getZipCode() {
+	public Integer getZipCode() {
 		return zipCode;
 	}
 
@@ -64,15 +64,15 @@ public class Address {
 		private String city;
 		private String neighborhood;
 		private String street;
-		private int number;
+		private Integer number;
 
-		private int floor;
+		private Integer floor;
 		private String door = "";
-		private long telephone;
-		private int zipCode;
+		private Long telephone;
+		private Integer zipCode;
 
 		public Builder(final String country, final String city,
-		               final String neighborhood, final String street, final int number) {
+		               final String neighborhood, final String street, final Integer number) {
 			this.country = country == null ? "" : country;
 			this.city = city == null ? "" : city;
 			this.neighborhood = neighborhood == null ? "" : neighborhood;
@@ -80,7 +80,7 @@ public class Address {
 			this.number = number;
 		}
 
-		public Builder floor(final int floor) {
+		public Builder floor(final Integer floor) {
 			this.floor = floor;
 			return this;
 		}
@@ -92,12 +92,12 @@ public class Address {
 			return this;
 		}
 
-		public Builder telephone(final long telephone) {
+		public Builder telephone(final Long telephone) {
 			this.telephone = telephone;
 			return this;
 		}
 
-		public Builder zipCode(final int zipCode) {
+		public Builder zipCode(final Integer zipCode) {
 			this.zipCode = zipCode;
 			return this;
 		}
