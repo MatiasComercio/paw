@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,6 +11,29 @@
 <div id="wrapper">
 
     <jsp:include page="base/nav.jsp" />
+
+    <%-- Confirmation Modal --%>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Darse de Baja</h4>
+                </div>
+                <div class="modal-body">
+                    Seguro?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <button id="confirmAction" type="button" class="btn btn-primary">Sí</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%-- End of Confirmation Modal --%>
 
     <div id="page-wrapper">
 
@@ -46,7 +70,8 @@
                                 </div>
                                 <div class="col-xs-4">
                                     <button name="unenroll" type="button" class="btn btn-danger"
-                                            data-course_id="${ course.id }" data-course_name="${ course.name }">
+                                            data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                            data-toggle="modal" data-target="#confirmationModal">
                                         Darse de Baja
                                     </button>
                                 </div>
