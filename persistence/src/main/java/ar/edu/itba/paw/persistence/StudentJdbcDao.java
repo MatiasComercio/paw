@@ -12,6 +12,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -311,6 +312,8 @@ public class StudentJdbcDao implements StudentDao {
 			int rowsAffected = gradesInsert.execute(gradeArgs);
 		} catch(DuplicateKeyException e) { /* +++xremove when we add date to grade DB this catch should be removed */
 			return Result.GRADE_EXISTS;
+		} catch(DataIntegrityViolationException e) {
+			return Result.COURSE_NOT_EXISTS; /* +++xchange we should differentiate when a course does not exist and when the student does not exist */
 		}
 		return Result.OK;
 	}
