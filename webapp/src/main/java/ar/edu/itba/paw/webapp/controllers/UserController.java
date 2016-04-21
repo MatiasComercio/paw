@@ -135,13 +135,14 @@ public class UserController {
 		}
 	}
 
-	@RequestMapping(value = "/students/{docket}/add_grade", method = RequestMethod.GET)
+	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.GET)
 	public ModelAndView addGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
 								 RedirectAttributes redirectAttributes) {
 
+
 	}
 
-	@RequestMapping(value = "/students/{docket}/add_grade", method = RequestMethod.POST)
+	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.POST)
 	public ModelAndView addGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
 								 final BindingResult errors, RedirectAttributes redirectAttributes) {
 	}
