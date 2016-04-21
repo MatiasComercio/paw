@@ -11,7 +11,8 @@ public enum Result {
     ERROR_DOCKET_OUT_OF_BOUNDS("El legajo está fuera de los límites permitidos"),
     COURSE_EXISTS_ID("Ya existe un curso con este ID."),
     STUDENT_EXISTS_DOCKET("Ya existe un alumno con este legajo."),
-    STUDENT_EXISTS_DNI("Ya existe un alumno con este DNI.");
+    STUDENT_EXISTS_DNI("Ya existe un alumno con este DNI."),
+    GRADE_EXISTS("La nota ya existe"); /* +++xremove when adding date to grade DB */
 
 
 
