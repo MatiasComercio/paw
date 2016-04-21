@@ -87,8 +87,14 @@ public class CourseJdbcDao implements CourseDao {
     }
 
     @Override
-    public void update(Integer id, Course course) {
-        jdbcTemplate.update("UPDATE course SET id = ?, name = ?, credits = ? WHERE id = ?;", course.getId(), course.getName(), course.getCredits(), id);
+    public Result update(Integer id, Course course) {
+        try {
+            jdbcTemplate.update("UPDATE course SET id = ?, name = ?, credits = ? WHERE id = ?;", course.getId(), course.getName(), course.getCredits(), id);
+        } catch (DuplicateKeyException e){
+            return Result.COURSE_EXISTS_ID;
+        }
+
+        return Result.OK;
     }
 
     @Override

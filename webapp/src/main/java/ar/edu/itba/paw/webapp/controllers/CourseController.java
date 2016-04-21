@@ -26,13 +26,17 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
+    @ModelAttribute("section")
+    public String sectionManager(){
+        return COURSES_SECTION;
+    }
+
     @RequestMapping(value = "/courses")
     public ModelAndView getCoursesByFilter(@RequestParam(required = false) String keyword,
                                            @RequestParam(required = false) Integer id) {
         final ModelAndView mav = new ModelAndView("coursesSearch");
         final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).id(id).build();
         mav.addObject("courses", courseService.getByFilter(courseFilter));
-        mav.addObject("section", COURSES_SECTION);
         return mav;
     }
 
@@ -40,14 +44,21 @@ public class CourseController {
     public ModelAndView getCourse(@PathVariable final Integer id) {
         final ModelAndView mav = new ModelAndView("course");
         mav.addObject("course", courseService.getById(id));
-        mav.addObject("section", COURSES_SECTION);
         return mav;
     }
 
     @RequestMapping("/courses/{courseId}/edit")
-    public ModelAndView editCourse(@PathVariable final Integer courseId, @ModelAttribute("courseForm") final CourseForm courseForm) {
+    public ModelAndView editCourse(@PathVariable final Integer courseId, @ModelAttribute("courseForm") final CourseForm courseForm,
+                                   RedirectAttributes redirectAttributes) {
         final ModelAndView mav = new ModelAndView("addCourse");
-        mav.addObject("section", COURSES_SECTION);
+
+        if (redirectAttributes != null) {
+            Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
+            if (raMap.get("alert") != null) {
+                mav.addObject("alert", raMap.get("alert"));
+                mav.addObject("message", raMap.get("message"));
+            }
+        }
 
         Course course = courseService.getById(courseId);
         courseForm.loadFromCourse(course);
@@ -64,11 +75,17 @@ public class CourseController {
                                   final BindingResult errors,
                                   RedirectAttributes redirectAttributes){
         if (errors.hasErrors()){
-            return editCourse(courseId, courseForm);
+            return editCourse(courseId, courseForm, redirectAttributes);
         }
 
         Course course = courseForm.build();
-        courseService.update(courseId, course);
+        Result result = courseService.update(courseId, course);
+
+        if(!result.equals(Result.OK)){
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", result.getMessage());
+            return editCourse(courseId, courseForm, redirectAttributes);
+        }
 
         redirectAttributes.addFlashAttribute("alert", "success");
         redirectAttributes.addFlashAttribute("message", "La materia se ha guardado correctamente.");
@@ -81,7 +98,7 @@ public class CourseController {
     public ModelAndView getCourseStudents(@PathVariable final Integer id){
         final ModelAndView mav = new ModelAndView("courseStudents");
         mav.addObject("courseStudents", courseService.getCourseStudents(id));
-        mav.addObject("section", COURSES_SECTION);
+
         return mav;
     }
 
@@ -96,7 +113,6 @@ public class CourseController {
                 mav.addObject("message", raMap.get("message"));
             }
         }
-        mav.addObject("section", COURSES_SECTION);
         mav.addObject("task", TASK_FORM_ADD);
 
         return mav;

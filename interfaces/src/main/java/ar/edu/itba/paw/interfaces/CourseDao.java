@@ -19,8 +19,9 @@ public interface CourseDao {
      * Update a course
      * @param id Id of the old course
      * @param course Modified course
+     * @return The result code of the insertion
      */
-    void update(final Integer id, final Course course);
+    Result update(final Integer id, final Course course);
 
     /**
      * Get the course identified by an ID
