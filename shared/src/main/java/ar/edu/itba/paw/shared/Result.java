@@ -12,7 +12,9 @@ public enum Result {
     COURSE_EXISTS_ID("Ya existe un curso con este ID."),
     STUDENT_EXISTS_DOCKET("Ya existe un alumno con este legajo."),
     STUDENT_EXISTS_DNI("Ya existe un alumno con este DNI."),
-    GRADE_EXISTS("La nota ya existe"); /* +++xremove when adding date to grade DB */
+    GRADE_EXISTS("La nota ya existe"),  /* +++xremove when adding date to grade DB */
+    COURSE_NOT_EXISTS("La materia no existe"),
+    STUDENT_NOT_EXISTS("El estudiante no existe");
 
 
 
