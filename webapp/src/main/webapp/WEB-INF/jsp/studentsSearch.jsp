@@ -22,6 +22,13 @@
                 </div>
             </div>
 
+            <!-- Result Message -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <h1>${message}</h1>
+                </div>
+            </div>
+
             <!-- search -->
             <div class="row">
                 <div class="col-xs-9">
@@ -62,7 +69,11 @@
                         <td>${ student.firstName }</td>
                         <td>${ student.lastName }</td>
                         <td>${ student.email }</td>
-                        <td><a href="<c:url value="/app/students/${student.docket}/info" />">Ver</a></td>
+                        <td><a href="<c:url value="/app/students/${student.docket}/info" />">Ver</a>
+                            <form action="students/${student.docket}/delete" method="post">
+                                <button type="submit" value="students/${student.docket}/delete">Eliminar</button>
+                            </form>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>

@@ -46,6 +46,14 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.getByFilter(courseFilter);
     }
 
+    @Override
+    public Result deleteCourse(Integer id) {
+        if(id >= 0) {
+            return courseDao.deleteCourse(id);
+        }
+        return Result.ERROR_ID_OUT_OF_BOUNDS;
+    }
+
     /* +++xtest method */
     public void setCourseDao(CourseDao courseDao) {
         this.courseDao = courseDao;

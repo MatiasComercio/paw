@@ -133,4 +133,13 @@ public class UserController {
 			return new ModelAndView("redirect:/app/students");
 		}
 	}
+
+	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
+	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes) {
+		final Result result = studentService.deleteCourse(docket);
+//		ModelAndView mav = new ModelAndView("studentsSearch");
+		redirectAttributes.addFlashAttribute("message", result.getMessage());
+
+		return new ModelAndView("redirect:/app/students");
+	}
 }

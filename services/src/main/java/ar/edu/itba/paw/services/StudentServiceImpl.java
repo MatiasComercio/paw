@@ -39,6 +39,14 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
+	public Result deleteCourse(Integer docket) {
+		if(docket <= 0) {
+			return Result.ERROR_DOCKET_OUT_OF_BOUNDS;
+		}
+		return studentDao.deleteStudent(docket);
+	}
+
+	@Override
 	public Student getGrades(final int docket) {
 		return docket <= 0 ? null : studentDao.getGrades(docket);
 	}

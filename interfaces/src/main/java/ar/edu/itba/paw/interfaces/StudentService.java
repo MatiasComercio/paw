@@ -48,4 +48,11 @@ public interface StudentService {
 	 * @return The Result code of the insertion
 	 */
 	Result create(Student student);
+
+	/**
+	 * +++xdocument
+	 * @param docket
+	 * @return
+     */
+	Result deleteCourse(Integer docket);
 }

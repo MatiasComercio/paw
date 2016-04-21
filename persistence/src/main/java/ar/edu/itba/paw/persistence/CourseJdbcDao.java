@@ -8,10 +8,13 @@ import ar.edu.itba.paw.shared.Result;
 import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.nativejdbc.SimpleNativeJdbcExtractor;
 import org.springframework.stereotype.Repository;
+import sun.management.jdp.JdpController;
 
 import javax.sql.DataSource;
 import java.util.*;
@@ -28,6 +31,21 @@ public class CourseJdbcDao implements CourseDao {
     private static final String DNI_COLUMN = "dni";
     private static final String FIRST_NAME_COLUMN = "first_name";
     private static final String LAST_NAME_COLUMN = "last_name";
+
+    private static final String INSCRIPTION_TABLE_NAME = "inscription";
+    private static final String INSCRIPTION_ID_COURSE = "course_id";
+
+    private static final String GRADES_TABLE_NAME = "grade";
+    private static final String GRADES_ID_COURSE = "course_id";
+
+    private static final String QUERY_DELETE = "DELETE FROM " + TABLE_NAME
+            + " WHERE " + ID_COLUMN + " = ?";
+
+    private static final String QUERY_COUNT_INSCRIPTION = "SELECT COUNT(*) FROM " + INSCRIPTION_TABLE_NAME
+            + " WHERE " + INSCRIPTION_ID_COURSE + " = ?";
+
+    private static final String QUERY_COUNT_GRADES = "SELECT COUNT(*) FROM " + GRADES_TABLE_NAME
+            + " WHERE " + GRADES_ID_COURSE + " = ?";
 
 
     private final JdbcTemplate jdbcTemplate;
@@ -114,6 +132,34 @@ public class CourseJdbcDao implements CourseDao {
         List<Course> courses = jdbcTemplate.query(queryFilter.getQuery(), courseRowMapper, queryFilter.getFilters().toArray());
 
         return courses;
+    }
+
+    /* +++xreference
+        http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
+     */
+    @Override
+    public Result deleteCourse(Integer id) {
+        Object[] idWrapped = new Object[]{id};
+        int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_INSCRIPTION, idWrapped, Integer.class);
+
+        if(courseNumber > 0) {
+            System.out.println("Inscription exist");
+            return Result.COURSE_EXISTS_INSCRIPTION;
+        }
+
+        courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_GRADES, idWrapped, Integer.class);
+
+        if(courseNumber > 0) {
+            System.out.println("Grades exist");
+            return Result.COURSE_EXISTS_GRADE;
+        }
+        try {
+            int rowsAffected = jdbcTemplate.update(QUERY_DELETE, id);
+
+            return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+        } catch (DataAccessException dae) {
+            return Result.ERROR_UNKNOWN;
+        }
     }
 
     private static class QueryFilter {

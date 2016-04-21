@@ -50,4 +50,11 @@ public interface StudentDao {
 	 * an empty list.
 	 */
 	List<Student> getByFilter(StudentFilter studentFilter);
+
+	/**
+	 * +++xdocument
+	 * @param docket
+	 * @return
+     */
+	Result deleteStudent(Integer docket);
 }

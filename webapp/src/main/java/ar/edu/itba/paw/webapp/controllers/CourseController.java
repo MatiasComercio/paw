@@ -121,4 +121,14 @@ public class CourseController {
             return new ModelAndView("redirect:/app/courses");
         }
     }
+
+    @RequestMapping(value = "/courses/{id}/delete", method = RequestMethod.POST)
+    public ModelAndView deleteCourse(@PathVariable final Integer id, RedirectAttributes redirectAttributes) {
+        final Result result = courseService.deleteCourse(id);
+//        ModelAndView mav = new ModelAndView("redirect:/app/courses");
+//        ModelAndView mav = new ModelAndView("coursesSearch");
+        redirectAttributes.addFlashAttribute("message", result.getMessage());
+
+        return new ModelAndView("redirect:/app/courses");
+    }
 }

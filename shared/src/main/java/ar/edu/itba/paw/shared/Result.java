@@ -24,6 +24,4 @@ public enum Result {
     public String getMessage() {
         return this.message;
     }
-
-
 }
