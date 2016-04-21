@@ -15,6 +15,13 @@ public interface CourseService {
     Result create(Course course);
 
     /**
+     * Update a course
+     * @param id Id the previous course
+     * @param course Modified course
+     */
+    void update(final Integer id, final Course course);
+
+    /**
      * Gets the desired course by the identifier
      * @param id The course's ID
      * @return the course with the given ID, if exists; null otherwise.
@@ -35,5 +42,6 @@ public interface CourseService {
      * an empty list.
      */
     List<Course> getByFilter(CourseFilter courseFilter);
+
 
 }

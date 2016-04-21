@@ -16,6 +16,13 @@ public interface CourseDao {
     Result create(Course course);
 
     /**
+     * Update a course
+     * @param id Id of the old course
+     * @param course Modified course
+     */
+    void update(final Integer id, final Course course);
+
+    /**
      * Get the course identified by an ID
      * @param id that identifies the course
      * @return the desired course, if exists; else null

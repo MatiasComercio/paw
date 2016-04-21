@@ -50,4 +50,10 @@ public class CourseForm {
     public void setCredits(Integer credits) {
         this.credits = credits;
     }
+
+    public void loadFromCourse(final Course course){
+        this.id = course.getId();
+        this.name = course.getName();
+        this.credits = course.getCredits();
+    }
 }

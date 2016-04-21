@@ -65,6 +65,12 @@ public class CourseJdbcDao implements CourseDao {
             return Result.COURSE_EXISTS_ID;
         }
         return Result.OK;
+
+    }
+
+    @Override
+    public void update(Integer id, Course course) {
+        jdbcTemplate.update("UPDATE course SET id = ?, name = ?, credits = ? WHERE id = ?;", course.getId(), course.getName(), course.getCredits(), id);
     }
 
     @Override
