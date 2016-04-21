@@ -149,6 +149,8 @@ public class UserController {
 			}
 		}
 
+		mav.addObject("docket", gradeForm.getDocket());
+
 		/* +++xadd object grade section? */
 
 		return mav;
