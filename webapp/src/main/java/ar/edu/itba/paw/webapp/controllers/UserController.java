@@ -138,8 +138,19 @@ public class UserController {
 	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.GET)
 	public ModelAndView addGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
 								 RedirectAttributes redirectAttributes) {
+		ModelAndView mav = new ModelAndView("addGrade");
 
+		if(redirectAttributes != null) {
+			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
+			if (raMap.get("alert") != null) {
+				mav.addObject("alert", raMap.get("alert"));
+				mav.addObject("message", raMap.get("message"));
+			}
+		}
 
+		/* +++xadd object grade section? */
+
+		return mav;
 	}
 
 	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.POST)
