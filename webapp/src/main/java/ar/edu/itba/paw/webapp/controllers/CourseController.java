@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.CourseService;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.forms.CourseForm;
 import ar.edu.itba.paw.shared.CourseFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,14 +98,17 @@ public class CourseController {
     @RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
     public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
                             final BindingResult errors){
-
         if(errors.hasErrors()){
             return addCourse(courseForm);
         }
-
-        final Course course = courseForm.build();
-        courseService.create(course);
-
-        return new ModelAndView("redirect:/app/courses");
+        else{
+            final Course course = courseForm.build();
+            Result result = courseService.create(course);
+            if(!result.equals(Result.OK)){
+                System.out.println("Lo rompiste: " + result.getMessage());
+                return addCourse(courseForm);
+            }
+            return new ModelAndView("redirect:/app/courses");
+        }
     }
 }

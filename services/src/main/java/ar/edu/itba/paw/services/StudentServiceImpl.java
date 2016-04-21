@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,8 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public void create(Student student) {
-		studentDao.create(student);
+	public Result create(Student student) {
+		return studentDao.create(student);
 	}
 
 	@Override

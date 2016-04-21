@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.shared.CourseFilter;
+import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
 
@@ -10,8 +11,9 @@ public interface CourseDao {
     /**
      *
      * @param course The course to be persisted in the database.
+     * @return The Result code of the insertion
      */
-    void create(Course course);
+    Result create(Course course);
 
     /**
      * Update a course
