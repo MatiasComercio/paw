@@ -115,14 +115,15 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String DELETE_STUDENT = "DELETE FROM " + STUDENT_TABLE
 			+ " WHERE " + STUDENT__DOCKET_COLUMN + " = ?";
 
-	private static final String COUNT_STUDENTS = "SELECT COUNT(*) FROM" + STUDENT_TABLE
+	private static final String COUNT_STUDENTS = "SELECT COUNT(*) FROM " + STUDENT_TABLE
 			+ " WHERE " + STUDENT__DOCKET_COLUMN + " = ?";
 
-	private static final String COUNT_COURSES = "SELECT COUNT(*) FROM" + COURSE_TABLE
+	private static final String COUNT_COURSES = "SELECT COUNT(*) FROM " + COURSE_TABLE
 			+ " WHERE " + COURSE__ID_COLUMN + " = ?";
 
-	private static final String COUNT_INSCRIPTION = "SELECT COUNT(*) FROM" + INSCRIPTION_TABLE
-			+ " WHERE " + INSCRIPTION__COURSE_ID_COLUMN + " = ?";
+	private static final String COUNT_INSCRIPTION = "SELECT COUNT(*) FROM " + INSCRIPTION_TABLE
+			+ " WHERE " + INSCRIPTION__COURSE_ID_COLUMN + " = ?"
+			+ " AND " + INSCRIPTION__DOCKET_COLUMN + " = ?";
 
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
