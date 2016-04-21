@@ -47,7 +47,7 @@
                     <div id="search" type="button" class="btn btn-default">Buscar</div>
                 </div>
                 <div class="col-md-1">
-                    <div id="addStudent" type="button" class="btn btn-default">Agregar</div>
+                    <div id="addStudent" type="button" class="btn btn-info">Agregar</div>
                 </div>
             </div>
 
