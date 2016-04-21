@@ -47,7 +47,7 @@ public interface StudentService {
 	 * @param student The student to be persisted in the database.
 	 * @return The Result code of the insertion
 	 */
-	void create(Student student);
+	Result create(Student student);
 
 	/**
 	 * +++xdocument
