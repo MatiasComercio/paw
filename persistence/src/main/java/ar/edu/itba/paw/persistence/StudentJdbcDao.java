@@ -311,9 +311,27 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result addGrade(Grade grade) {
-		int coursesAffected = jdbcTemplate.query();
-		int studentsAffected = jdbcTemplate.query();
-		int inscriptionsAffected = jdbcTemplate.query();
+		Object[] courseId = new Object[]{grade.getCourseId()};
+		Object[] studentDocket = new Object[]{grade.getStudentDocket()};
+		Object[] inscription = new Object[]{grade.getCourseId(), grade.getStudentDocket()};
+
+		int coursesAffected = jdbcTemplate.queryForObject(COUNT_COURSES, courseId, Integer.class);
+		if(coursesAffected == 0) {
+			return Result.COURSE_NOT_EXISTS;
+		}
+
+		int studentsAffected = jdbcTemplate.queryForObject(COUNT_STUDENTS, studentDocket, Integer.class);
+
+		if(studentsAffected == 0) {
+			return Result.STUDENT_NOT_EXISTS;
+		}
+
+		int inscriptionsAffected = jdbcTemplate.queryForObject(COUNT_INSCRIPTION, inscription, Integer.class);
+
+		if(inscriptionsAffected == 0) {
+			return Result.INSCRIPTION_NOT_EXISTS;
+		}
+
 		final Map<String, Object> gradeArgs = new HashMap<>();
 
 		gradeArgs.put(GRADE__DOCKET_COLUMN, grade.getStudentDocket());
@@ -325,7 +343,7 @@ public class StudentJdbcDao implements StudentDao {
 		} catch(DuplicateKeyException e) { /* +++xremove when we add date to grade DB this catch should be removed */
 			return Result.GRADE_EXISTS;
 		} catch(DataIntegrityViolationException e) {
-			return Result.COURSE_NOT_EXISTS; /* +++xchange we should differentiate when a course does not exist and when the student does not exist */
+			return Result.ERROR_UNKNOWN;
 		}
 		return Result.OK;
 	}
