@@ -134,6 +134,12 @@ public class UserController {
 		}
 	}
 
+	@RequestMapping(value = "/students/{docket}/add_grade", method = RequestMethod.POST)
+	public ModelAndView addGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
+								 final BindingResult errors, RedirectAttributes redirectAttributes) {
+
+	}
+
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
 	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes) {
 		final Result result = studentService.deleteCourse(docket);
