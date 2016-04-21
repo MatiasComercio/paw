@@ -301,7 +301,18 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result addGrade(Grade grade) {
-		return null;
+		final Map<String, Object> gradeArgs = new HashMap<>();
+
+		gradeArgs.put(GRADE__DOCKET_COLUMN, grade.getStudentDocket());
+		gradeArgs.put(GRADE__COURSE_ID_COLUMN, grade.getCourseId());
+		gradeArgs.put(GRADE__GRADE_COLUMN, grade.getGrade());
+
+		try {
+			int rowsAffected = gradesInsert.execute(gradeArgs);
+		} catch(DuplicateKeyException e) { /* +++xremove when we add date to grade DB this catch should be removed */
+			return Result.GRADE_EXISTS;
+		}
+		return Result.OK;
 	}
 
 
