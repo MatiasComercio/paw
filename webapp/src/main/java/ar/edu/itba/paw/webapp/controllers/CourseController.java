@@ -18,6 +18,7 @@ import javax.validation.Valid;
 public class CourseController {
     private static final String COURSES_SECTION = "courses";
 
+    /* +++xtodo TODO: why not final? */
     private static String TASK_FORM_ADD = "add";
     private static String TASK_FORM_EDIT = "edit";
 

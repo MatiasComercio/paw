@@ -1,5 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
@@ -38,20 +37,67 @@
                     <jsp:include page="base/alerts.jsp" />
                 </div>
             </div>
-            <form:form modelAttribute="inscriptionForm" action="/app/students/${inscriptionForm.studentDocket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
+            <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/app/students/${inscriptionForm.studentDocket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
                 <div>
                     <form:label path="studentDocket">Legajo del Alumno</form:label>
                     <form:input class="form-control" path="studentDocket" value="${inscriptionForm.studentDocket}" readonly="true"/>
                 </div>
                 <div>
                     <form:label path="courseId">ID del Curso</form:label>
-                    <form:input class="form-control" path="courseId" type="text"/>
+                    <form:input id="courseInput" class="form-control" path="courseId" type="text"/>
                     <form:errors path="courseId" cssStyle="color: red;" element="div"/>
                 </div>
                 <div>
                     <input class="form-control" type="submit" value="Inscribirse"/>
                 </div>
             </form:form>
+
+            <!-- search -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="sizing-addon">Id</span>
+                                <input id="id_text" type="text" class="form-control" placeholder="Buscar por id..." aria-describedby="sizing-addon2">
+                                <span class="input-group-addon" id="sizing-addon2">Nombre</span>
+                                <input id="name_text" type="text" class="form-control" placeholder="Buscar por nombre..." aria-describedby="sizing-addon2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div id="search" type="button" class="btn btn-default">Buscar</div>
+                </div>
+            </div>
+
+            <!-- content -->
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Créditos</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${courses}" var="course">
+                    <tr>
+                        <td>${ course.id }</td>
+                        <td>${ course.name }</td>
+                        <td>${ course.credits }</td>
+                        <td>
+                            <button name="inscription" data-id="${ course.id }" class="btn btn-default" type="submit">
+                                Inscribirse
+                            </button>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+
+            <!-- /content -->
 
             <!-- /content -->
 
@@ -64,5 +110,40 @@
 </div>
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
+<script>
+    $( document ).ready(function() {
+
+        var urlWithFilters = function() {
+            var id_text = $("#id_text").val();
+            var name_text = $("#name_text").val();
+
+            document.location.href = "?keyword=" + name_text + "&" + "id=" + id_text;
+        }
+
+        $('#search').click(urlWithFilters);
+
+        var addCourse = function(){window.location="/app/courses/add_course";}
+        $('#addCourse').on("click", addCourse);
+
+        /* source: http://stackoverflow.com/questions/10905345/pressing-enter-on-a-input-type-text-how */
+        $("input").bind("keypress", {}, keypressInBox);
+
+        function keypressInBox(e) {
+            var code = (e.keyCode ? e.keyCode : e.which);
+            if (code == 13) { //Enter keycode
+                e.preventDefault();
+                urlWithFilters();
+            }
+        };
+
+
+        $("[name='inscription']").on("click", function() {
+            $("#courseInput").val($(this).attr("data-id"));
+            $("#inscription_form").submit();
+        });
+
+
+    });
+</script>
 </body>
 </html>

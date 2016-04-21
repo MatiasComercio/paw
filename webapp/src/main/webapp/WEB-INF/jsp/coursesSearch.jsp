@@ -57,6 +57,7 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Creditos</th>
+                    <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>

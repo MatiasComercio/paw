@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.webapp.controllers;
 
+import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.forms.InscriptionForm;
 import ar.edu.itba.paw.webapp.forms.StudentForm;
@@ -100,11 +102,22 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		return mav;
 	}
 
+
+	@Autowired
+	private CourseService courseService;
+
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.GET)
 	public ModelAndView studentInscription(@PathVariable final int docket,
-											@ModelAttribute("inscriptionForm") final InscriptionForm inscriptionForm){
+											@ModelAttribute("inscriptionForm") final InscriptionForm inscriptionForm,
+											@RequestParam(required = false) String keyword,
+											@RequestParam(required = false) Integer id) {
+
 		inscriptionForm.setStudentDocket(docket);
 		ModelAndView mav = new ModelAndView("inscription");
+
+		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).id(id).build();
+		mav.addObject("courses", courseService.getByFilter(courseFilter));
+
 		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
@@ -112,10 +125,12 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.POST)
 	public ModelAndView studentInscription(@PathVariable final int docket,
 											@Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
+                                           @RequestParam(required = false) String keyword,
+                                           @RequestParam(required = false) Integer id,
 											final BindingResult errors,
 											final RedirectAttributes redirectAttributes) {
 		if (errors.hasErrors()){
-			return studentInscription(docket, inscriptionForm);
+			return studentInscription(docket, inscriptionForm, keyword, id);
 		}
 
 		final Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
@@ -128,6 +143,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		redirectAttributes.addFlashAttribute("message", "Inscripción realizada con éxito.");
 		return new ModelAndView("redirect:/app/students/" + docket + "/info");
 	}
+
+
+
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm){
