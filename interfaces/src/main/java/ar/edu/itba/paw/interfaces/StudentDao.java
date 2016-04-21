@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -57,4 +58,11 @@ public interface StudentDao {
 	 * @return
      */
 	Result deleteStudent(Integer docket);
+
+	/**
+	 * +++document
+	 * @param grade
+	 * @return
+     */
+	Result addGrade(Grade grade);
 }
