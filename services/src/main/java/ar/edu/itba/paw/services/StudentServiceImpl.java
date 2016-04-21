@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -44,6 +45,11 @@ public class StudentServiceImpl implements StudentService {
 			return Result.ERROR_DOCKET_OUT_OF_BOUNDS;
 		}
 		return studentDao.deleteStudent(docket);
+	}
+
+	@Override
+	public Result addGrade(Grade grade) {
+		return studentDao.addGrade(grade);
 	}
 
 	@Override
