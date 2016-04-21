@@ -302,6 +302,9 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result addGrade(Grade grade) {
+		int coursesAffected = jdbcTemplate.query();
+		int studentsAffected = jdbcTemplate.query();
+		int inscriptionsAffected = jdbcTemplate.query();
 		final Map<String, Object> gradeArgs = new HashMap<>();
 
 		gradeArgs.put(GRADE__DOCKET_COLUMN, grade.getStudentDocket());
