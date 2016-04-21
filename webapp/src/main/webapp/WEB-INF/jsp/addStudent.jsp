@@ -61,7 +61,7 @@
                     </div>
                     <div class="form-group">
                         <form:label for="birthday" path="birthday">Cumpleaños:</form:label>
-                        <form:input type="text" class="form-control" placeholder="yyyy-mm-dd (TODO: Change for dropdown)" path="birthday"/>
+                        <form:input id="birthday" type="text" class="form-control" placeholder="yyyy-mm-dd" path="birthday"/>
                         <form:errors path="birthday" cssStyle="color: red;" element="div"/>
                     </div>
                     <div class="form-group">
@@ -136,6 +136,19 @@
 
 </div>
 <!-- Scripts -->
+
+<script>
+    $(document).ready(function(){
+
+        $.datepicker.setDefaults( $.datepicker.regional[ "us" ] );
+
+        $('#birthday').datepicker({
+            dateFormat: "yy-mm-dd",
+            defaultDate: "1994-01-01"
+        });
+    });
+</script>
+
 <jsp:include page="base/footer.jsp" />
 </body>
 </html>
