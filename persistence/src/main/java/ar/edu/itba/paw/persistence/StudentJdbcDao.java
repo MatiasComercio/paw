@@ -16,6 +16,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.nativejdbc.SimpleNativeJdbcExtractor;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -221,6 +222,7 @@ public class StudentJdbcDao implements StudentDao {
 	private SimpleJdbcInsert userInsert;
 	private SimpleJdbcInsert studentInsert;
 	private SimpleJdbcInsert addressInsert;
+	private SimpleJdbcInsert gradesInsert;
 
 	@Autowired
 	public StudentJdbcDao (final DataSource dataSource) {
@@ -228,7 +230,7 @@ public class StudentJdbcDao implements StudentDao {
 		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
 		studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
 		addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
-
+		gradesInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE);
 	}
 
 	@Override
