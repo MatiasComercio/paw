@@ -15,7 +15,7 @@ public enum Result {
     GRADE_EXISTS("La nota ya existe"),  /* +++xremove when adding date to grade DB */
     COURSE_NOT_EXISTS("La materia no existe"),
     STUDENT_NOT_EXISTS("El estudiante no existe"),
-    INSCRIPTION_NOT_EXISTS("El estudiante no estaá inscripto en esta materia");
+    INSCRIPTION_NOT_EXISTS("El estudiante no está inscripto en esta materia");
 
 
 
