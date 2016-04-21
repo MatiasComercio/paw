@@ -4,7 +4,10 @@ import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
+import ar.edu.itba.paw.shared.Result;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -49,15 +52,19 @@ public class CourseJdbcDao implements CourseDao {
 
 
     @Override
-    public void create(Course course) {
+    public Result create(Course course) {
         final Map<String, Object> args = new HashMap<>();
 
         args.put(ID_COLUMN, course.getId());
         args.put(NAME_COLUMN, course.getName());
         args.put(CREDITS_COLUMN, course.getCredits());
-
-        courseInsert.execute(args);
-
+        try{
+            courseInsert.execute(args);
+        }
+        catch (DuplicateKeyException e){
+            return Result.COURSE_EXISTS_ID;
+        }
+        return Result.OK;
     }
 
     @Override

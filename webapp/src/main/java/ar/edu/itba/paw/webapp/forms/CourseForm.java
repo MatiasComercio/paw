@@ -11,7 +11,7 @@ public class CourseForm {
 
     @Min(1)
     @NotNull
-    private int id;
+    private Integer id;
 
     @NotNull
     @Size(min=2, max=50)
@@ -19,7 +19,7 @@ public class CourseForm {
 
     @NotNull
     @Min(0)
-    private int credits;
+    private Integer credits;
 
     public CourseForm(){}
 
@@ -27,11 +27,11 @@ public class CourseForm {
         return new Course.Builder(id).name(name).credits(credits).build();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -43,11 +43,11 @@ public class CourseForm {
         this.name = name;
     }
 
-    public int getCredits() {
+    public Integer getCredits() {
         return credits;
     }
 
-    public void setCredits(int credits) {
+    public void setCredits(Integer credits) {
         this.credits = credits;
     }
 }

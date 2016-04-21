@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.shared.CourseFilter;
+import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,8 @@ public class CourseServiceImpl implements CourseService {
     private CourseDao courseDao;
 
     @Override
-    public void create(Course course) {
-        courseDao.create(course);
+    public Result create(Course course) {
+        return courseDao.create(course);
     }
 
     @Override

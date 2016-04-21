@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.forms.StudentForm;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -107,14 +108,17 @@ public class UserController {
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
 	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
 								   final BindingResult errors) {
-		if (!errors.hasErrors()){
-			Student student = studentForm.build();
-			studentService.create(student);
-			//return "redirect:/app/students";
-			return new ModelAndView("redirect:/app/students");
+		if (errors.hasErrors()){
+			return addStudent(studentForm);
 		}
 		else{
-			return addStudent(studentForm);
+			Student student = studentForm.build();
+			Result result = studentService.create(student);
+			if(!result.equals(Result.OK)){
+				System.out.println("Lo rompiste: " + result.getMessage());
+				return addStudent(studentForm);
+			}
+			return new ModelAndView("redirect:/app/students");
 		}
 	}
 }
