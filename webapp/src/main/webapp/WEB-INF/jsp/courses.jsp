@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page language="java" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,6 +30,7 @@
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Créditos</th>
+                    <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -39,7 +39,19 @@
                         <td>${ course.id }</td>
                         <td>${ course.name }</td>
                         <td>${ course.credits }</td>
-                        <td><a href="<c:url value="/app/courses/${course.id}/info" />">Ver</a></td>
+                        <td>
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    <a href="<c:url value="/app/courses/${course.id}/info" />">Ver</a>
+                                </div>
+                                <div class="col-xs-4">
+                                    <button name="unenroll" type="button" class="btn btn-danger"
+                                            data-course_id="${ course.id }" data-course_name="${ course.name }">
+                                        Darse de Baja
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -57,6 +69,10 @@
 
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
+<script type="text/javascript"><%@include file="../js/courses.js"%></script>
+<script>
+    $(document).ready(loadCoursesJs());
+</script>
 </body>
 </html>
 
