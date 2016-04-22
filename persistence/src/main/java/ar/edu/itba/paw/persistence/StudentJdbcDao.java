@@ -350,7 +350,7 @@ public class StudentJdbcDao implements StudentDao {
 
 			return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 		} catch(DataIntegrityViolationException e) {
-			return Result.ERROR_UNKNOWN;
+			return Result.INVALID_INPUT_PARAMETERS;
 		}
 	}
 
