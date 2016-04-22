@@ -29,11 +29,6 @@
                 <h2>Agregar nota</h2>
                     <form:form modelAttribute="gradeForm" method="post" action="/app/students/${docket}/grades/add">
                         <div class="form-group">
-                            <form:label path="docket">Legajo:</form:label>
-                            <form:input path="docket" type="text" class="form-control" />
-                            <form:errors path="docket" cssStyle="color: red;" element="div"/>
-                        </div>
-                        <div class="form-group">
                             <form:label path="courseId">ID de materia:</form:label>
                             <form:input type="text" class="form-control" path="courseId"/>
                             <form:errors path="courseId" cssStyle="color: red;" element="div"/>
