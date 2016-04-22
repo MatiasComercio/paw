@@ -19,6 +19,7 @@ public interface CourseService {
      */
     void update(final Integer id, final Course course);
 
+//    +++xtest
 	/**
      * Get all the current available courses
      * @return a list containing all the current available courses, if any.

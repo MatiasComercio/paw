@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.forms.InscriptionForm;
@@ -136,7 +137,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		inscriptionForm.setStudentDocket(docket);
 		ModelAndView mav = new ModelAndView("inscription");
 
-		mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket));
+		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).id(id).build();
+
+		mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
 		mav.addObject("docket", docket);
 
 		mav.addObject("section", STUDENTS_SECTION);

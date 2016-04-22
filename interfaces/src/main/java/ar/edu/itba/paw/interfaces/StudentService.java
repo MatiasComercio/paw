@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 
@@ -49,12 +50,14 @@ public interface StudentService {
 	void create(Student student);
 
 	/**
-	 * Gets the list of the courses the student with the given docket can enroll in.
+	 * Gets the list of the courses the student with the given docket can enroll in,
+	 * applying the specified courseFilter
 	 * @param docket The student's docket
+	 * @param courseFilter The course's filter
 	 * @return The list of the courses the student with the given docket can enroll in;
 	 *          an empty list will be returned if no course is available
 	 */
-	List<Course> getAvailableInscriptionCourses(final int docket);
+	List<Course> getAvailableInscriptionCourses(final int docket, final CourseFilter courseFilter);
 
 	/**
 	 * Enrolls the student with the given docket into the course with the specified id,

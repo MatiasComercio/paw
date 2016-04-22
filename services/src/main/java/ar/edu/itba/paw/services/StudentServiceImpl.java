@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,12 +49,12 @@ public class StudentServiceImpl implements StudentService {
 
 //	+++xdocument xtest
 	@Override
-	public List<Course> getAvailableInscriptionCourses(final int docket) {
+	public List<Course> getAvailableInscriptionCourses(final int docket, final CourseFilter courseFilter) {
 		if (docket <= 0) {
 			return null;
 		}
 
-		final List<Course> courses = courseService.getAllCourses();
+		final List<Course> courses = courseService.getByFilter(courseFilter);
 
 		if (courses == null) {
 			return null;
