@@ -88,6 +88,11 @@
                 </tr>
                 </thead>
                 <tbody>
+                <c:if test="${empty courses}">
+                    <tr class="bg-warning">
+                        <td colspan="4" class="text-danger text-center"> No se encontraron materias disponibles. </td>
+                    </tr>
+                </c:if>
                 <c:forEach items="${courses}" var="course">
                     <tr>
                         <td>${ course.id }</td>
