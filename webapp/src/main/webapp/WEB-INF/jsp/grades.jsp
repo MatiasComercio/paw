@@ -33,6 +33,7 @@
                     <th>ID</th>
                     <th>Materia</th>
                     <th>Nota</th>
+                    <th>Modificado</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -41,6 +42,7 @@
                         <td>${ grade.courseId }</td>
                         <td>${ grade.courseName }</td>
                         <td>${ grade.grade }</td>
+                        <td>${ grade.modified }</td>
                         <td><a href="<c:url value="/app/courses/${grade.courseId}/info" />">Ver Materia</a></td>
                     </tr>
                 </c:forEach>
