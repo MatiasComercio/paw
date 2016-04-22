@@ -22,14 +22,8 @@
                 </div>
             </div>
 
-            <!-- Result Message -->
-            <div class="row">
-                <div class="col-xs-12">
-                    <h1>${message}</h1>
-                </div>
-            </div>
-
             <!-- search -->
+            <jsp:include page="base/alerts.jsp" />
             <div class="row">
                 <div class="col-xs-9">
                     <div class="row">
