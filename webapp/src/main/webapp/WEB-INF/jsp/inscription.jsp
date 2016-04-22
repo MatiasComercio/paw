@@ -24,7 +24,7 @@
 
             <!-- Page Heading -->
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-xs-12">
                     <h1 class="page-header">
                         Inscribirse en Materia - <small>Legajo del alumno: ${docket}</small>
                     </h1>
@@ -35,9 +35,6 @@
             <div class="row">
                 <div class="col-xs-12">
                     <jsp:include page="base/alerts.jsp" />
-                </div>
-                <div class="col-xs-12">
-                    <h3>Materias en las que puede inscribirse:</h3>
                 </div>
             </div>
             <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/students/${inscriptionForm.studentDocket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
@@ -50,26 +47,38 @@
             </form:form>
 
             <!-- search -->
-            <div class="row">
-                <div class="col-md-6">
+            <div class="row well">
+                <div class="col-xs-12 col-md-2">
+                    <p class="lead">Buscar por:</p>
+                </div>
+                <div class="col-xs-12 col-md-8">
                     <div class="row">
-                        <div class="col-xs-12">
+                        <div class="col-xs-12 col-md-5">
                             <div class="input-group">
-                                <span class="input-group-addon" id="sizing-addon">Id</span>
-                                <input id="id_text" type="text" class="form-control" placeholder="Buscar por id..." aria-describedby="sizing-addon2">
-                                <span class="input-group-addon" id="sizing-addon2">Nombre</span>
-                                <input id="name_text" type="text" class="form-control" placeholder="Buscar por nombre..." aria-describedby="sizing-addon2">
+                                <span class="input-group-addon">Id</span>
+                                <input id="id_text" type="text" class="form-control" placeholder="ID...">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-7">
+                            <div class="input-group">
+                                <span class="input-group-addon">Nombre</span>
+                                <input id="name_text" type="text" class="form-control" placeholder="Nombre...">
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-1">
-                    <div id="search" type="button" class="btn btn-default">Buscar</div>
+                <div class="col-xs-3 hidden-md hidden-lg"></div>
+                <div class="col-xs-6 col-md-1 text-center">
+
+                    <button id="search" class="btn btn-default" type="submit">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        Buscar
+                    </button>
                 </div>
             </div>
 
             <!-- content -->
-            <table class="table table-striped">
+            <table class="table table-hover <%--table-bordered--%> <%--table-condensed--%>">
                 <thead>
                 <tr>
                     <th>ID</th>
@@ -85,9 +94,12 @@
                         <td>${ course.name }</td>
                         <td>${ course.credits }</td>
                         <td>
-                            <button name="inscription" data-id="${ course.id }" class="btn btn-default" type="submit">
-                                Inscribirse
+                            <button name="inscription" data-id="${ course.id }" class="btn btn-info btn-xs" type="submit">
+                                <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Inscribirse
                             </button>
+                            <a class="btn btn-default btn-xs" href="<c:url value="/courses/${course.id}/info" />" role="button">
+                                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Ver
+                            </a>
                         </td>
                     </tr>
                 </c:forEach>
