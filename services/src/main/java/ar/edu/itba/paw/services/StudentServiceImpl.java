@@ -47,6 +47,11 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
+	public Result update(Integer docket, Student student) {
+		return studentDao.update(docket, student);
+	}
+
+	@Override
 	public Student getGrades(final int docket) {
 		return docket <= 0 ? null : studentDao.getGrades(docket);
 	}

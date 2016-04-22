@@ -142,4 +142,51 @@ public class UserController {
 
 		return new ModelAndView("redirect:/app/students");
 	}
+
+    @RequestMapping("/students/{docket}/edit")
+    public ModelAndView editStudent(@PathVariable final Integer docket,
+                                    @ModelAttribute("studentForm") final StudentForm studentForm,
+                                    RedirectAttributes redirectAttributes) {
+        final ModelAndView mav = new ModelAndView("editStudent");
+
+        if (redirectAttributes != null) {
+            Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
+            if (raMap.get("alert") != null) {
+                mav.addObject("alert", raMap.get("alert"));
+                mav.addObject("message", raMap.get("message"));
+            }
+        }
+
+        Student student = studentService.getByDocket(docket);
+        studentForm.loadFromStudent(student);
+
+        mav.addObject("docket", docket);
+
+        return mav;
+    }
+
+
+    @RequestMapping(value = "/students/{docket}/edit", method = RequestMethod.POST)
+    public ModelAndView editStudent(@PathVariable final Integer docket,
+                                   @Valid @ModelAttribute("studentForm") StudentForm studentForm,
+                                   final BindingResult errors,
+                                   RedirectAttributes redirectAttributes){
+        if (errors.hasErrors()){
+            return editStudent(docket, studentForm, redirectAttributes);
+        }
+
+        Student student = studentForm.build();
+        Result result = studentService.update(docket, student);
+
+        //if(!result.equals(Result.OK)){
+        //    redirectAttributes.addFlashAttribute("alert", "danger");
+        //    redirectAttributes.addFlashAttribute("message", result.getMessage());
+        //    return editStudent(docket, studentForm, redirectAttributes);
+        //}
+
+        redirectAttributes.addFlashAttribute("alert", "success");
+        redirectAttributes.addFlashAttribute("message", "El alumno se ha guardado correctamente.");
+
+        return new ModelAndView("redirect:/app/students");
+    }
 }

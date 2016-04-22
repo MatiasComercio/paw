@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -304,7 +305,7 @@ public class StudentJdbcDao implements StudentDao {
 		userArgs.put(USER__FIRST_NAME_COLUMN, student.getFirstName());
 		userArgs.put(USER__LAST_NAME_COLUMN, student.getLastName());
 
-		if(student.getGenre() == "Female")
+		if(student.getGenre().equals("Female"))
 			userArgs.put(USER__GENRE_COLUMN, "F");
 		else
 			userArgs.put(USER__GENRE_COLUMN, "M");
@@ -343,7 +344,34 @@ public class StudentJdbcDao implements StudentDao {
 		return Result.OK;
 	}
 
-	private String createEmail(final int dni, final String firstName, final String lastName) {
+    @Override
+    public Result update(Integer docket, Student student) {
+
+        final Integer dni = jdbcTemplate.query("SELECT dni FROM student WHERE docket = " + docket + ";", new ResultSetExtractor<Integer>() {
+            @Override
+            public Integer extractData(ResultSet rs) throws SQLException,
+                    DataAccessException {
+                return rs.next() ? rs.getInt("dni") : null;
+            }
+        });
+
+        System.out.println(student.getBirthday().toString());
+
+
+        String genre = student.getGenre().equals("Female")? "F" : "M";
+
+        String userUpdate = "UPDATE users SET " + USER__DNI_COLUMN + " = ?, " + USER__FIRST_NAME_COLUMN + " = ?, "
+                + USER__LAST_NAME_COLUMN + " = ?, " + USER__GENRE_COLUMN + " = ?, " + USER__BIRTHDAY_COLUMN + " = ?, "
+                + USER__EMAIL_COLUMN + " = ? WHERE " + USER__DNI_COLUMN + " = ?";
+
+        jdbcTemplate.update(userUpdate, student.getDni(), student.getFirstName(), student.getLastName(), genre,
+                                student.getBirthday(), createEmail(student.getDni(), student.getFirstName(),
+                        student.getLastName()), dni);
+
+        return Result.OK;
+    }
+
+    private String createEmail(final int dni, final String firstName, final String lastName) {
 		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
 
 		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
