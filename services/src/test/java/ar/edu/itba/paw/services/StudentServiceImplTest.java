@@ -16,6 +16,11 @@ public class StudentServiceImplTest {
 	private static final int DOCKET_INVALID_LIMIT = 0;
 	private static final int DOCKET_INVALID = -7357;
 
+	private static final int COURSE_ID_VALID = 7357;
+	private static final int COURSE_ID_VALID_LIMIT = 1;
+	private static final int COURSE_ID_INVALID_LIMIT = 0;
+	private static final int COURSE_ID_INVALID = -7357;
+
 	private StudentServiceImpl studentService;
 
 	@Mock
@@ -82,5 +87,41 @@ public class StudentServiceImplTest {
 		/* Checks that studentDao.getGrades() is no called (0 times) when input is invalid */
 		studentService.getStudentCourses(DOCKET_INVALID);
 		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID);
+	}
+
+	@Test
+	public void testEnroll() {
+		studentService.enroll(DOCKET_VALID, COURSE_ID_VALID);
+		verify(studentDao, times(1)).enroll(DOCKET_VALID, COURSE_ID_VALID);
+
+		/* Checks that studentDao.getGrades() is called 1 time when input is valid */
+		studentService.enroll(DOCKET_VALID_LIMIT, COURSE_ID_VALID_LIMIT);
+		verify(studentDao, times(1)).enroll(DOCKET_VALID_LIMIT, COURSE_ID_VALID_LIMIT);
+
+		/* Checks that studentDao.getGrades() is no called (0 times) when input is invalid */
+		studentService.enroll(DOCKET_INVALID_LIMIT, COURSE_ID_INVALID_LIMIT);
+		verify(studentDao, times(0)).enroll(DOCKET_INVALID_LIMIT, COURSE_ID_INVALID_LIMIT);
+
+		/* Checks that studentDao.getGrades() is no called (0 times) when input is invalid */
+		studentService.enroll(DOCKET_INVALID, COURSE_ID_INVALID);
+		verify(studentDao, times(0)).enroll(DOCKET_INVALID, COURSE_ID_INVALID);
+	}
+
+	@Test
+	public void testUnenroll() {
+		studentService.unenroll(DOCKET_VALID, COURSE_ID_VALID);
+		verify(studentDao, times(1)).unenroll(DOCKET_VALID, COURSE_ID_VALID);
+
+		/* Checks that studentDao.getGrades() is called 1 time when input is valid */
+		studentService.unenroll(DOCKET_VALID_LIMIT, COURSE_ID_VALID_LIMIT);
+		verify(studentDao, times(1)).unenroll(DOCKET_VALID_LIMIT, COURSE_ID_VALID_LIMIT);
+
+		/* Checks that studentDao.getGrades() is no called (0 times) when input is invalid */
+		studentService.unenroll(DOCKET_INVALID_LIMIT, COURSE_ID_INVALID_LIMIT);
+		verify(studentDao, times(0)).unenroll(DOCKET_INVALID_LIMIT, COURSE_ID_INVALID_LIMIT);
+
+		/* Checks that studentDao.getGrades() is no called (0 times) when input is invalid */
+		studentService.unenroll(DOCKET_INVALID, COURSE_ID_INVALID);
+		verify(studentDao, times(0)).unenroll(DOCKET_INVALID, COURSE_ID_INVALID);
 	}
 }
