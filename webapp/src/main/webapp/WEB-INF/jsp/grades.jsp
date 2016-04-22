@@ -17,6 +17,7 @@
                          ${student.docket} - ${student.firstName} ${student.lastName}
                              <small>(${student.email})</small> - Notas
                     </h1>
+                    <jsp:include page="base/alerts.jsp" />
                 </div>
             </div>
 
@@ -44,6 +45,7 @@
                         <td>${ grade.grade }</td>
                         <td>${ grade.modified }</td>
                         <td><a href="<c:url value="/app/courses/${grade.courseId}/info" />">Ver Materia</a></td>
+                        <td><a href="<c:url value="/app/students/${student.docket}/grades/edit/${grade.courseId}/${grade.modified}/${grade.grade}" />">Editar Nota</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>

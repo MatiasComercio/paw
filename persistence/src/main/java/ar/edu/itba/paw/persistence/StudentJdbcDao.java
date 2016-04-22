@@ -354,6 +354,21 @@ public class StudentJdbcDao implements StudentDao {
 		}
 	}
 
+	@Override
+	public Result editGrade(Grade newGrade, BigDecimal oldGrade){
+		try{
+			jdbcTemplate.update("UPDATE grade SET grade = ? WHERE docket = ? AND " +
+					"course_id = ? AND modified = ? AND grade = ?;",
+					newGrade.getGrade(), newGrade.getStudentDocket(), newGrade.getCourseId(), newGrade.getModified(),
+					oldGrade);
+		}
+		catch(Exception e){
+			return Result.ERROR_UNKNOWN;
+		}
+		return Result.OK;
+	}
+
+
 
 	@Override
 	public Result create(Student student) {

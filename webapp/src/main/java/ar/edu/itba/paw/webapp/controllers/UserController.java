@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.webapp.forms.CourseForm;
 import ar.edu.itba.paw.webapp.forms.GradeForm;
 import ar.edu.itba.paw.webapp.forms.StudentForm;
 import ar.edu.itba.paw.models.users.Student;
@@ -20,6 +21,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -130,16 +133,47 @@ public class UserController {
 		}
 	}
 
-/*	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.GET)
+	@RequestMapping(value = "/students/{docket}/grades/edit/{courseId}/{modified}/{grade}", method = RequestMethod.GET)
 	public ModelAndView editGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
-								  @PathVariable final Integer docket,
-								  RedirectAttributes redirectAttributes){
-		ModelAndView mav = new ModelAndView("addGrade");
+								  @PathVariable Integer docket, @PathVariable Integer courseId, @PathVariable Timestamp modified,
+								  @PathVariable BigDecimal grade, RedirectAttributes redirectAttributes){
+		ModelAndView mav = new ModelAndView("editGrade");
 		setAlertMessages(mav, redirectAttributes);
-		//Grade grade = getStudentGrades(docket, gradeId);
+		gradeForm.setGrade(grade); //Set the grade to be displayed in the edit view
+		gradeForm.setDocket(docket);
+		gradeForm.setCourseId(courseId);
+		gradeForm.setModified(modified);
+
+		mav.addObject("docket", docket);
+		mav.addObject("courseId", courseId);
 
 		return mav;
-	}*/
+	}
+
+	@RequestMapping(value = "/students/{docket}/grades/edit/{courseId}/{modified}/{grade}", method = RequestMethod.POST)
+	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
+								  @PathVariable Integer docket, @PathVariable Integer courseId,
+								  @PathVariable Timestamp modified, @PathVariable BigDecimal grade,
+								  final BindingResult errors, RedirectAttributes redirectAttributes){
+		if (errors.hasErrors()){
+			return editGrade(gradeForm, docket, courseId, modified, grade, null);
+		}
+
+		Grade newGrade = gradeForm.build();
+
+		Result result = studentService.editGrade(newGrade, grade);
+		if(!result.equals(Result.OK)){
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			return editGrade(gradeForm, docket, courseId, modified, grade, redirectAttributes);
+		}
+		redirectAttributes.addFlashAttribute("alert", "success");
+		redirectAttributes.addFlashAttribute("message", "El examen se ha actualizado correctamente.");
+		return new ModelAndView("redirect:/app/students/" + docket + "/grades");
+
+	}
+
+
 
 	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.GET)
 	public ModelAndView addGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,

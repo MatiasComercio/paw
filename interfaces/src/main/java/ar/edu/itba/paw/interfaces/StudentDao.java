@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -65,4 +66,11 @@ public interface StudentDao {
 	 * @return
      */
 	Result addGrade(Grade grade);
+
+	/**
+	 * @param newGrade The new grade values
+	 * @param oldGrade The grade to be updated
+	 * @return The result code of the Update
+	 */
+	Result editGrade(Grade newGrade, BigDecimal oldGrade);
 }

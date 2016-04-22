@@ -7,6 +7,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 public class GradeForm {
     @NotNull
@@ -22,8 +23,10 @@ public class GradeForm {
     @Max(10)
     private BigDecimal grade;
 
+    private Timestamp modified;
+
     public Grade build() {
-        return new Grade.Builder(docket, courseId, grade).build();
+        return new Grade.Builder(docket, courseId, grade).modified(modified).build();
     }
 
     public Integer getDocket() {
@@ -48,6 +51,14 @@ public class GradeForm {
 
     public void setGrade(BigDecimal grade) {
         this.grade = grade;
+    }
+
+    public Timestamp getModified() {
+        return modified;
+    }
+
+    public void setModified(Timestamp modified) {
+        this.modified = modified;
     }
 
     public void loadFromGrade(final Grade grade){
