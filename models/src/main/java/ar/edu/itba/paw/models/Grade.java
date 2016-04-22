@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.models;
 
 import java.math.BigDecimal;
+import java.sql.Time;
+import java.sql.Timestamp;
 
 public class Grade {
 	private final int studentDocket;
@@ -9,6 +11,7 @@ public class Grade {
 	private final int courseId;
 	private final String courseName;
 	private final BigDecimal grade;
+	private final Timestamp modified;
 
 	private Grade(final Builder builder) {
 		this.studentDocket = builder.studentDocket;
@@ -17,6 +20,7 @@ public class Grade {
 		this.courseId = builder.courseId;
 		this.courseName = builder.courseName;
 		this.grade = builder.grade;
+		this.modified = builder.modified;
 	}
 
 	public int getStudentDocket() {
@@ -75,15 +79,17 @@ public class Grade {
 		private final int studentDocket;
 		private final int courseId;
 		private final BigDecimal grade;
+		private final Timestamp modified;
 
 		private String studentFirstName = "";
 		private String studentLastName = "";
 		private String courseName = "";
 
-		public Builder(final int studentDocket, final int courseId, final BigDecimal grade) {
+		public Builder(final int studentDocket, final int courseId, final BigDecimal grade, final Timestamp modified) {
 			this.studentDocket = studentDocket;
 			this.courseId = courseId;
 			this.grade = grade;
+			this.modified = modified;
 		}
 
 		public Builder studentFirstName(final String studentFirstName) {
