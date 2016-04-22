@@ -49,6 +49,14 @@ public interface StudentService {
 	void create(Student student);
 
 	/**
+	 * Gets the list of the courses the student with the given docket can enroll in.
+	 * @param docket The student's docket
+	 * @return The list of the courses the student with the given docket can enroll in;
+	 *          an empty list will be returned if no course is available
+	 */
+	List<Course> getAvailableInscriptionCourses(final int docket);
+
+	/**
 	 * Enrolls the student with the given docket into the course with the specified id,
 	 * if the student has already approved all its corresponding correlatives.
 	 *

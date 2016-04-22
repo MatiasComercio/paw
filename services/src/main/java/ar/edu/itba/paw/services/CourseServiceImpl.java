@@ -26,6 +26,11 @@ public class CourseServiceImpl implements CourseService {
    }
 
     @Override
+    public List<Course> getAllCourses() {
+        return getByFilter(null);
+    }
+
+    @Override
     public Course getById(int id) {
         if(id >= 1) {
             return courseDao.getById(id);

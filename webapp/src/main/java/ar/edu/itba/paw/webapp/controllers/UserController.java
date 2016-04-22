@@ -1,22 +1,16 @@
 package ar.edu.itba.paw.webapp.controllers;
 
-import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.shared.CourseFilter;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.forms.InscriptionForm;
 import ar.edu.itba.paw.webapp.forms.StudentForm;
-import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -133,10 +127,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	}
 
-
-	@Autowired
-	private CourseService courseService;
-
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.GET)
 	public ModelAndView studentInscription(@PathVariable final int docket,
 											@ModelAttribute("inscriptionForm") final InscriptionForm inscriptionForm,
@@ -146,8 +136,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		inscriptionForm.setStudentDocket(docket);
 		ModelAndView mav = new ModelAndView("inscription");
 
-		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).id(id).build();
-		mav.addObject("courses", courseService.getByFilter(courseFilter));
+		mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket));
 		mav.addObject("docket", docket);
 
 		mav.addObject("section", STUDENTS_SECTION);

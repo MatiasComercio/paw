@@ -19,6 +19,12 @@ public interface CourseService {
      */
     void update(final Integer id, final Course course);
 
+	/**
+     * Get all the current available courses
+     * @return a list containing all the current available courses, if any.
+     */
+    List<Course> getAllCourses();
+
     /**
      * Gets the desired course by the identifier
      * @param id The course's ID

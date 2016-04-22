@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
@@ -16,6 +17,9 @@ public class StudentServiceImpl implements StudentService {
 
 	@Autowired
 	private StudentDao studentDao;
+
+	@Autowired
+	private CourseService courseService;
 
 	@Override
 	public Student getByDocket(final int docket) {
@@ -42,6 +46,24 @@ public class StudentServiceImpl implements StudentService {
 		return docket <= 0 ? null : studentDao.getGrades(docket);
 	}
 
+//	+++xdocument xtest
+	@Override
+	public List<Course> getAvailableInscriptionCourses(final int docket) {
+		if (docket <= 0) {
+			return null;
+		}
+
+		final List<Course> courses = courseService.getAllCourses();
+
+		if (courses == null) {
+			return null;
+		}
+
+		courses.removeAll(this.getStudentCourses(docket));
+
+		return courses;
+	}
+
 	@Override
 	public Result enroll(final int studentDocket, final int courseId) {
 		if (studentDocket <= 0 ) {
@@ -52,6 +74,7 @@ public class StudentServiceImpl implements StudentService {
 		}
 
 		Result result;
+
 		/* +++xtodo: implement
 		result = checkCorrelatives(studentDocket, courseId);
 		if (result.equals(Result.DISPROVED_CORRELATIVES)) {

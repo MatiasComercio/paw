@@ -99,8 +99,10 @@ public class CourseJdbcDao implements CourseDao {
     public List<Course> getByFilter(final CourseFilter courseFilter) {
         QueryFilter queryFilter = new QueryFilter();
 
-        queryFilter.filterByKeyword(courseFilter);
-        queryFilter.filterById(courseFilter);
+        if (courseFilter != null) {
+            queryFilter.filterByKeyword(courseFilter);
+            queryFilter.filterById(courseFilter);
+        }
 
         List<Course> courses = jdbcTemplate.query(queryFilter.getQuery(), courseRowMapper, queryFilter.getFilters().toArray());
 
