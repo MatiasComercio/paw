@@ -318,26 +318,26 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result addGrade(Grade grade) {
-		Object[] courseId = new Object[]{grade.getCourseId()};
-		Object[] studentDocket = new Object[]{grade.getStudentDocket()};
-		Object[] inscription = new Object[]{grade.getCourseId(), grade.getStudentDocket()};
-
-		int coursesAffected = jdbcTemplate.queryForObject(COUNT_COURSES, courseId, Integer.class);
-		if(coursesAffected == 0) {
-			return Result.COURSE_NOT_EXISTS;
-		}
-
-		int studentsAffected = jdbcTemplate.queryForObject(COUNT_STUDENTS, studentDocket, Integer.class);
-
-		if(studentsAffected == 0) {
-			return Result.STUDENT_NOT_EXISTS;
-		}
-
-		int inscriptionsAffected = jdbcTemplate.queryForObject(COUNT_INSCRIPTION, inscription, Integer.class);
-
-		if(inscriptionsAffected == 0) {
-			return Result.INSCRIPTION_NOT_EXISTS;
-		}
+//		Object[] courseId = new Object[]{grade.getCourseId()};
+//		Object[] studentDocket = new Object[]{grade.getStudentDocket()};
+//		Object[] inscription = new Object[]{grade.getCourseId(), grade.getStudentDocket()};
+//
+//		int coursesAffected = jdbcTemplate.queryForObject(COUNT_COURSES, courseId, Integer.class);
+//		if(coursesAffected == 0) {
+//			return Result.COURSE_NOT_EXISTS;
+//		}
+//
+//		int studentsAffected = jdbcTemplate.queryForObject(COUNT_STUDENTS, studentDocket, Integer.class);
+//
+//		if(studentsAffected == 0) {
+//			return Result.STUDENT_NOT_EXISTS;
+//		}
+//
+//		int inscriptionsAffected = jdbcTemplate.queryForObject(COUNT_INSCRIPTION, inscription, Integer.class);
+//
+//		if(inscriptionsAffected == 0) {
+//			return Result.INSCRIPTION_NOT_EXISTS;
+//		}
 
 		final Map<String, Object> gradeArgs = new HashMap<>();
 
