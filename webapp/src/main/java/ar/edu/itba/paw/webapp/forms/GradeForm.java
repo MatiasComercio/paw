@@ -49,4 +49,10 @@ public class GradeForm {
     public void setGrade(BigDecimal grade) {
         this.grade = grade;
     }
+
+    public void loadFromGrade(final Grade grade){
+        this.docket = grade.getStudentDocket();
+        this.courseId = grade.getCourseId();
+        this.grade = grade.getGrade();
+    }
 }
