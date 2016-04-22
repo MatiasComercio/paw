@@ -12,6 +12,7 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.omg.CORBA.UNKNOWN;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -341,6 +342,10 @@ public class StudentJdbcDao implements StudentDao {
 			inscriptionInsert.execute(inscriptionArgs);
 		} catch (final DuplicateKeyException e) {
 			return Result.ALREADY_ENROLLED;
+		} catch (final DataIntegrityViolationException e) {
+			return Result.INVALID_INPUT_PARAMETERS;
+		} catch(final DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
 		}
 
 		return Result.OK;

@@ -10,7 +10,8 @@ public enum Result {
 	COURSE_EXISTS_ID("Ya existe curso con este ID"),
 	STUDENT_EXISTS_DOCKET("Ya existia un alumno con este legajo"),
 	ALREADY_ENROLLED("El alumno ya está inscripto en esa materia."),
-	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia");
+	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia"),
+	INVALID_INPUT_PARAMETERS("Alguno de los datos necesarios para realizar la acción es inválido");
 
 	private final String message;
 

@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.Result;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +76,10 @@ public class StudentJdbcDaoTest {
 	/* Data to be inserted/expected in/from the columns */
 	private static final int DOCKET_1 = 1;
 	private static final int DOCKET_2 = 2;
-	private static final int DOCKET_INVALID = -1;
+	private static final int DOCKET_VALID = 7357;
+	private static final int DOCKET_VALID_LIMIT = 1;
+	private static final int DOCKET_INVALID_LIMIT = 0;
+	private static final int DOCKET_INVALID = -7357;
 
 	private static final int DNI_1 = 12345678;
 	private static final String FIRST_NAME_1 = "MaTías NIColas";
@@ -128,6 +132,11 @@ public class StudentJdbcDaoTest {
 	private static final int COURSE_ID_2 = 2;
 	private static final String COURSE_NAME_2 = "Course 2";
 	private static final int COURSE_CREDITS_2 = 2;
+
+	private static final int COURSE_ID_VALID = 7357;
+	private static final int COURSE_ID_VALID_LIMIT = 1;
+	private static final int COURSE_ID_INVALID_LIMIT = 0;
+	private static final int COURSE_ID_INVALID = -7357;
 	
 	private static final BigDecimal GRADE_1 = BigDecimal.valueOf(9);
 	private static final BigDecimal GRADE_2 = BigDecimal.valueOf(2);
@@ -384,6 +393,84 @@ public class StudentJdbcDaoTest {
 		assertEquals(LAST_NAME_1_EXPECTED, student.getLastName());
 		assertArrayEquals(expectedGrades, student.getGrades().toArray());
 		/***********************************/
+	}
+
+	@Test
+	public void enrolle() {
+		final Map<String, Object> userArgs = new HashMap<>();
+		final Map<String, Object> studentArgs = new HashMap<>();
+		final Map<String, Object> courseArgs = new HashMap<>();
+
+		userArgs.put(USER__DNI_COLUMN, DNI_1);
+		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userInsert.execute(userArgs);
+
+		studentArgs.put(USER__DNI_COLUMN, DNI_1);
+		Number key = studentInsert.executeAndReturnKey(studentArgs);
+		docket1 = key.intValue();
+
+		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
+		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
+		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseInsert.execute(courseArgs);
+		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
+		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
+		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+		courseInsert.execute(courseArgs);
+
+
+		/* Invalid docket */
+		Result result = studentJdbcDao.enroll(DOCKET_INVALID, COURSE_ID_VALID_LIMIT);
+		assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
+		/******************/
+
+		/* Invalid course id */
+		result = studentJdbcDao.enroll(DOCKET_VALID_LIMIT, COURSE_ID_INVALID);
+		assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
+		/******************/
+
+		/* Invalid both docket & course id */
+		result = studentJdbcDao.enroll(DOCKET_INVALID, COURSE_ID_INVALID);
+		assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
+		/******************/
+
+		/* Invalid: docket don't exists */
+		result = studentJdbcDao.enroll(DOCKET_VALID, COURSE_ID_1);
+		assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
+		/******************/
+
+		/* Invalid: course id don't exists */
+		result = studentJdbcDao.enroll(docket1, COURSE_ID_VALID);
+		assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
+		/******************/
+
+		/* Valid: unique docket & course id */
+		result = studentJdbcDao.enroll(docket1, COURSE_ID_1);
+		assertEquals(Result.OK, result);
+		/******************/
+
+		/* Invalid: repeated docket & course id*/
+		result = studentJdbcDao.enroll(docket1, COURSE_ID_1);
+		assertEquals(Result.ALREADY_ENROLLED, result);
+		/******************/
+
+		/* Valid: unique docket & course id */
+		result = studentJdbcDao.enroll(docket1, COURSE_ID_2);
+		assertEquals(Result.OK, result);
+		/******************/
+
+		/* Check if saved correctly */
+		List<Course> courses = studentJdbcDao.getStudentCourses(DOCKET_VALID_LIMIT);
+		final List<Matcher<? super Integer>> possibleCourses = new LinkedList<>();
+		possibleCourses.add(is(COURSE_ID_1));
+		possibleCourses.add(is(COURSE_ID_2));
+
+		assertEquals(2, courses.size());
+		for (Course course : courses) {
+			assertThat(course.getId(), anyOf(possibleCourses));
+		}
+		/******************/
 	}
 
 	private List<Matcher<? super String>> possibleEmails(final int docket, final String firstName, final String lastName) {
