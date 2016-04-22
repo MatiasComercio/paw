@@ -244,7 +244,10 @@ public class StudentJdbcDao implements StudentDao {
 		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
 		studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
 		addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
-		gradesInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE);
+		gradesInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE)
+				.usingColumns(GRADE__DOCKET_COLUMN,
+						GRADE__COURSE_ID_COLUMN,
+						GRADE__GRADE_COLUMN);
 	}
 
 	@Override
