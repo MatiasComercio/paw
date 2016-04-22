@@ -28,6 +28,11 @@ public class UserController {
 	@Autowired
 	private StudentService studentService;
 
+    @ModelAttribute("section")
+    public String sectionManager(){
+        return STUDENTS_SECTION;
+    }
+
 	@RequestMapping("/students")
 	public ModelAndView getStudentsByFilter(@RequestParam(required = false) final Integer docket,
 	                                        @RequestParam(required = false) final String firstName,
@@ -42,7 +47,6 @@ public class UserController {
 				.build();
 		final List<Student> students = studentService.getByFilter(studentFilter);
 		mav.addObject("students", students);
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
@@ -58,7 +62,6 @@ public class UserController {
 
 		mav = new ModelAndView("student");
 		mav.addObject("student", student);
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
@@ -74,7 +77,6 @@ public class UserController {
 
 		mav = new ModelAndView("grades");
 		mav.addObject("student", student);
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
@@ -95,7 +97,6 @@ public class UserController {
 		}
 
 		mav.addObject("courses", courses);
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
@@ -110,7 +111,6 @@ public class UserController {
 				mav.addObject("message", raMap.get("message"));
 			}
 		}
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
