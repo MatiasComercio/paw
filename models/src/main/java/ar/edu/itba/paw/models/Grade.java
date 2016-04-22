@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.models;
 
 import java.math.BigDecimal;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 public class Grade {
