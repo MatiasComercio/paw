@@ -151,10 +151,10 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/students/{docket}/grades/edit/{courseId}/{modified}/{grade}", method = RequestMethod.POST)
-	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
+	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
 								  @PathVariable Integer docket, @PathVariable Integer courseId,
 								  @PathVariable Timestamp modified, @PathVariable BigDecimal grade,
-								  final BindingResult errors, RedirectAttributes redirectAttributes){
+								  RedirectAttributes redirectAttributes){
 		if (errors.hasErrors()){
 			return editGrade(gradeForm, docket, courseId, modified, grade, null);
 		}
