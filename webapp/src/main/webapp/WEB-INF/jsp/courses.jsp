@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -35,6 +36,18 @@
 
     <%-- End of Confirmation Modal --%>
 
+    <%-- Form --%>
+    <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/app/students/${inscriptionForm.studentDocket}/courses/unenroll" method="post" enctype="application/x-www-form-urlencoded">
+        <div>
+            <form:input class="form-control" path="studentDocket" value="${inscriptionForm.studentDocket}" readonly="true" type="hidden"/>
+        </div>
+        <div>
+            <form:input id="courseInput" class="form-control" path="courseId" type="hidden"/>
+        </div>
+    </form:form>
+    <%-- End of Form --%>
+
+
     <div id="page-wrapper">
 
         <div class="container-fluid">
@@ -48,6 +61,11 @@
                 </div>
             </div>
             <!-- content -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <jsp:include page="base/alerts.jsp" />
+                </div>
+            </div>
             <table class="table table-striped">
                 <thead>
                 <tr>

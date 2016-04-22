@@ -89,7 +89,10 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	}
 
 	@RequestMapping("/students/{docket}/courses")
-	public ModelAndView getStudentsCourse(@PathVariable final Integer docket){
+	public ModelAndView getStudentCourses(@PathVariable final Integer docket,
+	                                      @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm){
+		inscriptionForm.setStudentDocket(docket);
+
 		final ModelAndView mav = new ModelAndView("courses");
 		final List<Course> courses = studentService.getStudentCourses(docket);
 
@@ -100,6 +103,39 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		mav.addObject("courses", courses);
 		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
+	}
+
+	@RequestMapping(value = "/students/{docket}/courses/unenroll", method = RequestMethod.POST)
+	public ModelAndView unenroll(@PathVariable final Integer docket,
+	                             @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
+	                             final BindingResult errors,
+	                             final RedirectAttributes redirectAttributes){
+		if (errors.hasErrors()) {
+			//		+++xdebug
+			System.out.println(errors);
+			System.out.println(docket);
+			return getStudentCourses(docket, inscriptionForm);
+		}
+
+//		Result result = studentService.unenroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
+		Result result = Result.OK;
+
+		if (result == null) {
+			result = Result.ERROR_UNKNOWN;
+		}
+		if (!result.equals(Result.OK)) {
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+		} else {
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message", "El alumno se ha dado de baja de la materia "
+					+ inscriptionForm.getCourseId() + " correctamente.");
+		}
+
+//		+++xdebug
+		System.out.println(docket);
+		return new ModelAndView("redirect:/app/students/" + docket + "/courses");
+
 	}
 
 
@@ -134,8 +170,11 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			return studentInscription(docket, inscriptionForm, keyword, id);
 		}
 
-		final Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
-		if (result == null || !result.equals(Result.OK)) {
+		Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
+		if (result == null) {
+			result = Result.ERROR_UNKNOWN;
+		}
+		if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 			return new ModelAndView("redirect:/app/students/" + docket + "/inscription");
