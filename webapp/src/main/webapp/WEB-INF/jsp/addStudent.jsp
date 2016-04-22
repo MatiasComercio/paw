@@ -64,18 +64,7 @@
                         <form:input id="birthday" type="text" class="form-control" placeholder="yyyy-mm-dd" path="birthday"/>
                         <form:errors path="birthday" cssStyle="color: red;" element="div"/>
                     </div>
-                    <div class="form-group">
-                        <form:label for="email" path="email">Email</form:label>
-                        <form:input type="text" class="form-control" id="email" path="email"/>
-                        <form:errors path="email" cssStyle="color: red;" element="div"/>
-                    </div>
-                    <!-- Student Data -->
-                    <div class="form-group">
-                        <form:label for="docket" path="docket"><span style="color:red">*</span>Legajo</form:label>
-                        <form:input type="text" class="form-control" id="docket" path="docket"/>
-                        <form:errors path="docket" cssStyle="color: red;" element="div"/>
-                    </div>
-                    <!-- Address Data -->
+                     <!-- Address Data -->
                     <div class="form-group">
                         <form:label for="country" path="country"><span style="color:red">*</span>País</form:label>
                         <form:input type="text" class="form-control" id="country" path="country"/>

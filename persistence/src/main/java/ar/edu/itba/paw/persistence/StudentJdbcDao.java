@@ -136,9 +136,6 @@ public class StudentJdbcDao implements StudentDao {
 		}
 
 		String email = resultSet.getString(USER__EMAIL_COLUMN);
-		if (email == null) {
-			email = createEmail(docket, firstName, lastName);
-		}
 
 		final String country = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__COUNTRY_COLUMN));
 		final String city = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__CITY_COLUMN));
@@ -192,9 +189,6 @@ public class StudentJdbcDao implements StudentDao {
 		final String lastName = WordUtils.capitalize(resultSet.getString(USER__LAST_NAME_COLUMN));
 
 		String email = resultSet.getString(USER__EMAIL_COLUMN);
-		if (email == null) {
-			email = createEmail(docket, firstName, lastName);
-		}
 
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
 		studentBuilder.firstName(firstName).lastName(lastName).email(email);
@@ -300,26 +294,23 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result create(Student student) {
-		//TODO: Add further data validation
 
 		final Map<String, Object> userArgs = new HashMap<>();
 		final Map<String, Object> studentArgs = new HashMap<>();
 		final Map<String, Object> addressArgs = new HashMap<>();
 
 		/* Store User Data */
-		//TODO: DNI > 0 and UNIQUE(email) are guaranteed by the DB. How do we handle in case insertion fails?
-
 		userArgs.put(USER__DNI_COLUMN, student.getDni());
 		userArgs.put(USER__FIRST_NAME_COLUMN, student.getFirstName());
 		userArgs.put(USER__LAST_NAME_COLUMN, student.getLastName());
-		//TODO: Check genre length eq 1 (Again this is verified by the db)
+
 		if(student.getGenre() == "Female")
 			userArgs.put(USER__GENRE_COLUMN, "F");
 		else
 			userArgs.put(USER__GENRE_COLUMN, "M");
 		userArgs.put(USER__BIRTHDAY_COLUMN, student.getBirthday());
-		//TODO: Get default email
-		userArgs.put(USER__EMAIL_COLUMN, student.getEmail());
+		userArgs.put(USER__EMAIL_COLUMN, createEmail(student.getDni(), student.getFirstName(),
+				student.getLastName()));
 		try {
 			userInsert.execute(userArgs);
 		}catch(DuplicateKeyException e){
@@ -327,10 +318,7 @@ public class StudentJdbcDao implements StudentDao {
 		}
 
 		/* Store Student Data */
-		studentArgs.put(STUDENT__DOCKET_COLUMN, student.getDocket());
 		studentArgs.put(STUDENT__DNI_COLUMN, student.getDni());
-		//PASSWORD??? userArgs.put(ID_COLUMN, student);
-
 		try {
 			studentInsert.execute(studentArgs);
 		}catch(DuplicateKeyException e){
@@ -355,8 +343,8 @@ public class StudentJdbcDao implements StudentDao {
 		return Result.OK;
 	}
 
-	private String createEmail(final int docket, final String firstName, final String lastName) {
-		final String defaultEmail = "student" + docket + EMAIL_DOMAIN;
+	private String createEmail(final int dni, final String firstName, final String lastName) {
+		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
 
 		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
 			return defaultEmail;

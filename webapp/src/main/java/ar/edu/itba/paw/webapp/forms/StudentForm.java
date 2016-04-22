@@ -13,6 +13,9 @@ import java.time.LocalDate;
 
 public class StudentForm {
 
+    /* When the student is created the docket is asigned by the database, not the user */
+    private final static Integer EMPTY_DOCKET = 0;
+
     @NotNull
     @Min(1)
     private Integer dni;
@@ -30,13 +33,6 @@ public class StudentForm {
 
     @DateTimeFormat(pattern="yyyy-MM-dd")
     private LocalDate birthday;
-
-    @Size(max=50)
-    private String email;
-
-    @NotNull
-    @Min(1)
-    private Integer docket;
 
     private Address address;
     @NotNull
@@ -72,8 +68,8 @@ public class StudentForm {
 
         this.address = new Address.Builder(country, city, neighborhood, street, number).floor(floor).
                 door(door).telephone(telephone).zipCode(zipCode).build();
-        return new Student.Builder(docket, dni).firstName(firstName).lastName(lastName).genre(genre).birthday(birthday)
-                .email(email).address(address).build();
+        return new Student.Builder(EMPTY_DOCKET, dni).firstName(firstName).lastName(lastName).genre(genre).
+                birthday(birthday).address(address).build();
     }
 
     public Integer getDni() {
@@ -114,22 +110,6 @@ public class StudentForm {
 
     public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Integer getDocket() {
-        return docket;
-    }
-
-    public void setDocket(Integer docket) {
-        this.docket = docket;
     }
 
     public String getCountry() {
