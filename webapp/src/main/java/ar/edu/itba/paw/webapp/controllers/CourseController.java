@@ -72,7 +72,7 @@ public class CourseController {
         redirectAttributes.addFlashAttribute("alert", "success");
         redirectAttributes.addFlashAttribute("message", "La materia se ha guardado correctamente.");
 
-        return new ModelAndView("redirect:/app/courses");
+        return new ModelAndView("redirect:/courses");
     }
 
 
@@ -106,6 +106,6 @@ public class CourseController {
         final Course course = courseForm.build();
         courseService.create(course);
 
-        return new ModelAndView("redirect:/app/courses");
+        return new ModelAndView("redirect:/courses");
     }
 }

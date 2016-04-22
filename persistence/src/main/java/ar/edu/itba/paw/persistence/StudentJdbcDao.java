@@ -381,7 +381,7 @@ public class StudentJdbcDao implements StudentDao {
 				currentEmail.append(lastNames[j]);
 			}
 			currentEmail.append(EMAIL_DOMAIN);
-			if (!exists(currentEmail)) {
+			if (!exists(currentEmail)) { // +++ximprove: should return existent email
 				return String.valueOf(currentEmail);
 			}
 		}
@@ -393,9 +393,7 @@ public class StudentJdbcDao implements StudentDao {
 
 	private boolean exists(final StringBuilder email) {
 		List<String> emails = jdbcTemplate.query(EMAILS_QUERY, emailRowMapper);
-
 		return emails.contains(String.valueOf(email));
-
 	}
 
 	private static class QueryFilter {

@@ -129,7 +129,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 					+ inscriptionForm.getCourseId() + " correctamente.");
 		}
 
-		return new ModelAndView("redirect:/app/students/" + docket + "/courses");
+		return new ModelAndView("redirect:/students/" + docket + "/courses");
 
 	}
 
@@ -172,12 +172,12 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return new ModelAndView("redirect:/app/students/" + docket + "/inscription");
+			return new ModelAndView("redirect:/students/" + docket + "/inscription");
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message", "El alumno ahora se encuentra inscripto en la materia "
 				+ inscriptionForm.getCourseId() + ".");
-		return new ModelAndView("redirect:/app/students/" + docket + "/info");
+		return new ModelAndView("redirect:/students/" + docket + "/info");
 	}
 
 
@@ -195,7 +195,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		if (!errors.hasErrors()){
 			Student student = studentForm.build();
 			studentService.create(student);
-			return new ModelAndView("redirect:/app/students");
+			return new ModelAndView("redirect:/students");
 		}
 		else{
 			return addStudent(studentForm);

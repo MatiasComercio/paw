@@ -96,7 +96,7 @@
 
         $('#search').click(urlWithFilters);
 
-        var addCourse = function(){window.location="/app/courses/add_course";}
+        var addCourse = function(){window.location="/courses/add_course";}
         $('#addCourse').on("click", addCourse);
 
         /* source: http://stackoverflow.com/questions/10905345/pressing-enter-on-a-input-type-text-how */

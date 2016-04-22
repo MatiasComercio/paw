@@ -40,7 +40,7 @@
                     <h3>Materias en las que puede inscribirse:</h3>
                 </div>
             </div>
-            <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/app/students/${inscriptionForm.studentDocket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
+            <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/students/${inscriptionForm.studentDocket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
                 <div>
                     <form:input class="form-control" path="studentDocket" value="${inscriptionForm.studentDocket}" readonly="true" type="hidden"/>
                 </div>
@@ -119,7 +119,7 @@
 
         $('#search').click(urlWithFilters);
 
-        var addCourse = function(){window.location="/app/courses/add_course";}
+        var addCourse = function(){window.location="/courses/add_course";}
         $('#addCourse').on("click", addCourse);
 
         /* source: http://stackoverflow.com/questions/10905345/pressing-enter-on-a-input-type-text-how */

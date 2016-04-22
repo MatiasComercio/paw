@@ -65,7 +65,7 @@
                         <td>${ student.firstName }</td>
                         <td>${ student.lastName }</td>
                         <td>${ student.email }</td>
-                        <td><a href="<c:url value="/app/students/${student.docket}/info" />">Ver</a></td>
+                        <td><a href="<c:url value="/students/${student.docket}/info" />">Ver</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -94,7 +94,7 @@
 
         $('#search').click(urlWithFilters);
 
-        var addStudent = function(){window.location="/app/students/add_student";}
+        var addStudent = function(){window.location="/students/add_student";}
         $('#addStudent').on("click", addStudent);
 
         /* source: http://stackoverflow.com/questions/10905345/pressing-enter-on-a-input-type-text-how */

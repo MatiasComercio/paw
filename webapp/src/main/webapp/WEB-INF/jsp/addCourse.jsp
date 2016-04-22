@@ -27,7 +27,7 @@
             <div class="container">
                 <h2>Agregar curso</h2>
             <c:if test="${task == 'add' }">
-                <form:form modelAttribute="courseForm" method="post" action="/app/courses/add_course">
+                <form:form modelAttribute="courseForm" method="post" action="/courses/add_course">
                     <div class="form-group">
                         <form:label path="id">ID:</form:label>
                         <form:input path="id" type="text" class="form-control" />
@@ -45,7 +45,7 @@
                 </form:form>
             </c:if>
             <c:if test="${task == 'edit' }">
-                <form:form modelAttribute="courseForm" method="post" action="/app/courses/${courseId}/edit">
+                <form:form modelAttribute="courseForm" method="post" action="/courses/${courseId}/edit">
                     <div class="form-group">
                         <form:label path="id">ID:</form:label>
                         <form:input path="id" type="text" class="form-control" />

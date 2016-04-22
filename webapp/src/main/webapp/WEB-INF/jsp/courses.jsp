@@ -37,7 +37,7 @@
     <%-- End of Confirmation Modal --%>
 
     <%-- Form --%>
-    <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/app/students/${inscriptionForm.studentDocket}/courses/unenroll" method="post" enctype="application/x-www-form-urlencoded">
+    <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/students/${inscriptionForm.studentDocket}/courses/unenroll" method="post" enctype="application/x-www-form-urlencoded">
         <div>
             <form:input class="form-control" path="studentDocket" value="${inscriptionForm.studentDocket}" readonly="true" type="hidden"/>
         </div>
@@ -84,7 +84,7 @@
                         <td>
                             <div class="row">
                                 <div class="col-xs-2">
-                                    <a href="<c:url value="/app/courses/${course.id}/info" />">Ver</a>
+                                    <a href="<c:url value="/courses/${course.id}/info" />">Ver</a>
                                 </div>
                                 <div class="col-xs-4">
                                     <button name="unenroll" type="button" class="btn btn-danger"

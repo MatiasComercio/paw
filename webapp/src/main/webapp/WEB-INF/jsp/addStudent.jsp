@@ -26,7 +26,7 @@
             <!-- -->
             <div class="container">
                 <h2>Agregar alumno</h2>
-                <form:form modelAttribute="studentForm" method="post" action="/app/students/add_student">
+                <form:form modelAttribute="studentForm" method="post" action="/students/add_student">
                     <!-- User Data -->
                     <div class="form-group">
                         <form:label for="dni" path="dni">DNI:</form:label>

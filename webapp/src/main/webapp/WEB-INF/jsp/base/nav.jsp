@@ -10,7 +10,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/app/"><strong>SGA</strong> Sistema de gestión académica</a>
+        <a class="navbar-brand" href="/"><strong>SGA</strong> Sistema de gestión académica</a>
     </div>
     <!-- Top Menu Items -->
     <ul class="nav navbar-right top-nav">
@@ -43,7 +43,7 @@
             </c:when>
                 <c:otherwise><li></c:otherwise>
             </c:choose>
-                <a href="<c:url value="/app/" />"><i class="fa fa-fw fa-dashboard"></i> Alumnos</a>
+                <a href="<c:url value="/" />"><i class="fa fa-fw fa-dashboard"></i> Alumnos</a>
             </li>
 
             <c:choose>
@@ -52,7 +52,7 @@
                 </c:when>
                 <c:otherwise><li></c:otherwise>
             </c:choose>
-                <a href="<c:url value="/app/courses" />"><i class="fa fa-fw fa-edit"></i> Materias</a>
+                <a href="<c:url value="/courses" />"><i class="fa fa-fw fa-edit"></i> Materias</a>
             </li>
             <!--<li>
                 <a href="#"><i class="fa fa-fw fa-bar-chart-o"></i> Buscar Alumno</a>

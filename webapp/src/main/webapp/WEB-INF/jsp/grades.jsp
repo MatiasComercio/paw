@@ -38,7 +38,7 @@
                         <td>${ grade.courseId }</td>
                         <td>${ grade.courseName }</td>
                         <td>${ grade.grade }</td>
-                        <td><a href="<c:url value="/app/courses/${grade.courseId}/info" />">Ver Materia</a></td>
+                        <td><a href="<c:url value="/courses/${grade.courseId}/info" />">Ver Materia</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
