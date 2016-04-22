@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -66,6 +67,7 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String GRADE__DOCKET_COLUMN = "docket";
 	private static final String GRADE__COURSE_ID_COLUMN = "course_id";
 	private static final String GRADE__GRADE_COLUMN = "grade";
+	private static final String GRADE__MODIFIED_COLUMN = "modified";
 
 	private static final String COURSE__ID_COLUMN = "id";
 	private static final String COURSE__NAME_COLUMN = "name";
@@ -222,8 +224,9 @@ public class StudentJdbcDao implements StudentDao {
 		final int courseId = resultSet.getInt(GRADE__COURSE_ID_COLUMN);
 		final String courseName = resultSet.getString(COURSE__NAME_COLUMN);
 		final BigDecimal grade = resultSet.getBigDecimal(GRADE__GRADE_COLUMN);
+		final Timestamp modified = resultSet.getTimestamp(GRADE__MODIFIED_COLUMN);
 
-		final Grade.Builder gradeBuilder = new Grade.Builder(docket, courseId, grade);
+		final Grade.Builder gradeBuilder = new Grade.Builder(docket, courseId, grade, modified);
 		gradeBuilder.courseName(courseName);
 
 		return gradeBuilder.build();
