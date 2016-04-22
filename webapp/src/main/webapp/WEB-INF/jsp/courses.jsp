@@ -24,7 +24,7 @@
                     <h4 class="modal-title" id="myModalLabel">Darse de Baja</h4>
                 </div>
                 <div class="modal-body">
-                    Seguro?
+                    ¿Está seguro de que quiere darse de baja de la materia: <span></span>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
@@ -112,7 +112,7 @@
 
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
-<script type="text/javascript"><%@include file="../js/courses.js"%></script>
+<script type="text/javascript" charset="UTF-8"><%@include file="../js/courses.js"%></script>
 <script>
     $(document).ready(loadCoursesJs());
 </script>

@@ -181,8 +181,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	}
 
 
-
-
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm){
 		//final ModelAndView mav = new ModelAndView("addStudent", "command", new StudentForm());
