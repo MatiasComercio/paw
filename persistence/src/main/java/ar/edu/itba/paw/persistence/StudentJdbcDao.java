@@ -9,9 +9,12 @@ import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.apache.commons.lang3.text.WordUtils;
+import org.omg.CORBA.UNKNOWN;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -96,12 +99,15 @@ public class StudentJdbcDao implements StudentDao {
 				" WHERE " + GRADE__DOCKET_COLUMN + " = ? " +
 				";";
 
-
 	private static final String GET_COURSES =
 				"SELECT * " +
 				"FROM " + INSCRIPTION_TABLE + " JOIN " + COURSE_TABLE + " ON " +
 					INSCRIPTION_TABLE + "." + INSCRIPTION__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." + COURSE__ID_COLUMN
 				+ " WHERE " + INSCRIPTION_TABLE + "." + INSCRIPTION__DOCKET_COLUMN + " = ?";
+
+	private static final String DELETE_INSCRIPTION =
+			"DELETE FROM " + INSCRIPTION_TABLE + " WHERE " + INSCRIPTION__COURSE_ID_COLUMN + " = ? AND "
+			+ INSCRIPTION__DOCKET_COLUMN + " = ? ";
 
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
@@ -338,6 +344,19 @@ public class StudentJdbcDao implements StudentDao {
 		}
 
 		return Result.OK;
+	}
+
+	@Override
+	public Result unenroll(final Integer studentDocket, final Integer courseId) {
+
+		int cUpdated = 0;
+		try {
+			cUpdated = jdbcTemplate.update(DELETE_INSCRIPTION, courseId, studentDocket);
+		} catch (final DataAccessException e) {
+			return Result.NOT_EXISTENT_ENROLL;
+		}
+
+		return cUpdated == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 	}
 
 	private String createEmail(final int docket, final String firstName, final String lastName) {

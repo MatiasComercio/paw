@@ -111,14 +111,11 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	                             final BindingResult errors,
 	                             final RedirectAttributes redirectAttributes){
 		if (errors.hasErrors()) {
-			//		+++xdebug
-			System.out.println(errors);
-			System.out.println(docket);
 			return getStudentCourses(docket, inscriptionForm);
 		}
 
-//		Result result = studentService.unenroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
-		Result result = Result.OK;
+		Result result = studentService.unenroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
+//		Result result = Result.OK;
 
 		if (result == null) {
 			result = Result.ERROR_UNKNOWN;
@@ -132,8 +129,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 					+ inscriptionForm.getCourseId() + " correctamente.");
 		}
 
-//		+++xdebug
-		System.out.println(docket);
 		return new ModelAndView("redirect:/app/students/" + docket + "/courses");
 
 	}

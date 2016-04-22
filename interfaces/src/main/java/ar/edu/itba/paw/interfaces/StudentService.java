@@ -57,4 +57,13 @@ public interface StudentService {
 	 * @return a Result object containing information of the operation carried out
 	 */
 	Result enroll(final int studentDocket, final int courseId);
+
+	/**
+	 * Unenrolls the student with the given docket of the course with the specified id.
+	 *
+	 * @param studentDocket The student's docket
+	 * @param courseId The course id
+	 * @return a Result object containing information of the operation carried out
+	 */
+	Result unenroll(final Integer studentDocket, final Integer courseId);
 }

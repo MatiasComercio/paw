@@ -72,6 +72,29 @@ public class StudentServiceImpl implements StudentService {
 		return result;
 	}
 
+	@Override
+	public Result unenroll(final Integer studentDocket, final Integer courseId) {
+		if (studentDocket <= 0 ) {
+			return Result.ERROR_DOCKET_OUT_OF_BOUNDS;
+		}
+		if (courseId <= 0) {
+			return Result.ERROR_ID_OUT_OF_BOUNDS;
+		}
+
+		Result result;
+
+		result = studentDao.unenroll(studentDocket, courseId);
+		if (result == null) {
+			return Result.ERROR_UNKNOWN;
+		}
+		if (!result.equals(Result.OK)) {
+			return result;
+		}
+
+		/* notifyUnenrollment(studentDocket, courseId); mail +++xtodo */
+		return result;
+	}
+
 	/* Test purpose only */
 	/* default */ void setStudentDao(final StudentDao studentDao) {
 		this.studentDao = studentDao;
