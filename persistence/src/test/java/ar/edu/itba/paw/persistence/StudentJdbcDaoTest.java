@@ -461,7 +461,7 @@ public class StudentJdbcDaoTest {
 		/******************/
 
 		/* Check if saved correctly */
-		List<Course> courses = studentJdbcDao.getStudentCourses(DOCKET_VALID_LIMIT);
+		List<Course> courses = studentJdbcDao.getStudentCourses(docket1);
 		final List<Matcher<? super Integer>> possibleCourses = new LinkedList<>();
 		possibleCourses.add(is(COURSE_ID_1));
 		possibleCourses.add(is(COURSE_ID_2));
@@ -470,6 +470,87 @@ public class StudentJdbcDaoTest {
 		for (Course course : courses) {
 			assertThat(course.getId(), anyOf(possibleCourses));
 		}
+		/******************/
+	}
+
+	@Test
+	public void unenrolle() {
+		final Map<String, Object> userArgs = new HashMap<>();
+		final Map<String, Object> studentArgs = new HashMap<>();
+		final Map<String, Object> courseArgs = new HashMap<>();
+
+		userArgs.put(USER__DNI_COLUMN, DNI_1);
+		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userInsert.execute(userArgs);
+
+		studentArgs.put(USER__DNI_COLUMN, DNI_1);
+		Number key = studentInsert.executeAndReturnKey(studentArgs);
+		docket1 = key.intValue();
+
+		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
+		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
+		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseInsert.execute(courseArgs);
+		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
+		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
+		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+		courseInsert.execute(courseArgs);
+
+
+		/* Invalid docket */
+		Result result = studentJdbcDao.unenroll(DOCKET_INVALID, COURSE_ID_VALID_LIMIT);
+		assertEquals(Result.NOT_EXISTENT_ENROLL, result);
+		/******************/
+
+		/* Invalid course id */
+		result = studentJdbcDao.unenroll(DOCKET_VALID_LIMIT, COURSE_ID_INVALID);
+		assertEquals(Result.NOT_EXISTENT_ENROLL, result);
+		/******************/
+
+		/* Invalid both docket & course id */
+		result = studentJdbcDao.unenroll(DOCKET_INVALID, COURSE_ID_INVALID);
+		assertEquals(Result.NOT_EXISTENT_ENROLL, result);
+		/******************/
+
+		/* Invalid: docket don't exists */
+		result = studentJdbcDao.unenroll(DOCKET_VALID, COURSE_ID_1);
+		assertEquals(Result.NOT_EXISTENT_ENROLL, result);
+		/******************/
+
+		/* Invalid: course id don't exists */
+		result = studentJdbcDao.unenroll(docket1, COURSE_ID_VALID);
+		assertEquals(Result.NOT_EXISTENT_ENROLL, result);
+		/******************/
+
+		/* Invalid: valid unique docket & course id, but no existent enroll */
+		result = studentJdbcDao.unenroll(docket1, COURSE_ID_1);
+		assertEquals(Result.NOT_EXISTENT_ENROLL, result);
+		/******************/
+
+		/* Valid: unique docket & course id */
+		result = studentJdbcDao.enroll(docket1, COURSE_ID_1);
+		assertEquals(Result.OK, result);
+		result = studentJdbcDao.enroll(docket1, COURSE_ID_2);
+		assertEquals(Result.OK, result);
+
+		result = studentJdbcDao.unenroll(docket1, COURSE_ID_1);
+		assertEquals(Result.OK, result);
+		/******************/
+
+		/* Invalid: not enrolled anymore */
+		result = studentJdbcDao.unenroll(docket1, COURSE_ID_1);
+		assertEquals(Result.NOT_EXISTENT_ENROLL, result);
+		/******************/
+
+		/* Valid: unique docket & course id */
+		result = studentJdbcDao.unenroll(docket1, COURSE_ID_2);
+		assertEquals(Result.OK, result);
+		/******************/
+
+		/* Check if saved correctly */
+		List<Course> courses = studentJdbcDao.getStudentCourses(docket1);
+		assertEquals(0, courses.size());
 		/******************/
 	}
 

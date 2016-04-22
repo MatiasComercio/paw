@@ -358,10 +358,10 @@ public class StudentJdbcDao implements StudentDao {
 		try {
 			cUpdated = jdbcTemplate.update(DELETE_INSCRIPTION, courseId, studentDocket);
 		} catch (final DataAccessException e) {
-			return Result.NOT_EXISTENT_ENROLL;
+			return Result.ERROR_UNKNOWN;
 		}
 
-		return cUpdated == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+		return cUpdated == 1 ? Result.OK : Result.NOT_EXISTENT_ENROLL;
 	}
 
 	private String createEmail(final int docket, final String firstName, final String lastName) {
