@@ -226,7 +226,7 @@ public class StudentJdbcDao implements StudentDao {
 		final BigDecimal grade = resultSet.getBigDecimal(GRADE__GRADE_COLUMN);
 		final Timestamp modified = resultSet.getTimestamp(GRADE__MODIFIED_COLUMN);
 
-		final Grade.Builder gradeBuilder = new Grade.Builder(docket, courseId, grade, modified);
+		final Grade.Builder gradeBuilder = new Grade.Builder(docket, courseId, grade).modified(modified);
 		gradeBuilder.courseName(courseName);
 
 		return gradeBuilder.build();
