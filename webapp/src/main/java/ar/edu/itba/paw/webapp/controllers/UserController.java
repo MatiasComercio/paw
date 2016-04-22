@@ -158,10 +158,12 @@ public class UserController {
 
 	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.POST)
 	public ModelAndView addGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
-								 final BindingResult errors, RedirectAttributes redirectAttributes) {
+								 final BindingResult errors, RedirectAttributes redirectAttributes,
+								 @PathVariable Integer docket) {
 		if(errors.hasErrors()) {
 			return addGrade(gradeForm, null);
 		}
+		gradeForm.setDocket(docket);
 		Grade grade = gradeForm.build();
 		Result result = studentService.addGrade(grade);
 
