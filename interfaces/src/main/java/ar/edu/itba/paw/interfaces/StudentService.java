@@ -56,7 +56,7 @@ public interface StudentService {
 	 * @param docket
 	 * @return
      */
-	Result deleteCourse(Integer docket);
+	Result deleteStudent(Integer docket);
 
 	/**
 	 * +++xdocument

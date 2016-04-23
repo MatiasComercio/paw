@@ -4,7 +4,6 @@ import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.shared.Result;
-import ar.edu.itba.paw.webapp.forms.CourseForm;
 import ar.edu.itba.paw.webapp.forms.GradeForm;
 import ar.edu.itba.paw.webapp.forms.StudentForm;
 import ar.edu.itba.paw.models.users.Student;
@@ -213,7 +212,7 @@ public class UserController {
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
 	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes) {
-		final Result result = studentService.deleteCourse(docket);
+		final Result result = studentService.deleteStudent(docket);
 //		ModelAndView mav = new ModelAndView("studentsSearch");
 		redirectAttributes.addFlashAttribute("message", result.getMessage());
 
