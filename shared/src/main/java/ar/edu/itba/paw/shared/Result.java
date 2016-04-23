@@ -12,13 +12,10 @@ public enum Result {
     STUDENT_EXISTS_DOCKET("Ya existe un alumno con este legajo."),
     STUDENT_EXISTS_DNI("Ya existe un alumno con este DNI."),
     STUDENT_NOT_EXISTS("El alumno especificado no existe."),
-    STUDENT_EXISTS_DNI("Ya existe un alumno con este DNI."),
     GRADE_EXISTS("La nota ya existe"),  /* +++xremove when adding date to grade DB */
     COURSE_NOT_EXISTS("La materia no existe"),
-    STUDENT_NOT_EXISTS("El estudiante no existe"),
     INSCRIPTION_NOT_EXISTS("El estudiante no está inscripto en esta materia"),
-    INVALID_INPUT_PARAMETERS("Alguno de los datos necesarios para realizar la acción es inválido");
-
+    INVALID_INPUT_PARAMETERS("Alguno de los datos necesarios para realizar la acción es inválido"),
     ERROR_UNKNOWN("Un error desconocido ha ocurrido"),
     ERROR_ID_OUT_OF_BOUNDS("El ID está fuera de los límites permitidos"),
     ERROR_DOCKET_OUT_OF_BOUNDS("El legajo está fuera de los límites permitidos");
