@@ -17,12 +17,12 @@
                 <%-- Grade Form --%>
                 <form:form class="form-horizontal" id="grade_form" modelAttribute="gradeForm" action="${gradeFormAction}" method="post" enctype="application/x-www-form-urlencoded">
                     <div class="form-group">
-                        <form:label path="studentDocket" class="col-xs-4 control-label">Legajo del Alumno</form:label>
+                        <form:label path="docket" class="col-xs-4 control-label">Legajo del Alumno</form:label>
                         <div class="col-xs-8">
-                            <form:input class="form-control" id="disabledInput" type="text" path="studentDocket" value="${docket}" readonly="true"/>
+                            <form:input class="form-control" id="disabledInput" type="text" path="docket" value="${docket}" readonly="true"/>
                         </div>
                         <div class="col-xs-12">
-                            <form:errors path="studentDocket" cssClass="text-danger bg-danger" element="div"/>
+                            <form:errors path="docket" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -65,7 +65,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <button id="confirmAction" type="button" class="btn btn-info">Confirmar</button>
+                <button id="gradeFormConfirmAction" type="button" class="btn btn-info">Confirmar</button>
             </div>
         </div>
     </div>

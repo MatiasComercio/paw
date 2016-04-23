@@ -3,15 +3,14 @@ function loadGradeForm(nameAttr) {
     $("[name='" + nameAttr + "']").on("click", function() {
         var courseId = $(this).data("course_id");
         var courseName = $(this).data("course_name");
-        var modified = $(this).data("course_name");
-        var inscriptionForm = $("#inscription_form");
-        inscriptionForm.find("input[name='courseId']").val(courseId);
-        inscriptionForm.find("input[name='courseName']").val(courseName);
+        var gradeForm = $("#grade_form");
+        gradeForm.find("input[name='courseId']").val(courseId);
+        gradeForm.find("input[name='courseName']").val(courseName);
     });
 
-    $("#confirmAction").on("click", function() {
+    $("#gradeFormConfirmAction").on("click", function() {
         $('#gradeFormConfirmationModal').modal('hide');
-        $("#inscription_form").submit();
+        $("#grade_form").submit();
     });
     /* /Grade Form Action Sequence */
 }

@@ -32,10 +32,10 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	@Autowired
 	private StudentService studentService;
 
-    @ModelAttribute("section")
-    public String sectionManager(){
-        return STUDENTS_SECTION;
-    }
+	@ModelAttribute("section")
+	public String sectionManager(){
+		return STUDENTS_SECTION;
+	}
 
 	@RequestMapping("/students")
 	public ModelAndView getStudentsByFilter(@RequestParam(required = false) final Integer docket,
@@ -100,6 +100,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		if (!model.containsAttribute("inscriptionForm")) {
 			model.addAttribute("inscriptionForm", new InscriptionForm());
 		}
+		if (!model.containsAttribute("gradeForm")) {
+			model.addAttribute("gradeForm", new GradeForm());
+		}
 
 		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
 		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
@@ -115,6 +118,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		mav.addObject("student", student);
 		mav.addObject("courseFilterFormAction", "/students/" + docket + "/courses/courseFilterForm"); /* only different line from /inscription */
 		mav.addObject("inscriptionFormAction", "/students/" + docket + "/courses/unenroll");
+		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/add");
 		mav.addObject("subsection_courses", true); /* only different line from /inscription */
 		mav.addObject("courses", studentService.getStudentCourses(docket, courseFilter));
 		mav.addObject("docket", docket);
@@ -221,9 +225,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/students/{docket}/courses/courseFilterForm", method = RequestMethod.GET)
 	public ModelAndView studentCoursesCourseFilter(@PathVariable final int docket,
-	                                                   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-	                                                   final BindingResult errors,
-	                                                   final RedirectAttributes redirectAttributes) {
+	                                               @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+	                                               final BindingResult errors,
+	                                               final RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
 		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
 		return new ModelAndView("redirect:/students/" + docket + "/courses");
@@ -232,7 +236,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
-								   RedirectAttributes redirectAttributes){
+	                               RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("addStudent");
 		if(redirectAttributes != null) {
 			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
@@ -248,7 +252,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
 	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
-								   final BindingResult errors, RedirectAttributes redirectAttributes) {
+	                               final BindingResult errors, RedirectAttributes redirectAttributes) {
 		if (errors.hasErrors()){
 			return addStudent(studentForm, null);
 		}
@@ -268,8 +272,8 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/students/{docket}/grades/edit/{courseId}/{modified}/{grade}", method = RequestMethod.GET)
 	public ModelAndView editGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
-								  @PathVariable Integer docket, @PathVariable Integer courseId, @PathVariable Timestamp modified,
-								  @PathVariable BigDecimal grade, RedirectAttributes redirectAttributes){
+	                              @PathVariable Integer docket, @PathVariable Integer courseId, @PathVariable Timestamp modified,
+	                              @PathVariable BigDecimal grade, RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("editGrade");
 		setAlertMessages(mav, redirectAttributes);
 		gradeForm.setGrade(grade); //Set the grade to be displayed in the edit view
@@ -285,9 +289,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/students/{docket}/grades/edit/{courseId}/{modified}/{grade}", method = RequestMethod.POST)
 	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
-								  @PathVariable Integer docket, @PathVariable Integer courseId,
-								  @PathVariable Timestamp modified, @PathVariable BigDecimal grade,
-								  RedirectAttributes redirectAttributes){
+	                              @PathVariable Integer docket, @PathVariable Integer courseId,
+	                              @PathVariable Timestamp modified, @PathVariable BigDecimal grade,
+	                              RedirectAttributes redirectAttributes){
 		if (errors.hasErrors()){
 			return editGrade(gradeForm, docket, courseId, modified, grade, null);
 		}
@@ -308,7 +312,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 
 
-	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.GET)
+/*	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.GET)
 	public ModelAndView addGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
 								 RedirectAttributes redirectAttributes) {
 		ModelAndView mav = new ModelAndView("addGrade");
@@ -317,19 +321,45 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 		mav.addObject("docket", gradeForm.getDocket());
 
-		/* +++xadd object grade section? */
+		*//* +++xadd object grade section? *//*
 
 		return mav;
-	}
+	}*/
+
+
 
 	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.POST)
 	public ModelAndView addGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
-								 @PathVariable Integer docket, final BindingResult errors,
-								 RedirectAttributes redirectAttributes){
-		if(errors.hasErrors()) {
-			return addGrade(gradeForm, null);
+	                             @PathVariable Integer docket, final BindingResult errors,
+	                             RedirectAttributes redirectAttributes){
+		if (errors.hasErrors()) {
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
+			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
+			return new ModelAndView("redirect:/students/" + docket + "/courses");
 		}
-		gradeForm.setDocket(docket);
+
+		/********************************/
+
+		/*gradeForm.setDocket(docket);*/
+		Grade grade = gradeForm.build();
+		Result result = studentService.addGrade(grade);
+
+		if (result == null) {
+			result = Result.ERROR_UNKNOWN;
+		}
+		if (!result.equals(Result.OK)) {
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+		} else {
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message", "La nota se ha guardado correctamente.");
+		}
+
+		return new ModelAndView("redirect:/students/" + docket + "/courses");
+
+		/********************/
+
+/*		*//*gradeForm.setDocket(docket);*//*
 		Grade grade = gradeForm.build();
 		Result result = studentService.addGrade(grade);
 
@@ -340,8 +370,8 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message", "La nota se ha guardado correctamente.");
-		/* +++xchange redirect */
-		return new ModelAndView("redirect:/students/" + docket + "/info");
+		*//* +++xchange redirect *//*
+		return new ModelAndView("redirect:/students/" + docket + "/info");*/
 	}
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
@@ -365,57 +395,57 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		}
 	}
 
-    @RequestMapping("/students/{docket}/edit")
-    public ModelAndView editStudent(@PathVariable final Integer docket,
-                                    @ModelAttribute("studentForm") final StudentForm studentForm,
-                                    RedirectAttributes redirectAttributes) {
-        final ModelAndView mav = new ModelAndView("editStudent");
+	@RequestMapping("/students/{docket}/edit")
+	public ModelAndView editStudent(@PathVariable final Integer docket,
+	                                @ModelAttribute("studentForm") final StudentForm studentForm,
+	                                RedirectAttributes redirectAttributes) {
+		final ModelAndView mav = new ModelAndView("editStudent");
 
-        if (redirectAttributes != null) {
-            Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
-            if (raMap.get("alert") != null) {
-                mav.addObject("alert", raMap.get("alert"));
-                mav.addObject("message", raMap.get("message"));
-            }
-        }
+		if (redirectAttributes != null) {
+			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
+			if (raMap.get("alert") != null) {
+				mav.addObject("alert", raMap.get("alert"));
+				mav.addObject("message", raMap.get("message"));
+			}
+		}
 
-        Student student = studentService.getByDocket(docket);
+		Student student = studentService.getByDocket(docket);
 
-        if (student == null){
-            redirectAttributes.addFlashAttribute("alert", "danger");
-            redirectAttributes.addFlashAttribute("message", "El alumno que se intena editar no existe.");
-            return new ModelAndView("redirect:/students");
-        }
+		if (student == null){
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", "El alumno que se intena editar no existe.");
+			return new ModelAndView("redirect:/students");
+		}
 
-        studentForm.loadFromStudent(student);
+		studentForm.loadFromStudent(student);
 
-        mav.addObject("docket", docket);
+		mav.addObject("docket", docket);
 
-        return mav;
-    }
+		return mav;
+	}
 
 
-    @RequestMapping(value = "/students/{docket}/edit", method = RequestMethod.POST)
-    public ModelAndView editStudent(@PathVariable final Integer docket,
-                                   @Valid @ModelAttribute("studentForm") StudentForm studentForm,
-                                   final BindingResult errors,
-                                   RedirectAttributes redirectAttributes){
-        if (errors.hasErrors()){
-            return editStudent(docket, studentForm, redirectAttributes);
-        }
+	@RequestMapping(value = "/students/{docket}/edit", method = RequestMethod.POST)
+	public ModelAndView editStudent(@PathVariable final Integer docket,
+	                                @Valid @ModelAttribute("studentForm") StudentForm studentForm,
+	                                final BindingResult errors,
+	                                RedirectAttributes redirectAttributes){
+		if (errors.hasErrors()){
+			return editStudent(docket, studentForm, redirectAttributes);
+		}
 
-        Student student = studentForm.build();
-        Result result = studentService.update(docket, student);
+		Student student = studentForm.build();
+		Result result = studentService.update(docket, student);
 
-        if(!result.equals(Result.OK)){
-            redirectAttributes.addFlashAttribute("alert", "danger");
-            redirectAttributes.addFlashAttribute("message", result.getMessage());
-            return editStudent(docket, studentForm, redirectAttributes);
-        }
+		if(!result.equals(Result.OK)){
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			return editStudent(docket, studentForm, redirectAttributes);
+		}
 
-        redirectAttributes.addFlashAttribute("alert", "success");
-        redirectAttributes.addFlashAttribute("message", "El alumno se ha guardado correctamente.");
+		redirectAttributes.addFlashAttribute("alert", "success");
+		redirectAttributes.addFlashAttribute("message", "El alumno se ha guardado correctamente.");
 
-        return new ModelAndView("redirect:/students");
-    }
+		return new ModelAndView("redirect:/students");
+	}
 }

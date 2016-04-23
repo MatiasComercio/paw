@@ -19,7 +19,9 @@
     <jsp:include page="base/nav.jsp" />
 
     <jsp:include page="template/enrollForm.jsp" />
-    <jsp:include page="template/gradeForm.jsp" />
+    <c:if test="${subsection_courses}">
+        <jsp:include page="template/gradeForm.jsp" />
+    </c:if>
 
     <div id="page-wrapper">
 

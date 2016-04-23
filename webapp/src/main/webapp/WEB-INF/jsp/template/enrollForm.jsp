@@ -56,10 +56,10 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 <c:if test="${subsection_enroll}">
-                    <button id="confirmAction" type="button" class="btn btn-info">Confirmar</button>
+                    <button id="enrollFormConfirmAction" type="button" class="btn btn-info">Confirmar</button>
                 </c:if>
                 <c:if test="${subsection_courses}">
-                    <button id="confirmAction" type="button" class="btn btn-danger">Confirmar</button>
+                    <button id="enrollFormConfirmAction" type="button" class="btn btn-danger">Confirmar</button>
                 </c:if>
             </div>
         </div>

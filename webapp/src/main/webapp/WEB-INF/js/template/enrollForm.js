@@ -8,7 +8,7 @@ function loadEnrollForm(nameAttr) {
         inscriptionForm.find("input[name='courseName']").val(courseName);
     });
 
-    $("#confirmAction").on("click", function() {
+    $("#enrollFormConfirmAction").on("click", function() {
         $('#enrollFormConfirmationModal').modal('hide');
         $("#inscription_form").submit();
     });

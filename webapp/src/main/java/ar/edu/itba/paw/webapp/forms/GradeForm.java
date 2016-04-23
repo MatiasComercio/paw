@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.forms;
 
 
 import ar.edu.itba.paw.models.Grade;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -17,6 +18,9 @@ public class GradeForm {
     @NotNull
     @Min(1)
     private Integer courseId;
+
+    @NotBlank
+    private String courseName;
 
     @NotNull
     @Min(0)
@@ -43,6 +47,14 @@ public class GradeForm {
 
     public void setCourseId(Integer courseId) {
         this.courseId = courseId;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(final String courseName) {
+        this.courseName = courseName;
     }
 
     public BigDecimal getGrade() {
