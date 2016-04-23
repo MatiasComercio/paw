@@ -151,6 +151,8 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 		ModelAndView mav = new ModelAndView("inscription");
 		mav.addObject("student", student);
+		mav.addObject("action_enroll", true);
+		mav.addObject("action_info", true);
 
 		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
 				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
