@@ -81,19 +81,42 @@ public class StudentServiceImplTest {
 	/* +++xtest: update*/
 	@Test
 	public void testGetStudentCourses() {
+		CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().build();
+
+		/* Checks when input is valid */
 		studentService.getStudentCourses(DOCKET_VALID, null);
+		verify(courseService, times(1)).getByFilter(null);
 		verify(studentDao, times(1)).getStudentCourses(DOCKET_VALID);
 
-		/* Checks that studentDao.getGrades() is called 1 time when input is valid */
+		studentService.getStudentCourses(DOCKET_VALID, courseFilter);
+		verify(courseService, times(1)).getByFilter(courseFilter);
+		verify(studentDao, times(2)).getStudentCourses(DOCKET_VALID);
+
+		/* Checks when input is valid */
 		studentService.getStudentCourses(DOCKET_VALID_LIMIT, null);
+		verify(courseService, times(2)).getByFilter(null);
 		verify(studentDao, times(1)).getStudentCourses(DOCKET_VALID_LIMIT);
 
-		/* Checks that studentDao.getGrades() is no called (0 times) when input is invalid */
+		studentService.getStudentCourses(DOCKET_VALID_LIMIT, courseFilter);
+		verify(courseService, times(2)).getByFilter(courseFilter);
+		verify(studentDao, times(2)).getStudentCourses(DOCKET_VALID_LIMIT);
+
+		/* Checks when input is invalid */
 		studentService.getStudentCourses(DOCKET_INVALID_LIMIT, null);
+		verify(courseService, times(2)).getByFilter(null);
 		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID_LIMIT);
 
-		/* Checks that studentDao.getGrades() is no called (0 times) when input is invalid */
+		studentService.getStudentCourses(DOCKET_INVALID_LIMIT, courseFilter);
+		verify(courseService, times(2)).getByFilter(courseFilter);
+		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID_LIMIT);
+
+		/* Checks when input is invalid */
 		studentService.getStudentCourses(DOCKET_INVALID, null);
+		verify(courseService, times(2)).getByFilter(null);
+		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID);
+
+		studentService.getStudentCourses(DOCKET_INVALID, courseFilter);
+		verify(courseService, times(2)).getByFilter(courseFilter);
 		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID);
 	}
 
@@ -136,41 +159,49 @@ public class StudentServiceImplTest {
 	@Test
 	public void testGetAvailableInscriptionCourses() {
 		CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().build();
+		/* Note that getStudentCourses calls getByFilter with null value too */
 
 		/* Checks when input is valid */
 		studentService.getAvailableInscriptionCourses(DOCKET_VALID, null);
-		verify(courseService, times(1)).getByFilter(null);
+		verify(courseService, times(2)).getByFilter(null); /* getAvailable + getStudent */
 		verify(studentDao, times(1)).getStudentCourses(DOCKET_VALID);
 
 		studentService.getAvailableInscriptionCourses(DOCKET_VALID, courseFilter);
-		verify(courseService, times(1)).getByFilter(courseFilter);
+		verify(courseService, times(1)).getByFilter(courseFilter); /* getAvailable */
+		verify(courseService, times(3)).getByFilter(null); /* getStudent + 2 prev calls*/
 		verify(studentDao, times(2)).getStudentCourses(DOCKET_VALID);
 
 		/* Checks when input is valid */
 		studentService.getAvailableInscriptionCourses(DOCKET_VALID_LIMIT, null);
-		verify(courseService, times(2)).getByFilter(null);
+		verify(courseService, times(5)).getByFilter(null); /* getAvailable + getStudent + 3 prev call*/
 		verify(studentDao, times(1)).getStudentCourses(DOCKET_VALID_LIMIT);
 
 		studentService.getAvailableInscriptionCourses(DOCKET_VALID_LIMIT, courseFilter);
-		verify(courseService, times(2)).getByFilter(courseFilter);
+		verify(courseService, times(2)).getByFilter(courseFilter); /* getAvailable + prev call*/
+		verify(courseService, times(6)).getByFilter(null); /* getStudent + 5 prev calls */
 		verify(studentDao, times(2)).getStudentCourses(DOCKET_VALID_LIMIT);
+
+
+		/*************** invalid input *************/
 
 		/* Checks when input is invalid */
 		studentService.getAvailableInscriptionCourses(DOCKET_INVALID_LIMIT, null);
-		verify(courseService, times(2)).getByFilter(null);
+		verify(courseService, times(6)).getByFilter(null); /* getAvailable + getStudent + 6 prev call*/
 		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID_LIMIT);
 
 		studentService.getAvailableInscriptionCourses(DOCKET_INVALID_LIMIT, courseFilter);
-		verify(courseService, times(2)).getByFilter(courseFilter);
+		verify(courseService, times(2)).getByFilter(courseFilter); /* getAvailable + prev call*/
+		verify(courseService, times(6)).getByFilter(null); /* getStudent + 5 prev calls */
 		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID_LIMIT);
 
 		/* Checks when input is invalid */
 		studentService.getAvailableInscriptionCourses(DOCKET_INVALID, null);
-		verify(courseService, times(2)).getByFilter(null);
+		verify(courseService, times(6)).getByFilter(null); /* getStudent + 5 prev calls */
 		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID);
 
 		studentService.getAvailableInscriptionCourses(DOCKET_INVALID, courseFilter);
-		verify(courseService, times(2)).getByFilter(courseFilter);
+		verify(courseService, times(2)).getByFilter(courseFilter); /* getAvailable + prev call*/
+		verify(courseService, times(6)).getByFilter(null); /* getStudent + 5 prev calls */
 		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID);
 	}
 }

@@ -28,7 +28,6 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h1 class="page-header">
-                        <%-- +++xdoing: change for "choose" --%>
                         <c:choose>
                             <c:when test="${action_enroll}">
                                 Inscripciones <small>- Materias Disponibles</small>
