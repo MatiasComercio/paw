@@ -104,13 +104,14 @@
                         &lt;%&ndash; /Inscription Form&ndash;%&gt;--%>
 
             <!-- search -->
+            <%--Course Filter Form--%>
             <form:form id="course_filter_form" modelAttribute="courseFilterForm" action="/students/${docket}/inscription/courseFilterForm" method="post" enctype="application/x-www-form-urlencoded">
 
                 <div class="row well">
                     <div class="col-xs-12 col-md-2">
                         <p class="lead">Buscar por:</p>
                     </div>
-                    <div class="col-xs-12 col-md-8">
+                    <div class="col-xs-12 col-md-7">
                         <div class="row">
                             <div class="col-xs-12 col-md-5">
                                 <div class="row">
@@ -134,21 +135,29 @@
                                         </div>
                                     </div>
                                     <div class="col-xs-12">
-                                        <form:errors path="name" cssStyle="color: red;"/>
+                                        <form:errors path="name" cssClass="text-danger bg-danger" element="div"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-3 hidden-md hidden-lg"></div>
-                    <div class="col-xs-6 col-md-1 text-center">
+                    <div class="col-xs-2 hidden-md hidden-lg"></div>
+                    <div class="col-xs-5 col-md-1 text-center">
                         <button id="search" class="btn btn-default" type="submit">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             Buscar
                         </button>
                     </div>
+                    <div class="col-xs-5 col-md-2 text-center">
+                        <button id="resetSearch" class="btn btn-default" type="submit">
+                            <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                            Resetear
+                        </button>
+                    </div>
                 </div>
             </form:form>
+            <%--/Course Filter Form--%>
+
             <!-- content -->
             <div class="table-responsive">
                 <table class="table table-hover <%--table-bordered--%> <%--table-condensed--%>">
@@ -203,12 +212,6 @@
 <script>
     $( document ).ready(function() {
 
-        /*        $("[name='inscription']").on("click", function() {
-         $("#inscription_form input[name='courseId']").val($(this).data("course_id"));
-         $("#inscription_form input[name='courseName']").val($(this).data("course_name"));
-         $("#inscription_form").submit();
-         });*/
-
         $("[name='inscription']").on("click", function() {
             var courseId = $(this).data("course_id");
             var courseName = $(this).data("course_name");
@@ -223,7 +226,12 @@
             $("#inscription_form").submit();
         });
 
-
+        $("#resetSearch").on("click", function() {
+            var courseFilterForm = $("#course_filter_form");
+            courseFilterForm.find("input[name='id']").val(null);
+            courseFilterForm.find("input[name='name']").val(null);
+            courseFilterForm.submit();
+        });
     });
 </script>
 </body>
