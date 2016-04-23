@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS users (
 	dni INTEGER NOT NULL ,
-	first_name VARCHAR (50) ,
-	last_name VARCHAR (50) ,
+	first_name VARCHAR (50) NOT NULL,
+	last_name VARCHAR (50) NOT NULL,
 	genre CHAR (1) ,
 	birthday DATE ,
-	email VARCHAR(100) ,
+	email VARCHAR(100) NOT NULL,
 
 PRIMARY KEY (dni),
 UNIQUE (email),
