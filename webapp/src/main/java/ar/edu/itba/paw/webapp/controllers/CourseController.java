@@ -150,7 +150,8 @@ public class CourseController {
         final Result result = courseService.deleteCourse(id);
 //        ModelAndView mav = new ModelAndView("redirect:/app/courses");
 //        ModelAndView mav = new ModelAndView("coursesSearch");
-        redirectAttributes.addFlashAttribute("message", result.getMessage());
+        redirectAttributes.addFlashAttribute("alert", "success");
+        redirectAttributes.addFlashAttribute("message", "El curso se ha eliminado exitosamente.");
 
         return new ModelAndView("redirect:/app/courses");
     }

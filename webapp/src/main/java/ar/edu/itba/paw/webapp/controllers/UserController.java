@@ -222,7 +222,8 @@ public class UserController {
 	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes) {
 		final Result result = studentService.deleteStudent(docket);
 //		ModelAndView mav = new ModelAndView("studentsSearch");
-		redirectAttributes.addFlashAttribute("message", result.getMessage());
+		redirectAttributes.addFlashAttribute("alert", "success");
+		redirectAttributes.addFlashAttribute("message", "El alumno se ha eliminado exitosamente.");
 
 		return new ModelAndView("redirect:/app/students");
 	}
