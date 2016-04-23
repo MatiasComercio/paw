@@ -439,8 +439,10 @@ public class StudentJdbcDao implements StudentDao {
 
         //Update user table
         try {
+            Date birthday = student.getBirthday() != null ? Date.valueOf(student.getBirthday()) : null;
+
             jdbcTemplate.update(userUpdate, student.getDni(), student.getFirstName(), student.getLastName(), genre,
-                    Date.valueOf(student.getBirthday()), createEmail(student.getDni(), student.getFirstName(),
+                    birthday, createEmail(student.getDni(), student.getFirstName(),
                             student.getLastName()), dni);
         } catch (DuplicateKeyException e) {
             return Result.STUDENT_EXISTS_DNI;
