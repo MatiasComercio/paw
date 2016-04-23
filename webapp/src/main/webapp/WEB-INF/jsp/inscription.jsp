@@ -38,9 +38,9 @@
                 </div>
             </div>
             <%-- Inscription Form --%>
-            <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/students/${inscriptionForm.studentDocket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
+            <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/students/${docket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
                 <div>
-                    <form:input class="form-control" path="studentDocket" value="${inscriptionForm.studentDocket}" readonly="true" type="hidden"/>
+                    <form:input class="form-control" path="studentDocket" value="${docket}" readonly="true" type="hidden"/>
                 </div>
                 <div>
                     <form:input id="courseInput" class="form-control" path="courseId" type="hidden"/>
@@ -74,18 +74,24 @@
                                         <div class="input-group">
                                             <span class="input-group-addon">Id</span>
                                             <form:input path="id"  type="text" class="form-control" placeholder="Id..."/>
-                                            <form:errors path="id" cssStyle="color: red;"/>
                                         </div>
                                     </div>
                                     <div class="col-xs-12">
+                                        <form:errors path="id" cssStyle="color: red;"/>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-xs-12 col-md-7">
-                                <div class="input-group">
-                                    <span class="input-group-addon">Nombre</span>
-                                    <form:input path="name" type="text" class="form-control" placeholder="Nombre..."/>
-                                    <form:errors path="name" cssStyle="color: red;"/>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <div class="input-group">
+                                            <span class="input-group-addon">Nombre</span>
+                                            <form:input path="name" type="text" class="form-control" placeholder="Nombre..."/>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12">
+                                        <form:errors path="name" cssStyle="color: red;"/>
+                                    </div>
                                 </div>
                             </div>
                         </div>

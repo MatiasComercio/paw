@@ -9,8 +9,10 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.forms.CourseFilterForm;
 import ar.edu.itba.paw.webapp.forms.InscriptionForm;
 import ar.edu.itba.paw.webapp.forms.StudentForm;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -130,11 +132,17 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	}
 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.GET)
-	public ModelAndView studentInscription(@PathVariable final int docket,
-	                                       @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-											@ModelAttribute("inscriptionForm") final InscriptionForm inscriptionForm,
-											@RequestParam(required = false) String keyword,
-											@RequestParam(required = false) Integer id) {
+	public ModelAndView studentInscription(@PathVariable final int docket, final Model model) {
+
+		if (!model.containsAttribute("courseFilterForm")) {
+			model.addAttribute("courseFilterForm", new CourseFilterForm());
+		}
+		if (!model.containsAttribute("inscriptionForm")) {
+			model.addAttribute("inscriptionForm", new InscriptionForm());
+		}
+
+		final InscriptionForm inscriptionForm = (InscriptionForm) model.asMap().get("inscriptionForm");
+		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
 
 		inscriptionForm.setStudentDocket(docket);
 		ModelAndView mav = new ModelAndView("inscription");
@@ -151,14 +159,13 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.POST)
 	public ModelAndView studentInscription(@PathVariable final int docket,
-	                                       @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-											@Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
-                                           @RequestParam(required = false) String keyword,
-                                           @RequestParam(required = false) Integer id,
-											final BindingResult errors,
-											final RedirectAttributes redirectAttributes) {
+	                                       @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
+	                                       final BindingResult errors,
+	                                       final RedirectAttributes redirectAttributes) {
 		if (errors.hasErrors()){
-			return studentInscription(docket, courseFilterForm, inscriptionForm, keyword, id);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
+			redirectAttributes.addFlashAttribute("inscriptionForm", inscriptionForm);
+			return new ModelAndView("redirect:/students/" + docket + "/inscription");
 		}
 
 		Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
@@ -180,10 +187,10 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/students/{docket}/inscription/courseFilterForm", method = RequestMethod.POST)
 	public ModelAndView studentInscriptionCourseFilter(@PathVariable final int docket,
-	                                       @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-	                                       final BindingResult errors,
-	                                       final RedirectAttributes redirectAttributes) {
-
+	                                                   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+	                                                   final BindingResult errors,
+	                                                   final RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
 		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
 		return new ModelAndView("redirect:/students/" + docket + "/inscription");
 	}
@@ -199,7 +206,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
 	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
-								   final BindingResult errors) {
+	                               final BindingResult errors) {
 		if (!errors.hasErrors()){
 			Student student = studentForm.build();
 			studentService.create(student);

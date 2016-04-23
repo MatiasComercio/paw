@@ -4,8 +4,6 @@ import org.hibernate.validator.constraints.Length;
 
 public class CourseFilterForm {
 	private Integer id;
-
-	@Length(min = 2)
 	private String name;
 
 	public Integer getId() {
