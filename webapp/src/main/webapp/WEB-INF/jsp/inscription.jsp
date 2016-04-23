@@ -18,6 +18,59 @@
 
     <jsp:include page="base/nav.jsp" />
 
+    <%-- Confirmation Modal --%>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Confirmar Inscripción</h4>
+                </div>
+                <div class="modal-body">
+                    <%-- Inscription Form --%>
+                    <form:form class="form-horizontal" id="inscription_form" modelAttribute="inscriptionForm" action="/students/${docket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
+                        <div class="form-group">
+                            <form:label path="studentDocket" class="col-xs-4 control-label">Legajo del Alumno</form:label>
+                            <div class="col-xs-8">
+                                <form:input class="form-control" id="disabledInput" type="text" path="studentDocket" value="${docket}" readonly="true"/>
+                            </div>
+                            <div class="col-xs-12">
+                                <form:errors path="studentDocket" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <form:label path="courseId" class="col-xs-4 control-label">Id del Curso</form:label>
+                            <div class="col-xs-8">
+                                <form:input class="form-control" id="disabledInput" type="text" path="courseId" readonly="true"/>
+                            </div>
+                            <div class="col-xs-12">
+                                <form:errors path="courseId" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <form:label path="courseName" class="col-xs-4 control-label">Nombre del Curso</form:label>
+                            <div class="col-xs-8">
+                                <form:input class="form-control" id="disabledInput" type="text" path="courseName" readonly="true"/>
+                            </div>
+                            <div class="col-xs-12">
+                                <form:errors path="courseName" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                        </div>
+                    </form:form>
+                    <%-- /Inscription Form--%>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button id="confirmAction" type="button" class="btn btn-info">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%--  /Confirmation Modal --%>
+
     <div id="page-wrapper">
 
         <div class="container-fluid">
@@ -37,18 +90,18 @@
                     <jsp:include page="base/alerts.jsp" />
                 </div>
             </div>
-            <%-- Inscription Form --%>
-            <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/students/${docket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
-                <div>
-                    <form:input class="form-control" path="studentDocket" value="${docket}" readonly="true" type="hidden"/>
-                </div>
-                <div>
-                    <form:input name="courseId" class="form-control" path="courseId" type="hidden"/>
+            <%--            &lt;%&ndash; Inscription Form &ndash;%&gt;
+                        <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/students/${docket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
+                            <div>
+                                <form:input class="form-control" path="studentDocket" value="${docket}" readonly="true" type="hidden"/>
+                            </div>
+                            <div>
+                                <form:input name="courseId" class="form-control" path="courseId" type="hidden"/>
 
-                    <form:input name="courseName" class="form-control" path="courseName" type="hidden"/>
-                </div>
-            </form:form>
-            <%-- /Inscription Form--%>
+                                <form:input name="courseName" class="form-control" path="courseName" type="hidden"/>
+                            </div>
+                        </form:form>
+                        &lt;%&ndash; /Inscription Form&ndash;%&gt;--%>
 
             <!-- search -->
             <form:form id="course_filter_form" modelAttribute="courseFilterForm" action="/students/${docket}/inscription/courseFilterForm" method="post" enctype="application/x-www-form-urlencoded">
@@ -119,7 +172,9 @@
                             <td>${ course.name }</td>
                             <td>${ course.credits }</td>
                             <td>
-                                <button name="inscription" data-course_id="${ course.id }" data-course_name="${ course.name }" class="btn btn-info btn-xs" type="submit">
+                                <button name="inscription" class="btn btn-info btn-xs" type="button"
+                                        data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                        data-toggle="modal" data-target="#confirmationModal">
                                     <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Inscribirse
                                 </button>
                                 <a class="btn btn-default btn-xs" href="<c:url value="/courses/${course.id}/info" />" role="button">
@@ -148,9 +203,23 @@
 <script>
     $( document ).ready(function() {
 
+        /*        $("[name='inscription']").on("click", function() {
+         $("#inscription_form input[name='courseId']").val($(this).data("course_id"));
+         $("#inscription_form input[name='courseName']").val($(this).data("course_name"));
+         $("#inscription_form").submit();
+         });*/
+
         $("[name='inscription']").on("click", function() {
-            $("#inscription_form input[name='courseId']").val($(this).data("course_id"));
-            $("#inscription_form input[name='courseName']").val($(this).data("course_name"));
+            var courseId = $(this).data("course_id");
+            var courseName = $(this).data("course_name");
+            var inscriptionForm = $("#inscription_form");
+            inscriptionForm.find("input[name='courseId']").val(courseId);
+            inscriptionForm.find("input[name='courseName']").val(courseName);
+            $(".modal-body span").text(courseId + " - " + courseName + "?");
+        });
+
+        $("#confirmAction").on("click", function() {
+            $('#confirmationModal').modal('hide');
             $("#inscription_form").submit();
         });
 

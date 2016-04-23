@@ -28,13 +28,13 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
-                    <button id="confirmAction" type="button" class="btn btn-primary">Sí</button>
+                    <button id="confirmAction" type="button" class="btn btn-danger">Sí</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <%-- End of Confirmation Modal --%>
+    <%--  /Confirmation Modal --%>
 
     <%-- Inscription Form --%>
     <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/students/${docket}/courses/unenroll" method="post" enctype="application/x-www-form-urlencoded">
