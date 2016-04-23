@@ -27,7 +27,7 @@
             <div class="container">
                 <jsp:include page="base/alerts.jsp" />
                 <h2>Agregar nota</h2>
-                    <form:form modelAttribute="gradeForm" method="post" action="/app/students/${docket}/grades/add">
+                    <form:form modelAttribute="gradeForm" method="post" action="/students/${docket}/grades/add">
                         <div class="form-group">
                             <form:label path="courseId">ID de materia:</form:label>
                             <form:input type="text" class="form-control" path="courseId"/>

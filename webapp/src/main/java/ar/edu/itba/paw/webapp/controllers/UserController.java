@@ -251,7 +251,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
-/* +++xcheck /app */
+
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
 	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
 								   final BindingResult errors, RedirectAttributes redirectAttributes) {
@@ -268,7 +268,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			}
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", "El alumno se ha guardado correctamente.");
-			return new ModelAndView("redirect:/app/students");
+			return new ModelAndView("redirect:/students");
 		}
 	}
 
@@ -308,7 +308,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message", "El examen se ha actualizado correctamente.");
-		return new ModelAndView("redirect:/app/students/" + docket + "/grades");
+		return new ModelAndView("redirect:/students/" + docket + "/grades");
 
 	}
 
@@ -347,7 +347,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message", "La nota se ha guardado correctamente.");
 		/* +++xchange redirect */
-		return new ModelAndView("redirect:/app/students/" + docket + "/info");
+		return new ModelAndView("redirect:/students/" + docket + "/info");
 	}
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
@@ -357,7 +357,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message", "El alumno se ha eliminado exitosamente.");
 
-		return new ModelAndView("redirect:/app/students");
+		return new ModelAndView("redirect:/students");
 	}
 
 
@@ -390,7 +390,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
         if (student == null){
             redirectAttributes.addFlashAttribute("alert", "danger");
             redirectAttributes.addFlashAttribute("message", "El alumno que se intena editar no existe.");
-            return new ModelAndView("redirect:/app/students");
+            return new ModelAndView("redirect:/students");
         }
 
         studentForm.loadFromStudent(student);
@@ -422,6 +422,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
         redirectAttributes.addFlashAttribute("alert", "success");
         redirectAttributes.addFlashAttribute("message", "El alumno se ha guardado correctamente.");
 
-        return new ModelAndView("redirect:/app/students");
+        return new ModelAndView("redirect:/students");
     }
 }

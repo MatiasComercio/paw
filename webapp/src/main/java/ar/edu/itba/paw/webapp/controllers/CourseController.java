@@ -66,7 +66,7 @@ public class CourseController {
         if (course == null){
             redirectAttributes.addFlashAttribute("alert", "danger");
             redirectAttributes.addFlashAttribute("message", "La materia que se intena editar no existe.");
-            return new ModelAndView("redirect:/app/courses");
+            return new ModelAndView("redirect:/courses");
         }
 
         courseForm.loadFromCourse(course);
@@ -142,7 +142,7 @@ public class CourseController {
             }
             redirectAttributes.addFlashAttribute("alert", "success");
             redirectAttributes.addFlashAttribute("message", "El curso se ha guardado correctamente.");
-            return new ModelAndView("redirect:/app/courses");
+            return new ModelAndView("redirect:/courses");
         }
     }
 

@@ -18,7 +18,7 @@
                 <div class="col-lg-12">
                     <h1 class="page-header">
                         Información del Alumno
-                        <a class="btn btn-info" href="<c:url value="/app/students/${student.docket}/edit"/>">Editar</a>
+                        <a class="btn btn-info" href="<c:url value="/students/${student.docket}/edit"/>">Editar</a>
                     </h1>
                 </div>
             </div>

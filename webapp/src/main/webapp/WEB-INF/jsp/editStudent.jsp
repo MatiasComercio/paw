@@ -27,7 +27,7 @@
             <div class="container">
                 <jsp:include page="base/alerts.jsp" />
                 <h2>Editar alumno</h2>
-                <form:form modelAttribute="studentForm" method="post" action="/app/students/${docket}/edit">
+                <form:form modelAttribute="studentForm" method="post" action="/students/${docket}/edit">
                     <!-- User Data -->
                     <div class="form-group">
                         <form:label for="dni" path="dni"><span style="color:red">*</span>DNI</form:label>

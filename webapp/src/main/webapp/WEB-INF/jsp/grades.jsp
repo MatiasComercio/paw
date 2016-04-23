@@ -22,9 +22,8 @@
                 </div>
             </div>
 
-            <%--+++xcheck /app --%>
             <div class="col-md-1">
-                <a href="/app/students/${student.docket}/grades/add" id="addGrade" type="button" class="btn btn-default">Agregar Nota</a>
+                <a href="/students/${student.docket}/grades/add" id="addGrade" type="button" class="btn btn-default">Agregar Nota</a>
             </div>
 
             <!-- content -->
@@ -44,9 +43,8 @@
                         <td>${ grade.courseName }</td>
                         <td>${ grade.grade }</td>
                         <td>${ grade.modified }</td>
-                        <%-- +++xcheck /app--%>
-                        <td><a href="<c:url value="/app/courses/${grade.courseId}/info" />">Ver Materia</a></td>
-                        <td><a href="<c:url value="/app/students/${student.docket}/grades/edit/${grade.courseId}/${grade.modified}/${grade.grade}" />">Editar Nota</a></td>
+                        <td><a href="<c:url value="/courses/${grade.courseId}/info" />">Ver Materia</a></td>
+                        <td><a href="<c:url value="/students/${student.docket}/grades/edit/${grade.courseId}/${grade.modified}/${grade.grade}" />">Editar Nota</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
