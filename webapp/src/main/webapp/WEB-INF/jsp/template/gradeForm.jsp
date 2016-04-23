@@ -4,25 +4,18 @@
 <%-- Confirmation Modal --%>
 
 <!-- Modal -->
-<div class="modal fade" id="enrollFormConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="enrollFormConfirmationModal">
+<div class="modal fade" id="gradeFormConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="gradeFormConfirmationModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">
-                    <c:choose>
-                        <c:when test="${subsection_enroll}">
-                            Confirmar Inscripción
-                        </c:when>
-                        <c:when test="${subsection_courses}">
-                            Confirmar Baja
-                        </c:when>
-                    </c:choose>
+                    Calificar
                 </h4>
             </div>
             <div class="modal-body">
-                <%-- Inscription Form --%>
-                <form:form class="form-horizontal" id="inscription_form" modelAttribute="inscriptionForm" action="${inscriptionFormAction}" method="post" enctype="application/x-www-form-urlencoded">
+                <%-- Grade Form --%>
+                <form:form class="form-horizontal" id="grade_form" modelAttribute="gradeForm" action="${gradeFormAction}" method="post" enctype="application/x-www-form-urlencoded">
                     <div class="form-group">
                         <form:label path="studentDocket" class="col-xs-4 control-label">Legajo del Alumno</form:label>
                         <div class="col-xs-8">
@@ -50,17 +43,29 @@
                             <form:errors path="courseName" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <form:label path="grade" class="col-xs-4 control-label">Nota</form:label>
+                        <div class="col-xs-8">
+                            <form:input class="form-control" id="disabledInput" type="text" path="grade"/>
+                        </div>
+                        <div class="col-xs-12">
+                            <form:errors path="grade" cssClass="text-danger bg-danger" element="div"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-8">
+                            <form:input class="form-control" id="disabledInput" type="hidden" path="modified" readonly="true"/>
+                        </div>
+                        <div class="col-xs-12">
+                            <form:errors path="modified" cssClass="text-danger bg-danger" element="div"/>
+                        </div>
+                    </div>
                 </form:form>
-                <%-- /Inscription Form--%>
+                <%-- /Grade Form--%>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <c:if test="${subsection_enroll}">
-                    <button id="confirmAction" type="button" class="btn btn-info">Confirmar</button>
-                </c:if>
-                <c:if test="${subsection_courses}">
-                    <button id="confirmAction" type="button" class="btn btn-danger">Confirmar</button>
-                </c:if>
+                <button id="confirmAction" type="button" class="btn btn-info">Confirmar</button>
             </div>
         </div>
     </div>

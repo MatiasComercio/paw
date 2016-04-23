@@ -9,7 +9,7 @@ function loadEnrollForm(nameAttr) {
     });
 
     $("#confirmAction").on("click", function() {
-        $('#confirmationModal').modal('hide');
+        $('#enrollFormConfirmationModal').modal('hide');
         $("#inscription_form").submit();
     });
     /* /Inscription Form Action Sequence */

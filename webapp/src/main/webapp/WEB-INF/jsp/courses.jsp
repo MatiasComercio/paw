@@ -19,6 +19,7 @@
     <jsp:include page="base/nav.jsp" />
 
     <jsp:include page="template/enrollForm.jsp" />
+    <jsp:include page="template/gradeForm.jsp" />
 
     <div id="page-wrapper">
 
@@ -29,10 +30,10 @@
                 <div class="col-xs-12">
                     <h1 class="page-header">
                         <c:choose>
-                            <c:when test="${action_enroll}">
+                            <c:when test="${subsection_enroll}">
                                 Inscripciones <small>- Materias Disponibles</small>
                             </c:when>
-                            <c:when test="${action_unenroll}">
+                            <c:when test="${subsection_courses}">
                                 Materias
                             </c:when>
                         </c:choose>
@@ -61,24 +62,20 @@
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
 <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchCourses.js"%></script>
-<c:choose>
-    <c:when test="${action_enroll}">
-        <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/enrollForm.js"%></script>
-    </c:when>
-    <c:when test="${action_unenroll}">
-        <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/enrollForm.js"%></script>
-    </c:when>
-</c:choose>
-
+<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/enrollForm.js"%></script>
+<c:if test="${subsection_courses}">
+    <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/gradeForm.js"%></script>
+</c:if>
 <script>
     $( document ).ready(function() {
         loadSearch();
         <c:choose>
-            <c:when test="${action_enroll}">
+            <c:when test="${subsection_enroll}">
                 loadEnrollForm("inscription");
             </c:when>
-            <c:when test="${action_unenroll}">
+            <c:when test="${subsection_courses}">
                 loadEnrollForm("unenroll");
+                loadGradeForm("grade")
             </c:when>
         </c:choose>
     });

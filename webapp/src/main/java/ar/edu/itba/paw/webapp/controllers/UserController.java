@@ -1,19 +1,15 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
-import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.forms.GradeForm;
 import ar.edu.itba.paw.webapp.forms.StudentForm;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
-import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.forms.CourseFilterForm;
 import ar.edu.itba.paw.webapp.forms.InscriptionForm;
-import ar.edu.itba.paw.webapp.forms.StudentForm;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -83,7 +79,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			return studentNotFound(docket);
 		}
 
-		mav = new ModelAndView("grades");
+		mav = new ModelAndView("grades_old"); // +++xchange
 		mav.addObject("student", student);
 		return mav;
 	}
@@ -119,8 +115,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		mav.addObject("student", student);
 		mav.addObject("courseFilterFormAction", "/students/" + docket + "/courses/courseFilterForm"); /* only different line from /inscription */
 		mav.addObject("inscriptionFormAction", "/students/" + docket + "/courses/unenroll");
-		mav.addObject("action_unenroll", true); /* only different line from /inscription */
-		mav.addObject("action_info", true);
+		mav.addObject("subsection_courses", true); /* only different line from /inscription */
 		mav.addObject("courses", studentService.getStudentCourses(docket, courseFilter));
 		mav.addObject("docket", docket);
 		mav.addObject("section", STUDENTS_SECTION);
@@ -180,8 +175,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		mav.addObject("student", student);
 		mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
 		mav.addObject("inscriptionFormAction", "/students/" + docket + "/inscription");
-		mav.addObject("action_enroll", true);
-		mav.addObject("action_info", true);
+		mav.addObject("subsection_enroll", true);
 		mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
 		mav.addObject("docket", docket);
 		return mav;

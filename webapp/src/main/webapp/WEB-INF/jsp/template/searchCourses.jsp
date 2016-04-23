@@ -80,26 +80,30 @@
                 <td>${ course.credits }</td>
                 <td>
                     <c:choose>
-                        <c:when test="${action_enroll}">
+                        <c:when test="${subsection_enroll}">
                             <button name="inscription" class="btn btn-info btn-xs" type="button"
                                     data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                    data-toggle="modal" data-target="#confirmationModal">
-                                <span class="fa fa-list-alt" aria-hidden="true"></span> Inscribirse
+                                    data-toggle="modal" data-target="#enrollFormConfirmationModal">
+                                <span class="fa fa-list-alt" aria-hidden="true"></span> Inscribir
                             </button>
                         </c:when>
-                        <c:when test="${action_unenroll}">
+                        <c:when test="${subsection_courses}">
+                            <button name="grade" class="btn btn-info btn-xs" type="button"
+                                    data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                    data-modified="${modified}"
+                                    data-toggle="modal" data-target="#gradeFormConfirmationModal">
+                                <span class="fa fa-graduation-cap" aria-hidden="true"></span> Calificar
+                            </button>
                             <button name="unenroll" class="btn btn-danger btn-xs" type="button"
                                     data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                    data-toggle="modal" data-target="#confirmationModal">
-                                <span class="fa fa-trash" aria-hidden="true"></span> Darse de Baja
+                                    data-toggle="modal" data-target="#enrollFormConfirmationModal">
+                                <span class="fa fa-trash" aria-hidden="true"></span> Dar de Baja
                             </button>
                         </c:when>
                     </c:choose>
-                    <c:if test="${action_info}">
-                        <a class="btn btn-default btn-xs" href="<c:url value="/courses/${course.id}/info" />" role="button">
-                            <span class="fa fa-info-circle" aria-hidden="true"></span> Ver
-                        </a>
-                    </c:if>
+                    <a class="btn btn-default btn-xs" href="<c:url value="/courses/${course.id}/info" />" role="button">
+                        <span class="fa fa-info-circle" aria-hidden="true"></span> Ver
+                    </a>
                 </td>
             </tr>
         </c:forEach>
