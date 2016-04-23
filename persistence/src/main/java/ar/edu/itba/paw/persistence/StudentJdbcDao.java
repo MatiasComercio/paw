@@ -536,33 +536,6 @@ public class StudentJdbcDao implements StudentDao {
 		return cUpdated == 1 ? Result.OK : Result.NOT_EXISTENT_ENROLL;
 	}
 
-	private String createEmail(final int docket, final String firstName, final String lastName) {
-		final String defaultEmail = "student" + docket + EMAIL_DOMAIN;
-
-		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
-			return defaultEmail;
-		}
-
-		final String initChar = firstName.substring(0, 1).toLowerCase();
-
-		final String[] lastNames = lastName.toLowerCase().split(" ");
-		StringBuilder currentEmail;
-		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
-			currentEmail = new StringBuilder(initChar);
-			for (int j = 0 ; j <= i; j++) {
-				currentEmail.append(lastNames[j]);
-			}
-			currentEmail.append(EMAIL_DOMAIN);
-			if (!exists(currentEmail)) { // +++ximprove: should return existent email
-				return String.valueOf(currentEmail);
-			}
-		}
-
-		/* This is in case all email trials failed */
-		/* This, for sure, does not exists as includes the docket, which is unique */
-		return defaultEmail;
-	}
-
 	private boolean exists(final StringBuilder email) {
 		List<String> emails = jdbcTemplate.query(EMAILS_QUERY, emailRowMapper);
 		return emails.contains(String.valueOf(email));

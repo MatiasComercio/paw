@@ -7,6 +7,7 @@ import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -81,6 +82,10 @@ public class CourseJdbcDao implements CourseDao {
         }
         catch (DuplicateKeyException e){
             return Result.COURSE_EXISTS_ID;
+        } catch (final DataIntegrityViolationException e) {
+            return Result.INVALID_INPUT_PARAMETERS;
+        } catch(final DataAccessException e) {
+            return Result.ERROR_UNKNOWN;
         }
         return Result.OK;
 
@@ -92,6 +97,10 @@ public class CourseJdbcDao implements CourseDao {
             jdbcTemplate.update("UPDATE course SET id = ?, name = ?, credits = ? WHERE id = ?;", course.getId(), course.getName(), course.getCredits(), id);
         } catch (DuplicateKeyException e){
             return Result.COURSE_EXISTS_ID;
+        } catch (final DataIntegrityViolationException e) {
+            return Result.INVALID_INPUT_PARAMETERS;
+        } catch(final DataAccessException e) {
+            return Result.ERROR_UNKNOWN;
         }
 
         return Result.OK;
@@ -165,7 +174,9 @@ public class CourseJdbcDao implements CourseDao {
             int rowsAffected = jdbcTemplate.update(QUERY_DELETE, id);
 
             return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
-        } catch (DataAccessException dae) {
+        } catch (final DataIntegrityViolationException e) {
+            return Result.INVALID_INPUT_PARAMETERS;
+        } catch(final DataAccessException e) {
             return Result.ERROR_UNKNOWN;
         }
     }

@@ -149,7 +149,7 @@ public class CourseController {
     @RequestMapping(value = "/courses/{id}/delete", method = RequestMethod.POST)
     public ModelAndView deleteCourse(@PathVariable final Integer id, RedirectAttributes redirectAttributes) {
         final Result result = courseService.deleteCourse(id);
-//        ModelAndView mav = new ModelAndView("redirect:/app/courses");
+//        ModelAndView mav = new ModelAndView("redirect:/courses");
 //        ModelAndView mav = new ModelAndView("coursesSearch");
         redirectAttributes.addFlashAttribute("alert", "success");
         redirectAttributes.addFlashAttribute("message", "El curso se ha eliminado exitosamente.");
