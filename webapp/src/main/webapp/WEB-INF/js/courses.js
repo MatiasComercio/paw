@@ -1,7 +1,11 @@
 function loadCoursesJs() {
     $("[name='unenroll']").on("click", function() {
-        $("#courseInput").val($(this).data("course_id"));
-        $(".modal-body span").text($(this).data("course_id") + "-" + $(this).data("course_name") + "?");
+        var courseId = $(this).data("course_id");
+        var courseName = $(this).data("course_name");
+        var inscriptionForm = $("#inscription_form");
+        inscriptionForm.find("input[name='courseId']").val(courseId);
+        inscriptionForm.find("input[name='courseName']").val(courseName);
+        $(".modal-body span").text(courseId + " - " + courseName + "?");
     });
 
     $("#confirmAction").on("click", function() {

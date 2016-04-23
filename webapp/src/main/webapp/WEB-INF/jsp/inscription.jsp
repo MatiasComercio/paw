@@ -43,21 +43,12 @@
                     <form:input class="form-control" path="studentDocket" value="${docket}" readonly="true" type="hidden"/>
                 </div>
                 <div>
-                    <form:input id="courseInput" class="form-control" path="courseId" type="hidden"/>
+                    <form:input name="courseId" class="form-control" path="courseId" type="hidden"/>
+
+                    <form:input name="courseName" class="form-control" path="courseName" type="hidden"/>
                 </div>
             </form:form>
             <%-- /Inscription Form--%>
-
-            <%--            &lt;%&ndash; CourseFilterForm &ndash;%&gt;
-                        <form:form id="course_filter_form" modelAttribute="courseFilterForm" action="/students/${inscriptionForm.studentDocket}/inscription/courseFilterForm" method="post" enctype="application/x-www-form-urlencoded">
-                            <div>
-                                <form:input class="form-control" path="id" type="hidden"/>
-                            </div>
-                            <div>
-                                <form:input class="form-control" path="name" type="hidden"/>
-                            </div>
-                        </form:form>
-                        &lt;%&ndash; CourseFilterForm &ndash;%&gt;--%>
 
             <!-- search -->
             <form:form id="course_filter_form" modelAttribute="courseFilterForm" action="/students/${docket}/inscription/courseFilterForm" method="post" enctype="application/x-www-form-urlencoded">
@@ -77,7 +68,7 @@
                                         </div>
                                     </div>
                                     <div class="col-xs-12">
-                                        <form:errors path="id" cssStyle="color: red;"/>
+                                        <form:errors path="id" cssClass="text-danger bg-danger" element="div"/>
                                     </div>
                                 </div>
                             </div>
@@ -128,7 +119,7 @@
                             <td>${ course.name }</td>
                             <td>${ course.credits }</td>
                             <td>
-                                <button name="inscription" data-id="${ course.id }" class="btn btn-info btn-xs" type="submit">
+                                <button name="inscription" data-course_id="${ course.id }" data-course_name="${ course.name }" class="btn btn-info btn-xs" type="submit">
                                     <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Inscribirse
                                 </button>
                                 <a class="btn btn-default btn-xs" href="<c:url value="/courses/${course.id}/info" />" role="button">
@@ -158,7 +149,8 @@
     $( document ).ready(function() {
 
         $("[name='inscription']").on("click", function() {
-            $("#courseInput").val($(this).data("id"));
+            $("#inscription_form input[name='courseId']").val($(this).data("course_id"));
+            $("#inscription_form input[name='courseName']").val($(this).data("course_name"));
             $("#inscription_form").submit();
         });
 

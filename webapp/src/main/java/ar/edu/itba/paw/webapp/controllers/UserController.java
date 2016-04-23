@@ -89,7 +89,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	@RequestMapping("/students/{docket}/courses")
 	public ModelAndView getStudentCourses(@PathVariable final Integer docket,
 	                                      @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm){
-		inscriptionForm.setStudentDocket(docket);
+
 
 		final ModelAndView mav = new ModelAndView("courses");
 		final List<Course> courses = studentService.getStudentCourses(docket);
@@ -97,7 +97,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		if (courses == null) {
 			return studentNotFound(docket);
 		}
-
+		mav.addObject("docket, docket");
 		mav.addObject("courses", courses);
 		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
@@ -109,6 +109,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	                             final BindingResult errors,
 	                             final RedirectAttributes redirectAttributes){
 		if (errors.hasErrors()) {
+			/* +++xdebug:  */
+			System.out.println("has errors");
+			System.out.println(errors);
 			return getStudentCourses(docket, inscriptionForm);
 		}
 
@@ -116,6 +119,8 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 //		Result result = Result.OK;
 
 		if (result == null) {
+			/* +++xdebug:  */
+			System.out.println("result == null");
 			result = Result.ERROR_UNKNOWN;
 		}
 		if (!result.equals(Result.OK)) {
@@ -178,8 +183,8 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", "El alumno ahora se encuentra inscripto en la materia "
-					+ inscriptionForm.getCourseId() + ".");
+			redirectAttributes.addFlashAttribute("message", "El alumno ahora se encuentra inscripto en la materia \""
+					+ inscriptionForm.getCourseId() + " - " + inscriptionForm.getCourseName() + "\".");
 		}
 
 		return new ModelAndView("redirect:/students/" + docket + "/inscription");

@@ -36,16 +36,18 @@
 
     <%-- End of Confirmation Modal --%>
 
-    <%-- Form --%>
-    <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/students/${inscriptionForm.studentDocket}/courses/unenroll" method="post" enctype="application/x-www-form-urlencoded">
+    <%-- Inscription Form --%>
+    <form:form id="inscription_form" modelAttribute="inscriptionForm" action="/students/${docket}/courses/unenroll" method="post" enctype="application/x-www-form-urlencoded">
         <div>
-            <form:input class="form-control" path="studentDocket" value="${inscriptionForm.studentDocket}" readonly="true" type="hidden"/>
+            <form:input class="form-control" path="studentDocket" value="${docket}" readonly="true" type="hidden"/>
         </div>
         <div>
-            <form:input id="courseInput" class="form-control" path="courseId" type="hidden"/>
+            <form:input name="courseId" class="form-control" path="courseId" type="hidden"/>
+
+            <form:input name="courseName" class="form-control" path="courseName" type="hidden"/>
         </div>
     </form:form>
-    <%-- End of Form --%>
+    <%-- /Inscription Form--%>
 
 
     <div id="page-wrapper">
