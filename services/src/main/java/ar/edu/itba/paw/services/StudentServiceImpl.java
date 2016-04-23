@@ -47,7 +47,6 @@ public class StudentServiceImpl implements StudentService {
 		return docket <= 0 ? null : studentDao.getGrades(docket);
 	}
 
-//	+++xdocument xtest
 	@Override
 	public List<Course> getAvailableInscriptionCourses(final int docket, final CourseFilter courseFilter) {
 		if (docket <= 0) {
@@ -122,5 +121,9 @@ public class StudentServiceImpl implements StudentService {
 	/* Test purpose only */
 	/* default */ void setStudentDao(final StudentDao studentDao) {
 		this.studentDao = studentDao;
+	}
+	/* Test purpose only */
+	/* default */ void setCourseService(final CourseService courseService) {
+		this.courseService = courseService;
 	}
 }

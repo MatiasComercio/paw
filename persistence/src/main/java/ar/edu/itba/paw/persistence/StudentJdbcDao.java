@@ -274,10 +274,12 @@ public class StudentJdbcDao implements StudentDao {
 	public List<Student> getByFilter(StudentFilter studentFilter) {
 		QueryFilter queryFilter = new QueryFilter();
 
-		queryFilter.filterByDocket(studentFilter);
-		queryFilter.filterByFirstName(studentFilter);
-		queryFilter.filterByLastName(studentFilter);
-		queryFilter.filterByGenre(studentFilter);
+		if (studentFilter != null) {
+			queryFilter.filterByDocket(studentFilter);
+			queryFilter.filterByFirstName(studentFilter);
+			queryFilter.filterByLastName(studentFilter);
+			queryFilter.filterByGenre(studentFilter);
+		}
 
 		return jdbcTemplate.query(queryFilter.getQuery(), studentRowMapper, queryFilter.getFilters().toArray());
 	}

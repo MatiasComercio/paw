@@ -109,9 +109,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	                             final BindingResult errors,
 	                             final RedirectAttributes redirectAttributes){
 		if (errors.hasErrors()) {
-			/* +++xdebug:  */
-			System.out.println("has errors");
-			System.out.println(errors);
 			return getStudentCourses(docket, inscriptionForm);
 		}
 
@@ -119,8 +116,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 //		Result result = Result.OK;
 
 		if (result == null) {
-			/* +++xdebug:  */
-			System.out.println("result == null");
 			result = Result.ERROR_UNKNOWN;
 		}
 		if (!result.equals(Result.OK)) {
