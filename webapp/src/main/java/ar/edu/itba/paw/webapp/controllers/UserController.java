@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
+import ar.edu.itba.paw.webapp.forms.CourseFilterForm;
 import ar.edu.itba.paw.webapp.forms.InscriptionForm;
 import ar.edu.itba.paw.webapp.forms.StudentForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +131,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.GET)
 	public ModelAndView studentInscription(@PathVariable final int docket,
+	                                       @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
 											@ModelAttribute("inscriptionForm") final InscriptionForm inscriptionForm,
 											@RequestParam(required = false) String keyword,
 											@RequestParam(required = false) Integer id) {
@@ -137,7 +139,8 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		inscriptionForm.setStudentDocket(docket);
 		ModelAndView mav = new ModelAndView("inscription");
 
-		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).id(id).build();
+		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
+				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
 
 		mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
 		mav.addObject("docket", docket);
@@ -148,13 +151,14 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.POST)
 	public ModelAndView studentInscription(@PathVariable final int docket,
+	                                       @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
 											@Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
                                            @RequestParam(required = false) String keyword,
                                            @RequestParam(required = false) Integer id,
 											final BindingResult errors,
 											final RedirectAttributes redirectAttributes) {
 		if (errors.hasErrors()){
-			return studentInscription(docket, inscriptionForm, keyword, id);
+			return studentInscription(docket, courseFilterForm, inscriptionForm, keyword, id);
 		}
 
 		Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
@@ -164,12 +168,24 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return new ModelAndView("redirect:/students/" + docket + "/inscription");
+
+		} else {
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message", "El alumno ahora se encuentra inscripto en la materia "
+					+ inscriptionForm.getCourseId() + ".");
 		}
-		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", "El alumno ahora se encuentra inscripto en la materia "
-				+ inscriptionForm.getCourseId() + ".");
-		return new ModelAndView("redirect:/students/" + docket + "/info");
+
+		return new ModelAndView("redirect:/students/" + docket + "/inscription");
+	}
+
+	@RequestMapping(value = "/students/{docket}/inscription/courseFilterForm", method = RequestMethod.POST)
+	public ModelAndView studentInscriptionCourseFilter(@PathVariable final int docket,
+	                                       @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+	                                       final BindingResult errors,
+	                                       final RedirectAttributes redirectAttributes) {
+
+		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
+		return new ModelAndView("redirect:/students/" + docket + "/inscription");
 	}
 
 
