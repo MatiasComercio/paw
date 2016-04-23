@@ -16,10 +16,11 @@ public interface CourseService {
 
     /**
      * Update a course
-     * @param id Id the previous course
-     * @param course Modified course
+     * @param id Id the previous course.
+     * @param course Modified course.
+     * @return The result code of the insertion.
      */
-    void update(final Integer id, final Course course);
+    Result update(final Integer id, final Course course);
 
     /**
      * Gets the desired course by the identifier

@@ -15,6 +15,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.nativejdbc.SimpleNativeJdbcExtractor;
@@ -150,9 +151,6 @@ public class StudentJdbcDao implements StudentDao {
 		}
 
 		String email = resultSet.getString(USER__EMAIL_COLUMN);
-		if (email == null) {
-			email = createEmail(docket, firstName, lastName);
-		}
 
 		final String country = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__COUNTRY_COLUMN));
 		final String city = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__CITY_COLUMN));
@@ -206,9 +204,6 @@ public class StudentJdbcDao implements StudentDao {
 		final String lastName = WordUtils.capitalize(resultSet.getString(USER__LAST_NAME_COLUMN));
 
 		String email = resultSet.getString(USER__EMAIL_COLUMN);
-		if (email == null) {
-			email = createEmail(docket, firstName, lastName);
-		}
 
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
 		studentBuilder.firstName(firstName).lastName(lastName).email(email);
@@ -372,26 +367,23 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result create(Student student) {
-		//TODO: Add further data validation
 
 		final Map<String, Object> userArgs = new HashMap<>();
 		final Map<String, Object> studentArgs = new HashMap<>();
 		final Map<String, Object> addressArgs = new HashMap<>();
 
 		/* Store User Data */
-		//TODO: DNI > 0 and UNIQUE(email) are guaranteed by the DB. How do we handle in case insertion fails?
-
 		userArgs.put(USER__DNI_COLUMN, student.getDni());
 		userArgs.put(USER__FIRST_NAME_COLUMN, student.getFirstName());
 		userArgs.put(USER__LAST_NAME_COLUMN, student.getLastName());
-		//TODO: Check genre length eq 1 (Again this is verified by the db)
-		if(student.getGenre() == "Female")
+
+		if(student.getGenre().equals("Female"))
 			userArgs.put(USER__GENRE_COLUMN, "F");
 		else
 			userArgs.put(USER__GENRE_COLUMN, "M");
 		userArgs.put(USER__BIRTHDAY_COLUMN, student.getBirthday());
-		//TODO: Get default email
-		userArgs.put(USER__EMAIL_COLUMN, student.getEmail());
+		userArgs.put(USER__EMAIL_COLUMN, createEmail(student.getDni(), student.getFirstName(),
+				student.getLastName()));
 		try {
 			userInsert.execute(userArgs);
 		}catch(DuplicateKeyException e){
@@ -399,10 +391,7 @@ public class StudentJdbcDao implements StudentDao {
 		}
 
 		/* Store Student Data */
-		studentArgs.put(STUDENT__DOCKET_COLUMN, student.getDocket());
 		studentArgs.put(STUDENT__DNI_COLUMN, student.getDni());
-		//PASSWORD??? userArgs.put(ID_COLUMN, student);
-
 		try {
 			studentInsert.execute(studentArgs);
 		}catch(DuplicateKeyException e){
@@ -427,8 +416,52 @@ public class StudentJdbcDao implements StudentDao {
 		return Result.OK;
 	}
 
-	private String createEmail(final int docket, final String firstName, final String lastName) {
-		final String defaultEmail = "student" + docket + EMAIL_DOMAIN;
+    @Override
+    public Integer getDniByDocket(final Integer docket){
+        return jdbcTemplate.query("SELECT dni FROM student WHERE docket = " + docket + ";", rs -> rs.next() ? rs.getInt("dni") : null);
+    }
+
+    @Override
+    public Result update(final Integer docket, final Integer dni , final Student student) {
+
+        final String genre = student.getGenre().equals("Female")? "F" : "M";
+
+        final String userUpdate = "UPDATE users SET " + USER__DNI_COLUMN + " = ?, " + USER__FIRST_NAME_COLUMN + " = ?, "
+                + USER__LAST_NAME_COLUMN + " = ?, " + USER__GENRE_COLUMN + " = ?, " + USER__BIRTHDAY_COLUMN + " = ?, "
+                + USER__EMAIL_COLUMN + " = ? WHERE " + USER__DNI_COLUMN + " = ?";
+
+        //final String studentUpdate = "UPDATE student SET " + STUDENT__DOCKET_COLUMN + " = ? WHERE " + STUDENT__DNI_COLUMN + " = ?;";
+
+        final String addressUpdate = "UPDATE address SET " + ADDRESS__COUNTRY_COLUMN + " = ?, " + ADDRESS__CITY_COLUMN + " = ?, "
+                + ADDRESS__NEIGHBORHOOD_COLUMN + " = ?, " + ADDRESS__STREET_COLUMN + " = ?, " + ADDRESS__NUMBER_COLUMN + " = ?, "
+                + ADDRESS__FLOOR_COLUMN + " = ?, " + ADDRESS__DOOR_COLUMN + " = ?, " + ADDRESS__TELEPHONE_COLUMN + " = ?, "
+                + ADDRESS__ZIP_CODE_COLUMN + " = ? WHERE " + ADDRESS__DNI_COLUMN + " = ?;";
+
+        //Update user table
+        try {
+            jdbcTemplate.update(userUpdate, student.getDni(), student.getFirstName(), student.getLastName(), genre,
+                    Date.valueOf(student.getBirthday()), createEmail(student.getDni(), student.getFirstName(),
+                            student.getLastName()), dni);
+        } catch (DuplicateKeyException e) {
+            return Result.STUDENT_EXISTS_DNI;
+        }
+
+
+        final Address addr = student.getAddress();
+
+        if (addr != null) {
+            jdbcTemplate.update(addressUpdate, addr.getCountry(), addr.getCity(), addr.getNeighborhood(),
+                    addr.getStreet(), addr.getNumber(), addr.getFloor(), addr.getDoor(), addr.getTelephone(),
+                    addr.getZipCode(), student.getDni());
+        }
+        //Update address table
+
+
+        return Result.OK;
+    }
+
+    private String createEmail(final int dni, final String firstName, final String lastName) {
+		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
 
 		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
 			return defaultEmail;

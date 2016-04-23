@@ -59,6 +59,16 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
+	public Result update(Integer docket, Student student) {
+		final Integer dni = studentDao.getDniByDocket(docket);
+
+        if (dni == null)
+            return Result.STUDENT_NOT_EXISTS;
+
+		return studentDao.update(docket, dni, student);
+	}
+
+	@Override
 	public Student getGrades(final int docket) {
 		return docket <= 0 ? null : studentDao.getGrades(docket);
 	}

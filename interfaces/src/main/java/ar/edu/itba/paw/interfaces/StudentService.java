@@ -52,6 +52,14 @@ public interface StudentService {
 	Result create(Student student);
 
 	/**
+	 * Update student
+	 * @param docket  The docket of the old student
+	 * @param student The new student
+	 * @return The Result code of update
+	 */
+	Result update(final Integer docket, final Student student);
+
+	/**
 	 * Delete the student that matches the given docket.
 	 * @param docket The student's docket
 	 * @return 	OK if the student was deleted;
