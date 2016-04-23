@@ -307,7 +307,7 @@ public class StudentJdbcDao implements StudentDao {
 		try {
 			int gradeRowsAffected = jdbcTemplate.update(DELETE_STUDENT_GRADES, docket);
 			int inscriptionRowsAffected = jdbcTemplate.update(DELETE_STUDENT_INSCRIPTIONS, docket);
-			/* +++xcheck exceptions */
+
 			int studentRowsAffected = jdbcTemplate.update(DELETE_STUDENT, docket);
 
 			return studentRowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
