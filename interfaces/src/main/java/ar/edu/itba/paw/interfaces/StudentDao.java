@@ -42,6 +42,13 @@ public interface StudentDao {
      */
 	Result create(Student student);
 
+	/**
+	 * Update student
+	 * @param docket  The docket of the old student
+	 * @param student The new student
+	 * @return The Result code of update
+	 */
+	Result update(final Integer docket, final Integer dni, final Student student);
 
 	/**
 	 * Gets the students that comply to a list of filters
@@ -50,6 +57,13 @@ public interface StudentDao {
 	 * an empty list.
 	 */
 	List<Student> getByFilter(StudentFilter studentFilter);
+
+    /**
+     * Get student's dni
+     * @param docket docket of specified student;
+     * @return Returns dni of specified student or null if not exists
+     */
+    Integer getDniByDocket(final Integer docket);
 
 	/**
 	 * +++xdocument

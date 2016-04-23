@@ -21,10 +21,10 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.create(course);
     }
 
-   @Override
-   public void update(Integer id, Course course){
-       courseDao.update(id, course);
-   }
+    @Override
+    public Result update(Integer id, Course course){
+        return courseDao.update(id, course);
+    }
 
     @Override
     public Course getById(int id) {

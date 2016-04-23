@@ -28,6 +28,11 @@ public class UserController {
 	@Autowired
 	private StudentService studentService;
 
+    @ModelAttribute("section")
+    public String sectionManager(){
+        return STUDENTS_SECTION;
+    }
+
 	@RequestMapping("/students")
 	public ModelAndView getStudentsByFilter(@RequestParam(required = false) final Integer docket,
 	                                        @RequestParam(required = false) final String firstName,
@@ -42,7 +47,6 @@ public class UserController {
 				.build();
 		final List<Student> students = studentService.getByFilter(studentFilter);
 		mav.addObject("students", students);
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
@@ -58,7 +62,6 @@ public class UserController {
 
 		mav = new ModelAndView("student");
 		mav.addObject("student", student);
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
@@ -74,7 +77,6 @@ public class UserController {
 
 		mav = new ModelAndView("grades");
 		mav.addObject("student", student);
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
@@ -95,7 +97,6 @@ public class UserController {
 		}
 
 		mav.addObject("courses", courses);
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
@@ -110,7 +111,6 @@ public class UserController {
 				mav.addObject("message", raMap.get("message"));
 			}
 		}
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
@@ -142,4 +142,58 @@ public class UserController {
 
 		return new ModelAndView("redirect:/app/students");
 	}
+
+    @RequestMapping("/students/{docket}/edit")
+    public ModelAndView editStudent(@PathVariable final Integer docket,
+                                    @ModelAttribute("studentForm") final StudentForm studentForm,
+                                    RedirectAttributes redirectAttributes) {
+        final ModelAndView mav = new ModelAndView("editStudent");
+
+        if (redirectAttributes != null) {
+            Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
+            if (raMap.get("alert") != null) {
+                mav.addObject("alert", raMap.get("alert"));
+                mav.addObject("message", raMap.get("message"));
+            }
+        }
+
+        Student student = studentService.getByDocket(docket);
+
+        if (student == null){
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", "El alumno que se intena editar no existe.");
+            return new ModelAndView("redirect:/app/students");
+        }
+
+        studentForm.loadFromStudent(student);
+
+        mav.addObject("docket", docket);
+
+        return mav;
+    }
+
+
+    @RequestMapping(value = "/students/{docket}/edit", method = RequestMethod.POST)
+    public ModelAndView editStudent(@PathVariable final Integer docket,
+                                   @Valid @ModelAttribute("studentForm") StudentForm studentForm,
+                                   final BindingResult errors,
+                                   RedirectAttributes redirectAttributes){
+        if (errors.hasErrors()){
+            return editStudent(docket, studentForm, redirectAttributes);
+        }
+
+        Student student = studentForm.build();
+        Result result = studentService.update(docket, student);
+
+        if(!result.equals(Result.OK)){
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", result.getMessage());
+            return editStudent(docket, studentForm, redirectAttributes);
+        }
+
+        redirectAttributes.addFlashAttribute("alert", "success");
+        redirectAttributes.addFlashAttribute("message", "El alumno se ha guardado correctamente.");
+
+        return new ModelAndView("redirect:/app/students");
+    }
 }

@@ -72,6 +72,25 @@ public class StudentForm {
                 birthday(birthday).address(address).build();
     }
 
+    public void loadFromStudent(Student student){
+        this.dni = student.getDni();
+        this.firstName = student.getFirstName();
+        this.lastName = student.getLastName();
+        this.genre = User.Genre.getGenre(student.getGenre()).equals("M") ? User.Genre.M : User.Genre.F;
+        this.birthday = student.getBirthday();
+        this.address = student.getAddress();
+        this.country = student.getAddress().getCountry();
+        this.city = student.getAddress().getCity();
+        this.neighborhood = student.getAddress().getNeighborhood();
+        this.street = student.getAddress().getStreet();
+        this.number = student.getAddress().getNumber();
+        this.floor = student.getAddress().getFloor();
+        this.door = student.getAddress().getDoor();
+        this.telephone = student.getAddress().getTelephone();
+        this.zipCode = student.getAddress().getZipCode();
+
+    }
+
     public Integer getDni() {
         return dni;
     }
