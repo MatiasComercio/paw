@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.shared.CourseFilter;
+import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
 
@@ -10,15 +11,17 @@ public interface CourseDao {
     /**
      *
      * @param course The course to be persisted in the database.
+     * @return The Result code of the insertion
      */
-    void create(Course course);
+    Result create(Course course);
 
     /**
      * Update a course
      * @param id Id of the old course
      * @param course Modified course
+     * @return The result code of the insertion
      */
-    void update(final Integer id, final Course course);
+    Result update(final Integer id, final Course course);
 
     /**
      * Get the course identified by an ID
@@ -49,5 +52,12 @@ public interface CourseDao {
      */
     List<Course> getByFilter(CourseFilter courseFilter);
 
+
+    /**
+     * Attempts to delete the course with the given id
+     * @param id of the course to delete
+     * @return true if the course was deleted; false in other case
+     */
+    Result deleteCourse(Integer id);
 
 }

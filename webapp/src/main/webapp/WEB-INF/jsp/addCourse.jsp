@@ -25,6 +25,7 @@
 
             <!-- -->
             <div class="container">
+                <jsp:include page="base/alerts.jsp" />
                 <h2>Agregar curso</h2>
             <c:if test="${task == 'add' }">
                 <form:form modelAttribute="courseForm" method="post" action="/courses/add_course">
@@ -36,10 +37,12 @@
                     <div class="form-group">
                         <form:label path="name">Nombre:</form:label>
                         <form:input type="text" class="form-control" path="name"/>
+                        <form:errors path="name" cssStyle="color: red;" element="div"/>
                     </div>
                     <div class="form-group">
                         <form:label path="credits">Créditos:</form:label>
                         <form:input type="text" class="form-control" path="credits"/>
+                        <form:errors path="credits" cssStyle="color: red;" element="div"/>
                     </div>
                     <input type="submit" class="btn btn-info" value="Agregar materia"/>
                 </form:form>

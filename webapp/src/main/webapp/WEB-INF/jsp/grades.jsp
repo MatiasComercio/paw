@@ -10,9 +10,7 @@
     <jsp:include page="base/nav.jsp" />
 
     <div id="page-wrapper">
-
         <div class="container-fluid">
-
             <!-- Page Heading -->
             <div class="row">
                 <div class="col-xs-12">
@@ -20,7 +18,13 @@
                         ${student.docket} - ${student.firstName} ${student.lastName}
                         <small>(${student.email})</small> - Notas
                     </h1>
+                    <jsp:include page="base/alerts.jsp" />
                 </div>
+            </div>
+
+            <%--+++xcheck /app --%>
+            <div class="col-md-1">
+                <a href="/app/students/${student.docket}/grades/add" id="addGrade" type="button" class="btn btn-default">Agregar Nota</a>
             </div>
 
             <!-- content -->
@@ -30,6 +34,7 @@
                     <th>ID</th>
                     <th>Materia</th>
                     <th>Nota</th>
+                    <th>Modificado</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -38,7 +43,10 @@
                         <td>${ grade.courseId }</td>
                         <td>${ grade.courseName }</td>
                         <td>${ grade.grade }</td>
-                        <td><a href="<c:url value="/courses/${grade.courseId}/info" />">Ver Materia</a></td>
+                        <td>${ grade.modified }</td>
+                        <%-- +++xcheck /app--%>
+                        <td><a href="<c:url value="/app/courses/${grade.courseId}/info" />">Ver Materia</a></td>
+                        <td><a href="<c:url value="/app/students/${student.docket}/grades/edit/${grade.courseId}/${grade.modified}/${grade.grade}" />">Editar Nota</a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -55,10 +63,5 @@
 </div>
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
-<%--<script>
-    $(document).ready(function() {
-        $('.dropdown-toggle').dropdown();
-    });
-</script>--%>
 </body>
 </html>

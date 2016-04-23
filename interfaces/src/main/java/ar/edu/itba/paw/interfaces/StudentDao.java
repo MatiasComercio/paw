@@ -2,10 +2,12 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -38,9 +40,17 @@ public interface StudentDao {
 	/**
 	 *
 	 * @param student The student to be persisted in the database.
+	 * @return The Result code of the insertion
      */
-	void create(Student student);
+	Result create(Student student);
 
+	/**
+	 * Update student
+	 * @param docket  The docket of the old student
+	 * @param student The new student
+	 * @return The Result code of update
+	 */
+	Result update(final Integer docket, final Integer dni, final Student student);
 
 	/**
 	 * Gets the students that comply to a list of filters
@@ -49,6 +59,37 @@ public interface StudentDao {
 	 * an empty list.
 	 */
 	List<Student> getByFilter(StudentFilter studentFilter);
+
+    /**
+     * Get student's dni
+     * @param docket docket of specified student;
+     * @return Returns dni of specified student or null if not exists
+     */
+    Integer getDniByDocket(final Integer docket);
+
+	/**
+	 * Delete the student that matches the given docket.
+	 * @param docket The student's docket
+	 * @return 	OK if the student was deleted;
+	 * 		ERROR_UNKNOWN else;
+	 */
+	Result deleteStudent(Integer docket);
+
+	/**
+	 * Add the grade for a given student and course;
+	 * @param grade which contains the student docket, the course id and the grade
+	 * @return OK if the grade was added;
+	 * 		INVALID_INPUT_PARAMETERS if one or more parameters are invalid;
+	 * 		ERROR_UNKNOWN else;
+	 */
+	Result addGrade(Grade grade);
+
+	/**
+	 * @param newGrade The new grade values
+	 * @param oldGrade The grade to be updated
+	 * @return The result code of the Update
+	 */
+	Result editGrade(Grade newGrade, BigDecimal oldGrade);
 
 	/**
 	 * Enrolls the student with the given docket into the course with the specified id.

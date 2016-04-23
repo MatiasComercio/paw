@@ -43,7 +43,7 @@
                     <div id="search" type="button" class="btn btn-default">Buscar</div>
                 </div>
                 <div class="col-md-1">
-                    <div id="addStudent" type="button" class="btn btn-default">Agregar</div>
+                    <div id="addStudent" type="button" class="btn btn-info">Agregar</div>
                 </div>
             </div>
 
@@ -65,7 +65,12 @@
                         <td>${ student.firstName }</td>
                         <td>${ student.lastName }</td>
                         <td>${ student.email }</td>
-                        <td><a href="<c:url value="/students/${student.docket}/info" />">Ver</a></td>
+                        <%-- +++xcheck: /app --%>
+                        <td><a href="<c:url value="/app/students/${student.docket}/info" />">Ver</a>
+                            <form action="students/${student.docket}/delete" method="post">
+                                <button type="submit" value="students/${student.docket}/delete">Eliminar</button>
+                            </form>
+                        </td>
                     </tr>
                 </c:forEach>
                 </tbody>

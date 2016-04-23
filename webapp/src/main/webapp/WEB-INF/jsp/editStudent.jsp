@@ -26,8 +26,8 @@
             <!-- -->
             <div class="container">
                 <jsp:include page="base/alerts.jsp" />
-                <h2>Agregar alumno</h2>
-                <form:form modelAttribute="studentForm" method="post" action="/students/add_student">
+                <h2>Editar alumno</h2>
+                <form:form modelAttribute="studentForm" method="post" action="/app/students/${docket}/edit">
                     <!-- User Data -->
                     <div class="form-group">
                         <form:label for="dni" path="dni"><span style="color:red">*</span>DNI</form:label>
@@ -53,7 +53,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <form:radiobutton path="genre" value="M" /> Masculino
-                             </div>
+                            </div>
                             <div class="col-md-3">
                                 <form:radiobutton path="genre" value="F" /> Femenino
                             </div>
@@ -64,7 +64,7 @@
                         <form:input id="birthday" type="text" class="form-control" placeholder="yyyy-mm-dd" path="birthday"/>
                         <form:errors path="birthday" cssStyle="color: red;" element="div"/>
                     </div>
-                     <!-- Address Data -->
+                    <!-- Address Data -->
                     <div class="form-group">
                         <form:label for="country" path="country"><span style="color:red">*</span>País</form:label>
                         <form:input type="text" class="form-control" id="country" path="country"/>
@@ -111,7 +111,7 @@
                         <form:errors path="zipCode" cssStyle="color: red;" element="div"/>
                     </div>
                     <!-- End Data Input -->
-                    <input type="submit" class="btn btn-info" value="Agregar alumno"/>
+                    <input type="submit" class="btn btn-info" value="Guardar Cambios"/>
                 </form:form>
             </div>
 
