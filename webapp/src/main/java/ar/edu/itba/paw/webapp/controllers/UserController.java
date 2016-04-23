@@ -146,11 +146,16 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			model.addAttribute("inscriptionForm", new InscriptionForm());
 		}
 
-		final InscriptionForm inscriptionForm = (InscriptionForm) model.asMap().get("inscriptionForm");
 		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
 
-		inscriptionForm.setStudentDocket(docket);
+		// +++ximprove with Spring Security
+		Student student = studentService.getByDocket(docket);
+		if (student == null) {
+			return studentNotFound(docket);
+		}
+
 		ModelAndView mav = new ModelAndView("inscription");
+		mav.addObject("student", student);
 
 		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
 				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();

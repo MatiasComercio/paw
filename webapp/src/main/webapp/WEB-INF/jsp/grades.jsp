@@ -55,10 +55,10 @@
 </div>
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
-<script>
+<%--<script>
     $(document).ready(function() {
         $('.dropdown-toggle').dropdown();
     });
-</script>
+</script>--%>
 </body>
 </html>

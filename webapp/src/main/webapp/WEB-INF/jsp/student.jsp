@@ -182,5 +182,7 @@
         </div>
     </div>
 </div>
+<!-- Scripts -->
+<jsp:include page="base/footer.jsp" />
 </body>
 </html>

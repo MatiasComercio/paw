@@ -20,7 +20,6 @@ public class IndexController {
 	public ModelAndView index() {
 		/* +++xchange: implement the index later */
 		/* tmp solution */
-//		return new ModelAndView("redirect:/app/students");
 		return new ModelAndView("redirect:/students");
 	}
 }

@@ -79,7 +79,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h1 class="page-header">
-                        Inscribirse en Materia - <small>Legajo del alumno: ${docket}</small>
+                        Inscripciones <small>- Materias Disponibles</small>
                     </h1>
                 </div>
             </div>
