@@ -111,7 +111,7 @@
                     <div class="col-xs-12 col-md-2">
                         <p class="lead">Buscar por:</p>
                     </div>
-                    <div class="col-xs-12 col-md-7">
+                    <div class="col-xs-12 col-md-6">
                         <div class="row">
                             <div class="col-xs-12 col-md-5">
                                 <div class="row">
@@ -141,8 +141,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-2 hidden-md hidden-lg"></div>
-                    <div class="col-xs-5 col-md-1 text-center">
+                    <div class="col-xs-1 hidden-md hidden-lg"></div>
+                    <div class="col-xs-5 col-md-2 text-center">
                         <button id="search" class="btn btn-default" type="submit">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                             Buscar
