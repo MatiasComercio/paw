@@ -345,28 +345,45 @@ public class StudentJdbcDao implements StudentDao {
 	}
 
     @Override
-    public Result update(Integer docket, Student student) {
+    public Integer getDniByDocket(final Integer docket){
+        return jdbcTemplate.query("SELECT dni FROM student WHERE docket = " + docket + ";", rs -> rs.next() ? rs.getInt("dni") : null);
+    }
 
-        final Integer dni = jdbcTemplate.query("SELECT dni FROM student WHERE docket = " + docket + ";", new ResultSetExtractor<Integer>() {
-            @Override
-            public Integer extractData(ResultSet rs) throws SQLException,
-                    DataAccessException {
-                return rs.next() ? rs.getInt("dni") : null;
-            }
-        });
+    @Override
+    public Result update(final Integer docket, final Integer dni , final Student student) {
 
-        System.out.println(student.getBirthday().toString());
+        final String genre = student.getGenre().equals("Female")? "F" : "M";
 
-
-        String genre = student.getGenre().equals("Female")? "F" : "M";
-
-        String userUpdate = "UPDATE users SET " + USER__DNI_COLUMN + " = ?, " + USER__FIRST_NAME_COLUMN + " = ?, "
+        final String userUpdate = "UPDATE users SET " + USER__DNI_COLUMN + " = ?, " + USER__FIRST_NAME_COLUMN + " = ?, "
                 + USER__LAST_NAME_COLUMN + " = ?, " + USER__GENRE_COLUMN + " = ?, " + USER__BIRTHDAY_COLUMN + " = ?, "
                 + USER__EMAIL_COLUMN + " = ? WHERE " + USER__DNI_COLUMN + " = ?";
 
-        jdbcTemplate.update(userUpdate, student.getDni(), student.getFirstName(), student.getLastName(), genre,
-                                student.getBirthday(), createEmail(student.getDni(), student.getFirstName(),
-                        student.getLastName()), dni);
+        //final String studentUpdate = "UPDATE student SET " + STUDENT__DOCKET_COLUMN + " = ? WHERE " + STUDENT__DNI_COLUMN + " = ?;";
+
+        final String addressUpdate = "UPDATE address SET " + ADDRESS__COUNTRY_COLUMN + " = ?, " + ADDRESS__CITY_COLUMN + " = ?, "
+                + ADDRESS__NEIGHBORHOOD_COLUMN + " = ?, " + ADDRESS__STREET_COLUMN + " = ?, " + ADDRESS__NUMBER_COLUMN + " = ?, "
+                + ADDRESS__FLOOR_COLUMN + " = ?, " + ADDRESS__DOOR_COLUMN + " = ?, " + ADDRESS__TELEPHONE_COLUMN + " = ?, "
+                + ADDRESS__ZIP_CODE_COLUMN + " = ? WHERE " + ADDRESS__DNI_COLUMN + " = ?;";
+
+        //Update user table
+        try {
+            jdbcTemplate.update(userUpdate, student.getDni(), student.getFirstName(), student.getLastName(), genre,
+                    Date.valueOf(student.getBirthday()), createEmail(student.getDni(), student.getFirstName(),
+                            student.getLastName()), dni);
+        } catch (DuplicateKeyException e) {
+            return Result.STUDENT_EXISTS_DNI;
+        }
+
+
+        final Address addr = student.getAddress();
+
+        if (addr != null) {
+            jdbcTemplate.update(addressUpdate, addr.getCountry(), addr.getCity(), addr.getNeighborhood(),
+                    addr.getStreet(), addr.getNumber(), addr.getFloor(), addr.getDoor(), addr.getTelephone(),
+                    addr.getZipCode(), student.getDni());
+        }
+        //Update address table
+
 
         return Result.OK;
     }

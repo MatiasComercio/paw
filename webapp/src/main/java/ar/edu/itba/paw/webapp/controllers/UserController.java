@@ -178,11 +178,11 @@ public class UserController {
         Student student = studentForm.build();
         Result result = studentService.update(docket, student);
 
-        //if(!result.equals(Result.OK)){
-        //    redirectAttributes.addFlashAttribute("alert", "danger");
-        //    redirectAttributes.addFlashAttribute("message", result.getMessage());
-        //    return editStudent(docket, studentForm, redirectAttributes);
-        //}
+        if(!result.equals(Result.OK)){
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", result.getMessage());
+            return editStudent(docket, studentForm, redirectAttributes);
+        }
 
         redirectAttributes.addFlashAttribute("alert", "success");
         redirectAttributes.addFlashAttribute("message", "El alumno se ha guardado correctamente.");
