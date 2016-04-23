@@ -158,6 +158,13 @@ public class UserController {
         }
 
         Student student = studentService.getByDocket(docket);
+
+        if (student == null){
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", "El alumno que se intena editar no existe.");
+            return new ModelAndView("redirect:/app/students");
+        }
+
         studentForm.loadFromStudent(student);
 
         mav.addObject("docket", docket);

@@ -61,6 +61,13 @@ public class CourseController {
         }
 
         Course course = courseService.getById(courseId);
+
+        if (course == null){
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", "La materia que se intena editar no existe.");
+            return new ModelAndView("redirect:/app/courses");
+        }
+
         courseForm.loadFromCourse(course);
 
         mav.addObject("courseId", courseId);
