@@ -3,12 +3,14 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,11 +41,21 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public Result deleteCourse(Integer docket) {
+	public Result deleteStudent(Integer docket) {
 		if(docket <= 0) {
 			return Result.ERROR_DOCKET_OUT_OF_BOUNDS;
 		}
 		return studentDao.deleteStudent(docket);
+	}
+
+	@Override
+	public Result addGrade(Grade grade) {
+		return studentDao.addGrade(grade);
+	}
+
+	@Override
+	public Result editGrade(Grade newGrade, BigDecimal oldGrade) {
+		return studentDao.editGrade(newGrade, oldGrade);
 	}
 
 	@Override

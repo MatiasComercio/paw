@@ -1,10 +1,12 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface StudentService {
@@ -58,9 +60,27 @@ public interface StudentService {
 	Result update(final Integer docket, final Student student);
 
 	/**
-	 * +++xdocument
-	 * @param docket
-	 * @return
+	 * Delete the student that matches the given docket.
+	 * @param docket The student's docket
+	 * @return 	OK if the student was deleted;
+	 * 		ERROR_DOCKET_OUT_OF_BOUNDS if the docket is invalid;
+	 * 		ERROR_UNKNOWN else;
      */
-	Result deleteCourse(Integer docket);
+	Result deleteStudent(Integer docket);
+
+	/**
+	 * Add the grade for a given student and course;
+	 * @param grade which contains the student docket, the course id and the grade
+	 * @return OK if the grade was added;
+	 * 		INVALID_INPUT_PARAMETERS if one or more parameters are invalid;
+	 * 		ERROR_UNKNOWN else;
+     */
+	Result addGrade(Grade grade);
+
+	/**
+	 * @param newGrade The new grade values
+	 * @param oldGrade The grade to be updated
+	 * @return The result code of the Update
+     */
+	Result editGrade(Grade newGrade, BigDecimal oldGrade);
 }

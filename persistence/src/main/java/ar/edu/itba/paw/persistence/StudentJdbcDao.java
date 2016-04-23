@@ -12,11 +12,13 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.nativejdbc.SimpleNativeJdbcExtractor;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -24,6 +26,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -65,6 +68,7 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String GRADE__DOCKET_COLUMN = "docket";
 	private static final String GRADE__COURSE_ID_COLUMN = "course_id";
 	private static final String GRADE__GRADE_COLUMN = "grade";
+	private static final String GRADE__MODIFIED_COLUMN = "modified";
 
 	private static final String COURSE__ID_COLUMN = "id";
 	private static final String COURSE__NAME_COLUMN = "name";
@@ -113,6 +117,16 @@ public class StudentJdbcDao implements StudentDao {
 
 	private static final String DELETE_STUDENT = "DELETE FROM " + STUDENT_TABLE
 			+ " WHERE " + STUDENT__DOCKET_COLUMN + " = ?";
+
+	private static final String COUNT_STUDENTS = "SELECT COUNT(*) FROM " + STUDENT_TABLE
+			+ " WHERE " + STUDENT__DOCKET_COLUMN + " = ?";
+
+	private static final String COUNT_COURSES = "SELECT COUNT(*) FROM " + COURSE_TABLE
+			+ " WHERE " + COURSE__ID_COLUMN + " = ?";
+
+	private static final String COUNT_INSCRIPTION = "SELECT COUNT(*) FROM " + INSCRIPTION_TABLE
+			+ " WHERE " + INSCRIPTION__COURSE_ID_COLUMN + " = ?"
+			+ " AND " + INSCRIPTION__DOCKET_COLUMN + " = ?";
 
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
@@ -205,8 +219,9 @@ public class StudentJdbcDao implements StudentDao {
 		final int courseId = resultSet.getInt(GRADE__COURSE_ID_COLUMN);
 		final String courseName = resultSet.getString(COURSE__NAME_COLUMN);
 		final BigDecimal grade = resultSet.getBigDecimal(GRADE__GRADE_COLUMN);
+		final Timestamp modified = resultSet.getTimestamp(GRADE__MODIFIED_COLUMN);
 
-		final Grade.Builder gradeBuilder = new Grade.Builder(docket, courseId, grade);
+		final Grade.Builder gradeBuilder = new Grade.Builder(docket, courseId, grade).modified(modified);
 		gradeBuilder.courseName(courseName);
 
 		return gradeBuilder.build();
@@ -216,6 +231,7 @@ public class StudentJdbcDao implements StudentDao {
 	private SimpleJdbcInsert userInsert;
 	private SimpleJdbcInsert studentInsert;
 	private SimpleJdbcInsert addressInsert;
+	private SimpleJdbcInsert gradesInsert;
 
 	@Autowired
 	public StudentJdbcDao (final DataSource dataSource) {
@@ -223,7 +239,10 @@ public class StudentJdbcDao implements StudentDao {
 		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
 		studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
 		addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
-
+		gradesInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE)
+				.usingColumns(GRADE__DOCKET_COLUMN,
+						GRADE__COURSE_ID_COLUMN,
+						GRADE__GRADE_COLUMN);
 	}
 
 	@Override
@@ -283,7 +302,7 @@ public class StudentJdbcDao implements StudentDao {
 		try {
 			int gradeRowsAffected = jdbcTemplate.update(DELETE_STUDENT_GRADES, docket);
 			int inscriptionRowsAffected = jdbcTemplate.update(DELETE_STUDENT_INSCRIPTIONS, docket);
-			/* +++xcheck exceptions */
+
 			int studentRowsAffected = jdbcTemplate.update(DELETE_STUDENT, docket);
 
 			return studentRowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
@@ -291,6 +310,59 @@ public class StudentJdbcDao implements StudentDao {
 			return Result.ERROR_UNKNOWN;
 		}
 	}
+
+	@Override
+	public Result addGrade(Grade grade) {
+//		Object[] courseId = new Object[]{grade.getCourseId()};
+//		Object[] studentDocket = new Object[]{grade.getStudentDocket()};
+//		Object[] inscription = new Object[]{grade.getCourseId(), grade.getStudentDocket()};
+//
+//		int coursesAffected = jdbcTemplate.queryForObject(COUNT_COURSES, courseId, Integer.class);
+//		if(coursesAffected == 0) {
+//			return Result.COURSE_NOT_EXISTS;
+//		}
+//
+//		int studentsAffected = jdbcTemplate.queryForObject(COUNT_STUDENTS, studentDocket, Integer.class);
+//
+//		if(studentsAffected == 0) {
+//			return Result.STUDENT_NOT_EXISTS;
+//		}
+//
+//		int inscriptionsAffected = jdbcTemplate.queryForObject(COUNT_INSCRIPTION, inscription, Integer.class);
+//
+//		if(inscriptionsAffected == 0) {
+//			return Result.INSCRIPTION_NOT_EXISTS;
+//		}
+
+		final Map<String, Object> gradeArgs = new HashMap<>();
+
+		gradeArgs.put(GRADE__DOCKET_COLUMN, grade.getStudentDocket());
+		gradeArgs.put(GRADE__COURSE_ID_COLUMN, grade.getCourseId());
+		gradeArgs.put(GRADE__GRADE_COLUMN, grade.getGrade());
+
+		try {
+			int rowsAffected = gradesInsert.execute(gradeArgs);
+
+			return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+		} catch(DataIntegrityViolationException e) {
+			return Result.INVALID_INPUT_PARAMETERS;
+		}
+	}
+
+	@Override
+	public Result editGrade(Grade newGrade, BigDecimal oldGrade){
+		try{
+			jdbcTemplate.update("UPDATE grade SET grade = ? WHERE docket = ? AND " +
+					"course_id = ? AND modified = ? AND grade = ?;",
+					newGrade.getGrade(), newGrade.getStudentDocket(), newGrade.getCourseId(), newGrade.getModified(),
+					oldGrade);
+		}
+		catch(Exception e){
+			return Result.ERROR_UNKNOWN;
+		}
+		return Result.OK;
+	}
+
 
 
 	@Override
