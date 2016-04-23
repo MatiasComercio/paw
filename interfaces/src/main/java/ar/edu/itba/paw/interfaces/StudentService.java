@@ -52,16 +52,20 @@ public interface StudentService {
 	Result create(Student student);
 
 	/**
-	 * +++xdocument
-	 * @param docket
-	 * @return
+	 * Delete the student that matches the given docket.
+	 * @param docket The student's docket
+	 * @return 	OK if the student was deleted;
+	 * 		ERROR_DOCKET_OUT_OF_BOUNDS if the docket is invalid;
+	 * 		ERROR_UNKNOWN else;
      */
 	Result deleteStudent(Integer docket);
 
 	/**
-	 * +++xdocument
-	 * @param grade
-	 * @return
+	 * Add the grade for a given student and course;
+	 * @param grade which contains the student docket, the course id and the grade
+	 * @return OK if the grade was added;
+	 * 		INVALID_INPUT_PARAMETERS if one or more parameters are invalid;
+	 * 		ERROR_UNKNOWN else;
      */
 	Result addGrade(Grade grade);
 
