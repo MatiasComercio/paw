@@ -86,19 +86,34 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		return mav;
 	}
 
-	@RequestMapping("/students/{docket}/courses")
-	public ModelAndView getStudentCourses(@PathVariable final Integer docket,
-	                                      @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm){
+	@RequestMapping(value = "/students/{docket}/courses", method = RequestMethod.GET)
+	public ModelAndView getStudentCourses(@PathVariable final int docket, final Model model) {
 
+		if (!model.containsAttribute("courseFilterForm")) {
+			model.addAttribute("courseFilterForm", new CourseFilterForm());
+		}
+		if (!model.containsAttribute("inscriptionForm")) {
+			model.addAttribute("inscriptionForm", new InscriptionForm());
+		}
 
-		final ModelAndView mav = new ModelAndView("courses");
-		final List<Course> courses = studentService.getStudentCourses(docket);
+		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
+		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
+				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
 
-		if (courses == null) {
+		// +++ximprove with Spring Security
+		final Student student = studentService.getByDocket(docket);
+		if (student == null) {
 			return studentNotFound(docket);
 		}
-		mav.addObject("docket, docket");
-		mav.addObject("courses", courses);
+
+		final ModelAndView mav = new ModelAndView("courses");
+		mav.addObject("student", student);
+		mav.addObject("courseFilterFormAction", "/students/" + docket + "/courses/courseFilterForm"); /* only different line from /inscription */
+		mav.addObject("inscriptionFormAction", "/students/" + docket + "/courses/unenroll");
+		mav.addObject("action_unenroll", true); /* only different line from /inscription */
+		mav.addObject("action_info", true);
+		mav.addObject("courses", studentService.getStudentCourses(docket, courseFilter));
+		mav.addObject("docket", docket);
 		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
@@ -109,11 +124,12 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	                             final BindingResult errors,
 	                             final RedirectAttributes redirectAttributes){
 		if (errors.hasErrors()) {
-			return getStudentCourses(docket, inscriptionForm);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
+			redirectAttributes.addFlashAttribute("inscriptionForm", inscriptionForm);
+			return new ModelAndView("redirect:/students/" + docket + "/courses");
 		}
 
 		Result result = studentService.unenroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
-//		Result result = Result.OK;
 
 		if (result == null) {
 			result = Result.ERROR_UNKNOWN;
@@ -142,24 +158,23 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		}
 
 		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
+		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
+				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
 
 		// +++ximprove with Spring Security
-		Student student = studentService.getByDocket(docket);
+		final Student student = studentService.getByDocket(docket);
 		if (student == null) {
 			return studentNotFound(docket);
 		}
 
-		ModelAndView mav = new ModelAndView("inscription");
+		final ModelAndView mav = new ModelAndView("courses");
 		mav.addObject("student", student);
+		mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
+		mav.addObject("inscriptionFormAction", "/students/" + docket + "/inscription");
 		mav.addObject("action_enroll", true);
 		mav.addObject("action_info", true);
-
-		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
-				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
-
 		mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
 		mav.addObject("docket", docket);
-
 		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
@@ -200,6 +215,16 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
 		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
 		return new ModelAndView("redirect:/students/" + docket + "/inscription");
+	}
+
+	@RequestMapping(value = "/students/{docket}/courses/courseFilterForm", method = RequestMethod.GET)
+	public ModelAndView studentCoursesCourseFilter(@PathVariable final int docket,
+	                                                   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+	                                                   final BindingResult errors,
+	                                                   final RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
+		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
+		return new ModelAndView("redirect:/students/" + docket + "/courses");
 	}
 
 

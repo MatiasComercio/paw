@@ -3,7 +3,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!-- search -->
 <%--Course Filter Form--%>
-<form:form id="course_filter_form" modelAttribute="courseFilterForm" action="/students/${docket}/inscription/courseFilterForm" method="get" enctype="application/x-www-form-urlencoded">
+<form:form id="course_filter_form" modelAttribute="courseFilterForm" action="${courseFilterFormAction}" method="get" enctype="application/x-www-form-urlencoded">
 
     <div class="row well">
         <div class="col-xs-12 col-md-2">

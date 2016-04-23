@@ -22,7 +22,7 @@
             </div>
             <div class="modal-body">
                 <%-- Inscription Form --%>
-                <form:form class="form-horizontal" id="inscription_form" modelAttribute="inscriptionForm" action="/students/${docket}/inscription" method="post" enctype="application/x-www-form-urlencoded">
+                <form:form class="form-horizontal" id="inscription_form" modelAttribute="inscriptionForm" action="${inscriptionFormAction}" method="post" enctype="application/x-www-form-urlencoded">
                     <div class="form-group">
                         <form:label path="studentDocket" class="col-xs-4 control-label">Legajo del Alumno</form:label>
                         <div class="col-xs-8">

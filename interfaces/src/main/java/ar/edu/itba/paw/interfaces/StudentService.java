@@ -27,12 +27,14 @@ public interface StudentService {
 	Student getGrades(final int docket);
 
 	/**
-	 * Gets the courses which match to a student, given a docket.
+	 * Gets the list of the courses the student with the given docket is enroll in,
+	 * applying the specified courseFilter
 	 * @param docket The student's docket
+	 * @param courseFilter The course's filter. If null, no filter is applied.
 	 * @return the list of courses, if the student exists. If the docket doesn't match to a student,
 	 * it returns null
      */
-	List<Course> getStudentCourses(final int docket);
+	List<Course> getStudentCourses(final int docket, final CourseFilter courseFilter);
 
 	/**
 	 * Gets the students that comply to a list of filters
@@ -53,7 +55,7 @@ public interface StudentService {
 	 * Gets the list of the courses the student with the given docket can enroll in,
 	 * applying the specified courseFilter
 	 * @param docket The student's docket
-	 * @param courseFilter The course's filter
+	 * @param courseFilter The course's filter. If null, no filter is applied.
 	 * @return The list of the courses the student with the given docket can enroll in;
 	 *          an empty list will be returned if no course is available
 	 */

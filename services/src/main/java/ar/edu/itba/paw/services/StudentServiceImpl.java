@@ -28,8 +28,20 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public List<Course> getStudentCourses(int docket) {
-		return docket <= 0 ? null : studentDao.getStudentCourses(docket);
+	public List<Course> getStudentCourses(final int docket, final CourseFilter courseFilter) {
+		if (docket <= 0) {
+			return null;
+		}
+
+		List<Course> courses = studentDao.getStudentCourses(docket);
+		if (courses == null) {
+			return null;
+		}
+
+		List<Course> coursesFiltered = courseService.getByFilter(courseFilter);
+		courses.retainAll(coursesFiltered);
+
+		return courses;
 	}
 
 	@Override
@@ -59,7 +71,7 @@ public class StudentServiceImpl implements StudentService {
 			return null;
 		}
 
-		courses.removeAll(this.getStudentCourses(docket));
+		courses.removeAll(this.getStudentCourses(docket, null));
 
 		return courses;
 	}
