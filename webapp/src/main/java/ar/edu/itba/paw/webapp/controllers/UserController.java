@@ -195,7 +195,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		return new ModelAndView("redirect:/students/" + docket + "/inscription");
 	}
 
-	@RequestMapping(value = "/students/{docket}/inscription/courseFilterForm", method = RequestMethod.POST)
+	@RequestMapping(value = "/students/{docket}/inscription/courseFilterForm", method = RequestMethod.GET)
 	public ModelAndView studentInscriptionCourseFilter(@PathVariable final int docket,
 	                                                   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
 	                                                   final BindingResult errors,
