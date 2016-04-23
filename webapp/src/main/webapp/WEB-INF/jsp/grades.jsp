@@ -17,8 +17,8 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h1 class="page-header">
-                         ${student.docket} - ${student.firstName} ${student.lastName}
-                             <small>(${student.email})</small> - Notas
+                        ${student.docket} - ${student.firstName} ${student.lastName}
+                        <small>(${student.email})</small> - Notas
                     </h1>
                 </div>
             </div>
@@ -55,5 +55,10 @@
 </div>
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
+<script>
+    $(document).ready(function() {
+        $('.dropdown-toggle').dropdown();
+    });
+</script>
 </body>
 </html>

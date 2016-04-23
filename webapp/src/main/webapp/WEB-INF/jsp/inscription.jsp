@@ -144,13 +144,13 @@
                     <div class="col-xs-1 hidden-md hidden-lg"></div>
                     <div class="col-xs-5 col-md-2 text-center">
                         <button id="search" class="btn btn-default" type="submit">
-                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            <span class="fa fa-search" aria-hidden="true"></span>
                             Buscar
                         </button>
                     </div>
                     <div class="col-xs-5 col-md-2 text-center">
                         <button id="resetSearch" class="btn btn-default" type="submit">
-                            <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>
+                            <span class="fa fa-repeat" aria-hidden="true"></span>
                             Resetear
                         </button>
                     </div>
@@ -184,10 +184,10 @@
                                 <button name="inscription" class="btn btn-info btn-xs" type="button"
                                         data-course_id="${ course.id }" data-course_name="${ course.name }"
                                         data-toggle="modal" data-target="#confirmationModal">
-                                    <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span> Inscribirse
+                                    <span class="fa fa-list-alt" aria-hidden="true"></span> Inscribirse
                                 </button>
                                 <a class="btn btn-default btn-xs" href="<c:url value="/courses/${course.id}/info" />" role="button">
-                                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Ver
+                                    <span class="fa fa-info-circle" aria-hidden="true"></span> Ver
                                 </a>
                             </td>
                         </tr>
