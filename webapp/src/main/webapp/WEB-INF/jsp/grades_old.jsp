@@ -1,8 +1,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" pageEncoding="UTF-8"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html lang="en">
-<head><jsp:include page="base/head.jsp" /></head>
+<head>
+    <title>
+        <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="grades"/>
+    </title>
+    <jsp:include page="base/head.jsp" />
+</head>
 <body>
 
 <div id="wrapper">
@@ -15,7 +21,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h1 class="page-header">
-                        Notas
+                        <spring:message code="grades"/>
                     </h1>
                     <jsp:include page="base/alerts.jsp" />
                 </div>
@@ -29,10 +35,10 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Materia</th>
-                    <th>Nota</th>
-                    <th>Modificado</th>
+                    <th><spring:message code="id"/></th>
+                    <th><spring:message code="course"/></th>
+                    <th><spring:message code="grade"/></th>
+                    <th><spring:message code="modified"/></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -42,8 +48,8 @@
                         <td>${ grade.courseName }</td>
                         <td>${ grade.grade }</td>
                         <td>${ grade.modified }</td>
-                        <td><a href="<c:url value="/courses/${grade.courseId}/info" />">Ver Materia</a></td>
-                        <td><a href="<c:url value="/students/${student.docket}/grades/edit/${grade.courseId}/${grade.modified}/${grade.grade}" />">Editar Nota</a></td>
+                        <td><a href="<c:url value="/courses/${grade.courseId}/info" />"><spring:message code="see"/> <spring:message code="course"/></a></td>
+                        <td><a href="<c:url value="/students/${student.docket}/grades/edit/${grade.courseId}/${grade.modified}/${grade.grade}" />"><spring:message code="editGrade"/></a></td>
                     </tr>
                 </c:forEach>
                 </tbody>

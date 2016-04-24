@@ -1,8 +1,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" pageEncoding="UTF-8"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html lang="en">
-<head><jsp:include page="base/head.jsp" /></head>
+<head>
+    <title>
+        <spring:message code="webAbbreviation"/> | <spring:message code="students"/>
+    </title>
+    <jsp:include page="base/head.jsp" />
+</head>
 <body>
 
 <div id="wrapper">
@@ -17,7 +23,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Alumnos
+                        <spring:message code="students"/>
                     </h1>
                 </div>
             </div>
@@ -30,20 +36,24 @@
                 <div class="col-xs-9">
                     <div class="row">
                         <div class="input-group">
-                            <span class="input-group-addon" id="sizing-addon">Legajo</span>
-                            <input id="docket_text" type="text" class="form-control" placeholder="Buscar por legajo..." aria-describedby="sizing-addon2">
-                            <span class="input-group-addon" id="sizing-addon2">Nombre</span>
-                            <input id="first_name_text" type="text" class="form-control" placeholder="Buscar por nombre..." aria-describedby="sizing-addon2">
-                            <span class="input-group-addon" id="sizing-addon3">Apellido</span>
-                            <input id="last_name_text" type="text" class="form-control" placeholder="Buscar por apellido..." aria-describedby="sizing-addon2">
+                            <spring:message code="docket" var="docketPlaceholder"/>
+                            <spring:message code="firstName" var="firstNamePlaceholder"/>
+                            <spring:message code="lastName" var="lastNamePlaceholder"/>
+                            <spring:message code="searchBy" var="searchByPlaceholder"/>
+                            <span class="input-group-addon" id="sizing-addon"><spring:message code="docket"/></span>
+                            <input id="docket_text" type="text" class="form-control" placeholder="${searchByPlaceholder} ${docketPlaceholder}..." aria-describedby="sizing-addon2">
+                            <span class="input-group-addon" id="sizing-addon2"><spring:message code="firstName"/></span>
+                            <input id="first_name_text" type="text" class="form-control" placeholder="${searchByPlaceholder} ${firstNamePlaceholder}..." aria-describedby="sizing-addon2">
+                            <span class="input-group-addon" id="sizing-addon3"><spring:message code="lastName"/></span>
+                            <input id="last_name_text" type="text" class="form-control" placeholder="${searchByPlaceholder} ${lastNamePlaceholder}..." aria-describedby="sizing-addon2">
                         </div>
                     </div>
                 </div>
                 <div class="col-md-1">
-                    <div id="search" type="button" class="btn btn-default">Buscar</div>
+                    <div id="search" type="button" class="btn btn-default"><spring:message code="search"/></div>
                 </div>
                 <div class="col-md-1">
-                    <div id="addStudent" type="button" class="btn btn-info">Agregar</div>
+                    <div id="addStudent" type="button" class="btn btn-info"><spring:message code="add"/></div>
                 </div>
             </div>
 
@@ -51,11 +61,11 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Legajo</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Email</th>
-                    <th>Acciones</th>
+                    <th><spring:message code="docket"/></th>
+                    <th><spring:message code="firstName"/></th>
+                    <th><spring:message code="lastName"/></th>
+                    <th><spring:message code="email"/></th>
+                    <th><spring:message code="actions"/></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -65,9 +75,9 @@
                         <td>${ student.firstName }</td>
                         <td>${ student.lastName }</td>
                         <td>${ student.email }</td>
-                        <td><a href="<c:url value="/students/${student.docket}/info" />">Ver</a>
+                        <td><a href="<c:url value="/students/${student.docket}/info" />"><spring:message code="see"/></a>
                             <form action="students/${student.docket}/delete" method="post">
-                                <button type="submit" value="students/${student.docket}/delete">Eliminar</button>
+                                <button type="submit" value="students/${student.docket}/delete"><spring:message code="delete"/></button>
                             </form>
                         </td>
                     </tr>
