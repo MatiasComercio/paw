@@ -1,9 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page language="java" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Materias</title>
+    <title>
+        <spring:message code="webAbbreviation"/> | <spring:message code="courses"/>
+    </title>
     <jsp:include page="base/head.jsp" />
 </head>
 <body>
@@ -20,7 +23,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Materias
+                        <spring:message code="courses"/>
                         <%-- +++xfix TODO: currently, if you want to add a course, and write invalid input --> DB exception not catched --> exception 500 --%>
                         <%--<a href="<c:url value="courses/add_course"/>" class="btn btn-info pull-right" role="button">Agregar materia</a>--%>
                     </h1>
@@ -35,19 +38,22 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="input-group">
-                                <span class="input-group-addon" id="sizing-addon">Id</span>
-                                <input id="id_text" type="text" class="form-control" placeholder="Buscar por id..." aria-describedby="sizing-addon2">
-                                <span class="input-group-addon" id="sizing-addon2">Nombre</span>
-                                <input id="name_text" type="text" class="form-control" placeholder="Buscar por nombre..." aria-describedby="sizing-addon2">
+                                <span class="input-group-addon" id="sizing-addon"><spring:message code="id"/></span>
+                                <spring:message code="searchBy" var="searchByPlaceholder"/>
+                                <spring:message code="id" var="idPlaceholder"/>
+                                <input id="id_text" type="text" class="form-control" placeholder="${searchByPlaceholder} ${idPlaceholder}..." aria-describedby="sizing-addon2">
+                                <span class="input-group-addon" id="sizing-addon2"><spring:message code="name"/></span>
+                                <spring:message code="name" var="namePlaceholder"/>
+                                <input id="name_text" type="text" class="form-control" placeholder="${searchByPlaceholder} ${namePlaceholder}..." aria-describedby="sizing-addon2">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-1">
-                    <div id="search" type="button" class="btn btn-default">Buscar</div>
+                    <div id="search" type="button" class="btn btn-default"><spring:message code="search"/></div>
                 </div>
                 <div class="col-md-2">
-                    <div id="addCourse" type="button" class="btn btn-default">Agregar</div>
+                    <div id="addCourse" type="button" class="btn btn-default"><spring:message code="add"/></div>
                 </div>
             </div>
 
@@ -55,10 +61,10 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Creditos</th>
-                    <th>Acciones</th>
+                    <th><spring:message code="id"/></th>
+                    <th><spring:message code="name"/></th>
+                    <th><spring:message code="credits"/></th>
+                    <th><spring:message code="actions"/></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -70,7 +76,7 @@
                         <td>
                             <a href="<c:url value="courses/${course.id}/info" />">Ver</a>
                             <form action="courses/${course.id}/delete" method="post">
-                                <button type="submit" value="courses/${course.id}/delete">Eliminar</button>
+                                <button type="submit" value="courses/${course.id}/delete"><spring:message code="delete"/></button>
                             </form>
                         </td>
                     </tr>

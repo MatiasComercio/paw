@@ -1,15 +1,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<html>
-<head>
-
-</head>
-
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page language="java" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>
+        <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="courses"/>
+    </title>
     <jsp:include page="base/head.jsp" />
 </head>
 <body>
@@ -33,10 +32,10 @@
                     <h1 class="page-header">
                         <c:choose>
                             <c:when test="${subsection_enroll}">
-                                Inscripciones <small>- Materias Disponibles</small>
+                                <spring:message code="inscriptions"/> <small>- <spring:message code="availableCourses"/></small>
                             </c:when>
                             <c:when test="${subsection_courses}">
-                                Materias
+                                <spring:message code="courses"/>
                             </c:when>
                         </c:choose>
                     </h1>
