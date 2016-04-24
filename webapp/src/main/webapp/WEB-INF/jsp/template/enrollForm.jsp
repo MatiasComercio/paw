@@ -1,6 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%-- Confirmation Modal --%>
 
 <!-- Modal -->
@@ -12,10 +13,10 @@
                 <h4 class="modal-title" id="myModalLabel">
                     <c:choose>
                         <c:when test="${subsection_enroll}">
-                            Inscribir
+                            <spring:message code="enroll"/>
                         </c:when>
                         <c:when test="${subsection_courses}">
-                            Dar de Baja
+                            <spring:message code="unenroll"/>
                         </c:when>
                     </c:choose>
                 </h4>
@@ -24,7 +25,7 @@
                 <%-- Inscription Form --%>
                 <form:form class="form-horizontal" id="inscription_form" modelAttribute="inscriptionForm" action="${inscriptionFormAction}" method="post" enctype="application/x-www-form-urlencoded">
                     <div class="form-group">
-                        <form:label path="studentDocket" class="col-xs-4 control-label">Legajo del Alumno</form:label>
+                        <form:label path="studentDocket" class="col-xs-4 control-label"><spring:message code="studentDocket"/></form:label>
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="studentDocket" value="${docket}" readonly="true"/>
                         </div>
@@ -34,7 +35,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="courseId" class="col-xs-4 control-label">Id del Curso</form:label>
+                        <form:label path="courseId" class="col-xs-4 control-label"><spring:message code="courseId"/></form:label>
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="courseId" readonly="true"/>
                         </div>
@@ -44,7 +45,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="courseName" class="col-xs-4 control-label">Nombre del Curso</form:label>
+                        <form:label path="courseName" class="col-xs-4 control-label"><spring:message code="courseName"/></form:label>
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="courseName" readonly="true"/>
                         </div>
@@ -57,12 +58,12 @@
                 <%-- /Inscription Form--%>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="cancel"/></button>
                 <c:if test="${subsection_enroll}">
-                    <button id="enrollFormConfirmAction" type="button" class="btn btn-info">Confirmar</button>
+                    <button id="enrollFormConfirmAction" type="button" class="btn btn-info"><spring:message code="confirm"/></button>
                 </c:if>
                 <c:if test="${subsection_courses}">
-                    <button id="enrollFormConfirmAction" type="button" class="btn btn-danger">Confirmar</button>
+                    <button id="enrollFormConfirmAction" type="button" class="btn btn-danger"><spring:message code="confirm"/></button>
                 </c:if>
             </div>
         </div>
