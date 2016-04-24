@@ -20,7 +20,7 @@
                     <h1 class="page-header">
                         <c:choose>
                             <c:when test="${task == 'add' }">
-                                Materia<small> - Agregar</small>
+                                Materias<small> - Agregar</small>
                             </c:when>
                             <c:when test="${task == 'edit' }">
                                 ${courseName}<small> - Editar</small>

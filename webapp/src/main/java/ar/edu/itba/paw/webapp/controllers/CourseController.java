@@ -7,6 +7,7 @@ import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.forms.CourseForm;
 import ar.edu.itba.paw.shared.CourseFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.Locale;
 import java.util.Map;
 
 @Controller
@@ -23,6 +25,9 @@ public class CourseController {
     /* +++xtodo TODO: why not final? */
     private static String TASK_FORM_ADD = "add";
     private static String TASK_FORM_EDIT = "edit";
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     private CourseService courseService;
@@ -97,7 +102,9 @@ public class CourseController {
         }
 
         redirectAttributes.addFlashAttribute("alert", "success");
-        redirectAttributes.addFlashAttribute("message", "La materia se ha guardado correctamente.");
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editCourse_success",
+                new Object[] {},
+                Locale.getDefault()));
 
         return new ModelAndView("redirect:/courses");
     }
@@ -142,7 +149,9 @@ public class CourseController {
                 return addCourse(courseForm, redirectAttributes);
             }
             redirectAttributes.addFlashAttribute("alert", "success");
-            redirectAttributes.addFlashAttribute("message", "El curso se ha guardado correctamente.");
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addCourse_success",
+                    new Object[] {},
+                    Locale.getDefault()));
             return new ModelAndView("redirect:/courses");
         }
     }
@@ -153,7 +162,9 @@ public class CourseController {
 //        ModelAndView mav = new ModelAndView("redirect:/courses");
 //        ModelAndView mav = new ModelAndView("coursesSearch");
         redirectAttributes.addFlashAttribute("alert", "success");
-        redirectAttributes.addFlashAttribute("message", "El curso se ha eliminado exitosamente.");
+        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteCourse_success",
+                new Object[] {},
+                Locale.getDefault()));
 
         return new ModelAndView("redirect:/courses");
     }

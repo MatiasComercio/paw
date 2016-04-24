@@ -12,10 +12,10 @@
                 <h4 class="modal-title" id="myModalLabel">
                     <c:choose>
                         <c:when test="${subsection_enroll}">
-                            Confirmar Inscripción
+                            Inscribir
                         </c:when>
                         <c:when test="${subsection_courses}">
-                            Confirmar Baja
+                            Dar de Baja
                         </c:when>
                     </c:choose>
                 </h4>

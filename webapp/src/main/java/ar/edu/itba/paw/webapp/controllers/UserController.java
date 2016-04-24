@@ -11,6 +11,7 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.forms.CourseFilterForm;
 import ar.edu.itba.paw.webapp.forms.InscriptionForm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,12 +23,16 @@ import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Controller
 public class UserController { /* +++xchange: see if it's necessary to call this StudentController */
 
 	private static final String STUDENTS_SECTION = "students";
+
+	@Autowired
+	private MessageSource messageSource;
 
 	@Autowired
 	private StudentService studentService;
@@ -147,8 +152,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", "El alumno se ha dado de baja de la materia "
-					+ inscriptionForm.getCourseId() + " correctamente.");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("unenroll_success",
+					new Object[] {inscriptionForm.getCourseId(), inscriptionForm.getCourseName()},
+					Locale.getDefault()));
 		}
 
 		return new ModelAndView("redirect:/students/" + docket + "/courses");
@@ -206,8 +212,10 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", "El alumno ahora se encuentra inscripto en la materia \""
-					+ inscriptionForm.getCourseId() + " - " + inscriptionForm.getCourseName() + "\".");
+			redirectAttributes.addFlashAttribute("message",
+					messageSource.getMessage("inscription_success",
+							new Object[] {inscriptionForm.getCourseId(), inscriptionForm.getCourseName()},
+							Locale.getDefault()));
 		}
 
 		return new ModelAndView("redirect:/students/" + docket + "/inscription");
@@ -265,7 +273,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 				return addStudent(studentForm, redirectAttributes);
 			}
 			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", "El alumno se ha guardado correctamente.");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addStudent_success",
+					new Object[] {},
+					Locale.getDefault()));
 			return new ModelAndView("redirect:/students");
 		}
 	}
@@ -305,7 +315,10 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			return editGrade(gradeForm, docket, courseId, modified, grade, redirectAttributes);
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", "El examen se ha actualizado correctamente.");
+		redirectAttributes.addFlashAttribute("message",
+				messageSource.getMessage("editGrade_success",
+						new Object[] {},
+						Locale.getDefault()));
 		return new ModelAndView("redirect:/students/" + docket + "/grades");
 
 	}
@@ -335,7 +348,10 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	                             RedirectAttributes redirectAttributes){
 		if (errors.hasErrors()) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", "Hay errores en el formulario. Intente calificar nuevamente.");
+			redirectAttributes.addFlashAttribute("message",
+					messageSource.getMessage("addGrade_fail",
+							new Object[] {},
+							Locale.getDefault()));
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
 			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
 			return new ModelAndView("redirect:/students/" + docket + "/courses");
@@ -356,7 +372,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", "La nota se ha guardado correctamente.");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addGrade_success",
+					new Object[] {},
+					Locale.getDefault()));
 		}
 
 		return new ModelAndView("redirect:/students/" + docket + "/courses");
@@ -383,7 +401,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		final Result result = studentService.deleteStudent(docket);
 //		ModelAndView mav = new ModelAndView("studentsSearch");
 		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", "El alumno se ha eliminado exitosamente.");
+		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteStudent_success",
+				new Object[] {},
+				Locale.getDefault()));
 
 		return new ModelAndView("redirect:/students");
 	}
@@ -417,7 +437,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 		if (student == null){
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", "El alumno que se intena editar no existe.");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editStudent_fail",
+					new Object[] {},
+					Locale.getDefault()));
 			return new ModelAndView("redirect:/students");
 		}
 
@@ -448,7 +470,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		}
 
 		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", "El alumno se ha guardado correctamente.");
+		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editStudent_success",
+				new Object[] {},
+				Locale.getDefault()));
 
 		return new ModelAndView("redirect:/students");
 	}
