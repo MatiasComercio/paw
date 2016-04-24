@@ -329,11 +329,14 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 
 	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.POST)
-	public ModelAndView addGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
-	                             @PathVariable Integer docket, final BindingResult errors,
+	public ModelAndView addGrade(@PathVariable Integer docket,
+	                             @Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
+	                             final BindingResult errors,
 	                             RedirectAttributes redirectAttributes){
 		if (errors.hasErrors()) {
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", "Hay errores en el formulario. Intente calificar nuevamente.");
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
 			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
 			return new ModelAndView("redirect:/students/" + docket + "/courses");
 		}
@@ -346,8 +349,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 		if (result == null) {
 			result = Result.ERROR_UNKNOWN;
-		}
-		if (!result.equals(Result.OK)) {
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+		} else if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 		} else {

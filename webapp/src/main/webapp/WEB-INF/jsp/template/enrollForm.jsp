@@ -28,7 +28,8 @@
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="studentDocket" value="${docket}" readonly="true"/>
                         </div>
-                        <div class="col-xs-12">
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-8">
                             <form:errors path="studentDocket" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
@@ -37,7 +38,8 @@
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="courseId" readonly="true"/>
                         </div>
-                        <div class="col-xs-12">
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-8">
                             <form:errors path="courseId" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
@@ -46,7 +48,8 @@
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="courseName" readonly="true"/>
                         </div>
-                        <div class="col-xs-12">
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-8">
                             <form:errors path="courseName" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>

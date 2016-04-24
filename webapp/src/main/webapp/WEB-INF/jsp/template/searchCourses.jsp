@@ -88,7 +88,7 @@
                             </button>
                         </c:when>
                         <c:when test="${subsection_courses}">
-                            <button name="grade" class="btn btn-info btn-xs" type="button"
+                            <button name="gradeButton" class="btn btn-info btn-xs" type="button"
                                     data-course_id="${ course.id }" data-course_name="${ course.name }"
                                     data-toggle="modal" data-target="#gradeFormConfirmationModal">
                                 <span class="fa fa-graduation-cap" aria-hidden="true"></span> Calificar

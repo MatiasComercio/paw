@@ -21,7 +21,8 @@
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="docket" value="${docket}" readonly="true"/>
                         </div>
-                        <div class="col-xs-12">
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-8">
                             <form:errors path="docket" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
@@ -30,7 +31,8 @@
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="courseId" readonly="true"/>
                         </div>
-                        <div class="col-xs-12">
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-8">
                             <form:errors path="courseId" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
@@ -39,7 +41,8 @@
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="courseName" readonly="true"/>
                         </div>
-                        <div class="col-xs-12">
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-8">
                             <form:errors path="courseName" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
@@ -48,18 +51,21 @@
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="grade"/>
                         </div>
-                        <div class="col-xs-12">
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-8">
                             <form:errors path="grade" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="col-xs-8">
-                            <form:input class="form-control" id="disabledInput" type="hidden" path="modified" readonly="true"/>
+                    <c:if test="${subsection_grades}">
+                        <div class="form-group">
+                            <div class="col-xs-8">
+                                <form:input class="form-control" id="disabledInput" type="hidden" path="modified" readonly="true"/>
+                            </div>
+                            <div class="col-xs-12">
+                                <form:errors path="modified" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
                         </div>
-                        <div class="col-xs-12">
-                            <form:errors path="modified" cssClass="text-danger bg-danger" element="div"/>
-                        </div>
-                    </div>
+                    </c:if>
                 </form:form>
                 <%-- /Grade Form--%>
             </div>

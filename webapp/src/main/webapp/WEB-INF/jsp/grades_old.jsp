@@ -23,7 +23,7 @@
             </div>
 
             <div class="col-md-1">
-                <a href="/students/${student.docket}/grades/add" id="addGrade" type="button" class="btn btn-default">Agregar Nota</a>
+                <%--<a href="/students/${student.docket}/grades/add" id="addGrade" type="button" class="btn btn-default">Agregar Nota</a>--%><%-- implemented in /students/{docket}/courses --%>
             </div>
 
             <!-- content -->
