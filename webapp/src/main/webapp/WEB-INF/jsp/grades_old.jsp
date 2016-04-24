@@ -15,8 +15,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h1 class="page-header">
-                        ${student.docket} - ${student.firstName} ${student.lastName}
-                        <small>(${student.email})</small> - Notas
+                        Notas
                     </h1>
                     <jsp:include page="base/alerts.jsp" />
                 </div>

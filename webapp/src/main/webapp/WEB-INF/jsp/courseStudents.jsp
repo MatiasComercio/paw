@@ -18,7 +18,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Lista de Alumnos de ${courseStudents.name}
+                        ${courseStudents.name} <small> - Alumnos</small>
                     </h1>
                 </div>
             </div>

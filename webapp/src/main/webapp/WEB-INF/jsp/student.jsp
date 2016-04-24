@@ -17,8 +17,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Información del Alumno
-                        <a class="btn btn-info" href="<c:url value="/students/${student.docket}/edit"/>">Editar</a>
+                        Perfil
                     </h1>
                 </div>
             </div>
@@ -162,19 +161,23 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-xs-12"></div>
+                            <div class="col-xs-12 text-center">
+                                <a class="btn btn-info" href="<c:url value="/students/${student.docket}/edit"/>">Editar</a>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-4">
                     <div class="row">
-                        <div class="col-xs-12 col-md-6">
-                            <a href="courses" type="button" class="btn btn-link">Ver Materias actuales</a>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <a href="courses" type="button" class="btn btn-info col_vertical_margin" role="button"><i class="fa fa-fw fa-university"></i> Materias</a>
                         </div>
-                        <div class="col-xs-12 col-md-6">
-                            <a href="grades" type="button" class="btn btn-link">Ver Historial de Notas</a>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <a href="grades" type="button" class="btn btn-info col_vertical_margin" role="button"><i class="fa fa-fw fa-graduation-cap"></i> Notas</a>
                         </div>
-                        <div class="col-xs-12 col-md-6">
-                            <a href="inscription" type="button" class="btn btn-link">Inscribirse en Materia</a>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <a href="inscription" type="button" class="btn btn-info col_vertical_margin" role="button"><i class="fa fa-fw fa-list-alt"></i> Inscripciones</a>
                         </div>
                     </div>
                 </div>

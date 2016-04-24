@@ -37,3 +37,8 @@ dl{
 .right-effect{
     text-align: right;
 }
+
+.col_vertical_margin {
+    margin-bottom: 5%;
+    margin-top: 5%;
+}

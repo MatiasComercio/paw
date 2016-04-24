@@ -72,6 +72,7 @@ public class CourseController {
         courseForm.loadFromCourse(course);
 
         mav.addObject("courseId", courseId);
+        mav.addObject("courseName", course.getName());
         mav.addObject("task", TASK_FORM_EDIT);
 
         return mav;

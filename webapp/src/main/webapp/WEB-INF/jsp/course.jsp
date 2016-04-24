@@ -20,8 +20,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">
-                            Información de la Materia
-                            <a class="btn btn-info" href="<c:url value="/courses/${course.id}/edit"/>">Editar</a>
+                            ${course.name} <small> - Información</small>
                         </h1>
                     </div>
                 </div>
@@ -55,13 +54,17 @@
                                        ${course.credits}
                                    </div>
                                </div>
+                               <div class="col-xs-12 text-center">
+                                   <a class="btn btn-info" href="<c:url value="/courses/${course.id}/edit"/>">Editar</a>
+                               </div>
                            </div>
                        </div>
                    </div>
                    <div class="col-xs-12 col-md-6">
                        <div class="row">
                            <div class="col-xs-12 col-md-6">
-                               <a href="<c:url value="/courses/${course.id}/students" />" type="button" class="btn btn-link">Ver Alumnos Inscriptos</a>
+                               <a href="<c:url value="/courses/${course.id}/students" />" type="button" class="btn btn-info" role="button">
+                                   <i class="fa fa-users" aria-hidden="true"></i> Alumnos</a>
                            </div>
                        </div>
                    </div>
