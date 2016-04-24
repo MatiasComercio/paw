@@ -66,8 +66,16 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Override
-	public Result addGrade(Grade grade) {
-		return studentDao.addGrade(grade);
+	public Result addGrade(final Grade grade) {
+		if (grade == null) {
+			return null;
+		}
+
+		Result result = studentDao.addGrade(grade);
+		if (result != null && result.equals(Result.OK)) {
+			result = studentDao.unenroll(grade.getStudentDocket(), grade.getCourseId());
+		}
+		return result;
 	}
 
 	@Override

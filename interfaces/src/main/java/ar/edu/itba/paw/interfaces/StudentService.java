@@ -72,7 +72,7 @@ public interface StudentService {
 	Result deleteStudent(Integer docket);
 
 	/**
-	 * Add the grade for a given student and course;
+	 * Add the grade for a given student and course. If success, the student is unenrolled from the given course.
 	 * @param grade which contains the student docket, the course id and the grade
 	 * @return OK if the grade was added;
 	 * 		INVALID_INPUT_PARAMETERS if one or more parameters are invalid;
