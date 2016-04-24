@@ -66,7 +66,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		final ModelAndView mav;
 
 		if (student == null) {
-			return studentNotFound(docket);
+			return new ModelAndView("forward:/errors/404.html");
 		}
 
 		mav = new ModelAndView("student");
@@ -81,7 +81,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		final ModelAndView mav;
 
 		if (student == null) {
-			return studentNotFound(docket);
+			return new ModelAndView("forward:/errors/404.html");
 		}
 
 		mav = new ModelAndView("grades_old"); // +++xchange
@@ -116,7 +116,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		// +++ximprove with Spring Security
 		final Student student = studentService.getByDocket(docket);
 		if (student == null) {
-			return studentNotFound(docket);
+			return new ModelAndView("forward:/errors/404.html");
 		}
 
 		final ModelAndView mav = new ModelAndView("courses");
@@ -178,7 +178,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		// +++ximprove with Spring Security
 		final Student student = studentService.getByDocket(docket);
 		if (student == null) {
-			return studentNotFound(docket);
+			return new ModelAndView("forward:/errors/404.html");
 		}
 
 		final ModelAndView mav = new ModelAndView("courses");
