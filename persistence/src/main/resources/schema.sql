@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS inscription (
 CREATE TABLE IF NOT EXISTS grade (
   docket INTEGER NOT NULL,
   course_id INTEGER NOT NULL ,
-  grade DECIMAL NOT NULL ,
+  grade DECIMAL(4,2) NOT NULL ,
   modified TIMESTAMP DEFAULT current_timestamp,
 
   PRIMARY KEY (docket, course_id, grade, modified),

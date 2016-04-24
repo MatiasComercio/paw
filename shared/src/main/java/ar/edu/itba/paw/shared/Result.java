@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.shared;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
-
 public enum Result {
     OK(""),
 

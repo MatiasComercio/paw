@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -110,7 +111,15 @@ public class StudentServiceImpl implements StudentService {
 			return null;
 		}
 
-		courses.removeAll(this.getStudentCourses(docket, null));
+		Collection<Course> currentCourses = getStudentCourses(docket, null);
+		if (currentCourses != null) {
+			courses.removeAll(currentCourses);
+		}
+
+		Collection<Course> approvedCourses = getApprovedCourses(docket);
+		if (currentCourses != null) {
+			courses.removeAll(approvedCourses);
+		}
 
 		return courses;
 	}
@@ -167,6 +176,11 @@ public class StudentServiceImpl implements StudentService {
 
 		/* notifyUnenrollment(studentDocket, courseId); mail +++xtodo */
 		return result;
+	}
+
+	@Override
+	public Collection<Course> getApprovedCourses(final int docket) {
+		return docket <= 0 ? null : studentDao.getApprovedCourses(docket);
 	}
 
 	/* Test purpose only */

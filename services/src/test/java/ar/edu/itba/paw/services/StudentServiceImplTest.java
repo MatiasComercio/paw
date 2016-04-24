@@ -78,7 +78,7 @@ public class StudentServiceImplTest {
 		verify(studentDao, times(0)).getGrades(DOCKET_INVALID);
 	}
 
-	/* +++xtest: update*/
+
 	@Test
 	public void testGetStudentCourses() {
 		CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().build();
@@ -203,5 +203,22 @@ public class StudentServiceImplTest {
 		verify(courseService, times(2)).getByFilter(courseFilter); /* getAvailable + prev call*/
 		verify(courseService, times(6)).getByFilter(null); /* getStudent + 5 prev calls */
 		verify(studentDao, times(0)).getStudentCourses(DOCKET_INVALID);
+	}
+
+	@Test
+	public void testGetApprovedCourses() {
+		/* Checks when input is valid */
+		studentService.getApprovedCourses(DOCKET_VALID);
+		verify(studentDao, times(1)).getApprovedCourses(DOCKET_VALID);
+
+		studentService.getApprovedCourses(DOCKET_VALID_LIMIT);
+		verify(studentDao, times(1)).getApprovedCourses(DOCKET_VALID_LIMIT);
+
+		/* Checks when input is invalid */
+		studentService.getApprovedCourses(DOCKET_INVALID_LIMIT);
+		verify(studentDao, times(0)).getApprovedCourses(DOCKET_INVALID_LIMIT);
+
+		studentService.getApprovedCourses(DOCKET_INVALID);
+		verify(studentDao, times(0)).getApprovedCourses(DOCKET_INVALID);
 	}
 }

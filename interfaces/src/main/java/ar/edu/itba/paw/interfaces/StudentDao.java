@@ -9,6 +9,7 @@ import ar.edu.itba.paw.shared.StudentFilter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 
 public interface StudentDao {
@@ -108,4 +109,12 @@ public interface StudentDao {
 	 * @return a Result object containing information of the operation carried out
 	 */
 	Result unenroll(final Integer studentDocket, final Integer courseId);
+
+	/**
+	 * Gets the collection of courses the student already approved.
+	 * @param docket The student's docket
+	 * @return The collection of the courses the student with the given docket has already approved;
+	 *          an empty collection will be returned if no course was approved
+	 */
+	Collection<Course> getApprovedCourses(final int docket);
 }

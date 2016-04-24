@@ -30,10 +30,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class StudentJdbcDao implements StudentDao {
@@ -132,6 +129,14 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String COUNT_INSCRIPTION = "SELECT COUNT(*) FROM " + INSCRIPTION_TABLE
 			+ " WHERE " + INSCRIPTION__COURSE_ID_COLUMN + " = ?"
 			+ " AND " + INSCRIPTION__DOCKET_COLUMN + " = ?";
+
+	private static final Integer APPROVING_GRADE = 4;
+	private static final String GET_APPROVED_COURSES =
+					"SELECT * " +
+					"FROM " + GRADE_TABLE + " JOIN " + COURSE_TABLE + " ON " +
+					GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." +  COURSE__ID_COLUMN +
+					" WHERE " + GRADE__DOCKET_COLUMN + " = ? " + " AND " + GRADE__GRADE_COLUMN + " >= " + APPROVING_GRADE +
+					";";
 
 
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
@@ -534,6 +539,17 @@ public class StudentJdbcDao implements StudentDao {
 		}
 
 		return cUpdated == 1 ? Result.OK : Result.NOT_EXISTENT_ENROLL;
+	}
+
+	@Override
+	public Collection<Course> getApprovedCourses(final int docket) {
+		final RowMapper<Course> approvedCoursesRowMapper = (rs, rowNum) -> {
+			final Course.Builder courseBuilder = new Course.Builder(rs.getInt(COURSE__ID_COLUMN));
+			courseBuilder.name(rs.getString(COURSE__NAME_COLUMN)).credits(rs.getInt(COURSE__CREDITS_COLUMN));
+			return courseBuilder.build();
+		};
+
+		return jdbcTemplate.query(GET_APPROVED_COURSES, approvedCoursesRowMapper, docket);
 	}
 
 	private boolean exists(final StringBuilder email) {

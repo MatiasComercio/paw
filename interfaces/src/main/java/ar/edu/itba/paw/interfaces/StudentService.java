@@ -8,6 +8,7 @@ import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 public interface StudentService {
@@ -115,4 +116,11 @@ public interface StudentService {
 	 */
 	Result unenroll(final Integer studentDocket, final Integer courseId);
 
+	/**
+	 * Gets the collection of courses the student already approved.
+	 * @param docket The student's docket
+	 * @return The collection of the courses the student with the given docket has already approved;
+	 *          an empty collection will be returned if no course was approved
+	 */
+	Collection<Course> getApprovedCourses(int docket);
 }
