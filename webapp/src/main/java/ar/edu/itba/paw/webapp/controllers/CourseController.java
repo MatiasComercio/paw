@@ -151,12 +151,51 @@ public class CourseController {
     }
 
 
-    @RequestMapping("/courses/{id}/students")
+/*    @RequestMapping("/courses/{id}/students")
     public ModelAndView getCourseStudents(@PathVariable final Integer id){
         final ModelAndView mav = new ModelAndView("courseStudents");
         mav.addObject("courseStudents", courseService.getCourseStudents(id));
 
         return mav;
+    }*/
+
+    @RequestMapping(value = "/courses/{id}/students", method = RequestMethod.GET)
+    public ModelAndView getCourseStudents(@PathVariable("id") final Integer id, final Model model) {
+
+        if (!model.containsAttribute("studentFilterForm")) {
+            model.addAttribute("studentFilterForm", new StudentFilterForm());
+        }
+
+        final StudentFilterForm studentFilterForm = (StudentFilterForm) model.asMap().get("studentFilterForm");
+        final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+                .docket(studentFilterForm.getDocket())
+                .firstName(studentFilterForm.getFirstName())
+                .lastName(studentFilterForm.getLastName())
+                .build();
+
+        // +++ximprove with Spring Security
+        final Course course = courseService.getById(id);
+        if (course == null) {
+            return new ModelAndView("forward:/errors/404.html");
+        }
+        final List<Student> students = courseService.getCourseStudents(id, studentFilter);
+
+        final ModelAndView mav = new ModelAndView("courseStudents");
+        mav.addObject("course", course);
+        mav.addObject("students", students);
+        mav.addObject("studentFilterFormAction", "/courses/" + id + "/students/studentFilterForm");
+        return mav;
+    }
+
+    @RequestMapping(value = "/courses/{id}/students/studentFilterForm", method = RequestMethod.GET)
+    public ModelAndView courseStudentsStudentFilterForm(
+            @PathVariable("id") final int id,
+            @Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
+                                                       final BindingResult errors,
+                                                       final RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.studentFilterForm", errors);
+        redirectAttributes.addFlashAttribute("studentFilterForm", studentFilterForm);
+        return new ModelAndView("redirect:/courses/" + id + "/students");
     }
 
     @RequestMapping(value = "/courses/add_course", method = RequestMethod.GET)

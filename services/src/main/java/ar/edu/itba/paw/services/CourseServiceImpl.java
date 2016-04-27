@@ -2,9 +2,12 @@ package ar.edu.itba.paw.services;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.CourseService;
+import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Autowired
     private CourseDao courseDao;
+
+    @Autowired
+    private StudentService studentService;
 
     @Override
     public Result create(Course course) {
@@ -57,6 +63,24 @@ public class CourseServiceImpl implements CourseService {
             return courseDao.deleteCourse(id);
         }
         return Result.ERROR_ID_OUT_OF_BOUNDS;
+    }
+
+    @Override
+    public List<Student> getCourseStudents(final Integer id, final StudentFilter studentFilter) {
+
+        final Course course = courseDao.getCourseStudents(id);
+        if (course == null) {
+            return null;
+        }
+        final List<Student> students = course.getStudents();
+        if (students == null) {
+            return null;
+        }
+
+        List<Student> studentsFiltered = studentService.getByFilter(studentFilter);
+        students.retainAll(studentsFiltered);
+
+        return students;
     }
 
     /* Test purpose only */

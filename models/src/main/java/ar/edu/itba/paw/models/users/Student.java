@@ -32,8 +32,7 @@ public class Student extends User {
 
 		final Student student = (Student) o;
 
-		if (docket != student.docket) return false;
-		return grades != null ? grades.equals(student.grades) : student.grades == null;
+		return docket == student.docket;
 
 	}
 
@@ -41,7 +40,6 @@ public class Student extends User {
 	public int hashCode() {
 		int result = super.hashCode();
 		result = 31 * result + docket;
-		result = 31 * result + (grades != null ? grades.hashCode() : 0);
 		return result;
 	}
 

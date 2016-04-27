@@ -112,7 +112,7 @@
                                     data-student_first_name="${student.firstName}"
                                     data-student_last_name="${student.lastName}"
                                     data-toggle="modal" data-target="#deleteStudentFormConfirmationModal">
-                                <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="delete"/>
+                                <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
                             </button>
                         </c:when>
                         <c:when test="${subsection_courses}">

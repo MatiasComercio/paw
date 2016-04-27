@@ -71,26 +71,13 @@ public abstract class User {
 
 		final User user = (User) o;
 
-		if (dni != user.dni) return false;
-		if (firstName != null ? !firstName.equals(user.firstName) : user.firstName != null) return false;
-		if (lastName != null ? !lastName.equals(user.lastName) : user.lastName != null) return false;
-		if (genre != user.genre) return false;
-		if (birthday != null ? !birthday.equals(user.birthday) : user.birthday != null) return false;
-		if (email != null ? !email.equals(user.email) : user.email != null) return false;
-		return address != null ? address.equals(user.address) : user.address == null;
+		return dni == user.dni;
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = dni;
-		result = 31 * result + (firstName != null ? firstName.hashCode() : 0);
-		result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
-		result = 31 * result + (genre != null ? genre.hashCode() : 0);
-		result = 31 * result + (birthday != null ? birthday.hashCode() : 0);
-		result = 31 * result + (email != null ? email.hashCode() : 0);
-		result = 31 * result + (address != null ? address.hashCode() : 0);
-		return result;
+		return dni;
 	}
 
 	@Override

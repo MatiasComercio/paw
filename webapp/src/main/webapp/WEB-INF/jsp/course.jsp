@@ -58,7 +58,9 @@
                                 </div>
                             </div>
                             <div class="col-xs-12 text-center">
-                                <a class="btn btn-info" href="<c:url value="/courses/${course.id}/edit"/>"><spring:message code="edit"/></a>
+                                <a class="btn btn-info" href="<c:url value="/courses/${course.id}/edit"/>">
+                                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                                </a>
                             </div>
                         </div>
                     </div>
