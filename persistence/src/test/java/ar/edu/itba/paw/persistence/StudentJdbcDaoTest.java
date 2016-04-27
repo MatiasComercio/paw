@@ -895,6 +895,32 @@ public class StudentJdbcDaoTest {
 		/***********************************/
 	}
 
+	/*
+	@Test
+	public void createStudent() {
+
+		Address address = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
+				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED_2).floor(ADDRESS__FLOOR_EXPECTED_2).door(ADDRESS__DOOR_EXPECTED).
+				telephone(ADDRESS__TELEPHONE_EXPECTED_2).zipCode(ADDRESS__ZIP_CODE_EXPECTED_2).build();
+
+
+		// OK insertion
+		Student student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M).
+				birthday(BIRTHDAY_1).address(address).build();
+
+		Result result = studentJdbcDao.create(student);
+		assertEquals(Result.OK, result);
+
+
+		// Existing  DNI
+		student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M).
+				birthday(BIRTHDAY_1).address(address).build();
+
+		result = studentJdbcDao.create(student);
+		assertEquals(Result.STUDENT_EXISTS_DNI, result);
+
+	}*/
+
 	private List<Matcher<? super String>> possibleEmails(final int docket, final String firstName, final String lastName) {
 		final List<Matcher<? super String>> matchers = new LinkedList<>();
 		final String defaultEmail = "student" + docket + EMAIL_DOMAIN;
