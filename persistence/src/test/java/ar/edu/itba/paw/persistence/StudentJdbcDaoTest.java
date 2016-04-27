@@ -123,10 +123,10 @@ public class StudentJdbcDaoTest {
 	private static final String ADDRESS__NEIGHBORHOOD_EXPECTED = "Montecastro";
 	private static final String ADDRESS__STREET_EXPECTED = "Santo Tome";
 	private static final Integer ADDRESS__NUMBER_EXPECTED = 0;
-	private static final String ADDRESS__FLOOR_EXPECTED = "15";
+	private static final Integer ADDRESS__FLOOR_EXPECTED = 15;
 	private static final String ADDRESS__DOOR_EXPECTED = "ZAV";
-	private static final String ADDRESS__TELEPHONE_EXPECTED = "45666666";
-	private static final String ADDRESS__ZIP_CODE_EXPECTED = "1418";
+	private static final Long ADDRESS__TELEPHONE_EXPECTED = 45666666L;
+	private static final Integer ADDRESS__ZIP_CODE_EXPECTED = 1418;
 
 	private static final String ADDRESS__COUNTRY_EXPECTED_EMPTY = "";
 	private static final String ADDRESS__CITY_EXPECTED_EMPTY = "";
@@ -251,6 +251,10 @@ public class StudentJdbcDaoTest {
         addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, ADDRESS__NEIGHBORHOOD_VALUE);
         addressArgs.put(ADDRESS__STREET_COLUMN, ADDRESS__STREET_VALUE);
         addressArgs.put(ADDRESS__NUMBER_COLUMN, ADDRESS__NUMBER_VALUE);
+        addressArgs.put(ADDRESS__FLOOR_COLUMN, ADDRESS__FLOOR_VALUE);
+        addressArgs.put(ADDRESS__DOOR_COLUMN, ADDRESS__DOOR_VALUE);
+        addressArgs.put(ADDRESS__TELEPHONE_COLUMN, ADDRESS__TELEPHONE_VALUE);
+        addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, ADDRESS__ZIP_CODE_VALUE);
         addressInsert.execute(addressArgs);
 
         Student student = studentJdbcDao.getByDocket(docket1);
@@ -262,6 +266,10 @@ public class StudentJdbcDaoTest {
         assertEquals(ADDRESS__NEIGHBORHOOD_EXPECTED, address.getNeighborhood());
         assertEquals(ADDRESS__STREET_EXPECTED, address.getStreet());
         assertEquals(ADDRESS__NUMBER_EXPECTED, address.getNumber());
+        assertEquals(ADDRESS__FLOOR_EXPECTED, address.getFloor());
+        assertEquals(ADDRESS__DOOR_EXPECTED, address.getDoor());
+        assertEquals(ADDRESS__TELEPHONE_EXPECTED, address.getTelephone());
+        assertEquals(ADDRESS__ZIP_CODE_EXPECTED, address.getZipCode());
     }
 
     @Test
