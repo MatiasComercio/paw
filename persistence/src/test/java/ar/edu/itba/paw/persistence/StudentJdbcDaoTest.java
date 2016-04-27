@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -183,6 +184,61 @@ public class StudentJdbcDaoTest {
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, ADDRESS_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
+	}
+
+	@Test
+	public void addGrade() {
+		Student student;
+		Grade expectedGrade;
+		final Map<String, Object> userArgs = new HashMap<>();
+		final Map<String, Object> courseArgs = new HashMap<>();
+		final Map<String, Object> studentArgs = new HashMap<>();
+		final Map<String, Object> gradeArgs = new HashMap<>();
+
+		/**
+		 * Add non existant grade (without time) and check that it was added
+		 */
+		userArgs.put(USER__DNI_COLUMN, DNI_1);
+		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userInsert.execute(userArgs);
+
+		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
+		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
+		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseInsert.execute(courseArgs);
+
+		studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+		docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+
+//		gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
+//		gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_1);
+//		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
+//		KeyHolder keys = gradeInsert.executeAndReturnKeyHolder(gradeArgs);
+//		Timestamp modified = (Timestamp)keys.getKeys().get(GRADE__MODIFIED_COLUMN);
+//		expectedGrade = new Grade.Builder(docket1, COURSE_ID_1, GRADE_APPROVED).modified(modified).build();
+//
+//		student = studentJdbcDao.getGrades(docket1);
+//		assertTrue(student.getGrades().contains(expectedGrade));
+
+//		/**
+//		 * Add non existant grade (with time) and check that it exists
+//		 */
+//		final Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+//
+//		gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
+//		gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_1);
+//		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
+//		gradeArgs.put(GRADE__MODIFIED_COLUMN, timestamp);
+//		gradeInsert.execute(gradeArgs);
+//		expectedGrade = new Grade.Builder(docket1, COURSE_ID_1, GRADE_APPROVED).modified(timestamp).build();
+//		student = studentJdbcDao.getGrades(docket1);
+//
+//		assertTrue(student.getGrades().contains(expectedGrade));
+
+
+
 	}
 
 	@Test
