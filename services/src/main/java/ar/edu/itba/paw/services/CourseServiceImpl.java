@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.shared.CourseFilter;
+import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,18 @@ public class CourseServiceImpl implements CourseService {
     private CourseDao courseDao;
 
     @Override
-    public void create(Course course) {
-        courseDao.create(course);
+    public Result create(Course course) {
+        return courseDao.create(course);
+    }
+
+    @Override
+    public Result update(Integer id, Course course){
+        return courseDao.update(id, course);
+    }
+
+    @Override
+    public List<Course> getAllCourses() {
+        return getByFilter(null);
     }
 
     @Override
@@ -40,8 +51,16 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.getByFilter(courseFilter);
     }
 
-    /* +++xtest method */
-    public void setCourseDao(CourseDao courseDao) {
+    @Override
+    public Result deleteCourse(Integer id) {
+        if(id >= 0) {
+            return courseDao.deleteCourse(id);
+        }
+        return Result.ERROR_ID_OUT_OF_BOUNDS;
+    }
+
+    /* Test purpose only */
+	/* default */ void setCourseDao(CourseDao courseDao) {
         this.courseDao = courseDao;
     }
 

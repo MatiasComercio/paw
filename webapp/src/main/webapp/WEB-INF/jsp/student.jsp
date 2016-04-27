@@ -1,9 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" pageEncoding="UTF-8"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Alumno ${student.docket}</title>
+    <title>
+        <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="profile"/>
+    </title>
     <jsp:include page="base/head.jsp" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link href="<c:url value="/static/css/course-detail.css" />" rel="stylesheet" type="text/css"/>
@@ -17,19 +20,22 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        Información del Alumno
+                        <spring:message code="profile"/>
                     </h1>
                 </div>
             </div>
             <!-- Content -->
             <div class="row">
+                <div class="col-xs-12">
+                    <jsp:include page="base/alerts.jsp" />
+                </div>
                 <div class="col-xs-12 col-md-8">
                     <div class="well">
                         <div class="row">
                             <div class="col-xs-12 col-md-6">
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Legajo</strong>
+                                        <strong><spring:message code="docket"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.docket}
@@ -37,7 +43,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>DNI</strong>
+                                        <strong><spring:message code="dni"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.dni}
@@ -45,7 +51,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Nombre</strong>
+                                        <strong><spring:message code="firstName"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.firstName}
@@ -53,7 +59,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Apellido</strong>
+                                        <strong><spring:message code="lastName"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.lastName}
@@ -61,7 +67,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Género</strong>
+                                        <strong><spring:message code="genre"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.genre}
@@ -69,7 +75,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Cumpleaños</strong>
+                                        <strong><spring:message code="birthday"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.birthday}
@@ -77,7 +83,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Email</strong>
+                                        <strong><spring:message code="email"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.email}
@@ -87,7 +93,7 @@
                             <div class="col-xs-12 col-md-6">
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>País</strong>
+                                        <strong><spring:message code="country"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.address.country}
@@ -95,7 +101,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Ciudad</strong>
+                                        <strong><spring:message code="city"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.address.city}
@@ -103,7 +109,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Localidad</strong>
+                                        <strong><spring:message code="neighbourhood"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.address.neighborhood}
@@ -111,7 +117,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Calle</strong>
+                                        <strong><spring:message code="street"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.address.street}
@@ -119,7 +125,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Altura</strong>
+                                        <strong><spring:message code="number"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.address.number}
@@ -127,7 +133,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Piso Nº</strong>
+                                        <strong><spring:message code="floor"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.address.floor}
@@ -135,7 +141,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Dpto. Nº</strong>
+                                        <strong><spring:message code="door"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.address.door}
@@ -143,7 +149,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Teléfono</strong>
+                                        <strong><spring:message code="telephone"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.address.telephone}
@@ -151,23 +157,30 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-xs-4 right-effect">
-                                        <strong>Código Postal</strong>
+                                        <strong><spring:message code="zipCode"/></strong>
                                     </div>
                                     <div class="col-xs-8">
                                         ${student.address.zipCode}
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-xs-12"></div>
+                            <div class="col-xs-12 text-center">
+                                <a class="btn btn-info" href="<c:url value="/students/${student.docket}/edit"/>"><spring:message code="edit"/></a>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-4">
                     <div class="row">
-                        <div class="col-xs-12 col-md-6">
-                            <a href="courses" type="button" class="btn btn-link">Ver Materias actuales</a>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <a href="courses" type="button" class="btn btn-info col_vertical_margin" role="button"><i class="fa fa-fw fa-university"></i> <spring:message code="courses"/></a>
                         </div>
-                        <div class="col-xs-12 col-md-6">
-                            <a href="grades" type="button" class="btn btn-link">Ver Historial de Notas</a>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <a href="grades" type="button" class="btn btn-info col_vertical_margin" role="button"><i class="fa fa-fw fa-graduation-cap"></i> <spring:message code="grades"/></a>
+                        </div>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <a href="inscription" type="button" class="btn btn-info col_vertical_margin" role="button"><i class="fa fa-fw fa-list-alt"></i> <spring:message code="inscriptions"/></a>
                         </div>
                     </div>
                 </div>
@@ -176,5 +189,7 @@
         </div>
     </div>
 </div>
+<!-- Scripts -->
+<jsp:include page="base/footer.jsp" />
 </body>
 </html>

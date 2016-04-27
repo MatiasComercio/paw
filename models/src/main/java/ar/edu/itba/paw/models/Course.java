@@ -50,26 +50,19 @@ public class Course {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Course)) return false;
 
-        Course course = (Course) o;
+        final Course course = (Course) o;
 
-        if (id != course.id) return false;
-        if (credits != course.credits) return false;
-        if (name != null ? !name.equals(course.name) : course.name != null) return false;
-        return students != null ? students.equals(course.students) : course.students == null;
+        return id == course.id;
 
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + credits;
-        result = 31 * result + (students != null ? students.hashCode() : 0);
-        return result;
+        return id;
     }
 
     public static class Builder {

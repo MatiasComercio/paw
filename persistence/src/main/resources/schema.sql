@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS users (
   dni INTEGER NOT NULL ,
-  first_name VARCHAR (50) ,
-  last_name VARCHAR (50) ,
+  first_name VARCHAR (50) NOT NULL ,
+  last_name VARCHAR (50) NOT NULL ,
   genre CHAR (1) ,
   birthday DATE ,
-  email VARCHAR(100) ,
+  email VARCHAR(100) NOT NULL ,
 
   PRIMARY KEY (dni),
   UNIQUE (email),
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS address (
   zip_code INTEGER,
 
   PRIMARY KEY (dni),
-  FOREIGN KEY (dni) REFERENCES users ON DELETE CASCADE
+  FOREIGN KEY (dni) REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS student (
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS student (
   password VARCHAR (100) DEFAULT 'pass',
 
   PRIMARY KEY (docket),
-  FOREIGN KEY (dni) REFERENCES users
+  FOREIGN KEY (dni) REFERENCES users ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS course (
@@ -52,18 +52,18 @@ CREATE TABLE IF NOT EXISTS inscription (
   course_id INTEGER NOT NULL,
 
   PRIMARY KEY (docket, course_id),
-  FOREIGN KEY (docket) REFERENCES student ON DELETE CASCADE,
-  FOREIGN KEY (course_id) REFERENCES course ON DELETE RESTRICT
+  FOREIGN KEY (docket) REFERENCES student ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (course_id) REFERENCES course ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS grade (
   docket INTEGER NOT NULL,
   course_id INTEGER NOT NULL ,
-  grade DECIMAL NOT NULL ,
+  grade DECIMAL(4,2) NOT NULL ,
   modified TIMESTAMP DEFAULT current_timestamp,
 
   PRIMARY KEY (docket, course_id, grade, modified),
-  FOREIGN KEY (docket) REFERENCES student ON DELETE CASCADE,
-  FOREIGN KEY (course_id) REFERENCES course ON DELETE RESTRICT,
+  FOREIGN KEY (docket) REFERENCES student ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (course_id) REFERENCES course ON DELETE RESTRICT ON UPDATE CASCADE,
   CHECK (grade >= 0)
 );

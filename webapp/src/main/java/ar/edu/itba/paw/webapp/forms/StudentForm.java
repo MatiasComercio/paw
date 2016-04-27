@@ -3,46 +3,100 @@ package ar.edu.itba.paw.webapp.forms;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class StudentForm {
 
-    private int dni;
-    private String firstName;
-    private String lastName;
-    private User.Genre genre;
-    private LocalDate birthday;
-    private String email;
+    /* When the student is created the docket is asigned by the database, not the user */
+    private final static Integer EMPTY_DOCKET = 0;
 
-    private int docket;
+    @NotNull
+    @Min(1)
+    private Integer dni;
+    //@NumberFormat(style = Style.NUMBER)
+
+    @NotNull
+    @Size(min=2, max=50)
+    private String firstName;
+
+    @NotNull
+    @Size(min=2, max=50)
+    private String lastName;
+
+    private User.Genre genre;
+
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    private LocalDate birthday;
 
     private Address address;
+    @NotNull
+    @Size(min=2, max=50)
     private String country;
+    @NotNull
+    @Size(min=2, max=50)
     private String city;
+    @NotNull
+    @Size(min=2, max=50)
     private String neighborhood;
+    @NotNull
+    @Size(min=2, max=100)
     private String street;
-    private String number;
-    private String floor;
+
+    @NotNull
+    @Min(0)
+    private Integer number;
+
+    @Min(0)
+    private Integer floor;
+    @Size(max=10)
     private String door;
-    private String telephone;
-    private String zipCode;
+    @Min(0)
+    private Long telephone;
+    @Min(0)
+    private Integer zipCode;
 
 
     public StudentForm(){}
 
     public Student build(){
-        this.address = new Address.Builder(country, city, neighborhood, street, Integer.valueOf(number)).floor(Integer.valueOf(floor)).
-                door(door).telephone(Long.valueOf(telephone)).zipCode(Integer.valueOf(zipCode)).build();
-        return new Student.Builder(docket, dni).firstName(firstName).lastName(lastName).genre(genre).birthday(birthday)
-                .email(email).address(address).build();
+
+        this.address = new Address.Builder(country, city, neighborhood, street, number).floor(floor).
+                door(door).telephone(telephone).zipCode(zipCode).build();
+        return new Student.Builder(EMPTY_DOCKET, dni).firstName(firstName).lastName(lastName).genre(genre).
+                birthday(birthday).address(address).build();
     }
 
-    public int getDni() {
+    public void loadFromStudent(Student student){
+        this.dni = student.getDni();
+        this.firstName = student.getFirstName();
+        this.lastName = student.getLastName();
+        String genre = User.Genre.getGenre(student.getGenre());
+        this.genre = genre == null ? null : genre.equals("M") ? User.Genre.M : genre.equals("F") ? User.Genre.F : null;
+        this.birthday = student.getBirthday();
+        this.address = student.getAddress();
+        this.country = student.getAddress().getCountry();
+        this.city = student.getAddress().getCity();
+        this.neighborhood = student.getAddress().getNeighborhood();
+        this.street = student.getAddress().getStreet();
+        this.number = student.getAddress().getNumber();
+        this.floor = student.getAddress().getFloor();
+        this.door = student.getAddress().getDoor();
+        this.telephone = student.getAddress().getTelephone();
+        this.zipCode = student.getAddress().getZipCode();
+
+    }
+
+    public Integer getDni() {
         return dni;
     }
 
-    public void setDni(int dni) {
+    public void setDni(Integer dni) {
         this.dni = dni;
     }
 
@@ -78,22 +132,6 @@ public class StudentForm {
         this.birthday = birthday;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public int getDocket() {
-        return docket;
-    }
-
-    public void setDocket(int docket) {
-        this.docket = docket;
-    }
-
     public String getCountry() {
         return country;
     }
@@ -126,19 +164,19 @@ public class StudentForm {
         this.street = street;
     }
 
-    public String getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(String number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 
-    public String getFloor() {
+    public Integer getFloor() {
         return floor;
     }
 
-    public void setFloor(String floor) {
+    public void setFloor(Integer floor) {
         this.floor = floor;
     }
 
@@ -150,19 +188,19 @@ public class StudentForm {
         this.door = door;
     }
 
-    public String getTelephone() {
+    public Long getTelephone() {
         return telephone;
     }
 
-    public void setTelephone(String telephone) {
+    public void setTelephone(Long telephone) {
         this.telephone = telephone;
     }
 
-    public String getZipCode() {
+    public Integer getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(String zipCode) {
+    public void setZipCode(Integer zipCode) {
         this.zipCode = zipCode;
     }
 }

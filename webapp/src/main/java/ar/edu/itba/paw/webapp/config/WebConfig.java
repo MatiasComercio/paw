@@ -2,20 +2,26 @@ package ar.edu.itba.paw.webapp.config;
 
 import org.postgresql.Driver;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 import javax.sql.DataSource;
+import java.nio.charset.StandardCharsets;
 
 @ComponentScan({
 		"ar.edu.itba.paw.webapp.controllers",
@@ -24,7 +30,19 @@ import javax.sql.DataSource;
 })
 @EnableWebMvc
 @Configuration
-public class WebConfig {
+public class WebConfig extends WebMvcConfigurerAdapter {
+
+	// equivalents for <mvc:resources/> tags
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/static/**").addResourceLocations("/static/").setCachePeriod(31556926);
+	}
+
+	// equivalent for <mvc:default-servlet-handler/> tag
+	@Override
+	public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+		configurer.enable();
+	}
 
 	@Value("classpath:schema.sql")
 	private Resource schemaSql;
@@ -61,5 +79,14 @@ public class WebConfig {
 		final ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
 		databasePopulator.addScript(schemaSql);
 		return databasePopulator;
+	}
+
+	@Bean
+	public MessageSource messageSource() {
+		final ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+		messageSource.setBasename("classpath:i18n/messages");
+		messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
+		messageSource.setCacheSeconds(5); // +++xchange
+		return messageSource;
 	}
 }

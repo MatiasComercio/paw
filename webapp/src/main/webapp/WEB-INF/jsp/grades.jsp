@@ -1,13 +1,24 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<html>
+<head>
+
+</head>
+
 <%@ page language="java" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
-<head><jsp:include page="base/head.jsp" /></head>
+<head>
+    <jsp:include page="base/head.jsp" />
+</head>
 <body>
 
 <div id="wrapper">
 
     <jsp:include page="base/nav.jsp" />
+
+    <jsp:include page="template/gradeForm.jsp" />
 
     <div id="page-wrapper">
 
@@ -17,32 +28,19 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h1 class="page-header">
-                         ${student.docket} - ${student.firstName} ${student.lastName}
-                             <small>(${student.email})</small> - Notas
+                        Calificaciones
                     </h1>
                 </div>
             </div>
 
             <!-- content -->
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Materia</th>
-                    <th>Nota</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach items="${student.grades}" var="grade">
-                    <tr>
-                        <td>${ grade.courseId }</td>
-                        <td>${ grade.courseName }</td>
-                        <td>${ grade.grade }</td>
-                        <td><a href="<c:url value="/app/courses/${grade.courseId}/info" />">Ver Materia</a></td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
+            <div class="row">
+                <div class="col-xs-12">
+                    <jsp:include page="base/alerts.jsp" />
+                </div>
+            </div>
+
+            <jsp:include page="template/searchCourses.jsp" />
 
             <!-- /content -->
 
@@ -55,5 +53,14 @@
 </div>
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
+<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchCourses.js"%></script>
+<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/gradeForm.js"%></script>
+
+<script>
+    $( document ).ready(function() {
+        loadSearch();
+        loadGradeForm()
+    });
+</script>
 </body>
 </html>

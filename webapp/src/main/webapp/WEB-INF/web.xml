@@ -13,55 +13,61 @@
 	      http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
          version="2.4">
 
-  <!-- Specifies what type of application is -->
-  <display-name>Servlet 2.4 Web Application</display-name>
+    <!-- Specifies what type of application is -->
+    <display-name>Servlet 2.4 Web Application</display-name>
 
-  <!-- Configure ContextLoaderListener to use AnnotationConfigWebApplicationContext
-       instead of the default XmlWebApplicationContext -->
-  <context-param>
-      <param-name>contextClass</param-name>
-      <param-value>
-          org.springframework.web.context.support.AnnotationConfigWebApplicationContext
-      </param-value>
-  </context-param>
-  
-  <!-- Configuration locations must consist of one or more comma- or space-delimited
-       fully-qualified @Configuration classes. Fully-qualified packages may also be
-       specified for component-scanning -->
-  <context-param>
-      <param-name>contextConfigLocation</param-name>
-      <param-value>ar.edu.itba.paw.webapp.config.WebConfig</param-value>
-  </context-param>
-
-  <!-- Bootstrap the root application context as usual using ContextLoaderListener -->
-  <listener>
-      <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
-
-  <!-- Declare a Spring MVC DispatcherServlet as usual -->
-  <servlet>
-    <servlet-name>dispatcher</servlet-name>
-    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    <!-- Configure DispatcherServlet to use AnnotationConfigWebApplicationContext
+    <!-- Configure ContextLoaderListener to use AnnotationConfigWebApplicationContext
          instead of the default XmlWebApplicationContext -->
-    <init-param>
+    <context-param>
         <param-name>contextClass</param-name>
         <param-value>
             org.springframework.web.context.support.AnnotationConfigWebApplicationContext
         </param-value>
-    </init-param>
-    <!-- Again, config locations must consist of one or more comma- or space-delimited
-         and fully-qualified @Configuration classes -->
-    <init-param>
+    </context-param>
+
+    <!-- Configuration locations must consist of one or more comma- or space-delimited
+         fully-qualified @Configuration classes. Fully-qualified packages may also be
+         specified for component-scanning -->
+    <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value/>
-  	</init-param>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
-  
-  <!-- Map all requests for / to the dispatcher servlet -->
-  <servlet-mapping>
-    <servlet-name>dispatcher</servlet-name>
-    <url-pattern>/app/*</url-pattern>
-  </servlet-mapping>  
+        <param-value>ar.edu.itba.paw.webapp.config.WebConfig</param-value>
+    </context-param>
+
+    <!-- Bootstrap the root application context as usual using ContextLoaderListener -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <!-- Declare a Spring MVC DispatcherServlet as usual -->
+    <servlet>
+        <servlet-name>dispatcher</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!-- Configure DispatcherServlet to use AnnotationConfigWebApplicationContext
+             instead of the default XmlWebApplicationContext -->
+        <init-param>
+            <param-name>contextClass</param-name>
+            <param-value>
+                org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+            </param-value>
+        </init-param>
+        <!-- Again, config locations must consist of one or more comma- or space-delimited
+             and fully-qualified @Configuration classes -->
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value/>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <!-- Map all requests for / to the dispatcher servlet -->
+    <servlet-mapping>
+        <servlet-name>dispatcher</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <!-- Error mapping -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/errors/404.html</location>
+    </error-page>
 </web-app>

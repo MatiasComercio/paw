@@ -1,8 +1,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page language="java" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
-<head><jsp:include page="base/head.jsp" /></head>
+<head>
+    <title>
+        <spring:message code="webAbbreviation"/> | <spring:message code="error"/>
+    </title>
+    <jsp:include page="base/head.jsp" />
+</head>
 <body>
 
 <div id="wrapper">

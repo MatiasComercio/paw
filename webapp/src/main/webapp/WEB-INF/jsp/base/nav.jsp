@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page language="java" pageEncoding="UTF-8"%>
 <!-- Navigation -->
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -10,29 +11,40 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/app/"><strong>SGA</strong> Sistema de gestión académica</a>
+        <a class="navbar-brand" href="/"><strong><spring:message code="webAbbreviation"/></strong> - <spring:message code="webName"/></a>
     </div>
     <!-- Top Menu Items -->
-    <ul class="nav navbar-right top-nav">
-        <!--<li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> Username <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li>
-                    <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="#"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                </li>
-            </ul>
-        </li>-->
-    </ul>
+    <c:if test="${student != null}">
+        <ul class="nav navbar-right top-nav">
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> ${student.fullName}<strong class="caret"></strong></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li>
+                        <a href="/students/${student.docket}/info"><i class="fa fa-fw fa-user"></i> <spring:message code="profile"/></a>
+                    </li>
+                    <li>
+                        <a href="/students/${student.docket}/courses"><i class="fa fa-fw fa-university"></i> <spring:message code="courses"/></a>
+                    </li>
+                    <li>
+                        <a href="/students/${student.docket}/grades"><i class="fa fa-fw fa-graduation-cap"></i> <spring:message code="grades"/></a>
+                    </li>
+                    <li>
+                        <a href="/students/${student.docket}/inscription"><i class="fa fa-fw fa-list-alt"></i> <spring:message code="inscriptions"/></a>
+                    </li>
+                        <%--                <li>
+                                            <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
+                                        </li>
+                                        <li class="divider"></li>
+                                        <li>
+                                            <a href="#"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                                        </li>--%>
+                </ul>
+            </li>
+        </ul>
+    </c:if>
 
     <!-- navbar-collapse -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -40,20 +52,20 @@
             <c:choose>
             <c:when test="${section=='students'}">
             <li class="active">
-            </c:when>
-                <c:otherwise><li></c:otherwise>
+                </c:when>
+            <c:otherwise><li></c:otherwise>
             </c:choose>
-                <a href="<c:url value="/app/" />"><i class="fa fa-fw fa-dashboard"></i> Alumnos</a>
-            </li>
+            <a href="<c:url value="/" />"><i class="fa fa-fw fa-dashboard"></i> <spring:message code="students"/></a>
+        </li>
 
             <c:choose>
-                <c:when test="${section=='courses'}">
+            <c:when test="${section=='courses'}">
             <li class="active">
                 </c:when>
-                <c:otherwise><li></c:otherwise>
+            <c:otherwise><li></c:otherwise>
             </c:choose>
-                <a href="<c:url value="/app/courses" />"><i class="fa fa-fw fa-edit"></i> Materias</a>
-            </li>
+            <a href="<c:url value="/courses" />"><i class="fa fa-fw fa-edit"></i> <spring:message code="courses"/></a>
+        </li>
             <!--<li>
                 <a href="#"><i class="fa fa-fw fa-bar-chart-o"></i> Buscar Alumno</a>
             </li>
