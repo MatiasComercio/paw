@@ -78,10 +78,12 @@
                         <div class="form-group">
                             <form:label for="name" path="name"><spring:message code="name"/>:</form:label>
                             <form:input type="text" class="form-control" id="name" path="name"/>
+                            <form:errors path="name" cssStyle="color: red;" element="div"/>
                         </div>
                         <div class="form-group">
                             <form:label for="credits" path="credits"><spring:message code="credits"/>:</form:label>
                             <form:input type="text" class="form-control" id="credits" path="credits"/>
+                            <form:errors path="credits" cssStyle="color: red;" element="div"/>
                         </div>
                         <spring:message code="saveChanges" var="saveChangesButton"/>
                         <input type="submit" class="btn btn-info" value="${saveChangesButton}"/>
