@@ -104,10 +104,13 @@
                 <td>
                     <c:choose>
                         <c:when test="${subsection_students}">
+                            <a class="btn btn-info btn-xs" href="/students/${student.docket}/edit" role="button">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                            </a>
                             <button name="deleteStudentButton" class="btn btn-danger btn-xs" type="button"
                                     data-student_docket="${student.docket}"
                                     data-student_first_name="${student.firstName}"
-                                    data-student_last_name="${student.firstName}"
+                                    data-student_last_name="${student.lastName}"
                                     data-toggle="modal" data-target="#deleteStudentFormConfirmationModal">
                                 <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="delete"/>
                             </button>
