@@ -10,7 +10,7 @@
         <div class="col-xs-12 col-md-2">
             <p class="lead"><spring:message code="searchBy"/>:</p>
         </div>
-        <div class="col-xs-12 col-md-6">
+        <div class="col-xs-12 col-md-7">
             <div class="row">
                 <div class="col-xs-12 col-md-4">
                     <div class="row">
@@ -56,18 +56,23 @@
                 </div>
             </div>
         </div>
-        <div class="col-xs-1 hidden-md hidden-lg"></div>
-        <div class="col-xs-5 col-md-2 text-center">
-            <button id="search" class="btn btn-default" type="submit">
-                <span class="fa fa-search" aria-hidden="true"></span>
-                <spring:message code="search"/>
-            </button>
-        </div>
-        <div class="col-xs-5 col-md-2 text-center">
-            <button id="resetSearch" class="btn btn-default" type="submit">
-                <span class="fa fa-repeat" aria-hidden="true"></span>
-                <spring:message code="reset"/>
-            </button>
+
+        <div class="col-xs-12 col-md-3">
+            <div class="row">
+                <div class="col-xs-1 hidden-md hidden-lg"></div>
+                <div class="col-xs-5 col-md-6 text-center">
+                    <button id="search" class="btn btn-default" type="submit">
+                        <span class="fa fa-search" aria-hidden="true"></span>
+                        <spring:message code="search"/>
+                    </button>
+                </div>
+                <div class="col-xs-5 col-md-6 text-center">
+                    <button id="resetSearch" class="btn btn-default" type="submit">
+                        <span class="fa fa-repeat" aria-hidden="true"></span>
+                        <spring:message code="reset"/>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </form:form>
@@ -99,8 +104,10 @@
                 <td>
                     <c:choose>
                         <c:when test="${subsection_students}">
-                            <button name="deleteStudentButton" class="btn btn-info btn-xs" type="button"
+                            <button name="deleteStudentButton" class="btn btn-danger btn-xs" type="button"
                                     data-student_docket="${student.docket}"
+                                    data-student_first_name="${student.firstName}"
+                                    data-student_last_name="${student.firstName}"
                                     data-toggle="modal" data-target="#deleteStudentFormConfirmationModal">
                                 <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="delete"/>
                             </button>

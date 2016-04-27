@@ -3,13 +3,10 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.shared.Result;
-import ar.edu.itba.paw.webapp.forms.GradeForm;
-import ar.edu.itba.paw.webapp.forms.StudentForm;
+import ar.edu.itba.paw.webapp.forms.*;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
-import ar.edu.itba.paw.webapp.forms.CourseFilterForm;
-import ar.edu.itba.paw.webapp.forms.InscriptionForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -42,6 +39,47 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		return STUDENTS_SECTION;
 	}
 
+
+	@RequestMapping(value = "/students", method = RequestMethod.GET)
+	public ModelAndView getStudents(final Model model) {
+
+		if (!model.containsAttribute("studentFilterForm")) {
+			model.addAttribute("studentFilterForm", new StudentFilterForm());
+		}
+		if (!model.containsAttribute("deleteStudentForm")) {
+			model.addAttribute("deleteStudentForm", new StudentFilterForm()); /* +++xcheck: if it is necessary to create a new Form */
+		}
+
+		final StudentFilterForm studentFilterForm = (StudentFilterForm) model.asMap().get("studentFilterForm");
+		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+				.docket(studentFilterForm.getDocket())
+				.firstName(studentFilterForm.getFirstName())
+				.lastName(studentFilterForm.getLastName())
+				.build();
+
+		// +++ximprove with Spring Security
+		final List<Student> students = studentService.getByFilter(studentFilter);
+		if (students == null) {
+			return new ModelAndView("forward:/errors/404.html");
+		}
+
+		final ModelAndView mav = new ModelAndView("students");
+		mav.addObject("students", students);
+		mav.addObject("studentFilterFormAction", "/students/studentFilterForm");
+		mav.addObject("subsection_students", true);
+		mav.addObject("section", STUDENTS_SECTION);
+		return mav;
+	}
+
+	@RequestMapping(value = "/students/studentFilterForm", method = RequestMethod.GET)
+	public ModelAndView studentFilterForm(             @Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
+	                                                   final BindingResult errors,
+	                                                   final RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.studentFilterForm", errors);
+		redirectAttributes.addFlashAttribute("studentFilterForm", studentFilterForm);
+		return new ModelAndView("redirect:/students");
+	}
+/*
 	@RequestMapping("/students")
 	public ModelAndView getStudentsByFilter(@RequestParam(required = false) final Integer docket,
 	                                        @RequestParam(required = false) final String firstName,
@@ -58,6 +96,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		mav.addObject("students", students);
 		return mav;
 	}
+*/
 
 	@RequestMapping("/students/{docket}/info")
 	public ModelAndView getStudent(@PathVariable final int docket) {
