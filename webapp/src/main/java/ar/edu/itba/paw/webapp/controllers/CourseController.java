@@ -241,10 +241,15 @@ public class CourseController {
         final Result result = courseService.deleteCourse(id);
 //        ModelAndView mav = new ModelAndView("redirect:/courses");
 //        ModelAndView mav = new ModelAndView("coursesSearch");
-        redirectAttributes.addFlashAttribute("alert", "success");
-        redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteCourse_success",
-                new Object[] {},
-                Locale.getDefault()));
+        if(result.equals(Result.OK)) {
+            redirectAttributes.addFlashAttribute("alert", "success");
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteCourse_success",
+                    new Object[]{},
+                    Locale.getDefault()));
+        } else {
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", result.getMessage());
+        }
 
         return new ModelAndView("redirect:/courses");
     }
