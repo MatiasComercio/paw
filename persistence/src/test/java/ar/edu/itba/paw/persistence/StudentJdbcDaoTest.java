@@ -187,7 +187,33 @@ public class StudentJdbcDaoTest {
 
 	@Test
 	public void deleteStudent() {
+		Result result;
+		Student student;
+		final Map<String, Object> userArgs1 = new HashMap<>();
+		final Map<String, Object> studentArgs1 = new HashMap<>();
 
+		/**
+		 * Delete non existant student
+		 */
+		result = studentJdbcDao.deleteStudent(DOCKET_1);
+		assertEquals(Result.ERROR_UNKNOWN, result);
+
+		/**
+		 * Delete existant student and then check that it is deleted
+		 */
+		userArgs1.put(USER__DNI_COLUMN, DNI_1);
+		userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userInsert.execute(userArgs1);
+
+		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
+		docket1 = studentInsert.executeAndReturnKey(studentArgs1).intValue();
+
+		result = studentJdbcDao.deleteStudent(docket1);
+		assertEquals(Result.OK, result);
+		student = studentJdbcDao.getByDocket(docket1);
+		assertNull(student);
 	}
 
 	@Test
