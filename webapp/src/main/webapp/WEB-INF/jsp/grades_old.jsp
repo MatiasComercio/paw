@@ -49,7 +49,7 @@
                         <td>${ grade.grade }</td>
                         <td>${ grade.modified }</td>
                         <td><a href="<c:url value="/courses/${grade.courseId}/info" />"><spring:message code="see"/> <spring:message code="course"/></a></td>
-                        <td><a href="<c:url value="/students/${student.docket}/grades/edit/${grade.courseId}/${grade.modified}/${grade.grade}" />"><spring:message code="editGrade"/></a></td>
+                        <td><a href="<c:url value="/students/${student.docket}/grades/edit/${grade.courseName}/${grade.grade}/${grade.modified}/${grade.courseId}" />"><spring:message code="editGrade"/></a></td>
                     </tr>
                 </c:forEach>
                 </tbody>
