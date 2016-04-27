@@ -88,6 +88,7 @@ public class CourseJdbcDaoTest {
 
     @Test
     public void deleteCourse() {
+        // Delete non existant course
         Result result = courseJdbcDao.deleteCourse(COURSE_ID_4);
         assertEquals(Result.ERROR_UNKNOWN, result);
     }
