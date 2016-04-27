@@ -186,7 +186,40 @@ public class StudentJdbcDaoTest {
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
 	}
 
-	@Test
+    @Test
+    public void hasAddress() {
+        final Map<String, Object> userArgs = new HashMap<>();
+        final Map<String, Object> addressArgs = new HashMap<>();
+        boolean hasAddress;
+
+        /**
+         * add user without address and check that it effectively does not have it
+         */
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userInsert.execute(userArgs);
+
+        hasAddress = studentJdbcDao.hasAddress(DNI_1);
+        assertFalse(hasAddress);
+
+        /**
+         * add address to the user
+         */
+        addressArgs.put(ADDRESS__CITY_COLUMN, ADDRESS__CITY_VALUE);
+        addressArgs.put(ADDRESS__COUNTRY_COLUMN, ADDRESS__COUNTRY_VALUE);
+        addressArgs.put(ADDRESS__DNI_COLUMN, DNI_1);
+        addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, ADDRESS__NEIGHBORHOOD_VALUE);
+        addressArgs.put(ADDRESS__STREET_COLUMN, ADDRESS__STREET_VALUE);
+        addressArgs.put(ADDRESS__NUMBER_COLUMN, ADDRESS__NUMBER_VALUE);
+        addressInsert.execute(addressArgs);
+
+        hasAddress = studentJdbcDao.hasAddress(DNI_1);
+        assertTrue(hasAddress);
+    }
+
+    @Test
 	public void addGrade() {
 		Student student;
 		Grade expectedGrade;
