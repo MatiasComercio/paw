@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.shared.Result;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,9 +26,9 @@ public class CourseJdbcDaoTest {
     private static final String COURSE_TABLE = "course";
 
     /* Columns */
-    private static final String COLUMN_ID = "id";
-    private static final String COLUMN_NAME = "name";
-    private static final String COLUMN_CREDITS = "credits";
+    private static final String COURSE__ID_COLUMN = "id";
+    private static final String COURSE__NAME_COLUMN = "name";
+    private static final String COURSE__CREDITS_COLUMN = "credits";
 
     /* Example Args */
     private static final int ID_1 = 1;
@@ -67,15 +68,15 @@ public class CourseJdbcDaoTest {
         final Map<String, Object> courseArgs2 = new HashMap<>();
         final Map<String, Object> courseArgs3 = new HashMap<>();
 
-        courseArgs1.put(COLUMN_ID, ID_1);
-        courseArgs1.put(COLUMN_NAME, NAME_1);
-        courseArgs1.put(COLUMN_CREDITS, CREDITS_1);
-        courseArgs2.put(COLUMN_ID, ID_2);
-        courseArgs2.put(COLUMN_NAME, NAME_2);
-        courseArgs2.put(COLUMN_CREDITS, CREDITS_2);
-        courseArgs3.put(COLUMN_ID, ID_3);
-        courseArgs3.put(COLUMN_NAME, NAME_3);
-        courseArgs3.put(COLUMN_CREDITS, CREDITS_3);
+        courseArgs1.put(COURSE__ID_COLUMN, ID_1);
+        courseArgs1.put(COURSE__NAME_COLUMN, NAME_1);
+        courseArgs1.put(COURSE__CREDITS_COLUMN, CREDITS_1);
+        courseArgs2.put(COURSE__ID_COLUMN, ID_2);
+        courseArgs2.put(COURSE__NAME_COLUMN, NAME_2);
+        courseArgs2.put(COURSE__CREDITS_COLUMN, CREDITS_2);
+        courseArgs3.put(COURSE__ID_COLUMN, ID_3);
+        courseArgs3.put(COURSE__NAME_COLUMN, NAME_3);
+        courseArgs3.put(COURSE__CREDITS_COLUMN, CREDITS_3);
 
         courseInsert.execute(courseArgs1);
         courseInsert.execute(courseArgs2);
