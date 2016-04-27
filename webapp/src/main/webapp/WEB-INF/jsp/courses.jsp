@@ -25,12 +25,17 @@
 
     <jsp:include page="base/nav.jsp" />
 
-    <c:if test="${section=='students'}">
-        <jsp:include page="template/enrollForm.jsp" />
-        <c:if test="${subsection_courses}">
-            <jsp:include page="template/gradeForm.jsp" />
-        </c:if>
-    </c:if>
+    <c:choose>
+        <c:when test="${section=='students'}">
+            <<jsp:include page="template/enrollForm.jsp" />
+            <c:if test="${subsection_courses}">
+                <jsp:include page="template/gradeForm.jsp" />
+            </c:if>
+        </c:when>
+        <c:when test="${section=='courses'}">
+            <jsp:include page="template/deleteCourseForm.jsp" />
+        </c:when>
+    </c:choose>
 
     <div id="page-wrapper">
 
@@ -94,21 +99,38 @@
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
 <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchCourses.js"%></script>
-<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/enrollForm.js"%></script>
-<c:if test="${subsection_courses}">
-    <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/gradeForm.js"%></script>
-</c:if>
+
+<c:choose>
+    <c:when test="${section=='students'}">
+        <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/enrollForm.js"%></script>
+        <c:if test="${subsection_courses}">
+            <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/gradeForm.js"%></script>
+        </c:if>
+    </c:when>
+    <c:when test="${section=='courses'}">
+        <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteCourseForm.js"%></script>
+    </c:when>
+</c:choose>
+
 <script>
     $( document ).ready(function() {
         loadSearch();
+
         <c:choose>
-        <c:when test="${subsection_enroll}">
-        loadEnrollForm("inscription");
-        </c:when>
-        <c:when test="${subsection_courses}">
-        loadEnrollForm("unenroll");
-        loadGradeForm("gradeButton")
-        </c:when>
+            <c:when test="${section=='students'}">
+                <c:choose>
+                    <c:when test="${subsection_enroll}">
+                        loadEnrollForm("inscription");
+                    </c:when>
+                    <c:when test="${subsection_courses}">
+                        loadEnrollForm("unenroll");
+                        loadGradeForm("gradeButton")
+                    </c:when>
+                </c:choose>
+            </c:when>
+            <c:when test="${section=='courses'}">
+                loadDeleteCourseForm("deleteCourseButton");
+            </c:when>
         </c:choose>
     });
 </script>

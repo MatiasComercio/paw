@@ -58,9 +58,9 @@ public class CourseController {
         if (!model.containsAttribute("courseFilterForm")) {
             model.addAttribute("courseFilterForm", new CourseFilterForm());
         }
-/*        if (!model.containsAttribute("deleteStudentForm")) {
-            model.addAttribute("deleteStudentForm", new StudentFilterForm()); *//* +++xcheck: if it is necessary to create a new Form *//*
-        }*/
+        if (!model.containsAttribute("deleteCourseForm")) {
+            model.addAttribute("deleteCourseForm", new CourseFilterForm());  /*+++xcheck: if it is necessary to create a new Form*/
+        }
 
         final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
         final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
