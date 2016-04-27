@@ -99,6 +99,9 @@ public class CourseJdbcDaoTest {
 
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert courseInsert;
+    private SimpleJdbcInsert studentInsert;
+    private SimpleJdbcInsert inscriptionStudent;
+    private SimpleJdbcInsert gradeInsert;
 
     /* Keys */
     private int id1;
@@ -109,6 +112,9 @@ public class CourseJdbcDaoTest {
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(dataSource);
         courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
+        studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE);
+        inscriptionStudent = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE);
+        gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE);
 
         /* Clean DB */
         JdbcTestUtils.deleteFromTables(jdbcTemplate, COURSE_TABLE);
