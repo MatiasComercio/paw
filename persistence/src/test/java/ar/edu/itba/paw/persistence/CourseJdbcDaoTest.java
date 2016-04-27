@@ -31,15 +31,15 @@ public class CourseJdbcDaoTest {
     private static final String COURSE__CREDITS_COLUMN = "credits";
 
     /* Example Args */
-    private static final int ID_1 = 1;
-    private static final String NAME_1 = "Metodos";
-    private static final int CREDITS_1 = 3;
-    private static final int ID_2 = 2;
-    private static final String NAME_2 = "PI";
-    private static final int CREDITS_2 = 9;
-    private static final int ID_3 = 3;
-    private static final String NAME_3 = "Logica";
-    private static final int CREDITS_3 = 6;
+    private static final int COURSE_ID_1 = 1;
+    private static final String COURSE_NAME_1 = "Metodos";
+    private static final int COURSE_CREDITS_1 = 3;
+    private static final int COURSE_ID_2 = 2;
+    private static final String COURSE_NAME_2 = "PI";
+    private static final int COURSE_CREDITS_2 = 9;
+    private static final int COURSE_ID_3 = 3;
+    private static final String COURSE__NAME_3 = "Logica";
+    private static final int COURSE_CREDITS_3 = 6;
 
     @Autowired
     private DataSource dataSource;
@@ -68,15 +68,15 @@ public class CourseJdbcDaoTest {
         final Map<String, Object> courseArgs2 = new HashMap<>();
         final Map<String, Object> courseArgs3 = new HashMap<>();
 
-        courseArgs1.put(COURSE__ID_COLUMN, ID_1);
-        courseArgs1.put(COURSE__NAME_COLUMN, NAME_1);
-        courseArgs1.put(COURSE__CREDITS_COLUMN, CREDITS_1);
-        courseArgs2.put(COURSE__ID_COLUMN, ID_2);
-        courseArgs2.put(COURSE__NAME_COLUMN, NAME_2);
-        courseArgs2.put(COURSE__CREDITS_COLUMN, CREDITS_2);
-        courseArgs3.put(COURSE__ID_COLUMN, ID_3);
-        courseArgs3.put(COURSE__NAME_COLUMN, NAME_3);
-        courseArgs3.put(COURSE__CREDITS_COLUMN, CREDITS_3);
+        courseArgs1.put(COURSE__ID_COLUMN, COURSE_ID_1);
+        courseArgs1.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
+        courseArgs1.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+        courseArgs2.put(COURSE__ID_COLUMN, COURSE_ID_2);
+        courseArgs2.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
+        courseArgs2.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+        courseArgs3.put(COURSE__ID_COLUMN, COURSE_ID_3);
+        courseArgs3.put(COURSE__NAME_COLUMN, COURSE__NAME_3);
+        courseArgs3.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_3);
 
         courseInsert.execute(courseArgs1);
         courseInsert.execute(courseArgs2);
@@ -85,25 +85,25 @@ public class CourseJdbcDaoTest {
 
     @Test
     public void getById() {
-        Course course = courseJdbcDao.getById(ID_1);
+        Course course = courseJdbcDao.getById(COURSE_ID_1);
 
         assertNotNull(course);
-        assertEquals(ID_1, course.getId());
-        assertEquals(NAME_1, course.getName());
-        assertEquals(CREDITS_1, course.getCredits());
+        assertEquals(COURSE_ID_1, course.getId());
+        assertEquals(COURSE_NAME_1, course.getName());
+        assertEquals(COURSE_CREDITS_1, course.getCredits());
 
-        course = courseJdbcDao.getById(ID_2);
-
-        assertNotNull(course);
-        assertEquals(ID_2, course.getId());
-        assertEquals(NAME_2, course.getName());
-        assertEquals(CREDITS_2, course.getCredits());
-
-        course = courseJdbcDao.getById(ID_3);
+        course = courseJdbcDao.getById(COURSE_ID_2);
 
         assertNotNull(course);
-        assertEquals(ID_3, course.getId());
-        assertEquals(NAME_3, course.getName());
-        assertEquals(CREDITS_3, course.getCredits());
+        assertEquals(COURSE_ID_2, course.getId());
+        assertEquals(COURSE_NAME_2, course.getName());
+        assertEquals(COURSE_CREDITS_2, course.getCredits());
+
+        course = courseJdbcDao.getById(COURSE_ID_3);
+
+        assertNotNull(course);
+        assertEquals(COURSE_ID_3, course.getId());
+        assertEquals(COURSE__NAME_3, course.getName());
+        assertEquals(COURSE_CREDITS_3, course.getCredits());
     }
 }
