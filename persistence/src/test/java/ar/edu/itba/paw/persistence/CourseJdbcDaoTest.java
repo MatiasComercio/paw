@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,6 +66,30 @@ public class CourseJdbcDaoTest {
     private static final int COURSE_ID_4 = 4;
     private static final String COURSE__NAME_4 = "EDA";
     private static final int COURSE_CREDITS_4 = 6;
+
+    private static final int DOCKET_1 = 1;
+    private static final int DOCKET_2 = 2;
+
+    private static final int DNI_1 = 12345678;
+    private static final String FIRST_NAME_1 = "MaTías NIColas";
+    private static final String FIRST_NAME_1_EXPECTED = "Matías Nicolas";
+    private static final String LAST_NAME_1 = "Comercio vazquez";
+    private static final String LAST_NAME_1_EXPECTED = "Comercio Vazquez";
+    private static final String GENRE_1 = "M";
+    private static final String GENRE_1_EXPECTED = "Male";
+    private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
+    private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
+    private int docket1; /* Auto-generated field */
+
+    private static final int DNI_2 = 87654321;
+    private static final String FIRST_NAME_2 = "BreNda LiHuéN ";
+    private static final String FIRST_NAME_2_EXPECTED = "Brenda Lihuén";
+    private static final String LAST_NAME_2 = "MaYan";
+    private static final String LAST_NAME_2_EXPECTED = "Mayan";
+    private static final String EMAIL_2 = "blihuen@bait.edu.ar";
+    private int docket2; /* Auto-generated field */
+
+
 
     @Autowired
     private DataSource dataSource;
