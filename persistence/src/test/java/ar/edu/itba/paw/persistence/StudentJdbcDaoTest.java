@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -192,6 +193,92 @@ public class StudentJdbcDaoTest {
 	}
 
 	@Test
+	public void addGrade() {
+		Student student;
+		Grade expectedGrade;
+		final Map<String, Object> userArgs = new HashMap<>();
+		final Map<String, Object> courseArgs = new HashMap<>();
+		final Map<String, Object> studentArgs = new HashMap<>();
+		final Map<String, Object> gradeArgs = new HashMap<>();
+
+		/**
+		 * Add non existant grade (without time) and check that it was added
+		 */
+		userArgs.put(USER__DNI_COLUMN, DNI_1);
+		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userInsert.execute(userArgs);
+
+		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
+		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
+		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseInsert.execute(courseArgs);
+
+		studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+		docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+
+//		gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
+//		gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_1);
+//		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
+//		KeyHolder keys = gradeInsert.executeAndReturnKeyHolder(gradeArgs);
+//		Timestamp modified = (Timestamp)keys.getKeys().get(GRADE__MODIFIED_COLUMN);
+//		expectedGrade = new Grade.Builder(docket1, COURSE_ID_1, GRADE_APPROVED).modified(modified).build();
+//
+//		student = studentJdbcDao.getGrades(docket1);
+//		assertTrue(student.getGrades().contains(expectedGrade));
+
+//		/**
+//		 * Add non existant grade (with time) and check that it exists
+//		 */
+//		final Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+//
+//		gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
+//		gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_1);
+//		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
+//		gradeArgs.put(GRADE__MODIFIED_COLUMN, timestamp);
+//		gradeInsert.execute(gradeArgs);
+//		expectedGrade = new Grade.Builder(docket1, COURSE_ID_1, GRADE_APPROVED).modified(timestamp).build();
+//		student = studentJdbcDao.getGrades(docket1);
+//
+//		assertTrue(student.getGrades().contains(expectedGrade));
+
+
+
+	}
+
+	@Test
+	public void deleteStudent() {
+		Result result;
+		Student student;
+		final Map<String, Object> userArgs1 = new HashMap<>();
+		final Map<String, Object> studentArgs1 = new HashMap<>();
+
+		/**
+		 * Delete non existant student
+		 */
+		result = studentJdbcDao.deleteStudent(DOCKET_1);
+		assertEquals(Result.ERROR_UNKNOWN, result);
+
+		/**
+		 * Delete existant student and then check that it is deleted
+		 */
+		userArgs1.put(USER__DNI_COLUMN, DNI_1);
+		userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userInsert.execute(userArgs1);
+
+		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
+		docket1 = studentInsert.executeAndReturnKey(studentArgs1).intValue();
+
+		result = studentJdbcDao.deleteStudent(docket1);
+		assertEquals(Result.OK, result);
+		student = studentJdbcDao.getByDocket(docket1);
+		assertNull(student);
+	}
+
+	@Test
 	public void getStudentCourses() {
 		final Map<String, Object> userArgs1 = new HashMap<>();
 		final Map<String, Object> userArgs2 = new HashMap<>();
@@ -255,6 +342,26 @@ public class StudentJdbcDaoTest {
 		assertFalse(courses.isEmpty());
 		assertArrayEquals(expectedCourses, courses.toArray());
 	}
+
+	@Test
+	public void getDniByDocket() {
+        final Map<String, Object> userArgs = new HashMap<>();
+        final Map<String, Object> studentArgs = new HashMap<>();
+
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1);
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1);
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1);
+        userInsert.execute(userArgs);
+
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+        studentArgs.put(STUDENT__DOCKET_COLUMN, DOCKET_1);
+        Number key = studentInsert.executeAndReturnKey(studentArgs);
+        docket1 = key.intValue();
+
+        int dni = studentJdbcDao.getDniByDocket(docket1);
+        assertEquals(DNI_1, dni);
+    }
 
 	@Test
 	public void getByDocket() {

@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
+import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
@@ -90,6 +91,12 @@ public class StudentServiceImpl implements StudentService {
 
         if (dni == null)
             return Result.STUDENT_NOT_EXISTS;
+
+		if (studentDao.hasAddress(dni)){
+            studentDao.updateAddress(dni, student);
+		} else {
+            studentDao.createAddress(dni, student);
+		}
 
 		return studentDao.update(docket, dni, student);
 	}

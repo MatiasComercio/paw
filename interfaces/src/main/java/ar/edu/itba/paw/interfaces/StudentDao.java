@@ -117,4 +117,25 @@ public interface StudentDao {
 	 *          an empty collection will be returned if no course was approved
 	 */
 	Collection<Course> getApprovedCourses(final int docket);
+
+	/**
+	 * Returns true if there's an Address asociated with the student
+	 * @param dni The student's docket
+	 * @return Address of the specified student or null
+     */
+	boolean hasAddress(final Integer dni);
+
+    /**
+     * Create address of specified student
+     * @param dni The student's dni
+     * @param student The student containing the address to create
+     */
+    void createAddress(final Integer dni, final Student student);
+
+    /**
+     * Create address of specified student
+     * @param dni The student's dni
+     * @param student The student containing the address to update
+     */
+    void updateAddress(final Integer dni, final Student student);
 }

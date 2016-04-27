@@ -419,19 +419,9 @@ public class StudentJdbcDao implements StudentDao {
 		}
 
 		/* Store Address Data */
-		if(student.getDni() > 0 && student.getAddress() != null) {
-			addressArgs.put(ADDRESS__DNI_COLUMN, student.getDni());
-			addressArgs.put(ADDRESS__COUNTRY_COLUMN, student.getAddress().getCountry());
-			addressArgs.put(ADDRESS__CITY_COLUMN, student.getAddress().getCity());
-			addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, student.getAddress().getNeighborhood());
-			addressArgs.put(ADDRESS__STREET_COLUMN, student.getAddress().getStreet());
-			addressArgs.put(ADDRESS__NUMBER_COLUMN, student.getAddress().getNumber());
-			addressArgs.put(ADDRESS__FLOOR_COLUMN, student.getAddress().getFloor());
-			addressArgs.put(ADDRESS__DOOR_COLUMN, student.getAddress().getDoor());
-			addressArgs.put(ADDRESS__TELEPHONE_COLUMN, student.getAddress().getTelephone());
-			addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, student.getAddress().getZipCode());
-			addressInsert.execute(addressArgs);
-		}
+        if(student.getDni() > 0 && student.getAddress() != null) {
+            createAddress(student.getDni(), student);
+        }
 
 		return Result.OK;
 	}
@@ -452,10 +442,6 @@ public class StudentJdbcDao implements StudentDao {
 
         //final String studentUpdate = "UPDATE student SET " + STUDENT__DOCKET_COLUMN + " = ? WHERE " + STUDENT__DNI_COLUMN + " = ?;";
 
-        final String addressUpdate = "UPDATE address SET " + ADDRESS__COUNTRY_COLUMN + " = ?, " + ADDRESS__CITY_COLUMN + " = ?, "
-                + ADDRESS__NEIGHBORHOOD_COLUMN + " = ?, " + ADDRESS__STREET_COLUMN + " = ?, " + ADDRESS__NUMBER_COLUMN + " = ?, "
-                + ADDRESS__FLOOR_COLUMN + " = ?, " + ADDRESS__DOOR_COLUMN + " = ?, " + ADDRESS__TELEPHONE_COLUMN + " = ?, "
-                + ADDRESS__ZIP_CODE_COLUMN + " = ? WHERE " + ADDRESS__DNI_COLUMN + " = ?;";
 
         //Update user table
         try {
@@ -468,18 +454,48 @@ public class StudentJdbcDao implements StudentDao {
             return Result.STUDENT_EXISTS_DNI;
         }
 
+        return Result.OK;
+    }
+
+    @Override
+    public boolean hasAddress(final Integer dni) {
+        return jdbcTemplate.query("SELECT dni FROM address WHERE dni = " + dni + ";", rs -> rs.next() ? true : false);
+    }
+
+    @Override
+    public void createAddress(final Integer dni, final Student student) {
+
+        Map<String, Object> addressArgs = new HashMap<>();
+
+
+        addressArgs.put(ADDRESS__DNI_COLUMN, dni);
+        addressArgs.put(ADDRESS__COUNTRY_COLUMN, student.getAddress().getCountry());
+        addressArgs.put(ADDRESS__CITY_COLUMN, student.getAddress().getCity());
+        addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, student.getAddress().getNeighborhood());
+        addressArgs.put(ADDRESS__STREET_COLUMN, student.getAddress().getStreet());
+        addressArgs.put(ADDRESS__NUMBER_COLUMN, student.getAddress().getNumber());
+        addressArgs.put(ADDRESS__FLOOR_COLUMN, student.getAddress().getFloor());
+        addressArgs.put(ADDRESS__DOOR_COLUMN, student.getAddress().getDoor());
+        addressArgs.put(ADDRESS__TELEPHONE_COLUMN, student.getAddress().getTelephone());
+        addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, student.getAddress().getZipCode());
+        addressInsert.execute(addressArgs);
+
+    }
+    @Override
+    public void updateAddress(Integer dni, Student student) {
 
         final Address addr = student.getAddress();
+
+        final String addressUpdate = "UPDATE address SET " + ADDRESS__COUNTRY_COLUMN + " = ?, " + ADDRESS__CITY_COLUMN + " = ?, "
+                + ADDRESS__NEIGHBORHOOD_COLUMN + " = ?, " + ADDRESS__STREET_COLUMN + " = ?, " + ADDRESS__NUMBER_COLUMN + " = ?, "
+                + ADDRESS__FLOOR_COLUMN + " = ?, " + ADDRESS__DOOR_COLUMN + " = ?, " + ADDRESS__TELEPHONE_COLUMN + " = ?, "
+                + ADDRESS__ZIP_CODE_COLUMN + " = ? WHERE " + ADDRESS__DNI_COLUMN + " = ?;";
 
         if (addr != null) {
             jdbcTemplate.update(addressUpdate, addr.getCountry(), addr.getCity(), addr.getNeighborhood(),
                     addr.getStreet(), addr.getNumber(), addr.getFloor(), addr.getDoor(), addr.getTelephone(),
                     addr.getZipCode(), student.getDni());
         }
-        //Update address table
-
-
-        return Result.OK;
     }
 
     private String createEmail(final int dni, final String firstName, final String lastName) {
