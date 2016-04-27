@@ -24,11 +24,33 @@ import static org.junit.Assert.*;
 @Sql("classpath:schema.sql")
 public class CourseJdbcDaoTest {
     private static final String COURSE_TABLE = "course";
+    private static final String STUDENT_TABLE = "student";
+    private static final String USER_TABLE = "users";
+    private static final String GRADE_TABLE = "grade";
+    private static final String INSCRIPTION_TABLE = "inscription";
 
     /* Columns */
     private static final String COURSE__ID_COLUMN = "id";
     private static final String COURSE__NAME_COLUMN = "name";
     private static final String COURSE__CREDITS_COLUMN = "credits";
+
+    private static final String STUDENT__DOCKET_COLUMN = "docket";
+    private static final String STUDENT__DNI_COLUMN = "dni";
+
+    private static final String USER__DNI_COLUMN = "dni";
+    private static final String USER__FIRST_NAME_COLUMN = "first_name";
+    private static final String USER__LAST_NAME_COLUMN = "last_name";
+    private static final String USER__GENRE_COLUMN = "genre";
+    private static final String USER__BIRTHDAY_COLUMN = "birthday";
+    private static final String USER__EMAIL_COLUMN = "email";
+
+    private static final String GRADE__DOCKET_COLUMN = "docket";
+    private static final String GRADE__COURSE_ID_COLUMN = "course_id";
+    private static final String GRADE__GRADE_COLUMN = "grade";
+    private static final String GRADE__MODIFIED_COLUMN = "modified";
+
+    private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
+    private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
 
     /* Example Args */
     private static final int COURSE_ID_1 = 1;
