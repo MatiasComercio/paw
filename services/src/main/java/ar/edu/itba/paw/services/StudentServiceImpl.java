@@ -93,10 +93,8 @@ public class StudentServiceImpl implements StudentService {
             return Result.STUDENT_NOT_EXISTS;
 
 		if (studentDao.hasAddress(dni)){
-            System.out.println("HAS DNI");
             studentDao.updateAddress(dni, student);
 		} else {
-            System.out.println("CREATE DNI");
             studentDao.createAddress(dni, student);
 		}
 
