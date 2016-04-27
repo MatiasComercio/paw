@@ -286,7 +286,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	                              @PathVariable BigDecimal grade, RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("editGrade");
 		setAlertMessages(mav, redirectAttributes);
-		gradeForm.setGrade(grade); //Set the grade to be displayed in the edit view
+		gradeForm.setGrade(grade); //Set the old grade (to be displayed in the edit view)
 		gradeForm.setDocket(docket);
 		gradeForm.setCourseId(courseId);
 		gradeForm.setModified(modified);
