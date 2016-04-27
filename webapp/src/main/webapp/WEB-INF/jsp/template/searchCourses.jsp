@@ -102,6 +102,11 @@
                                 <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="unenroll"/>
                             </button>
                         </c:when>
+                        <c:when test="${section=='courses'}">
+                            <a class="btn btn-info btn-xs" href="<c:url value="/courses/${course.id}/edit"/>">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                            </a>
+                        </c:when>
                     </c:choose>
                     <a class="btn btn-default btn-xs" href="<c:url value="/courses/${course.id}/info" />" role="button">
                         <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>

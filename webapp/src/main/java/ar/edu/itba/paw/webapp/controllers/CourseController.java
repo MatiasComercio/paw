@@ -3,18 +3,24 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.CourseService;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.shared.StudentFilter;
+import ar.edu.itba.paw.webapp.forms.CourseFilterForm;
 import ar.edu.itba.paw.webapp.forms.CourseForm;
 import ar.edu.itba.paw.shared.CourseFilter;
+import ar.edu.itba.paw.webapp.forms.StudentFilterForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -37,13 +43,48 @@ public class CourseController {
         return COURSES_SECTION;
     }
 
-    @RequestMapping(value = "/courses")
+/*    @RequestMapping(value = "/courses")
     public ModelAndView getCoursesByFilter(@RequestParam(required = false) String keyword,
                                            @RequestParam(required = false) Integer id) {
         final ModelAndView mav = new ModelAndView("coursesSearch");
         final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).id(id).build();
         mav.addObject("courses", courseService.getByFilter(courseFilter));
         return mav;
+    }*/
+
+    @RequestMapping(value = "/courses", method = RequestMethod.GET)
+    public ModelAndView getCourses(final Model model) {
+
+        if (!model.containsAttribute("courseFilterForm")) {
+            model.addAttribute("courseFilterForm", new CourseFilterForm());
+        }
+/*        if (!model.containsAttribute("deleteStudentForm")) {
+            model.addAttribute("deleteStudentForm", new StudentFilterForm()); *//* +++xcheck: if it is necessary to create a new Form *//*
+        }*/
+
+        final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
+        final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
+                id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
+
+        // +++ximprove with Spring Security
+        final List<Course> courses = courseService.getByFilter(courseFilter);
+        if (courses == null) {
+            return new ModelAndView("forward:/errors/404.html");
+        }
+
+        final ModelAndView mav = new ModelAndView("courses");
+        mav.addObject("courses", courses);
+        mav.addObject("courseFilterFormAction", "/courses/courseFilterForm");
+        return mav;
+    }
+
+    @RequestMapping(value = "/courses/courseFilterForm", method = RequestMethod.GET)
+    public ModelAndView studentFilterForm(             @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+                                                       final BindingResult errors,
+                                                       final RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
+        redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
+        return new ModelAndView("redirect:/courses");
     }
 
     @RequestMapping("/courses/{id}/info")

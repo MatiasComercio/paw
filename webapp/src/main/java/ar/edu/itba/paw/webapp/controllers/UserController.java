@@ -67,7 +67,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		mav.addObject("students", students);
 		mav.addObject("studentFilterFormAction", "/students/studentFilterForm");
 		mav.addObject("subsection_students", true);
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
@@ -166,7 +165,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		mav.addObject("subsection_courses", true); /* only different line from /inscription */
 		mav.addObject("courses", studentService.getStudentCourses(docket, courseFilter));
 		mav.addObject("docket", docket);
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
@@ -293,7 +291,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			}
 		}
 		setAlertMessages(mav, redirectAttributes);
-		mav.addObject("section", STUDENTS_SECTION);
 		return mav;
 	}
 
