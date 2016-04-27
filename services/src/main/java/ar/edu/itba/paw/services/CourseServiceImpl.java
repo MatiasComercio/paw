@@ -87,6 +87,10 @@ public class CourseServiceImpl implements CourseService {
 	/* default */ void setCourseDao(CourseDao courseDao) {
         this.courseDao = courseDao;
     }
+    /* Test purpose only */
+	/* default */ void setStudentService(StudentService studentService) {
+        this.studentService = studentService;
+    }
 
 
 }
