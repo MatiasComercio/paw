@@ -104,6 +104,8 @@ public class StudentJdbcDaoTest {
 	private static final String EMAIL_2 = "blihuen@bait.edu.ar";
 	private int docket2; /* Auto-generated field */
 
+    private static final int DNI_3 = 321456789;
+
 	private static final String ADDRESS__COUNTRY_VALUE = "ArgEnTINA";
 	private static final String ADDRESS__CITY_VALUE = "BS. as.";
 	private static final String ADDRESS__NEIGHBORHOOD_VALUE = "MonTECasTro";
@@ -185,6 +187,48 @@ public class StudentJdbcDaoTest {
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
 	}
+
+    @Test
+    public void update() {
+        Result result;
+        final Map<String, Object> userArgs = new HashMap<>();
+        final Map<String, Object> userArgs2 = new HashMap<>();
+        final Map<String, Object> studentArgs = new HashMap<>();
+        final Map<String, Object> studentArgs2 = new HashMap<>();
+
+        /**
+         * update the student's dni
+         */
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userInsert.execute(userArgs);
+
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+        docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+        Student student = new Student.Builder(docket1, DNI_2).build();
+
+        result = studentJdbcDao.update(docket1, DNI_1, student);
+        assertEquals(Result.OK, result);
+
+        /**
+         * add a second user and change dni to existing user's dni
+         */
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
+        userInsert.execute(userArgs);
+
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+        docket2 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+        student = new Student.Builder(docket2, DNI_2).build();
+
+        result = studentJdbcDao.update(docket2, DNI_1, student);
+        assertNotEquals(Result.OK, result);
+        assertEquals(Result.STUDENT_EXISTS_DNI, result);
+    }
 
     @Test
     public void hasAddress() {
