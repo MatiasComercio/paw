@@ -117,6 +117,10 @@ public class CourseJdbcDaoTest {
         gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE);
 
         /* Clean DB */
+
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, GRADE_TABLE);
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, INSCRIPTION_TABLE);
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, COURSE_TABLE);
 
         /* Insertion */
