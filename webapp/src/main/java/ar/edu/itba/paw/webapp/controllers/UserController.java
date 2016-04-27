@@ -280,30 +280,34 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		}
 	}
 
-	@RequestMapping(value = "/students/{docket}/grades/edit/{courseId}/{modified}/{grade}", method = RequestMethod.GET)
+	@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.GET)
 	public ModelAndView editGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
 	                              @PathVariable Integer docket, @PathVariable Integer courseId, @PathVariable Timestamp modified,
-	                              @PathVariable BigDecimal grade, RedirectAttributes redirectAttributes){
+								  @PathVariable BigDecimal grade, @PathVariable String courseName,
+								  RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("editGrade");
 		setAlertMessages(mav, redirectAttributes);
 		gradeForm.setGrade(grade); //Set the old grade (to be displayed in the edit view)
 		gradeForm.setDocket(docket);
 		gradeForm.setCourseId(courseId);
 		gradeForm.setModified(modified);
+		gradeForm.setCourseName(courseName); //Avoid the @NotBlank validation
 
 		mav.addObject("docket", docket);
 		mav.addObject("courseId", courseId);
+		mav.addObject("courseName", courseName);
 
 		return mav;
 	}
 
-	@RequestMapping(value = "/students/{docket}/grades/edit/{courseId}/{modified}/{grade}", method = RequestMethod.POST)
+	@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.POST)
 	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
 	                              @PathVariable Integer docket, @PathVariable Integer courseId,
 	                              @PathVariable Timestamp modified, @PathVariable BigDecimal grade,
+								  @PathVariable String courseName,
 	                              RedirectAttributes redirectAttributes){
 		if (errors.hasErrors()){
-			return editGrade(gradeForm, docket, courseId, modified, grade, null);
+			return editGrade(gradeForm, docket, courseId, modified, grade, courseName, null);
 		}
 
 		Grade newGrade = gradeForm.build();
@@ -312,7 +316,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return editGrade(gradeForm, docket, courseId, modified, grade, redirectAttributes);
+			return editGrade(gradeForm, docket, courseId, modified, grade, courseName,redirectAttributes);
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message",
