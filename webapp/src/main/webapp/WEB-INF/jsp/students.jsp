@@ -47,7 +47,14 @@
                     <jsp:include page="base/alerts.jsp" />
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-xs-12 col-md-2 text-center">
+                    <p class="lead"><spring:message code="actions"/>:</p>
+                </div>
+                <div class="col-xs-12 col-md-2 text-center">
+                    <a class="btn btn-info" href="/students/add_student" role="button"><spring:message code="addStudent"/></a>
+                </div>
+            </div>
             <jsp:include page="template/searchStudents.jsp" />
 
             <!-- /content -->
