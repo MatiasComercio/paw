@@ -338,6 +338,26 @@ public class StudentJdbcDaoTest {
 	}
 
 	@Test
+	public void getDniByDocket() {
+        final Map<String, Object> userArgs = new HashMap<>();
+        final Map<String, Object> studentArgs = new HashMap<>();
+
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1);
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1);
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1);
+        userInsert.execute(userArgs);
+
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+        studentArgs.put(STUDENT__DOCKET_COLUMN, DOCKET_1);
+        Number key = studentInsert.executeAndReturnKey(studentArgs);
+        docket1 = key.intValue();
+
+        int dni = studentJdbcDao.getDniByDocket(docket1);
+        assertEquals(DNI_1, dni);
+    }
+
+	@Test
 	public void getByDocket() {
 		final Map<String, Object> userArgs1 = new HashMap<>();
 		final Map<String, Object> studentArgs1 = new HashMap<>();
