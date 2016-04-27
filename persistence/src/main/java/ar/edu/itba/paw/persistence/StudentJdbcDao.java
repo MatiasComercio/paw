@@ -467,17 +467,19 @@ public class StudentJdbcDao implements StudentDao {
 
         Map<String, Object> addressArgs = new HashMap<>();
 
+        Address addr = student.getAddress();
+
 
         addressArgs.put(ADDRESS__DNI_COLUMN, dni);
-        addressArgs.put(ADDRESS__COUNTRY_COLUMN, student.getAddress().getCountry());
-        addressArgs.put(ADDRESS__CITY_COLUMN, student.getAddress().getCity());
-        addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, student.getAddress().getNeighborhood());
-        addressArgs.put(ADDRESS__STREET_COLUMN, student.getAddress().getStreet());
-        addressArgs.put(ADDRESS__NUMBER_COLUMN, student.getAddress().getNumber());
-        addressArgs.put(ADDRESS__FLOOR_COLUMN, student.getAddress().getFloor());
-        addressArgs.put(ADDRESS__DOOR_COLUMN, student.getAddress().getDoor());
-        addressArgs.put(ADDRESS__TELEPHONE_COLUMN, student.getAddress().getTelephone());
-        addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, student.getAddress().getZipCode());
+        addressArgs.put(ADDRESS__COUNTRY_COLUMN, WordUtils.capitalize(addr.getCountry().toLowerCase()));
+        addressArgs.put(ADDRESS__CITY_COLUMN, WordUtils.capitalize(addr.getCity()).toLowerCase());
+        addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, WordUtils.capitalize(addr.getNeighborhood()).toLowerCase());
+        addressArgs.put(ADDRESS__STREET_COLUMN, WordUtils.capitalize(addr.getStreet()).toLowerCase());
+        addressArgs.put(ADDRESS__NUMBER_COLUMN,addr.getNumber());
+        addressArgs.put(ADDRESS__FLOOR_COLUMN, addr.getFloor());
+        addressArgs.put(ADDRESS__DOOR_COLUMN, addr.getDoor());
+        addressArgs.put(ADDRESS__TELEPHONE_COLUMN, addr.getTelephone());
+        addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, addr.getZipCode());
         addressInsert.execute(addressArgs);
 
     }

@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import org.hamcrest.Matcher;
 import org.junit.Before;
@@ -120,7 +122,7 @@ public class StudentJdbcDaoTest {
 	private static final String ADDRESS__CITY_EXPECTED = "Bs. As.";
 	private static final String ADDRESS__NEIGHBORHOOD_EXPECTED = "Montecastro";
 	private static final String ADDRESS__STREET_EXPECTED = "Santo Tome";
-	private static final String ADDRESS__NUMBER_EXPECTED = "0";
+	private static final Integer ADDRESS__NUMBER_EXPECTED = 0;
 	private static final String ADDRESS__FLOOR_EXPECTED = "15";
 	private static final String ADDRESS__DOOR_EXPECTED = "ZAV";
 	private static final String ADDRESS__TELEPHONE_EXPECTED = "45666666";
@@ -192,9 +194,7 @@ public class StudentJdbcDaoTest {
     public void update() {
         Result result;
         final Map<String, Object> userArgs = new HashMap<>();
-        final Map<String, Object> userArgs2 = new HashMap<>();
         final Map<String, Object> studentArgs = new HashMap<>();
-        final Map<String, Object> studentArgs2 = new HashMap<>();
 
         /**
          * update the student's dni
@@ -228,6 +228,40 @@ public class StudentJdbcDaoTest {
         result = studentJdbcDao.update(docket2, DNI_1, student);
         assertNotEquals(Result.OK, result);
         assertEquals(Result.STUDENT_EXISTS_DNI, result);
+    }
+
+    @Test
+    public void createAddress() {
+        final Map<String, Object> userArgs = new HashMap<>();
+        final Map<String, Object> studentArgs = new HashMap<>();
+        final Map<String, Object> addressArgs = new HashMap<>();
+
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userInsert.execute(userArgs);
+
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+        docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+
+        addressArgs.put(ADDRESS__CITY_COLUMN, ADDRESS__CITY_VALUE);
+        addressArgs.put(ADDRESS__COUNTRY_COLUMN, ADDRESS__COUNTRY_VALUE);
+        addressArgs.put(ADDRESS__DNI_COLUMN, DNI_1);
+        addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, ADDRESS__NEIGHBORHOOD_VALUE);
+        addressArgs.put(ADDRESS__STREET_COLUMN, ADDRESS__STREET_VALUE);
+        addressArgs.put(ADDRESS__NUMBER_COLUMN, ADDRESS__NUMBER_VALUE);
+        addressInsert.execute(addressArgs);
+
+        Student student = studentJdbcDao.getByDocket(docket1);
+        Address address = student.getAddress();
+
+        assertEquals(ADDRESS__CITY_EXPECTED, address.getCity());
+        assertEquals(ADDRESS__COUNTRY_EXPECTED, address.getCountry());
+        // assertEquals(ADDRESS__DNI_COLUMN, ); /* TODO: add getDni for address
+        assertEquals(ADDRESS__NEIGHBORHOOD_EXPECTED, address.getNeighborhood());
+        assertEquals(ADDRESS__STREET_EXPECTED, address.getStreet());
+        assertEquals(ADDRESS__NUMBER_EXPECTED, address.getNumber());
     }
 
     @Test
