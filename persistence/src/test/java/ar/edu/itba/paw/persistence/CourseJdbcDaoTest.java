@@ -101,7 +101,7 @@ public class CourseJdbcDaoTest {
     private SimpleJdbcInsert courseInsert;
     private SimpleJdbcInsert userInsert;
     private SimpleJdbcInsert studentInsert;
-    private SimpleJdbcInsert inscriptionStudent;
+    private SimpleJdbcInsert inscriptionInsert;
     private SimpleJdbcInsert gradeInsert;
 
     /* Keys */
@@ -115,7 +115,7 @@ public class CourseJdbcDaoTest {
         courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
         userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
         studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
-        inscriptionStudent = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE).usingColumns(INSCRIPTION__COURSE_ID_COLUMN, INSCRIPTION__DOCKET_COLUMN);
+        inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE).usingColumns(INSCRIPTION__COURSE_ID_COLUMN, INSCRIPTION__DOCKET_COLUMN);
         gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);;
 
         /* Clean DB */
@@ -149,6 +149,7 @@ public class CourseJdbcDaoTest {
     @Test
     public void deleteCourse() {
         Result result;
+        Course course;
 
         // Delete non existant course
         result = courseJdbcDao.deleteCourse(COURSE_ID_4);
@@ -159,22 +160,35 @@ public class CourseJdbcDaoTest {
          */
         result = courseJdbcDao.deleteCourse(COURSE_ID_1);
         assertEquals(Result.OK, result);
-        Course course = courseJdbcDao.getById(COURSE_ID_1);
+        course = courseJdbcDao.getById(COURSE_ID_1);
         assertNull(course);
 
         /**
          * Delete existant course (with inscriptions) and then check that it was not deleted
          */
         final Map<String, Object> userArgs1 = new HashMap<>();
+        final Map<String, Object> studentArgs1 = new HashMap<>();
+        final Map<String, Object> inscriptionArgs = new HashMap<>();
+
+        userArgs1.put(USER__DNI_COLUMN, DNI_1);
         userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
         userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
         userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
         userInsert.execute(userArgs1);
 
-        final Map<String, Object> studentArgs1 = new HashMap<>();
-        studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
-        Number key = studentInsert.executeAndReturnKey(studentArgs1);
 
+        studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
+        docket1 = studentInsert.executeAndReturnKey(studentArgs1).intValue();
+
+        inscriptionArgs.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_2);
+        inscriptionArgs.put(INSCRIPTION__DOCKET_COLUMN, docket1);
+        inscriptionInsert.execute(inscriptionArgs);
+
+        result = courseJdbcDao.deleteCourse(COURSE_ID_2);
+        assertEquals(Result.COURSE_EXISTS_INSCRIPTION, result);
+
+        course = courseJdbcDao.getById(COURSE_ID_2);
+        assertNotNull(course);
     }
 
     @Test
