@@ -186,6 +186,11 @@ public class StudentJdbcDaoTest {
 	}
 
 	@Test
+	public void deleteStudent() {
+
+	}
+
+	@Test
 	public void getStudentCourses() {
 		final Map<String, Object> userArgs1 = new HashMap<>();
 		final Map<String, Object> userArgs2 = new HashMap<>();
