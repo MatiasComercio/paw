@@ -114,9 +114,9 @@ public class CourseJdbcDaoTest {
         jdbcTemplate = new JdbcTemplate(dataSource);
         courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
         userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
-        studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE);
-        inscriptionStudent = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE);
-        gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE);
+        studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
+        inscriptionStudent = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE).usingColumns(INSCRIPTION__COURSE_ID_COLUMN, INSCRIPTION__DOCKET_COLUMN);
+        gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);;
 
         /* Clean DB */
 
@@ -170,6 +170,11 @@ public class CourseJdbcDaoTest {
         userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
         userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
         userInsert.execute(userArgs1);
+
+        final Map<String, Object> studentArgs1 = new HashMap<>();
+        studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
+        Number key = studentInsert.executeAndReturnKey(studentArgs1);
+
     }
 
     @Test
