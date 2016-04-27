@@ -40,6 +40,9 @@ public class CourseJdbcDaoTest {
     private static final int COURSE_ID_3 = 3;
     private static final String COURSE__NAME_3 = "Logica";
     private static final int COURSE_CREDITS_3 = 6;
+    private static final int COURSE_ID_4 = 4;
+    private static final String COURSE__NAME_4 = "EDA";
+    private static final int COURSE_CREDITS_4 = 6;
 
     @Autowired
     private DataSource dataSource;
@@ -81,6 +84,12 @@ public class CourseJdbcDaoTest {
         courseInsert.execute(courseArgs1);
         courseInsert.execute(courseArgs2);
         courseInsert.execute(courseArgs3);
+    }
+
+    @Test
+    public void deleteCourse() {
+        Result result = courseJdbcDao.deleteCourse(COURSE_ID_4);
+        assertEquals(Result.ERROR_UNKNOWN, result);
     }
 
     @Test
