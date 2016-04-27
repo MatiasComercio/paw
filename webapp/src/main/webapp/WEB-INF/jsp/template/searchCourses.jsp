@@ -83,23 +83,37 @@
                 <td>${ course.credits }</td>
                 <td>
                     <c:choose>
-                        <c:when test="${subsection_enroll}">
-                            <button name="inscription" class="btn btn-info btn-xs" type="button"
-                                    data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                    data-toggle="modal" data-target="#enrollFormConfirmationModal">
-                                <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="enroll"/>
-                            </button>
+                        <c:when test="${section=='students'}">
+                            <c:choose>
+                                <c:when test="${subsection_enroll}">
+                                    <button name="inscription" class="btn btn-info btn-xs" type="button"
+                                            data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                            data-toggle="modal" data-target="#enrollFormConfirmationModal">
+                                        <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="enroll"/>
+                                    </button>
+                                </c:when>
+                                <c:when test="${subsection_courses}">
+                                    <button name="gradeButton" class="btn btn-info btn-xs" type="button"
+                                            data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                            data-toggle="modal" data-target="#gradeFormConfirmationModal">
+                                        <span class="fa fa-graduation-cap" aria-hidden="true"></span> <spring:message code="rate"/>
+                                    </button>
+                                    <button name="unenroll" class="btn btn-danger btn-xs" type="button"
+                                            data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                            data-toggle="modal" data-target="#enrollFormConfirmationModal">
+                                        <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="unenroll"/>
+                                    </button>
+                                </c:when>
+                            </c:choose>
                         </c:when>
-                        <c:when test="${subsection_courses}">
-                            <button name="gradeButton" class="btn btn-info btn-xs" type="button"
+                        <c:when test="${section=='courses'}">
+                            <a class="btn btn-info btn-xs" href="<c:url value="/courses/${course.id}/edit"/>">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                            </a>
+                            <button name="deleteCourseButton" class="btn btn-danger btn-xs" type="button"
                                     data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                    data-toggle="modal" data-target="#gradeFormConfirmationModal">
-                                <span class="fa fa-graduation-cap" aria-hidden="true"></span> <spring:message code="rate"/>
-                            </button>
-                            <button name="unenroll" class="btn btn-danger btn-xs" type="button"
-                                    data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                    data-toggle="modal" data-target="#enrollFormConfirmationModal">
-                                <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="unenroll"/>
+                                    data-toggle="modal" data-target="#deleteCourseFormConfirmationModal">
+                                <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
                             </button>
                         </c:when>
                     </c:choose>

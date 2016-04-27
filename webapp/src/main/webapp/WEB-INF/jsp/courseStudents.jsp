@@ -5,7 +5,7 @@
 <html lang="en">
 <head>
     <title>
-        <spring:message code="webAbbreviation"/> | ${courseStudents.name} | <spring:message code="students"/>
+        <spring:message code="webAbbreviation"/> | ${course.name} | <spring:message code="students"/>
     </title>
     <jsp:include page="base/head.jsp" />
 </head>
@@ -21,12 +21,13 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        ${courseStudents.name} <small> - <spring:message code="students"/></small>
+                        ${course.name} <small> - <spring:message code="students"/></small>
                     </h1>
                 </div>
             </div>
             <!-- Content -->
-            <table class="table table-striped">
+            <jsp:include page="template/searchStudents.jsp" />
+<%--            <table class="table table-striped">
                 <thead>
                 <tr>
                     <th><spring:message code="docket"/></th>
@@ -49,12 +50,19 @@
                     </tr>
                 </c:forEach>
                 </tbody>
-            </table>
+            </table>--%>
             <!-- Content -->
         </div>
     </div>
 </div>
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
+<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchStudents.js"%></script>
+<script>
+    $( document ).ready(function() {
+        loadStudentSearch();
+    });
+</script>
+
 </body>
 </html>

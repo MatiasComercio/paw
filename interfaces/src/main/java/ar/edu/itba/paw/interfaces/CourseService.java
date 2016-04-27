@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.shared.StudentFilter;
 
 import java.util.List;
 
@@ -56,4 +58,14 @@ public interface CourseService {
      * @return +++xdocument
      */
     Result deleteCourse(Integer id);
+
+//    +++xtest
+    /**
+     * Gets the desired course by the identifier with the inscribed students,
+     * filtering them using the given studentFilter
+     * @param id the id of the course
+     * @param studentFilter the filter to be applied to the student
+     * @return the list of students enrolled in the given course
+     */
+    List<Student> getCourseStudents(final Integer id, final StudentFilter studentFilter);
 }
