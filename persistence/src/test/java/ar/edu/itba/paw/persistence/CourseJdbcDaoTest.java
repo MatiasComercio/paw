@@ -99,6 +99,7 @@ public class CourseJdbcDaoTest {
 
     private JdbcTemplate jdbcTemplate;
     private SimpleJdbcInsert courseInsert;
+    private SimpleJdbcInsert userInsert;
     private SimpleJdbcInsert studentInsert;
     private SimpleJdbcInsert inscriptionStudent;
     private SimpleJdbcInsert gradeInsert;
@@ -112,6 +113,7 @@ public class CourseJdbcDaoTest {
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(dataSource);
         courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
+        userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
         studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE);
         inscriptionStudent = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE);
         gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE);
@@ -121,6 +123,7 @@ public class CourseJdbcDaoTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, GRADE_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, INSCRIPTION_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, COURSE_TABLE);
 
         /* Insertion */
@@ -162,8 +165,11 @@ public class CourseJdbcDaoTest {
         /**
          * Delete existant course (with inscriptions) and then check that it was not deleted
          */
-
-
+        final Map<String, Object> userArgs1 = new HashMap<>();
+        userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userInsert.execute(userArgs1);
     }
 
     @Test
