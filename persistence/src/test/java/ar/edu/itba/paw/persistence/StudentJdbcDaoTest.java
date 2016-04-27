@@ -106,6 +106,8 @@ public class StudentJdbcDaoTest {
 	private static final String EMAIL_2 = "blihuen@bait.edu.ar";
 	private int docket2; /* Auto-generated field */
 
+    private static final int DNI_3 = 321456789;
+
 	private static final String ADDRESS__COUNTRY_VALUE = "ArgEnTINA";
 	private static final String ADDRESS__CITY_VALUE = "BS. as.";
 	private static final String ADDRESS__NEIGHBORHOOD_VALUE = "MonTECasTro";
@@ -120,15 +122,11 @@ public class StudentJdbcDaoTest {
 	private static final String ADDRESS__CITY_EXPECTED = "Bs. As.";
 	private static final String ADDRESS__NEIGHBORHOOD_EXPECTED = "Montecastro";
 	private static final String ADDRESS__STREET_EXPECTED = "Santo Tome";
-	private static final String ADDRESS__NUMBER_EXPECTED = "0";
-	private static final Integer ADDRESS__NUMBER_EXPECTED_2 = 0;
-	private static final String ADDRESS__FLOOR_EXPECTED = "15";
-	private static final Integer ADDRESS__FLOOR_EXPECTED_2 = 15;
+	private static final Integer ADDRESS__NUMBER_EXPECTED = 0;
+	private static final Integer ADDRESS__FLOOR_EXPECTED = 15;
 	private static final String ADDRESS__DOOR_EXPECTED = "ZAV";
-	private static final String ADDRESS__TELEPHONE_EXPECTED = "45666666";
-	private static final Long ADDRESS__TELEPHONE_EXPECTED_2 = 45666666L;
-	private static final String ADDRESS__ZIP_CODE_EXPECTED = "1418";
-	private static final Integer ADDRESS__ZIP_CODE_EXPECTED_2 = 1418;
+	private static final Long ADDRESS__TELEPHONE_EXPECTED = 45666666L;
+	private static final Integer ADDRESS__ZIP_CODE_EXPECTED = 1418;
 
 	private static final String ADDRESS__COUNTRY_EXPECTED_EMPTY = "";
 	private static final String ADDRESS__CITY_EXPECTED_EMPTY = "";
@@ -192,7 +190,122 @@ public class StudentJdbcDaoTest {
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
 	}
 
-	@Test
+    @Test
+    public void update() {
+        Result result;
+        final Map<String, Object> userArgs = new HashMap<>();
+        final Map<String, Object> studentArgs = new HashMap<>();
+
+        /**
+         * update the student's dni
+         */
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userInsert.execute(userArgs);
+
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+        docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+        Student student = new Student.Builder(docket1, DNI_2).build();
+
+        result = studentJdbcDao.update(docket1, DNI_1, student);
+        assertEquals(Result.OK, result);
+
+        /**
+         * add a second user and change dni to existing user's dni
+         */
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
+        userInsert.execute(userArgs);
+
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+        docket2 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+        student = new Student.Builder(docket2, DNI_2).build();
+
+        result = studentJdbcDao.update(docket2, DNI_1, student);
+        assertNotEquals(Result.OK, result);
+        assertEquals(Result.STUDENT_EXISTS_DNI, result);
+    }
+
+    @Test
+    public void createAddress() {
+        final Map<String, Object> userArgs = new HashMap<>();
+        final Map<String, Object> studentArgs = new HashMap<>();
+        final Map<String, Object> addressArgs = new HashMap<>();
+
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userInsert.execute(userArgs);
+
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+        docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+
+        addressArgs.put(ADDRESS__CITY_COLUMN, ADDRESS__CITY_VALUE);
+        addressArgs.put(ADDRESS__COUNTRY_COLUMN, ADDRESS__COUNTRY_VALUE);
+        addressArgs.put(ADDRESS__DNI_COLUMN, DNI_1);
+        addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, ADDRESS__NEIGHBORHOOD_VALUE);
+        addressArgs.put(ADDRESS__STREET_COLUMN, ADDRESS__STREET_VALUE);
+        addressArgs.put(ADDRESS__NUMBER_COLUMN, ADDRESS__NUMBER_VALUE);
+        addressArgs.put(ADDRESS__FLOOR_COLUMN, ADDRESS__FLOOR_VALUE);
+        addressArgs.put(ADDRESS__DOOR_COLUMN, ADDRESS__DOOR_VALUE);
+        addressArgs.put(ADDRESS__TELEPHONE_COLUMN, ADDRESS__TELEPHONE_VALUE);
+        addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, ADDRESS__ZIP_CODE_VALUE);
+        addressInsert.execute(addressArgs);
+
+        Student student = studentJdbcDao.getByDocket(docket1);
+        Address address = student.getAddress();
+
+        assertEquals(ADDRESS__CITY_EXPECTED, address.getCity());
+        assertEquals(ADDRESS__COUNTRY_EXPECTED, address.getCountry());
+        // assertEquals(ADDRESS__DNI_COLUMN, ); /* TODO: add getDni for address
+        assertEquals(ADDRESS__NEIGHBORHOOD_EXPECTED, address.getNeighborhood());
+        assertEquals(ADDRESS__STREET_EXPECTED, address.getStreet());
+        assertEquals(ADDRESS__NUMBER_EXPECTED, address.getNumber());
+        assertEquals(ADDRESS__FLOOR_EXPECTED, address.getFloor());
+        assertEquals(ADDRESS__DOOR_EXPECTED, address.getDoor());
+        assertEquals(ADDRESS__TELEPHONE_EXPECTED, address.getTelephone());
+        assertEquals(ADDRESS__ZIP_CODE_EXPECTED, address.getZipCode());
+    }
+
+    @Test
+    public void hasAddress() {
+        final Map<String, Object> userArgs = new HashMap<>();
+        final Map<String, Object> addressArgs = new HashMap<>();
+        boolean hasAddress;
+
+        /**
+         * add user without address and check that it effectively does not have it
+         */
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userInsert.execute(userArgs);
+
+        hasAddress = studentJdbcDao.hasAddress(DNI_1);
+        assertFalse(hasAddress);
+
+        /**
+         * add address to the user
+         */
+        addressArgs.put(ADDRESS__CITY_COLUMN, ADDRESS__CITY_VALUE);
+        addressArgs.put(ADDRESS__COUNTRY_COLUMN, ADDRESS__COUNTRY_VALUE);
+        addressArgs.put(ADDRESS__DNI_COLUMN, DNI_1);
+        addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, ADDRESS__NEIGHBORHOOD_VALUE);
+        addressArgs.put(ADDRESS__STREET_COLUMN, ADDRESS__STREET_VALUE);
+        addressArgs.put(ADDRESS__NUMBER_COLUMN, ADDRESS__NUMBER_VALUE);
+        addressInsert.execute(addressArgs);
+
+        hasAddress = studentJdbcDao.hasAddress(DNI_1);
+        assertTrue(hasAddress);
+    }
+
+    @Test
 	public void addGrade() {
 		Student student;
 		Grade expectedGrade;
