@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -88,6 +89,8 @@ public class CourseJdbcDaoTest {
     private static final String LAST_NAME_2_EXPECTED = "Mayan";
     private static final String EMAIL_2 = "blihuen@bait.edu.ar";
     private int docket2; /* Auto-generated field */
+
+    private static final BigDecimal GRADE_APPROVED = BigDecimal.valueOf(9);
 
 
 
@@ -176,7 +179,6 @@ public class CourseJdbcDaoTest {
         userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
         userInsert.execute(userArgs1);
 
-
         studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
         docket1 = studentInsert.executeAndReturnKey(studentArgs1).intValue();
 
@@ -188,6 +190,33 @@ public class CourseJdbcDaoTest {
         assertEquals(Result.COURSE_EXISTS_INSCRIPTION, result);
 
         course = courseJdbcDao.getById(COURSE_ID_2);
+        assertNotNull(course);
+
+        /**
+         * Delete existant course (with grades) and then check that it was not deleted
+         */
+        final Map<String, Object> userArgs2 = new HashMap<>();
+        final Map<String, Object> studentArgs2 = new HashMap<>();
+        final Map<String, Object> gradeArgs = new HashMap<>();
+
+        userArgs2.put(USER__DNI_COLUMN, DNI_2);
+        userArgs2.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
+        userArgs2.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
+        userArgs2.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
+        userInsert.execute(userArgs2);
+
+        studentArgs2.put(STUDENT__DNI_COLUMN, DNI_2);
+        docket2 = studentInsert.executeAndReturnKey(studentArgs2).intValue();
+
+        gradeArgs.put(GRADE__DOCKET_COLUMN, docket2);
+        gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_3);
+        gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
+        gradeInsert.execute(gradeArgs);
+
+        result = courseJdbcDao.deleteCourse(COURSE_ID_3);
+        assertEquals(Result.COURSE_EXISTS_GRADE, result);
+
+        course = courseJdbcDao.getById(COURSE_ID_3);
         assertNotNull(course);
     }
 
