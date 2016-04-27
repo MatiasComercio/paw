@@ -1,8 +1,10 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import org.hamcrest.Matcher;
 import org.junit.Before;
@@ -118,10 +120,14 @@ public class StudentJdbcDaoTest {
 	private static final String ADDRESS__NEIGHBORHOOD_EXPECTED = "Montecastro";
 	private static final String ADDRESS__STREET_EXPECTED = "Santo Tome";
 	private static final String ADDRESS__NUMBER_EXPECTED = "0";
+	private static final Integer ADDRESS__NUMBER_EXPECTED_2 = 0;
 	private static final String ADDRESS__FLOOR_EXPECTED = "15";
+	private static final Integer ADDRESS__FLOOR_EXPECTED_2 = 15;
 	private static final String ADDRESS__DOOR_EXPECTED = "ZAV";
 	private static final String ADDRESS__TELEPHONE_EXPECTED = "45666666";
+	private static final Long ADDRESS__TELEPHONE_EXPECTED_2 = 45666666L;
 	private static final String ADDRESS__ZIP_CODE_EXPECTED = "1418";
+	private static final Integer ADDRESS__ZIP_CODE_EXPECTED_2 = 1418;
 
 	private static final String ADDRESS__COUNTRY_EXPECTED_EMPTY = "";
 	private static final String ADDRESS__CITY_EXPECTED_EMPTY = "";
@@ -668,6 +674,32 @@ public class StudentJdbcDaoTest {
 		assertArrayEquals(expectedApprovedCourses, courses.toArray());
 		/***********************************/
 	}
+
+	/*
+	@Test
+	public void createStudent() {
+
+		Address address = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
+				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED_2).floor(ADDRESS__FLOOR_EXPECTED_2).door(ADDRESS__DOOR_EXPECTED).
+				telephone(ADDRESS__TELEPHONE_EXPECTED_2).zipCode(ADDRESS__ZIP_CODE_EXPECTED_2).build();
+
+
+		// OK insertion
+		Student student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M).
+				birthday(BIRTHDAY_1).address(address).build();
+
+		Result result = studentJdbcDao.create(student);
+		assertEquals(Result.OK, result);
+
+
+		// Existing  DNI
+		student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M).
+				birthday(BIRTHDAY_1).address(address).build();
+
+		result = studentJdbcDao.create(student);
+		assertEquals(Result.STUDENT_EXISTS_DNI, result);
+
+	}*/
 
 	private List<Matcher<? super String>> possibleEmails(final int docket, final String firstName, final String lastName) {
 		final List<Matcher<? super String>> matchers = new LinkedList<>();

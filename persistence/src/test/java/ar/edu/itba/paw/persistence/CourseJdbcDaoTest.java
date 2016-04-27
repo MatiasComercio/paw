@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.shared.Result;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,8 +16,12 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -33,12 +39,31 @@ public class CourseJdbcDaoTest {
     private static final int ID_1 = 1;
     private static final String NAME_1 = "Metodos";
     private static final int CREDITS_1 = 3;
+
     private static final int ID_2 = 2;
     private static final String NAME_2 = "PI";
     private static final int CREDITS_2 = 9;
+
     private static final int ID_3 = 3;
     private static final String NAME_3 = "Logica";
     private static final int CREDITS_3 = 6;
+
+    private static final int ID_4 = 4;
+    private static final String NAME_4 = "Sistemas de Representacion";
+    private static final int CREDITS_4 = 3;
+
+    private static final int ID_5 = 5;
+    private static final String NAME_5 = "Fisica II";
+    private static final int CREDITS_5 = 6;
+
+    private static final int ID_6 = 6;
+    private static final String NAME_6 = "Algebra";
+    private static final int CREDITS_6 = 9;
+
+
+    private static final int ID_1_INVALID = -1;
+    private static final int CREDITS_1_INVALID = -3;
+
 
     @Autowired
     private DataSource dataSource;
@@ -105,4 +130,36 @@ public class CourseJdbcDaoTest {
         assertEquals(NAME_3, course.getName());
         assertEquals(CREDITS_3, course.getCredits());
     }
+
+
+    @Test
+    public void createCourse() {
+
+        /* OK insertion */
+        Result result = courseJdbcDao.create(new Course.Builder(ID_4).name(NAME_4).credits(CREDITS_4).build());
+        assertEquals(Result.OK, result);
+        /******************/
+
+		/* Existing  ID*/
+        result = courseJdbcDao.create(new Course.Builder(ID_4).name(NAME_4).credits(CREDITS_4).build());
+        assertEquals(Result.COURSE_EXISTS_ID, result);
+        /******************/
+
+		/* Invalid course id */
+        result = courseJdbcDao.create(new Course.Builder(ID_1_INVALID).name(NAME_1).credits(CREDITS_1).build());
+        assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
+        /******************/
+
+		/* Invalid credits */
+        result = courseJdbcDao.create(new Course.Builder(ID_5).name(NAME_1).credits(CREDITS_1_INVALID).build());
+        assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
+        /******************/
+
+		/* Check if saved correctly */
+        Course course1 = new Course.Builder(ID_2).name(NAME_2).credits(CREDITS_2).build();
+        Course course2 = courseJdbcDao.getById(ID_2);
+        assertEquals(course1, course2);
+
+    }
+
 }
