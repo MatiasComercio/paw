@@ -281,18 +281,18 @@ public class CourseJdbcDaoTest {
         /******************/
 
 		/* Invalid course id */
-        result = courseJdbcDao.create(new Course.Builder(ID_1_INVALID).name(NAME_1).credits(CREDITS_1).build());
+        result = courseJdbcDao.create(new Course.Builder(ID_1_INVALID).name(NAME_4).credits(CREDITS_4).build());
         assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
         /******************/
 
 		/* Invalid credits */
-        result = courseJdbcDao.create(new Course.Builder(ID_5).name(NAME_1).credits(CREDITS_1_INVALID).build());
+        result = courseJdbcDao.create(new Course.Builder(ID_5).name(NAME_4).credits(CREDITS_1_INVALID).build());
         assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
         /******************/
 
 		/* Check if saved correctly */
-        Course course1 = new Course.Builder(ID_2).name(NAME_2).credits(CREDITS_2).build();
-        Course course2 = courseJdbcDao.getById(ID_2);
+        Course course1 = new Course.Builder(ID_4).name(NAME_4).credits(CREDITS_4).build();
+        Course course2 = courseJdbcDao.getById(ID_4);
         assertEquals(course1, course2);
 
     }
