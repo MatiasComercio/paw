@@ -88,9 +88,25 @@ public class CourseJdbcDaoTest {
 
     @Test
     public void deleteCourse() {
+        Result result;
+
         // Delete non existant course
-        Result result = courseJdbcDao.deleteCourse(COURSE_ID_4);
+        result = courseJdbcDao.deleteCourse(COURSE_ID_4);
         assertEquals(Result.ERROR_UNKNOWN, result);
+
+        /**
+         * Delete existant course (with no inscriptions or grades) and then check that is deleted
+         */
+        result = courseJdbcDao.deleteCourse(COURSE_ID_1);
+        assertEquals(Result.OK, result);
+        Course course = courseJdbcDao.getById(COURSE_ID_1);
+        assertNull(course);
+
+        /**
+         * Delete existant course (with inscriptions) and then check that it was not deleted
+         */
+
+
     }
 
     @Test
