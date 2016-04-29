@@ -592,14 +592,16 @@ public class StudentJdbcDao implements StudentDao {
 
 		private final FilterQueryMapper filterBySubWord = (filter, filterName) -> {
 			if(filter != null && !filter.toString().equals("")) {
-				String stringFilter = "%" + filter.toString() + "%";
+				String escapedFilter = escapeFilter(filter);
+				String stringFilter = "%" + escapedFilter + "%";
 				appendFilter(filterName, stringFilter);
 			}
 		};
 
 		private final FilterQueryMapper filterByExactWord = (filter, filterName) -> {
 			if(filter != null && !filter.toString().equals("")) {
-				String stringFilter = filter.toString();
+				String escapedFilter = escapeFilter(filter);
+				String stringFilter = escapedFilter;
 				appendFilter(filterName, stringFilter);
 			}
 		};
@@ -639,6 +641,10 @@ public class StudentJdbcDao implements StudentDao {
 			} else {
 				query.append(AND);
 			}
+		}
+
+		private String escapeFilter(final Object filter) {
+			return filter.toString().replace("%", "\\%").replace("_", "\\_");
 		}
 
 		private void appendFilter(final String filter, final String stringFilter) {
