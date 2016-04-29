@@ -196,7 +196,7 @@ public class CourseJdbcDao implements CourseDao {
         private final FilterQueryMapper filterBySubword = (filter, filterName) -> {
             if(filter != null) {
                 String escapedFilter = escapeFilter(filter);
-                String stringFilter = "%" + filter.toString() + "%";
+                String stringFilter = "%" + escapedFilter + "%";
                 appendFilter(filterName, stringFilter);
             }
         };
