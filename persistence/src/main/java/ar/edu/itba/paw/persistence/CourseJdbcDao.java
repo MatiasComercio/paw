@@ -195,6 +195,7 @@ public class CourseJdbcDao implements CourseDao {
 
         private final FilterQueryMapper filterBySubword = (filter, filterName) -> {
             if(filter != null) {
+                String escapedFilter = escapeFilter(filter);
                 String stringFilter = "%" + filter.toString() + "%";
                 appendFilter(filterName, stringFilter);
             }
@@ -227,6 +228,10 @@ public class CourseJdbcDao implements CourseDao {
             } else {
                 query.append(AND);
             }
+        }
+
+        private String escapeFilter(final Object filter) {
+            return filter.toString().replace("%", "\\%").replace("_", "\\_");
         }
 
         private void appendFilter(final String filter, final String stringFilter) {
