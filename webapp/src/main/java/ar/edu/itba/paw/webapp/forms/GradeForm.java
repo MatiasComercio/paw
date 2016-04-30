@@ -27,6 +27,8 @@ public class GradeForm {
     @Max(10)
     private BigDecimal grade;
 
+    private BigDecimal oldGrade;
+
     private Timestamp modified;
 
     public Grade build() {
@@ -77,5 +79,13 @@ public class GradeForm {
         this.docket = grade.getStudentDocket();
         this.courseId = grade.getCourseId();
         this.grade = grade.getGrade();
+    }
+
+    public BigDecimal getOldGrade() {
+        return oldGrade;
+    }
+
+    public void setOldGrade(BigDecimal oldGrade) {
+        this.oldGrade = oldGrade;
     }
 }

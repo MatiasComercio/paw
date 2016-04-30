@@ -66,6 +66,14 @@
                                 <form:errors path="modified" cssClass="text-danger bg-danger" element="div"/>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="col-xs-8">
+                                <form:input class="form-control" id="disabledInput" type="hidden" path="oldGrade" readonly="true"/>
+                            </div>
+                            <div class="col-xs-12">
+                                <form:errors path="oldGrade" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                        </div>
                     </c:if>
                 </form:form>
                 <%-- /Grade Form--%>

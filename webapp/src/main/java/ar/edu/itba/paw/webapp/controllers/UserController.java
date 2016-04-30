@@ -113,9 +113,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	}
 
 	@RequestMapping("/students/{docket}/grades")
-	public ModelAndView getStudentGrades(@PathVariable final int docket) {
+	public ModelAndView getStudentGrades(@PathVariable final int docket, @ModelAttribute GradeForm gradeForm,
+										 RedirectAttributes redirectAttributes) {
 		final Student student =  studentService.getGrades(docket);
-
 		final ModelAndView mav;
 
 		if (student == null) {
@@ -123,7 +123,13 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		}
 
 		mav = new ModelAndView("grades_old"); // +++xchange
+		setAlertMessages(mav, redirectAttributes);
+
+		//mav = new ModelAndView("grades");
 		mav.addObject("student", student);
+		mav.addObject("subsection_grades", true);
+		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/edit");
+
 		return mav;
 	}
 
@@ -283,13 +289,13 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
 	                               RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("addStudent");
-		if(redirectAttributes != null) {
+		/*if(redirectAttributes != null) {
 			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
 			if (raMap.get("alert") != null) {
 				mav.addObject("alert", raMap.get("alert"));
 				mav.addObject("message", raMap.get("message"));
 			}
-		}
+		}*/
 		setAlertMessages(mav, redirectAttributes);
 		return mav;
 	}
@@ -316,43 +322,57 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		}
 	}
 
-	@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.GET)
+	/*@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.GET)
 	public ModelAndView editGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
 	                              @PathVariable Integer docket, @PathVariable Integer courseId, @PathVariable Timestamp modified,
 								  @PathVariable BigDecimal grade, @PathVariable String courseName,
 								  RedirectAttributes redirectAttributes){
+	*/
+	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.GET)
+	public ModelAndView editGrade(@ModelAttribute("gradeForm") GradeForm gradeForm, @PathVariable Integer docket,
+								  RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("editGrade");
 		setAlertMessages(mav, redirectAttributes);
-		gradeForm.setGrade(grade); //Set the old grade (to be displayed in the edit view)
+		/*gradeForm.setGrade(grade); //Set the old grade (to be displayed in the edit view)
 		gradeForm.setDocket(docket);
 		gradeForm.setCourseId(courseId);
 		gradeForm.setModified(modified);
 		gradeForm.setCourseName(courseName); //Avoid the @NotBlank validation
-
+*/
 		mav.addObject("docket", docket);
-		mav.addObject("courseId", courseId);
+		/*mav.addObject("courseId", courseId);
 		mav.addObject("courseName", courseName);
-
+*/
 		return mav;
 	}
 
-	@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.POST)
+
+	/*@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.POST)
 	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
 	                              @PathVariable Integer docket, @PathVariable Integer courseId,
 	                              @PathVariable Timestamp modified, @PathVariable BigDecimal grade,
 								  @PathVariable String courseName,
 	                              RedirectAttributes redirectAttributes){
+	*/
+	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.POST)
+	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
+								  @PathVariable Integer docket, RedirectAttributes redirectAttributes){
+
 		if (errors.hasErrors()){
-			return editGrade(gradeForm, docket, courseId, modified, grade, courseName, null);
+			//return editGrade(gradeForm, docket, courseId, modified, grade, courseName, null);
+			//return editGrade(gradeForm, docket, null);
+			return new ModelAndView("/students/" + docket + "/grades");
 		}
 
 		Grade newGrade = gradeForm.build();
 
-		Result result = studentService.editGrade(newGrade, grade);
+		Result result = studentService.editGrade(newGrade, gradeForm.getOldGrade());
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return editGrade(gradeForm, docket, courseId, modified, grade, courseName,redirectAttributes);
+			//return editGrade(gradeForm, docket, courseId, modified, grade, courseName,redirectAttributes);
+			//return editGrade(gradeForm, docket, redirectAttributes);
+			return new ModelAndView("/students/" + docket + "/grades");
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message",
@@ -448,7 +468,8 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		return new ModelAndView("redirect:/students");
 	}
 
-
+	/* This method enables the Alerts to be shown in the view if there are any.
+	* USAGE: Use it in requestMapping with GET method. */
 	public void setAlertMessages(ModelAndView mav, RedirectAttributes ra){
 		if(ra != null) {
 			Map<String, ?> raMap = ra.getFlashAttributes();
@@ -465,13 +486,14 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	                                RedirectAttributes redirectAttributes) {
 		final ModelAndView mav = new ModelAndView("editStudent");
 
-		if (redirectAttributes != null) {
+		/*if (redirectAttributes != null) {
 			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
 			if (raMap.get("alert") != null) {
 				mav.addObject("alert", raMap.get("alert"));
 				mav.addObject("message", raMap.get("message"));
 			}
-		}
+		}*/
+		setAlertMessages(mav, redirectAttributes);
 
 		Student student = studentService.getByDocket(docket);
 		System.out.println(student.getDocket());

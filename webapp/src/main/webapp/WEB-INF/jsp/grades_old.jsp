@@ -9,11 +9,12 @@
     </title>
     <jsp:include page="base/head.jsp" />
 </head>
-<body>
+<>
 
 <div id="wrapper">
 
     <jsp:include page="base/nav.jsp" />
+    <jsp:include page="template/gradeForm.jsp" />
 
     <div id="page-wrapper">
         <div class="container-fluid">
@@ -49,7 +50,13 @@
                         <td>${ grade.grade }</td>
                         <td>${ grade.modified }</td>
                         <td><a href="<c:url value="/courses/${grade.courseId}/info" />"><spring:message code="see"/> <spring:message code="course"/></a></td>
-                        <td><a href="<c:url value="/students/${student.docket}/grades/edit/${grade.courseName}/${grade.grade}/${grade.modified}/${grade.courseId}" />"><spring:message code="editGrade"/></a></td>
+
+                        <td><button name="gradeButton" class="btn btn-info btn-xs" type="button"
+                                    data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
+                                    data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
+                                    data-target="#gradeFormConfirmationModal">
+                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                        </button><td>
                     </tr>
                 </c:forEach>
                 </tbody>
@@ -66,5 +73,42 @@
 </div>
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
+<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/gradeForm.js"%></script>
+
+<script>
+    $( document ).ready(function() {
+        //Function TODO: Create editGradeForm.js
+        /*function edit_loadGradeForm(nameAttr) {
+
+            $("[name='" + nameAttr + "']").on("click", function() {
+                var courseId = $(this).data("course_id");
+                var courseName = $(this).data("course_name");
+                var modified = $(this).data("modified");
+                var gradeForm = $("#grade_form");
+                gradeForm.find("input[name='courseId']").val(courseId);
+                gradeForm.find("input[name='courseName']").val(courseName);
+                gradeForm.find("input[name='modified']").val(modified);
+
+                var grade = $(this).data("grade");
+                if (grade != null){
+                    gradeForm.find("input[name='grade']").val(grade);
+                }
+                //TODO: DELETE $("#grade_form").submit();
+            });
+
+            $("#gradeFormConfirmAction").on("click", function() {
+             $('#gradeFormConfirmationModal').modal('hide');
+             $("#grade_form").submit();
+             });
+
+        }*/
+        //END function
+
+        loadGradeForm("gradeButton")
+    });
+
+
+</script>
+
 </body>
 </html>
