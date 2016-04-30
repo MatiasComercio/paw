@@ -14,7 +14,7 @@ public class IndexController {
 		return new ModelAndView("redirect:/students");
 	}
 
-	@RequestMapping("/login")
+	@RequestMapping("/login") /* +++xcheck: if loginForm is necessary or not */
 	public ModelAndView login() {
 		return new ModelAndView("login");
 	}
