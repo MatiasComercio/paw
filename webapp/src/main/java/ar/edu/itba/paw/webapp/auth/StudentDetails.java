@@ -29,7 +29,7 @@ public class StudentDetails extends User {
 				builder.authorities
 		);
 
-		student = builder.student;
+		this.student = builder.student;
 	}
 
 	public int getDocket() {
