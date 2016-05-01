@@ -70,7 +70,7 @@ public class CourseJdbcDaoTest {
     private static final String COURSE__NAME_3 = "Logica";
     private static final int COURSE_CREDITS_3 = 6;
     private static final int COURSE_ID_4 = 4;
-    private static final String COURSE__NAME_4 = "EDA";
+    private static final String COURSE_NAME_4 = "EDA";
     private static final int COURSE_CREDITS_4 = 6;
 
     private static final int DOCKET_1 = 1;
@@ -99,21 +99,21 @@ public class CourseJdbcDaoTest {
 
 
 
-    private static final int ID_4 = 4;
-    private static final String NAME_4 = "Sistemas de Representacion";
-    private static final int CREDITS_4 = 3;
+    /*private static final int COURSE_ID_4 = 4;
+    private static final String COURSE_NAME_4 = "Sistemas de Representacion";
+    private static final int COURSE_CREDITS_4 = 3;
+*/
+    private static final int COURSE_ID_5 = 5;
+    private static final String COURSE_NAME_5 = "Fisica II";
+    private static final int COURSE_CREDITS_5 = 6;
 
-    private static final int ID_5 = 5;
-    private static final String NAME_5 = "Fisica II";
-    private static final int CREDITS_5 = 6;
-
-    private static final int ID_6 = 6;
-    private static final String NAME_6 = "Algebra";
-    private static final int CREDITS_6 = 9;
+    private static final int COURSE_ID_6 = 6;
+    private static final String COURSE_NAME_6 = "Algebra";
+    private static final int COURSE_CREDITS_6 = 9;
 
 
-    private static final int ID_1_INVALID = -1;
-    private static final int CREDITS_1_INVALID = -3;
+    private static final int COURSE_ID_1_INVALID = -1;
+    private static final int COURSE_CREDITS_1_INVALID = -3;
 
 
     @Autowired
@@ -271,28 +271,30 @@ public class CourseJdbcDaoTest {
     public void createCourse() {
 
         /* OK insertion */
-        Result result = courseJdbcDao.create(new Course.Builder(ID_4).name(NAME_4).credits(CREDITS_4).build());
+        Result result = courseJdbcDao.create(new Course.Builder(COURSE_ID_4).name(COURSE_NAME_4).
+                credits(COURSE_CREDITS_4).build());
         assertEquals(Result.OK, result);
         /******************/
 
 		/* Existing  ID*/
-        result = courseJdbcDao.create(new Course.Builder(ID_4).name(NAME_4).credits(CREDITS_4).build());
+        result = courseJdbcDao.create(new Course.Builder(COURSE_ID_4).name(COURSE_NAME_4).credits(COURSE_CREDITS_4)
+                .build());
         assertEquals(Result.COURSE_EXISTS_ID, result);
         /******************/
 
 		/* Invalid course id */
-        result = courseJdbcDao.create(new Course.Builder(ID_1_INVALID).name(NAME_4).credits(CREDITS_4).build());
+        result = courseJdbcDao.create(new Course.Builder(COURSE_ID_1_INVALID).name(COURSE_NAME_4).credits(COURSE_CREDITS_4).build());
         assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
         /******************/
 
 		/* Invalid credits */
-        result = courseJdbcDao.create(new Course.Builder(ID_5).name(NAME_4).credits(CREDITS_1_INVALID).build());
+        result = courseJdbcDao.create(new Course.Builder(COURSE_ID_5).name(COURSE_NAME_4).credits(COURSE_CREDITS_1_INVALID).build());
         assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
         /******************/
 
 		/* Check if saved correctly */
-        Course course1 = new Course.Builder(ID_4).name(NAME_4).credits(CREDITS_4).build();
-        Course course2 = courseJdbcDao.getById(ID_4);
+        Course course1 = new Course.Builder(COURSE_ID_4).name(COURSE_NAME_4).credits(COURSE_CREDITS_4).build();
+        Course course2 = courseJdbcDao.getById(COURSE_ID_4);
         assertEquals(course1, course2);
 
     }

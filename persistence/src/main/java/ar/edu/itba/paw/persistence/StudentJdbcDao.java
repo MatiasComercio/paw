@@ -405,7 +405,7 @@ public class StudentJdbcDao implements StudentDao {
 		}catch(DuplicateKeyException e){
 			return Result.STUDENT_EXISTS_DNI;
 		} catch (DataAccessException e) {
-			return Result.ERROR_UNKNOWN;
+				return Result.ERROR_UNKNOWN;
 		}
 
 		/* Store Student Data */
