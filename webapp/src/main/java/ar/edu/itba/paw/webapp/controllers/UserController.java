@@ -574,7 +574,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			return addAdmin(adminForm, null);
 		}
 		Admin admin = adminForm.build();
-		Result result = admin.create(admin);
+		Result result = adminService.create(admin);
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
