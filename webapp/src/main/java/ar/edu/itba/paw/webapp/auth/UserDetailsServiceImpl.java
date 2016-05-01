@@ -56,17 +56,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 
 	private UserDetails loadAdmin(final Admin admin) {
-		final AdminDetails.Builder adminDetailesBuilder =
+		final AdminDetails.Builder adminDetailsBuilder =
 				new AdminDetails.Builder(admin.getDni());
-		adminDetailesBuilder
+		adminDetailsBuilder
 				.firstName(admin.getFirstName())
 				.lastName(admin.getLastName())
 				.email(admin.getEmail())
 				.password(admin.getPassword());
 		for (Role role : admin.getRoles()) {
-			adminDetailesBuilder.authority(new SimpleGrantedAuthority(role.toString()));
+			adminDetailsBuilder.authority(new SimpleGrantedAuthority(role.toString()));
 		}
-		return adminDetailesBuilder.build();
+		return adminDetailsBuilder.build();
 	}
 
 	private UserDetails loadStudent(final Student student) {
