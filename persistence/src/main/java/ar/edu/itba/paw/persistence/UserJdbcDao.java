@@ -23,9 +23,11 @@ public class UserJdbcDao implements UserDao {
 	private static final String USERS__DNI_COLUMN = "dni";
 	private static final String USERS__PWD_COLUMN = "password";
 
+	private static final String AND = "AND";
 	private static final String EVERYTHING = "*";
 	private static final String EQUALS = "=";
 	private static final String GIVEN_PARAMETER = "?";
+
 
 	private static final String GET_ROLES;
 	private static final String UPDATE_PASSWORD;
@@ -42,8 +44,8 @@ public class UserJdbcDao implements UserDao {
 		UPDATE_PASSWORD =
 				update(USERS_TABLE) +
 						set(USERS__PWD_COLUMN, EQUALS, GIVEN_PARAMETER) +
-						where(tableCol(USERS_TABLE, USERS__DNI_COLUMN), EQUALS, USERS__DNI_COLUMN);
-
+						where(tableCol(USERS_TABLE, USERS__DNI_COLUMN), EQUALS, GIVEN_PARAMETER
+						,AND, tableCol(USERS_TABLE, USERS__PWD_COLUMN), EQUALS, GIVEN_PARAMETER);
 	}
 
 	private final JdbcTemplate jdbcTemplate;
