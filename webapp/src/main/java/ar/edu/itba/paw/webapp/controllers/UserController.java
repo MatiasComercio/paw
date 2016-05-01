@@ -572,6 +572,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 					Locale.getDefault()));
 		}
 
-		return new ModelAndView("redirect:/");
+		return new ModelAndView("redirect:/user/changePassword");
 	}
 }
