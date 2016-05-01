@@ -73,8 +73,11 @@ public class AdminJdbcDao implements AdminDao {
                         tableCol(USER_TABLE, USER__DNI_COLUMN), EQUALS, tableCol(ADDRESS_TABLE, ADDRESS__DNI_COLUMN));
         GET_BY_DNI =
                 select(EVERYTHING)
-                        + from(join(ADMIN_TABLE, USER_TABLE, ADMIN__DNI_COLUMN, USER__DNI_COLUMN))
-                        + leftJoin(ADDRESS_TABLE, ADMIN_TABLE, ADDRESS__DNI_COLUMN, ADMIN__DNI_COLUMN)
+                        + from(
+                            leftJoinSpecial(
+                                    join(ADMIN_TABLE, USER_TABLE, ADMIN__DNI_COLUMN, USER__DNI_COLUMN),
+                                    ADMIN_TABLE, ADDRESS_TABLE, ADMIN__DNI_COLUMN, ADDRESS__DNI_COLUMN)
+                        )
                         + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);
 
     }
@@ -176,6 +179,7 @@ public class AdminJdbcDao implements AdminDao {
 
     @Override
     public Admin getByDni(int dni) {
+        System.out.println(GET_BY_DNI);
         final List<Admin> admin = jdbcTemplate.query(GET_BY_DNI, adminRowMapper, dni);
 
         return admin.isEmpty() ? null : admin.get(0);
@@ -221,6 +225,10 @@ public class AdminJdbcDao implements AdminDao {
 
     private static String leftJoin(final String t1, final String t2, final String c1, final String c2) {
         return t1 + " LEFT JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
+    }
+
+    private static String leftJoinSpecial(final String concat, final String t1, final String t2, final String c1, final String c2) {
+        return concat + " LEFT JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
     }
 
     private static String join(final String t1, final String t2, final String c1, final String c2) {
