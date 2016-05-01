@@ -161,8 +161,8 @@ public class AdminJdbcDao implements AdminDao {
         stringBuilder.append("WHERE ");
         for (String col : cols) {
             stringBuilder.append(col);
+            stringBuilder.append(" ");
         }
-        stringBuilder.append(" ");
         return stringBuilder.toString();
     }
 
