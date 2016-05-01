@@ -78,6 +78,7 @@ public class UserJdbcDao implements UserDao {
 	private final JdbcTemplate jdbcTemplate;
 
 	private final SimpleJdbcInsert userInsert;
+	private final SimpleJdbcInsert addressInsert;
 
 	/* Constructors */
 	@Autowired
@@ -85,7 +86,8 @@ public class UserJdbcDao implements UserDao {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 		this.userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USERS_TABLE)
 				.usingColumns(USER__DNI_COLUMN, USER__FIRST_NAME_COLUMN, USER__LAST_NAME_COLUMN,
-						USER__GENRE_COLUMN, USER__BIRTHDAY_COLUMN, USER__EMAIL_COLUMN);;
+						USER__GENRE_COLUMN, USER__BIRTHDAY_COLUMN, USER__EMAIL_COLUMN);
+		this.addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
 	}
 	/* /Constructors */
 
