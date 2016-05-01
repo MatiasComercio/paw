@@ -536,6 +536,11 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		return mav;
 	}
 
+//	@RequestMapping(value = "/admin/")
+//	public ModelAndView getAllAdmins() {
+//
+//	}
+
 	/* +++xtodo: @Gonza: implement method */
 //	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
 //	public ModelAndView changePassword(@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
