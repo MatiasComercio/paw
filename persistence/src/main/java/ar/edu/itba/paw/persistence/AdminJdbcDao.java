@@ -2,14 +2,39 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.AdminDao;
 import ar.edu.itba.paw.models.users.Admin;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+import javax.sql.DataSource;
 import java.util.List;
 
 public class AdminJdbcDao implements AdminDao {
 
+    /* TABLE NAMES */
+    private static final String ADMIN_TABLE = "admin";
+    /* /TABLE NAMES */
+
+    /* COLS NAMES */
+    private static final String ADMIN__DNI_COLUMN = "dni";
+    /* COLS NAMES */
+
+    /* POSTGRESQL WILDCARDS */
+    private static final String EVERYTHING = "*";
+    private static final String EQUALS = "=";
+    private static final String GIVEN_PARAMETER = "?";
+    /* /POSTGRESQL WILDCARDS */
+
+    private final JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    public AdminJdbcDao(final DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
+
+
     @Override
     public List<Admin> getAllAdmins() {
-
+        return null;
     }
 
     /* Private Static Methods */
