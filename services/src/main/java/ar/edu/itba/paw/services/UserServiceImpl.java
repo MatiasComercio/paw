@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -93,6 +94,11 @@ public class UserServiceImpl implements UserService {
 		}
 
 		return null;
+	}
+
+	@Override
+	public Result create(User user) {
+		return userDao.create(user);
 	}
 
 }
