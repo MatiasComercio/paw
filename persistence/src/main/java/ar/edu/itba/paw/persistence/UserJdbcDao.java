@@ -35,7 +35,7 @@ public class UserJdbcDao implements UserDao {
 				select(ROLES__ROLE_COLUMN) + from(ROLES_TABLE) + where(ROLES__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
 
 		UPDATE_PASSWORD =
-				update()
+				update() +
 
 	}
 
@@ -104,6 +104,17 @@ public class UserJdbcDao implements UserDao {
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("FROM ");
 		buildSentence(stringBuilder, cols);
+		return stringBuilder.toString();
+	}
+
+
+	private static String set(final String... cols) {
+		final StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("SET ");
+		for(String col : cols) {
+			stringBuilder.append(col);
+		}
+		stringBuilder.append(" ");
 		return stringBuilder.toString();
 	}
 
