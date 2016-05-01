@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -69,4 +70,14 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
+	@Override
+	public Result changePassword(int dni, String prevPassword, String newPassword, String repeatNewPassword) {
+		if (!newPassword.equals(repeatNewPassword)) {
+			return Result.PASSWORDS_DO_NOT_MATCH;
+		}
+		if(dni < 0) {
+			return Result.ERROR_DNI_OUT_OF_BOUNDS;
+		}
+		return userDao.changePassword(dni, prevPassword, newPassword);
+	}
 }
