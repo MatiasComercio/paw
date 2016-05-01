@@ -129,7 +129,9 @@ public class AdminJdbcDao implements AdminDao {
 
     @Override
     public List<Admin> getAllAdmins() {
-        return null;
+        List<Admin> admins = jdbcTemplate.query(GET_ADMINS, adminRowMapper);
+
+        return admins;
     }
 
     /* Private Static Methods */
