@@ -257,14 +257,11 @@ public class CourseController {
     @RequestMapping(value = "/correlatives/{course_id}", method = RequestMethod.GET)
     public ModelAndView getCorrelatives(@PathVariable final Integer course_id) {
 
-        /*List<Integer> correlatives = courseService.getCorrelatives(course_id);
+        List<Integer> correlatives = courseService.getCorrelatives(course_id);
         System.out.println("getCorrelatives en CourseController");
         for (Integer correlative : correlatives) {
             System.out.println("102 es correlativa de: " + correlative);
-        }*/
-
-        System.out.println(courseService.addCorrelative(101, 105));
-        System.out.println(courseService.addCorrelative(105, 101));
+        }
 
         return new ModelAndView("redirect:/courses");
     }
