@@ -62,8 +62,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/**").authenticated()
 
 				.and().formLogin()
-				.usernameParameter("username")
-				.passwordParameter("password")
+				.usernameParameter("j_dni")
+				.passwordParameter("j_password")
 				.defaultSuccessUrl("/", false)
 //				.successHandler(authSuccessHandler)
 				.failureUrl("/login?error")
@@ -71,7 +71,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 				.loginProcessingUrl("/login")
 
 				.and().rememberMe()
-				.rememberMeParameter("rememberme")
+				.rememberMeParameter("j_remember_me")
 				.userDetailsService(userDetailsService)
 				.key(KEY)
 				.tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))

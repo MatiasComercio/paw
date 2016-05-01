@@ -54,20 +54,20 @@
             </div>
         </c:if>
         <p>
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username"/>
+            <label for="dni"><spring:message code="dni" /></label>
+            <input type="text" id="dni" name="j_dni"/>
         </p>
         <p>
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password"/>
+            <label for="password"><spring:message code="password" /></label>
+            <input type="password" id="password" name="j_password"/>
         </p>
         <!-- if using RememberMeConfigurer make sure remember-me matches RememberMeConfigurer#rememberMeParameter -->
         <p>
-            <label for="remember-me">Remember Me?</label>
-            <input type="checkbox" id="remember-me" name="remember-me"/>
+            <label for="remember-me"><spring:message code="remember_me"/></label>
+            <input type="checkbox" id="remember-me" name="j_remember_me"/>
         </p>
         <div>
-            <button type="submit" class="btn">Log in</button>
+            <button type="submit" class="btn"><spring:message code="login"/></button>
         </div>
     </fieldset>
 </form>
