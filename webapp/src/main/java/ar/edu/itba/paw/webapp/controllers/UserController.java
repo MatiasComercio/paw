@@ -567,7 +567,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		return mav;
 	}
 
-	@RequestMapping(value = "/students/add_admin", method = RequestMethod.POST)
+	@RequestMapping(value = "/admin/add_admin", method = RequestMethod.POST)
 	public ModelAndView addAdmin(@Valid @ModelAttribute("adminForm") AdminForm adminForm,
 								   final BindingResult errors, final RedirectAttributes redirectAttributes) {
 		if (errors.hasErrors()){
