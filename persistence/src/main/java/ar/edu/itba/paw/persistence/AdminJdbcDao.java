@@ -164,7 +164,7 @@ public class AdminJdbcDao implements AdminDao {
         } catch (DataAccessException e) {
             return Result.ERROR_UNKNOWN;
         }
-        return Result.OK;
+        return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
     }
 
     /* Private Static Methods */
