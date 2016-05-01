@@ -21,6 +21,7 @@ public class AdminJdbcDao implements AdminDao {
     /* TABLE NAMES */
     private static final String ADMIN_TABLE = "admin";
     private static final String USER_TABLE = "users";
+    private static final String ADDRESS_TABLE = "address";
 
     /* /TABLE NAMES */
 
@@ -48,6 +49,7 @@ public class AdminJdbcDao implements AdminDao {
     /* COLS NAMES */
 
     /* POSTGRESQL WILDCARDS */
+    private static final String AND = "AND";
     private static final String EVERYTHING = "*";
     private static final String EQUALS = "=";
     private static final String GIVEN_PARAMETER = "?";
@@ -58,7 +60,10 @@ public class AdminJdbcDao implements AdminDao {
     static {
         GET_ADMINS =
                 select(EVERYTHING)
-                + from(join(ADMIN_TABLE, USER_TABLE, ADMIN__DNI_COLUMN, USER__DNI_COLUMN));
+                + from(ADMIN_TABLE, USER_TABLE, ADDRESS_TABLE)
+                + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, tableCol(USER_TABLE, USER__DNI_COLUMN)
+                        ,AND,
+                        tableCol(USER_TABLE, USER__DNI_COLUMN), EQUALS, tableCol(ADDRESS_TABLE, ADDRESS__DNI_COLUMN));
     }
 
     private final JdbcTemplate jdbcTemplate;
