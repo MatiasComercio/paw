@@ -63,7 +63,6 @@ public class AdminDetails extends User {
         private final Set<GrantedAuthority> authorities;
         private final Admin.Builder adminBuilder;
 
-        /* For accessing Student Model fields */
         private Admin admin;
 
         /* For accessing Spring.User model fields */
