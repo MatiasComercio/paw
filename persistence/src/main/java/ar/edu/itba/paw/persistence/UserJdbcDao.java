@@ -136,7 +136,7 @@ public class UserJdbcDao implements UserDao {
 			return Result.ERROR_UNKNOWN;
 		}
 
-		createAddress(student.getDni(), student);
+		createAddress(user);
 		return Result.OK;
 	}
 
@@ -145,14 +145,14 @@ public class UserJdbcDao implements UserDao {
 	/* /Public Methods */
 
 
-	public void createAddress(final Integer dni, final Student student) {
+	public void createAddress(final User user) {
 
 		Map<String, Object> addressArgs = new HashMap<>();
 
-		Address addr = student.getAddress();
+		Address addr = user.getAddress();
 
 
-		addressArgs.put(ADDRESS__DNI_COLUMN, dni);
+		addressArgs.put(ADDRESS__DNI_COLUMN, user.getDni());
 		addressArgs.put(ADDRESS__COUNTRY_COLUMN, WordUtils.capitalize(addr.getCountry().toLowerCase()));
 		addressArgs.put(ADDRESS__CITY_COLUMN, WordUtils.capitalize(addr.getCity()).toLowerCase());
 		addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, WordUtils.capitalize(addr.getNeighborhood()).toLowerCase());
@@ -163,7 +163,6 @@ public class UserJdbcDao implements UserDao {
 		addressArgs.put(ADDRESS__TELEPHONE_COLUMN, addr.getTelephone());
 		addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, addr.getZipCode());
 		addressInsert.execute(addressArgs);
-
 	}
 
 	private String createEmail(final int dni, final String firstName, final String lastName) {
