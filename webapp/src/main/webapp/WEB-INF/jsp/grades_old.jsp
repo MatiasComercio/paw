@@ -40,6 +40,7 @@
                     <th><spring:message code="course"/></th>
                     <th><spring:message code="grade"/></th>
                     <th><spring:message code="modified"/></th>
+                    <th><spring:message code="actions"/></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -49,14 +50,17 @@
                         <td>${ grade.courseName }</td>
                         <td>${ grade.grade }</td>
                         <td>${ grade.modified }</td>
-                        <td><a href="<c:url value="/courses/${grade.courseId}/info" />"><spring:message code="see"/> <spring:message code="course"/></a></td>
-
-                        <td><button name="gradeButton" class="btn btn-info btn-xs" type="button"
-                                    data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
-                                    data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
-                                    data-target="#gradeFormConfirmationModal">
-                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-                        </button><td>
+                        <td>
+                            <a class="btn btn-default btn-xs" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">
+                                <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/> <spring:message code="course"/>
+                            </a>
+                            <button name="gradeButton" class="btn btn-info btn-xs" type="button"
+                                        data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
+                                        data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
+                                        data-target="#gradeFormConfirmationModal">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                            </button>
+                        <td>
                     </tr>
                 </c:forEach>
                 </tbody>

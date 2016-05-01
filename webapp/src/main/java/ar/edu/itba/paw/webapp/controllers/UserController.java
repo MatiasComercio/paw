@@ -335,7 +335,12 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			//TODO: Add this to message.properties
-			redirectAttributes.addFlashAttribute("message", "Hay errores en el formulario. Por favor, intentelo nuevamente.");
+			//redirectAttributes.addFlashAttribute("message", "Hay errores en el formulario. Por favor, intentelo nuevamente.");
+			redirectAttributes.addFlashAttribute("message",
+					messageSource.getMessage("editGrade_fail",
+							new Object[] {},
+							Locale.getDefault()));
+
 			return new ModelAndView("redirect:/students/" + docket + "/grades");
 		}
 
