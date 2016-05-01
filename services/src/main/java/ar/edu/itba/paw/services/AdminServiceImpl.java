@@ -27,8 +27,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Result create(Admin admin) {
+        userService.create(admin);
+        Result result = adminDao.create(admin);
 
-        return adminDao.create(admin);
+        //TODO: add role to roles table which indicates (dni, role)
+
+        return result;
     }
 
     @Override
