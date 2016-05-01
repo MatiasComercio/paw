@@ -57,10 +57,10 @@
                         </div>
                         <div class="row">
                             <div class="col-md-3">
-                                <form:radiobutton path="genre" value="M" /> <spring:message code="male"/>
+                                <form:radiobutton path="genre" value="M" /> <spring:message code="M"/>
                              </div>
                             <div class="col-md-3">
-                                <form:radiobutton path="genre" value="F" /> <spring:message code="female"/>
+                                <form:radiobutton path="genre" value="F" /> <spring:message code="F"/>
                             </div>
                         </div>
                     </div>

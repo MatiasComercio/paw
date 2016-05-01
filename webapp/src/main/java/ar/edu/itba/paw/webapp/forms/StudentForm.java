@@ -76,8 +76,9 @@ public class StudentForm {
         this.dni = student.getDni();
         this.firstName = student.getFirstName();
         this.lastName = student.getLastName();
-        String genre = User.Genre.getGenre(student.getGenre());
-        this.genre = genre == null ? null : genre.equals("M") ? User.Genre.M : genre.equals("F") ? User.Genre.F : null;
+//        String genre = User.Genre.getGenre(student.getGenre()); /* +++xdoing */
+//        this.genre = genre == null ? null : genre.equals("M") ? User.Genre.M : genre.equals("F") ? User.Genre.F : null;
+        this.genre = student.getGenre();
         this.birthday = student.getBirthday();
         this.address = student.getAddress();
         this.country = student.getAddress().getCountry();

@@ -70,7 +70,7 @@
                                         <strong><spring:message code="genre"/></strong>
                                     </div>
                                     <div class="col-xs-8">
-                                        ${student.genre}
+                                        <spring:message code="${student.genre}"/>
                                     </div>
                                 </div>
                                 <div class="row">

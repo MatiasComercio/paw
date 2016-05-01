@@ -259,7 +259,9 @@ public class StudentJdbcDao implements StudentDao {
 	@Autowired
 	public StudentJdbcDao (final DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
-		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
+		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE)
+		.usingColumns(USER__DNI_COLUMN, USER__FIRST_NAME_COLUMN, USER__LAST_NAME_COLUMN,
+				USER__GENRE_COLUMN, USER__BIRTHDAY_COLUMN, USER__EMAIL_COLUMN);
 		studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
 		addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
 		inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE);
@@ -403,11 +405,8 @@ public class StudentJdbcDao implements StudentDao {
 		userArgs.put(USER__DNI_COLUMN, student.getDni());
 		userArgs.put(USER__FIRST_NAME_COLUMN, student.getFirstName());
 		userArgs.put(USER__LAST_NAME_COLUMN, student.getLastName());
-
-		if(student.getGenre().equals("Female"))
-			userArgs.put(USER__GENRE_COLUMN, "F");
-		else
-			userArgs.put(USER__GENRE_COLUMN, "M");
+//		+++xdebug
+		userArgs.put(USER__GENRE_COLUMN, student.getGenre().name());
 		userArgs.put(USER__BIRTHDAY_COLUMN, student.getBirthday());
 		userArgs.put(USER__EMAIL_COLUMN, createEmail(student.getDni(), student.getFirstName(),
 				student.getLastName()));
@@ -445,8 +444,9 @@ public class StudentJdbcDao implements StudentDao {
     @Override
     public Result update(final Integer docket, final Integer dni , final Student student) {
 
-        final String genre = student.getGenre().equals("Female")? "F" : "M";
-
+//        final String genre = student.getGenre().equals("Female")? "F" : "M";
+//+++xdebug
+	    final String genre = student.getGenre().name();
         final String userUpdate = "UPDATE users SET " + USER__DNI_COLUMN + " = ?, " + USER__FIRST_NAME_COLUMN + " = ?, "
                 + USER__LAST_NAME_COLUMN + " = ?, " + USER__GENRE_COLUMN + " = ?, " + USER__BIRTHDAY_COLUMN + " = ?, "
                 + USER__EMAIL_COLUMN + " = ? WHERE " + USER__DNI_COLUMN + " = ?";

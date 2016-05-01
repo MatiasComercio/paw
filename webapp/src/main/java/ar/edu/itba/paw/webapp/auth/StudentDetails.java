@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import ar.edu.itba.paw.models.users.User.Genre;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -60,7 +61,7 @@ public class StudentDetails extends User {
 		return student.getFullName();
 	}
 
-	public String getGenre() {
+	public Genre getGenre() {
 		return student.getGenre();
 	}
 
@@ -122,7 +123,7 @@ public class StudentDetails extends User {
 			return this;
 		}
 
-		public Builder genre(final ar.edu.itba.paw.models.users.User.Genre genre) {
+		public Builder genre(final Genre genre) {
 			studentBuilder.genre(genre);
 			return this;
 		}

@@ -47,8 +47,8 @@ public abstract class User {
 		return getFirstName() + " " + getLastName();
 	}
 
-	public String getGenre() {
-		return genre == null ? "" : genre.toString();
+	public Genre getGenre() {
+		return genre;
 	}
 
 	public LocalDate getBirthday() {
@@ -110,7 +110,7 @@ public abstract class User {
 
 		private String firstName = null;
 		private String lastName = null;
-		private Genre genre = null;
+		private Genre genre = Genre.N;
 		private LocalDate birthday = null;
 		private String email = null;
 		private Address address = null;
@@ -195,7 +195,8 @@ public abstract class User {
 
 	public enum Genre {
 		M("Male"),
-		F("Female");
+		F("Female"),
+		N("");
 		/* Every time we add a value to the Enum, we have to add the map
 		a lowerCase representation of the toString of the Genre
 		 */
@@ -203,6 +204,7 @@ public abstract class User {
 		static {
 			map.put("male", M);
 			map.put("female", F);
+			map.put("", N);
 		}
 
 		private final String genre;
@@ -223,6 +225,10 @@ public abstract class User {
 
 		Genre(final String genre) {
 			this.genre = genre;
+		}
+
+		public String getString() {
+			return genre;
 		}
 
 		@Override
