@@ -18,7 +18,8 @@ public enum Result {
     ERROR_ID_OUT_OF_BOUNDS("El ID está fuera de los límites permitidos"),
     ERROR_DOCKET_OUT_OF_BOUNDS("El legajo está fuera de los límites permitidos"),
 	ALREADY_ENROLLED("El alumno ya está inscripto en esa materia."),
-	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia");
+	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia"),
+    ERROR_DNI_OUT_OF_BOUNDS("El DNI está fuera de los límites permitidos");
 
 
     private final String message;
