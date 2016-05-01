@@ -37,20 +37,18 @@
 <c:url value="/login" var="loginProcessingUrl"/>
 <form action="${loginProcessingUrl}" method="post">
     <fieldset>
-        <legend>Please Login</legend>
         <!-- use param.error assuming FormLoginConfigurer#failureUrl contains the query parameter error -->
         <c:if test="${param.error != null}">
             <div>
-                Failed to login.
-                <c:if test="${SPRING_SECURITY_LAST_EXCEPTION != null}">
-                    Reason: <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}" />
+                <spring:message code="login_failed"/>
+                <c:if test="${SPRING_SECURITY_LAST_EXCEPTION != null}">- <c:out value="${SPRING_SECURITY_LAST_EXCEPTION.message}" />
                 </c:if>
             </div>
         </c:if>
         <!-- the configured LogoutConfigurer#logoutSuccessUrl is /login?logout and contains the query param logout -->
         <c:if test="${param.logout != null}">
             <div>
-                You have been logged out.
+                <spring:message code="logout_success"/>
             </div>
         </c:if>
         <p>
