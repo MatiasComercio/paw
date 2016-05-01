@@ -554,7 +554,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/admin/add_admin", method = RequestMethod.GET)
 	public ModelAndView addAdmin(@ModelAttribute("adminForm") final AdminForm adminForm,
-								 RedirectAttributes redirectAttributes){
+								 final RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("addAdmin");
 		if(redirectAttributes != null) {
 			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
@@ -565,6 +565,26 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		}
 		setAlertMessages(mav, redirectAttributes);
 		return mav;
+	}
+
+	@RequestMapping(value = "/students/add_admin", method = RequestMethod.POST)
+	public ModelAndView addAdmin(@Valid @ModelAttribute("adminForm") AdminForm adminForm,
+								   final BindingResult errors, final RedirectAttributes redirectAttributes) {
+		if (errors.hasErrors()){
+			return addAdmin(adminForm, null);
+		}
+		Admin admin = adminForm.build();
+		Result result = admin.create(admin);
+		if(!result.equals(Result.OK)){
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			return addAdmin(adminForm, redirectAttributes);
+		}
+		redirectAttributes.addFlashAttribute("alert", "success");
+		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addAdmin_success",
+				new Object[] {},
+				Locale.getDefault()));
+		return new ModelAndView("redirect:/admins/");
 	}
 
 	/* +++xtodo: @Gonza: implement method */
