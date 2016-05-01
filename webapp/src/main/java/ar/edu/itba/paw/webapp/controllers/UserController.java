@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
+import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.shared.Result;
@@ -37,6 +38,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@Autowired
 	private StudentService studentService;
+
+	@Autowired
+	private AdminService adminService;
 
 	@ModelAttribute("section")
 	public String sectionManager(){
