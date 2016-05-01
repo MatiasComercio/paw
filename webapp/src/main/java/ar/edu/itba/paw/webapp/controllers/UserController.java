@@ -3,12 +3,16 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.webapp.auth.StudentDetails;
 import ar.edu.itba.paw.webapp.forms.*;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -516,4 +520,31 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 		return new ModelAndView("redirect:/students");
 	}
+
+	@RequestMapping(value = "/user/changePassword")
+	public ModelAndView changePassword(@ModelAttribute("changePasswordForm") final PasswordForm passwordForm) {
+		final ModelAndView mav = new ModelAndView("changePassword");
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null) {
+			return new ModelAndView("redirect:/errors/401");
+		}
+
+		UserDetails userDetails = (UserDetails) auth.getPrincipal();
+		/* userDetails.getUsername() == user's dni; used to load on the PasswordForm */
+		mav.addObject("dni", userDetails.getUsername());
+
+		return mav;
+	}
+
+	/* +++xtodo: @Gonza: implement method */
+//	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
+//	public ModelAndView changePassword(@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
+//	                                   final BindingResult errors) {
+//
+//		if (errors.hasErrors()){
+//			return changePassword(passwordForm);
+//		}
+//
+//		return new ModelAndView("/"); /*
+//	}
 }

@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>
-        <spring:message code="webAbbreviation"/> | <spring:message code="pageNotFound_head"/>
+        <spring:message code="webAbbreviation"/> | <spring:message code="pageUnauthorized_head"/>
     </title>
     <jsp:include page="base/head.jsp" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -14,15 +14,15 @@
     <div class="container">
         <div class="row">
             <div class="col-xs-12">
-                <h1><spring:message code="pageForbidden_title"/></h1>
+                <h1><spring:message code="pageUnauthorized_title"/></h1>
             </div>
             <div class="col-xs-12">
-                <p><spring:message code="pageForbidden_reason"/></p>
+                <p><spring:message code="pageUnauthorized_reason"/></p>
             </div>
             <div class="col-xs-4"></div>
             <div class="col-xs-4 text-center">
-                <a class="btn btn-info btn-lg" href="/" role="button">
-                    <spring:message code="goHomeButton"/>
+                <a class="btn btn-info btn-lg" href="/login" role="button">
+                    <spring:message code="goLoginButton"/>
                 </a>
             </div>
         </div>

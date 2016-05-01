@@ -6,6 +6,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class HTTPErrorsController {
+	@RequestMapping(value="/errors/401")
+	public ModelAndView handle401() {
+		return new ModelAndView("401");
+	}
+
 	@RequestMapping(value="/errors/403")
 	public ModelAndView handle403() {
 		return new ModelAndView("403");

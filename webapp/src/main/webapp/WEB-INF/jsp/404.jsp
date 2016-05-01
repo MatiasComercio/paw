@@ -20,8 +20,8 @@
                 <p><spring:message code="pageNotFound_reason"/></p>
             </div>
             <div class="col-xs-4"></div>
-            <div class="col-xs-4">
-                <a class="btn btn-info btn-lg center-block" href="/" role="button">
+            <div class="col-xs-4 text-center">
+                <a class="btn btn-info btn-lg" href="/" role="button">
                     <spring:message code="goHomeButton"/>
                 </a>
             </div>

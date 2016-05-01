@@ -165,9 +165,14 @@
                                 </div>
                             </div>
                             <div class="col-xs-12"></div>
-                            <div class="col-xs-12 text-center">
+                            <div class="col-xs-6 text-center">
                                 <a class="btn btn-info" href="<c:url value="/students/${student.docket}/edit"/>">
                                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                                </a>
+                            </div>
+                            <div class="col-xs-6 text-center">
+                                <a class="btn btn-info" href="<c:url value="/user/changePassword"/>">
+                                    <i class="fa fa-key" aria-hidden="true"></i> <spring:message code="changePassword"/>
                                 </a>
                             </div>
                         </div>
