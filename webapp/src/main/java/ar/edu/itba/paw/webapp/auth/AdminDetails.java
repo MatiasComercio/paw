@@ -73,7 +73,7 @@ public class AdminDetails extends User {
         private boolean credentialsNonExpired = true;
         private boolean accountNonLocked = true;
 
-        public Builder(final int docket, final int dni) {
+        public Builder(final int dni) {
             authorities = new HashSet<>();
             adminBuilder = new Admin.Builder(dni);
         }
