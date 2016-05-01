@@ -1,9 +1,12 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
+import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
+import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -80,7 +83,9 @@ public class UserJdbcDao implements UserDao {
 	@Autowired
 	public UserJdbcDao(final DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
-		this.userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USERS_TABLE);
+		this.userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USERS_TABLE)
+				.usingColumns(USER__DNI_COLUMN, USER__FIRST_NAME_COLUMN, USER__LAST_NAME_COLUMN,
+						USER__GENRE_COLUMN, USER__BIRTHDAY_COLUMN, USER__EMAIL_COLUMN);;
 	}
 	/* /Constructors */
 
@@ -128,12 +133,36 @@ public class UserJdbcDao implements UserDao {
 		} catch (DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
 		}
+
+		createAddress(student.getDni(), student);
+		return Result.OK;
 	}
 
 
 
 	/* /Public Methods */
 
+
+	public void createAddress(final Integer dni, final Student student) {
+
+		Map<String, Object> addressArgs = new HashMap<>();
+
+		Address addr = student.getAddress();
+
+
+		addressArgs.put(ADDRESS__DNI_COLUMN, dni);
+		addressArgs.put(ADDRESS__COUNTRY_COLUMN, WordUtils.capitalize(addr.getCountry().toLowerCase()));
+		addressArgs.put(ADDRESS__CITY_COLUMN, WordUtils.capitalize(addr.getCity()).toLowerCase());
+		addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, WordUtils.capitalize(addr.getNeighborhood()).toLowerCase());
+		addressArgs.put(ADDRESS__STREET_COLUMN, WordUtils.capitalize(addr.getStreet()).toLowerCase());
+		addressArgs.put(ADDRESS__NUMBER_COLUMN,addr.getNumber());
+		addressArgs.put(ADDRESS__FLOOR_COLUMN, addr.getFloor());
+		addressArgs.put(ADDRESS__DOOR_COLUMN, addr.getDoor());
+		addressArgs.put(ADDRESS__TELEPHONE_COLUMN, addr.getTelephone());
+		addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, addr.getZipCode());
+		addressInsert.execute(addressArgs);
+
+	}
 
 	private String createEmail(final int dni, final String firstName, final String lastName) {
 		final String defaultEmail = "admin" + dni + EMAIL_DOMAIN;
