@@ -293,13 +293,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
 	                               RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("addStudent");
-		/*if(redirectAttributes != null) {
-			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
-			if (raMap.get("alert") != null) {
-				mav.addObject("alert", raMap.get("alert"));
-				mav.addObject("message", raMap.get("message"));
-			}
-		}*/
 		setAlertMessages(mav, redirectAttributes);
 		return mav;
 	}
@@ -334,8 +327,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
 			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			//TODO: Add this to message.properties
-			//redirectAttributes.addFlashAttribute("message", "Hay errores en el formulario. Por favor, intentelo nuevamente.");
 			redirectAttributes.addFlashAttribute("message",
 					messageSource.getMessage("editGrade_fail",
 							new Object[] {},
@@ -463,14 +454,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	                                @ModelAttribute("studentForm") final StudentForm studentForm,
 	                                RedirectAttributes redirectAttributes) {
 		final ModelAndView mav = new ModelAndView("editStudent");
-
-		/*if (redirectAttributes != null) {
-			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
-			if (raMap.get("alert") != null) {
-				mav.addObject("alert", raMap.get("alert"));
-				mav.addObject("message", raMap.get("message"));
-			}
-		}*/
 		setAlertMessages(mav, redirectAttributes);
 
 		Student student = studentService.getByDocket(docket);
