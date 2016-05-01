@@ -25,10 +25,10 @@ public interface UserDao {
 	List<Role> getRoles(final int dni);
 
 	/**
-	 * +++xdocument
-	 * @param dni
-	 * @param prevPassword
-	 * @param newPassword
+	 * Change the password of a given user
+	 * @param dni The user's dni.
+	 * @param prevPassword The user's previous password
+	 * @param newPassword The user's new password
      * @return 	OK if the password could be changed;
 	 * 			INVALID_INPUT_PARAMETERS if the DNI or the password are incorrect;
 	 * 			else ERROR_UNKNOWN for an unknown error;
