@@ -18,7 +18,8 @@ public enum Result {
     ERROR_ID_OUT_OF_BOUNDS("El ID está fuera de los límites permitidos"),
     ERROR_DOCKET_OUT_OF_BOUNDS("El legajo está fuera de los límites permitidos"),
 	ALREADY_ENROLLED("El alumno ya está inscripto en esa materia."),
-	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia");
+	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia"),
+    PASSWORDS_DO_NOT_MATCH("La contraseña y su repetición no coinciden");
 
 
     private final String message;
