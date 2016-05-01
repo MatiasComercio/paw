@@ -113,7 +113,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	}
 
 	@RequestMapping("/students/{docket}/grades")
-	public ModelAndView getStudentGrades(@PathVariable final int docket, @ModelAttribute GradeForm gradeForm,
+	public ModelAndView getStudentGrades(@PathVariable final int docket, Model model,
 										 RedirectAttributes redirectAttributes) {
 		final Student student =  studentService.getGrades(docket);
 		final ModelAndView mav;
@@ -122,10 +122,14 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			return new ModelAndView("forward:/errors/404.html");
 		}
 
+		if (!model.containsAttribute("gradeForm")) {
+			model.addAttribute("gradeForm", new GradeForm());
+		}
+
 		mav = new ModelAndView("grades_old"); // +++xchange
+
 		setAlertMessages(mav, redirectAttributes);
 
-		//mav = new ModelAndView("grades");
 		mav.addObject("student", student);
 		mav.addObject("subsection_grades", true);
 		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/edit");
@@ -322,46 +326,17 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		}
 	}
 
-	/*@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.GET)
-	public ModelAndView editGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
-	                              @PathVariable Integer docket, @PathVariable Integer courseId, @PathVariable Timestamp modified,
-								  @PathVariable BigDecimal grade, @PathVariable String courseName,
-								  RedirectAttributes redirectAttributes){
-	*/
-	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.GET)
-	public ModelAndView editGrade(@ModelAttribute("gradeForm") GradeForm gradeForm, @PathVariable Integer docket,
-								  RedirectAttributes redirectAttributes){
-		ModelAndView mav = new ModelAndView("editGrade");
-		setAlertMessages(mav, redirectAttributes);
-		/*gradeForm.setGrade(grade); //Set the old grade (to be displayed in the edit view)
-		gradeForm.setDocket(docket);
-		gradeForm.setCourseId(courseId);
-		gradeForm.setModified(modified);
-		gradeForm.setCourseName(courseName); //Avoid the @NotBlank validation
-*/
-		mav.addObject("docket", docket);
-		/*mav.addObject("courseId", courseId);
-		mav.addObject("courseName", courseName);
-*/
-		return mav;
-	}
-
-
-	/*@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.POST)
-	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
-	                              @PathVariable Integer docket, @PathVariable Integer courseId,
-	                              @PathVariable Timestamp modified, @PathVariable BigDecimal grade,
-								  @PathVariable String courseName,
-	                              RedirectAttributes redirectAttributes){
-	*/
 	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.POST)
 	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
 								  @PathVariable Integer docket, RedirectAttributes redirectAttributes){
 
 		if (errors.hasErrors()){
-			//return editGrade(gradeForm, docket, courseId, modified, grade, courseName, null);
-			//return editGrade(gradeForm, docket, null);
-			return new ModelAndView("/students/" + docket + "/grades");
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
+			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			//TODO: Add this to message.properties
+			redirectAttributes.addFlashAttribute("message", "Hay errores en el formulario. Por favor, intentelo nuevamente.");
+			return new ModelAndView("redirect:/students/" + docket + "/grades");
 		}
 
 		Grade newGrade = gradeForm.build();
@@ -370,9 +345,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			//return editGrade(gradeForm, docket, courseId, modified, grade, courseName,redirectAttributes);
-			//return editGrade(gradeForm, docket, redirectAttributes);
-			return new ModelAndView("/students/" + docket + "/grades");
+			return new ModelAndView("redirect:/students/" + docket + "/grades");
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message",
@@ -469,11 +442,11 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	}
 
 	/* This method enables the Alerts to be shown in the view if there are any.
-	* USAGE: Use it in requestMapping with GET method. */
+	* USAGE: Use it in requestMapping with GET method adding the redirectAttributes "alert" and "message". */
 	public void setAlertMessages(ModelAndView mav, RedirectAttributes ra){
 		if(ra != null) {
 			Map<String, ?> raMap = ra.getFlashAttributes();
-			if (raMap.get("alert") != null) {
+			if (raMap.get("alert") != null && raMap.get("message") != null) {
 				mav.addObject("alert", raMap.get("alert"));
 				mav.addObject("message", raMap.get("message"));
 			}
