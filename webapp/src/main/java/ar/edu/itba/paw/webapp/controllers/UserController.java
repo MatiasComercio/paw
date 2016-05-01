@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.auth.StudentDetails;
 import ar.edu.itba.paw.webapp.forms.*;
@@ -540,10 +541,16 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		return mav;
 	}
 
-//	@RequestMapping(value = "/admin/")
-//	public ModelAndView getAllAdmins() {
-//
-//	}
+	@RequestMapping(value = "/admins/")
+	public ModelAndView getAllAdmins() {
+		final List<Admin> admins = adminService.getAllAdmins();
+
+		for(Admin admin : admins) {
+			System.out.println(admin);
+		}
+
+		return new ModelAndView("redirect:/");
+	}
 
 	/* +++xtodo: @Gonza: implement method */
 //	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
