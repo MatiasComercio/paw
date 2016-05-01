@@ -2,13 +2,19 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.users.User;
+import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class UserJdbcDao implements UserDao {
@@ -66,6 +72,28 @@ public class UserJdbcDao implements UserDao {
 		final List<Role> roles = jdbcTemplate.query(GET_ROLES, getRolesRowMapper, requestedDni);
 
 		return roles;
+	}
+
+	@Override
+	public Result create(User user) {
+		final Map<String, Object> userArgs = new HashMap<>();
+		final Map<String, Object> addressArgs = new HashMap<>();
+
+		userArgs.put(USER__DNI_COLUMN, student.getDni());
+		userArgs.put(USER__FIRST_NAME_COLUMN, student.getFirstName());
+		userArgs.put(USER__LAST_NAME_COLUMN, student.getLastName());
+
+		userArgs.put(USER__GENRE_COLUMN, student.getGenre().name());
+		userArgs.put(USER__BIRTHDAY_COLUMN, student.getBirthday());
+		userArgs.put(USER__EMAIL_COLUMN, createEmail(student.getDni(), student.getFirstName(),
+				student.getLastName()));
+		try {
+			userInsert.execute(userArgs);
+		}catch(DuplicateKeyException e){
+			return Result.STUDENT_EXISTS_DNI;
+		} catch (DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
+		}
 	}
 
 
