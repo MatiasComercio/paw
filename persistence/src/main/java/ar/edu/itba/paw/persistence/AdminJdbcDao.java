@@ -51,6 +51,14 @@ public class AdminJdbcDao implements AdminDao {
     private static final String GIVEN_PARAMETER = "?";
     /* /POSTGRESQL WILDCARDS */
 
+    private static final String GET_ADMINS;
+
+    static {
+        GET_ADMINS =
+                select(EVERYTHING)
+                + from(join(ADMIN_TABLE, USER_TABLE, ADMIN__DNI_COLUMN, USER__DNI_COLUMN));
+    }
+
     private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Admin> adminRowMapper = (resultSet, rowNumber) -> {
