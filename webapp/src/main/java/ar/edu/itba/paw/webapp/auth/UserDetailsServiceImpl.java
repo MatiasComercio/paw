@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.auth;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,11 +44,29 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			return loadAdmin(user);
 		}*/
 
+		if (user instanceof Admin) {
+			return loadAdmin((Admin) user);
+		}
+
 		if (user instanceof Student) {
 			return loadStudent((Student) user);
 		}
 
 		return null;
+	}
+
+	private UserDetails loadAdmin(final Admin admin) {
+		final AdminDetails.Builder adminDetailesBuilder =
+				new AdminDetails.Builder(admin.getDni());
+		adminDetailesBuilder
+				.firstName(admin.getFirstName())
+				.lastName(admin.getLastName())
+				.email(admin.getEmail())
+				.password(admin.getPassword());
+		for (Role role : admin.getRoles()) {
+			adminDetailesBuilder.authority(new SimpleGrantedAuthority(role.toString()));
+		}
+		return adminDetailesBuilder.build();
 	}
 
 	private UserDetails loadStudent(final Student student) {
@@ -63,4 +82,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		}
 		return studentDetailsBuilder.build();
 	}
+
 }
