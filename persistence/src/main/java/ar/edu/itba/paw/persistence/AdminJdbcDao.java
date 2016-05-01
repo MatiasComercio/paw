@@ -174,9 +174,9 @@ public class AdminJdbcDao implements AdminDao {
 
     @Override
     public Admin getByDni(int dni) {
-        final List<Admin> students = jdbcTemplate.query(GET_BY_DNI, infoRowMapper, dni);
+        final List<Admin> admin = jdbcTemplate.query(GET_BY_DNI, adminRowMapper, dni);
 
-        return students.isEmpty() ? null : students.get(0);
+        return admin.isEmpty() ? null : admin.get(0);
     }
 
     /* Private Static Methods */
