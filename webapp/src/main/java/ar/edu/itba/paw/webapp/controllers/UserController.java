@@ -543,7 +543,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	/* +++xtodo: @Gonza: implement method */
 	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
 	public ModelAndView changePassword(@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
-	                                   final BindingResult errors) {
+	                                   final BindingResult errors, final RedirectAttributes redirectAttributes) {
 		if (errors.hasErrors()){
 			return changePassword(passwordForm);
 		}
@@ -552,6 +552,16 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 				passwordForm.getCurrentPassword(),
 				passwordForm.getNewPassword(),
 				passwordForm.getRepeatNewPassword());
+
+		if (!result.equals(Result.OK)) {
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+		} else {
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
+					new Object[] {},
+					Locale.getDefault()));
+		}
 
 		return new ModelAndView("redirect:/");
 	}
