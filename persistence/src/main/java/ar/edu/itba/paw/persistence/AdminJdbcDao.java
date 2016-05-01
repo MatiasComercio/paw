@@ -1,21 +1,48 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.AdminDao;
+import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.users.Admin;
+import ar.edu.itba.paw.models.users.User;
+import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import javax.sql.DataSource;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public class AdminJdbcDao implements AdminDao {
 
     /* TABLE NAMES */
     private static final String ADMIN_TABLE = "admin";
+    private static final String USER_TABLE = "users";
+
     /* /TABLE NAMES */
 
     /* COLS NAMES */
     private static final String ADMIN__DNI_COLUMN = "dni";
+
+    private static final String USER__DNI_COLUMN = "dni";
+    private static final String USER__FIRST_NAME_COLUMN = "first_name";
+    private static final String USER__LAST_NAME_COLUMN = "last_name";
+    private static final String USER__GENRE_COLUMN = "genre";
+    private static final String USER__BIRTHDAY_COLUMN = "birthday";
+    private static final String USER__EMAIL_COLUMN = "email";
+    private static final String USER__PASSWORD_COLUMN = "password";
+
+    private static final String ADDRESS__DNI_COLUMN = "dni";
+    private static final String ADDRESS__COUNTRY_COLUMN = "country";
+    private static final String ADDRESS__CITY_COLUMN = "city";
+    private static final String ADDRESS__NEIGHBORHOOD_COLUMN = "neighborhood";
+    private static final String ADDRESS__STREET_COLUMN = "street";
+    private static final String ADDRESS__NUMBER_COLUMN = "number";
+    private static final String ADDRESS__FLOOR_COLUMN = "floor";
+    private static final String ADDRESS__DOOR_COLUMN = "door";
+    private static final String ADDRESS__TELEPHONE_COLUMN = "telephone";
+    private static final String ADDRESS__ZIP_CODE_COLUMN = "zip_code";
     /* COLS NAMES */
 
     /* POSTGRESQL WILDCARDS */
@@ -25,6 +52,66 @@ public class AdminJdbcDao implements AdminDao {
     /* /POSTGRESQL WILDCARDS */
 
     private final JdbcTemplate jdbcTemplate;
+
+    private final RowMapper<Admin> adminRowMapper = (resultSet, rowNumber) -> {
+        final int dni = resultSet.getInt(ADMIN__DNI_COLUMN);
+        final String firstName = WordUtils.capitalizeFully(resultSet.getString(USER__FIRST_NAME_COLUMN));
+        final String lastName = WordUtils.capitalizeFully(resultSet.getString(USER__LAST_NAME_COLUMN));
+        final Date birthdayDate = resultSet.getDate(USER__BIRTHDAY_COLUMN);
+        final LocalDate birthday;
+
+        if (birthdayDate != null) {
+            birthday = birthdayDate.toLocalDate();
+        } else {
+            birthday = null;
+        }
+
+        final String genreString = resultSet.getString(USER__GENRE_COLUMN);
+        final User.Genre genre;
+        if (genreString != null) {
+            genre = User.Genre.valueOf(resultSet.getString(USER__GENRE_COLUMN));
+        } else {
+            genre = null;
+        }
+
+        String email = resultSet.getString(USER__EMAIL_COLUMN);
+
+        final String country = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__COUNTRY_COLUMN));
+        final String city = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__CITY_COLUMN));
+        final String neighborhood = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__NEIGHBORHOOD_COLUMN));
+        final String street = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__STREET_COLUMN));
+        Integer number = resultSet.getInt(ADDRESS__NUMBER_COLUMN);
+        if (resultSet.wasNull()) {
+            number = null;
+        }
+        Integer floor = resultSet.getInt(ADDRESS__FLOOR_COLUMN);
+        if (resultSet.wasNull()) {
+            floor = null;
+        }
+        String door = resultSet.getString(ADDRESS__DOOR_COLUMN);
+        if (door != null) {
+            door = door.toUpperCase();
+        }
+        Long telephone = resultSet.getLong(ADDRESS__TELEPHONE_COLUMN);
+        if (resultSet.wasNull()) {
+            telephone = null;
+        }
+        Integer zipCode = resultSet.getInt(ADDRESS__ZIP_CODE_COLUMN);
+        if (resultSet.wasNull()) {
+            zipCode = null;
+        }
+        final Address.Builder addressBuilder = new Address.Builder(country, city, neighborhood, street, number);
+        addressBuilder.floor(floor).door(door).telephone(telephone).zipCode(zipCode);
+        final Address address = addressBuilder.build();
+
+        final String password = resultSet.getString(USER__PASSWORD_COLUMN);
+
+        final Admin.Builder studentBuilder = new Admin.Builder(dni);
+        studentBuilder.firstName(firstName).lastName(lastName).
+                genre(genre).birthday(birthday).email(email).address(address).password(password);
+
+        return studentBuilder.build();
+    };
 
     @Autowired
     public AdminJdbcDao(final DataSource dataSource) {
