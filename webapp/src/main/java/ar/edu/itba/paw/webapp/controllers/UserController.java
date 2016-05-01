@@ -553,6 +553,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 				passwordForm.getNewPassword(),
 				passwordForm.getRepeatNewPassword());
 
-		return new ModelAndView("/");
+		return new ModelAndView("redirect:/");
 	}
 }
