@@ -23,4 +23,11 @@ public interface AdminDao {
      *          +++xcomplete remaining return types
      */
     Result create(Admin admin);
+
+    /**
+     * +++xdocument
+     * @param dni
+     * @return
+     */
+    Admin getByDni(int dni);
 }

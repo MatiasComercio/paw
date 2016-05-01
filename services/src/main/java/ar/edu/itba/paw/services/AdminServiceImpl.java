@@ -25,4 +25,9 @@ public class AdminServiceImpl implements AdminService {
         //TODO: Insert into users table the data
         return adminDao.create(admin);
     }
+
+    @Override
+    public Admin getByDni(int dni) {
+        return adminDao.getByDni(dni);
+    }
 }
