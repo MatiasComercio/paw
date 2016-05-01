@@ -9,6 +9,52 @@ public class AdminJdbcDao implements AdminDao {
 
     @Override
     public List<Admin> getAllAdmins() {
-        return null;
+
+    }
+
+    /* Private Static Methods */
+    private static String select(final String... cols) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT ");
+        buildSentence(stringBuilder, cols);
+        return stringBuilder.toString();
+    }
+
+    private static String from(final String... cols) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("FROM ");
+        buildSentence(stringBuilder, cols);
+        return stringBuilder.toString();
+    }
+
+    private static String where(final String... cols) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("WHERE ");
+        for (String col : cols) {
+            stringBuilder.append(col);
+        }
+        stringBuilder.append(" ");
+        return stringBuilder.toString();
+    }
+
+    private static void buildSentence(final StringBuilder stringBuilder, final String... cols) {
+        int i = 0;
+        final int lCols = cols.length;
+        for (String col : cols) {
+            i++;
+            stringBuilder.append(col);
+            if (i < lCols) {
+                stringBuilder.append(" ,");
+            }
+        }
+        stringBuilder.append(" ");
+    }
+
+    private static String join(final String t1, final String t2, final String c1, final String c2) {
+        return t1 + " JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
+    }
+
+    private static String tableCol(final String table, final String column) {
+        return table + "." + column;
     }
 }
