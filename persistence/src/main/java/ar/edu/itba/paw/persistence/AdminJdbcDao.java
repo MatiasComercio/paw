@@ -73,12 +73,9 @@ public class AdminJdbcDao implements AdminDao {
                         tableCol(USER_TABLE, USER__DNI_COLUMN), EQUALS, tableCol(ADDRESS_TABLE, ADDRESS__DNI_COLUMN));
         GET_BY_DNI =
                 select(EVERYTHING)
-                        + from(ADMIN_TABLE, USER_TABLE, ADDRESS_TABLE)
-                        + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, tableCol(USER_TABLE, USER__DNI_COLUMN)
-                        ,AND,
-                        tableCol(USER_TABLE, USER__DNI_COLUMN), EQUALS, tableCol(ADDRESS_TABLE, ADDRESS__DNI_COLUMN)
-                        ,AND,
-                        tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);
+                        + from(join(ADMIN_TABLE, USER_TABLE, ADMIN__DNI_COLUMN, USER__DNI_COLUMN))
+                        + leftJoin(ADDRESS_TABLE, ADMIN_TABLE, ADDRESS__DNI_COLUMN, ADMIN__DNI_COLUMN)
+                        + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);
 
     }
 
@@ -220,6 +217,10 @@ public class AdminJdbcDao implements AdminDao {
             }
         }
         stringBuilder.append(" ");
+    }
+
+    private static String leftJoin(final String t1, final String t2, final String c1, final String c2) {
+        return t1 + " LEFT JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
     }
 
     private static String join(final String t1, final String t2, final String c1, final String c2) {
