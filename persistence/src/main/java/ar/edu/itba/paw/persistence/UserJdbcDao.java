@@ -86,6 +86,7 @@ public class UserJdbcDao implements UserDao {
 	public Result changePassword(final int dni, final String prevPassword, final String newPassword) {
 		final int rowsAffected;
 		try {
+			System.out.println(UPDATE_PASSWORD);
 			rowsAffected = jdbcTemplate.update(UPDATE_PASSWORD, newPassword, dni, prevPassword);
 		} catch (DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
@@ -140,8 +141,8 @@ public class UserJdbcDao implements UserDao {
 		stringBuilder.append("WHERE ");
 		for (String col : cols) {
 			stringBuilder.append(col);
+			stringBuilder.append(" ");
 		}
-		stringBuilder.append(" ");
 		return stringBuilder.toString();
 	}
 
