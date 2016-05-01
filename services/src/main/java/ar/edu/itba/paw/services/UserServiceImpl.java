@@ -34,11 +34,13 @@ public class UserServiceImpl implements UserService {
 		}
 
 		List<Role> roles = userDao.getRoles(dni);
+		roles.add(Role.STUDENT); /* +++xdebug */
 
 		if (roles == null) {
 			return null;
 		}
 
+		/* +++xtodo */
 //		if (roles.contains(Role.ADMIN)) {
 //			/* loadAdmin data
 //			* return;
@@ -57,10 +59,10 @@ public class UserServiceImpl implements UserService {
 					.lastName(ts.getLastName())
 					.email(ts.getEmail())
 					.birthday(ts.getBirthday())
-//					.genre(ts.getGenre())
+//					.genre(ts.getGenre()) +++xcheck
 					.address(ts.getAddress())
-//					.roles(roles); +++xdebug
-					.role(Role.STUDENT);
+					.password(ts.getPassword())
+					.roles(roles);
 			return sb.build();
 		}
 

@@ -18,10 +18,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Autowired
 	private UserService userService;
 
-	/* +++xtodo */
-	/*@Autowired
-	private AdminService adminService;*/
-
 	@Override
 	public UserDetails loadUserByUsername(final String dni) throws UsernameNotFoundException {
 
@@ -60,7 +56,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		studentDetailsBuilder
 				.firstName(student.getFirstName())
 				.lastName(student.getLastName())
-				.email(student.getEmail());
+				.email(student.getEmail())
+				.password(student.getPassword());
 		for (Role role : student.getRoles()) {
 			studentDetailsBuilder.authority(new SimpleGrantedAuthority(role.toString()));
 		}

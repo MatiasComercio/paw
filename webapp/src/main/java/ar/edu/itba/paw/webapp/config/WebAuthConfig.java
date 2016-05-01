@@ -64,7 +64,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 				.and().formLogin()
 				.usernameParameter("j_dni")
 				.passwordParameter("j_password")
-				.defaultSuccessUrl("/", false)
+				.defaultSuccessUrl("/students", false)
 //				.successHandler(authSuccessHandler)
 				.failureUrl("/login?error")
 				.loginPage("/login")
@@ -81,7 +81,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 				.logoutSuccessUrl("/login?logout")
 
 				.and().exceptionHandling()
-				.accessDeniedPage("/403")
+				.accessDeniedPage("/403") /* +++xtodo: define */
 
 				.and().csrf() /* +++xcheck: how to correctly enable this */
 				.disable();
@@ -90,6 +90,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(final WebSecurity web) throws Exception {
 		web.ignoring()
-				.antMatchers("/css/*", "/js/**", "/img/**", "/favicon.ico", "/403");
+				.antMatchers("/static/**", "/jsp/base/**", "/favicon.ico", "/403");
 	}
 }

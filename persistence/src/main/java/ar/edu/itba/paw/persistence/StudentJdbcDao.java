@@ -52,6 +52,7 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String USER__GENRE_COLUMN = "genre";
 	private static final String USER__BIRTHDAY_COLUMN = "birthday";
 	private static final String USER__EMAIL_COLUMN = "email";
+	private static final String USER__PASSWORD_COLUMN = "password";
 
 	private static final String ADDRESS__DNI_COLUMN = "dni";
 	private static final String ADDRESS__COUNTRY_COLUMN = "country";
@@ -89,7 +90,7 @@ public class StudentJdbcDao implements StudentDao {
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
 					" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN + " " +
 					" LEFT JOIN " + ADDRESS_TABLE + " ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + ADDRESS_TABLE + "." + ADDRESS__DNI_COLUMN + " " +
-					"WHERE " + STUDENT__DNI_COLUMN + " = ? LIMIT 1" +
+					"WHERE " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = ? LIMIT 1" +
 					";";
 
 	private static final String GET_ALL =
@@ -199,9 +200,11 @@ public class StudentJdbcDao implements StudentDao {
 		addressBuilder.floor(floor).door(door).telephone(telephone).zipCode(zipCode);
 		final Address address = addressBuilder.build();
 
+		final String password = resultSet.getString(USER__PASSWORD_COLUMN);
+
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
 		studentBuilder.firstName(firstName).lastName(lastName).
-				genre(genre).birthday(birthday).email(email).address(address);
+				genre(genre).birthday(birthday).email(email).address(address).password(password);
 
 		return studentBuilder.build();
 	};

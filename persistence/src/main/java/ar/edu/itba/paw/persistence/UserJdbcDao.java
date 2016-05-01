@@ -65,7 +65,7 @@ public class UserJdbcDao implements UserDao {
 		/* Grab student's data */
 		final List<Role> roles = jdbcTemplate.query(GET_ROLES, getRolesRowMapper, requestedDni);
 
-		return roles.isEmpty() ? null : roles;
+		return roles;
 	}
 
 

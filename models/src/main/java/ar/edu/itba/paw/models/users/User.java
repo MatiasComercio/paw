@@ -16,6 +16,7 @@ public abstract class User {
 	private final LocalDate birthday;
 	private final String email;
 	private final Address address;
+	private final String password;
 	private final Collection<Role> roles;
 
 	protected User(final Builder builder) {
@@ -26,6 +27,7 @@ public abstract class User {
 		this.birthday = builder.birthday;
 		this.email = builder.email;
 		this.address = builder.address;
+		this.password = builder.password;
 		this.roles = builder.roles;
 	}
 
@@ -66,6 +68,14 @@ public abstract class User {
 		return address;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+	public Collection<Role> getRoles() {
+		return Collections.unmodifiableCollection(roles);
+	}
+
 	@Override
 	public boolean equals(final Object o) {
 		if (this == o) return true;
@@ -94,10 +104,6 @@ public abstract class User {
 				'}';
 	}
 
-	public Collection<Role> getRoles() {
-		return Collections.unmodifiableCollection(roles);
-	}
-
 	public static abstract class Builder<V extends User, T extends Builder<V,T>> {
 		private int dni;
 		private T thisBuilder;
@@ -108,6 +114,7 @@ public abstract class User {
 		private LocalDate birthday = null;
 		private String email = null;
 		private Address address = null;
+		private String password = null;
 		private Collection<Role> roles = null;
 
 		public Builder(final int dni) {
@@ -160,6 +167,13 @@ public abstract class User {
 		public T address(final Address address) {
 			if (address != null) {
 				this.address = address;
+			}
+			return thisBuilder;
+		}
+
+		public T password(final String password) {
+			if (password != null) {
+				this.password = password;
 			}
 			return thisBuilder;
 		}
