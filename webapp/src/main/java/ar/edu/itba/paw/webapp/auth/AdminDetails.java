@@ -10,9 +10,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Created by gonzalo on 5/1/16.
- */
 public class AdminDetails extends User {
     private Admin admin;
 
