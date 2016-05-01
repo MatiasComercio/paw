@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -32,6 +33,9 @@ public class UserJdbcDao implements UserDao {
 						where(tableCol(USER_TABLE, USER__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);*/
 		GET_ROLES =
 				select(ROLES__ROLE_COLUMN) + from(ROLES_TABLE) + where(ROLES__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
+
+		UPDATE_PASSWORD =
+				update()
 
 	}
 
@@ -68,6 +72,11 @@ public class UserJdbcDao implements UserDao {
 		return roles;
 	}
 
+	@Override
+	public Result changePassword(final int dni, final String prevPassword, final String newPassword) {
+		final int rowsAffected = jdbcTemplate.update(UPDATE_PASSWORD, dni, prevPassword, newPassword);
+	}
+
 
 
 	/* /Public Methods */
@@ -81,6 +90,13 @@ public class UserJdbcDao implements UserDao {
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT ");
 		buildSentence(stringBuilder, cols);
+		return stringBuilder.toString();
+	}
+
+	private static String update(final String table) {
+		final StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("UPDATE ");
+		buildSentence(stringBuilder, table);
 		return stringBuilder.toString();
 	}
 
