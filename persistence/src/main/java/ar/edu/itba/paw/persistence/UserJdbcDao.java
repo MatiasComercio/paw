@@ -15,15 +15,20 @@ import java.util.List;
 public class UserJdbcDao implements UserDao {
 
 	private static final String ROLES_TABLE = "roles";
+	private static final String USERS_TABLE = "users";
 
 	private static final String ROLES__DNI_COLUMN = "dni";
 	private static final String ROLES__ROLE_COLUMN = "role";
+
+	private static final String USERS__DNI_COLUMN = "dni";
+	private static final String USERS__PWD_COLUMN = "password";
 
 	private static final String EVERYTHING = "*";
 	private static final String EQUALS = "=";
 	private static final String GIVEN_PARAMETER = "?";
 
 	private static final String GET_ROLES;
+	private static final String UPDATE_PASSWORD;
 
 	static {
 /*	Usage example:
@@ -35,7 +40,9 @@ public class UserJdbcDao implements UserDao {
 				select(ROLES__ROLE_COLUMN) + from(ROLES_TABLE) + where(ROLES__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
 
 		UPDATE_PASSWORD =
-				update() +
+				update(USERS_TABLE) +
+						set(USERS__PWD_COLUMN, EQUALS, GIVEN_PARAMETER) +
+						where(tableCol(USERS_TABLE, USERS__DNI_COLUMN), EQUALS, USERS__DNI_COLUMN);
 
 	}
 
