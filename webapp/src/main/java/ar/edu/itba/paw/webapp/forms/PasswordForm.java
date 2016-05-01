@@ -5,7 +5,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public class PasswordForm {
 
 	/* +++xtodo: @Gonza: improve validations */
-	@NotBlank
+//	@NotBlank
 	private int dni;
 
 	@NotBlank
