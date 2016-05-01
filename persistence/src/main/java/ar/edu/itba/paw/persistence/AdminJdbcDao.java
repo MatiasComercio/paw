@@ -72,8 +72,13 @@ public class AdminJdbcDao implements AdminDao {
                         ,AND,
                         tableCol(USER_TABLE, USER__DNI_COLUMN), EQUALS, tableCol(ADDRESS_TABLE, ADDRESS__DNI_COLUMN));
         GET_BY_DNI =
-                GET_ADMINS
-                + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);
+                select(EVERYTHING)
+                        + from(ADMIN_TABLE, USER_TABLE, ADDRESS_TABLE)
+                        + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, tableCol(USER_TABLE, USER__DNI_COLUMN)
+                        ,AND,
+                        tableCol(USER_TABLE, USER__DNI_COLUMN), EQUALS, tableCol(ADDRESS_TABLE, ADDRESS__DNI_COLUMN)
+                        ,AND,
+                        tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);
 
     }
 
