@@ -552,6 +552,21 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		return new ModelAndView("redirect:/");
 	}
 
+	@RequestMapping(value = "/admin/add_admin", method = RequestMethod.GET)
+	public ModelAndView addAdmin(@ModelAttribute("adminForm") final AdminForm adminForm,
+								 RedirectAttributes redirectAttributes){
+		ModelAndView mav = new ModelAndView("addAdmin");
+		if(redirectAttributes != null) {
+			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
+			if (raMap.get("alert") != null) {
+				mav.addObject("alert", raMap.get("alert"));
+				mav.addObject("message", raMap.get("message"));
+			}
+		}
+		setAlertMessages(mav, redirectAttributes);
+		return mav;
+	}
+
 	/* +++xtodo: @Gonza: implement method */
 //	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
 //	public ModelAndView changePassword(@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
