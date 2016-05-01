@@ -63,10 +63,19 @@ public interface CourseDao {
 
     /**
      *
+<<<<<<< Updated upstream
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll in the
      * given course)
      */
     List<Integer> getCorrelatives(Integer courseId);
+
+    /**
+     * @param id The id of the course who will have the correlativity
+     * @param correlative_id The id of the course correlative course
+     * @return The boolean value indicating if the correlativity loop
+     * is generated.
+     */
+    boolean checkCorrelativityLoop(final Integer id, final Integer correlative_id);
 
 }

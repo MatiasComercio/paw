@@ -83,6 +83,11 @@ public class CourseServiceImpl implements CourseService {
         return students;
     }
 
+    @Override
+    public Result addCorrelative(final Integer id, final Integer correlativeId) {
+
+    }
+
     /* Test purpose only */
 	/* default */ void setCourseDao(CourseDao courseDao) {
         this.courseDao = courseDao;

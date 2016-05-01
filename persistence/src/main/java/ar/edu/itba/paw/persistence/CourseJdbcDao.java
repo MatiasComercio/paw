@@ -163,9 +163,22 @@ public class CourseJdbcDao implements CourseDao {
         return courses;
     }
 
+    @Override
+    public boolean checkCorrelativityLoop(Integer id, Integer correlative_id) {
+        String query = "WITH RECURSIVE corr (cid, corrid) AS " +
+                "(SELECT course_id, correlative_id FROM correlative " +
+                "UNION ALL " +
+                "SELECT corr.cid, correlative.correlative_id " +
+                "FROM corr, correlative " +
+                "WHERE corr.corrid = correlative.course_id) " +
+                "SELECT cid, corrid FROM corr;";
+        
+        return false;
+    }
+
     /* +++xreference
-        http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
-     */
+            http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
+         */
     @Override
     public Result deleteCourse(Integer id) {
         Object[] idWrapped = new Object[]{id};
@@ -191,6 +204,9 @@ public class CourseJdbcDao implements CourseDao {
         } catch(final DataAccessException e) {
             return Result.ERROR_UNKNOWN;
         }
+
+
+
     }
 
     private static class QueryFilter {

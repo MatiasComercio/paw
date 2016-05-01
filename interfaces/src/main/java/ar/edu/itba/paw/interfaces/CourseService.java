@@ -76,4 +76,15 @@ public interface CourseService {
      * given course)
      */
     List<Integer> getCorrelatives(Integer courseId);
+
+    /**
+     * Make the course corresponding to the correlativeId necessary
+     * to take the course corresponding to the id. Checks that no correlativity
+     * loop is generated.
+     *
+     * @param id The id of the course to which a correlative course is going to be added
+     * @param correlativeId The id of the correlative course
+     * @return The result indicating if the action could be done.
+     */
+    Result addCorrelative(final Integer id, final Integer correlativeId);
 }
