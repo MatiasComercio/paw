@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -18,17 +19,41 @@ import java.util.Map;
 
 @Repository
 public class UserJdbcDao implements UserDao {
+	private static final String EMAIL_DOMAIN = "@bait.edu.ar";
 
 	private static final String ROLES_TABLE = "roles";
+	private static final String USERS_TABLE = "users";
+	private static final String ADDRESS_TABLE = "address";
 
 	private static final String ROLES__DNI_COLUMN = "dni";
 	private static final String ROLES__ROLE_COLUMN = "role";
+
+	private static final String USER__DNI_COLUMN = "dni";
+	private static final String USER__FIRST_NAME_COLUMN = "first_name";
+	private static final String USER__LAST_NAME_COLUMN = "last_name";
+	private static final String USER__GENRE_COLUMN = "genre";
+	private static final String USER__BIRTHDAY_COLUMN = "birthday";
+	private static final String USER__EMAIL_COLUMN = "email";
+	private static final String USER__PASSWORD_COLUMN = "password";
+
+	private static final String ADDRESS__DNI_COLUMN = "dni";
+	private static final String ADDRESS__COUNTRY_COLUMN = "country";
+	private static final String ADDRESS__CITY_COLUMN = "city";
+	private static final String ADDRESS__NEIGHBORHOOD_COLUMN = "neighborhood";
+	private static final String ADDRESS__STREET_COLUMN = "street";
+	private static final String ADDRESS__NUMBER_COLUMN = "number";
+	private static final String ADDRESS__FLOOR_COLUMN = "floor";
+	private static final String ADDRESS__DOOR_COLUMN = "door";
+	private static final String ADDRESS__TELEPHONE_COLUMN = "telephone";
+	private static final String ADDRESS__ZIP_CODE_COLUMN = "zip_code";
+
 
 	private static final String EVERYTHING = "*";
 	private static final String EQUALS = "=";
 	private static final String GIVEN_PARAMETER = "?";
 
 	private static final String GET_ROLES;
+	private static final String GET_EMAILS;
 
 	static {
 /*	Usage example:
@@ -38,15 +63,24 @@ public class UserJdbcDao implements UserDao {
 						where(tableCol(USER_TABLE, USER__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);*/
 		GET_ROLES =
 				select(ROLES__ROLE_COLUMN) + from(ROLES_TABLE) + where(ROLES__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
+		GET_EMAILS =
+				select(USER__EMAIL_COLUMN)
+				+ from(USERS_TABLE);
+
 
 	}
 
+	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(USER__EMAIL_COLUMN);
+
 	private final JdbcTemplate jdbcTemplate;
+
+	private final SimpleJdbcInsert userInsert;
 
 	/* Constructors */
 	@Autowired
 	public UserJdbcDao(final DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
+		this.userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USERS_TABLE);
 	}
 	/* /Constructors */
 
@@ -79,14 +113,14 @@ public class UserJdbcDao implements UserDao {
 		final Map<String, Object> userArgs = new HashMap<>();
 		final Map<String, Object> addressArgs = new HashMap<>();
 
-		userArgs.put(USER__DNI_COLUMN, student.getDni());
-		userArgs.put(USER__FIRST_NAME_COLUMN, student.getFirstName());
-		userArgs.put(USER__LAST_NAME_COLUMN, student.getLastName());
+		userArgs.put(USER__DNI_COLUMN, user.getDni());
+		userArgs.put(USER__FIRST_NAME_COLUMN, user.getFirstName());
+		userArgs.put(USER__LAST_NAME_COLUMN, user.getLastName());
 
-		userArgs.put(USER__GENRE_COLUMN, student.getGenre().name());
-		userArgs.put(USER__BIRTHDAY_COLUMN, student.getBirthday());
-		userArgs.put(USER__EMAIL_COLUMN, createEmail(student.getDni(), student.getFirstName(),
-				student.getLastName()));
+		userArgs.put(USER__GENRE_COLUMN, user.getGenre().name());
+		userArgs.put(USER__BIRTHDAY_COLUMN, user.getBirthday());
+		userArgs.put(USER__EMAIL_COLUMN, createEmail(user.getDni(), user.getFirstName(),
+				user.getLastName()));
 		try {
 			userInsert.execute(userArgs);
 		}catch(DuplicateKeyException e){
@@ -100,6 +134,38 @@ public class UserJdbcDao implements UserDao {
 
 	/* /Public Methods */
 
+
+	private String createEmail(final int dni, final String firstName, final String lastName) {
+		final String defaultEmail = "admin" + dni + EMAIL_DOMAIN;
+
+		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
+			return defaultEmail;
+		}
+
+		final String initChar = firstName.substring(0, 1).toLowerCase();
+
+		final String[] lastNames = lastName.toLowerCase().split(" ");
+		StringBuilder currentEmail;
+		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
+			currentEmail = new StringBuilder(initChar);
+			for (int j = 0 ; j <= i; j++) {
+				currentEmail.append(lastNames[j]);
+			}
+			currentEmail.append(EMAIL_DOMAIN);
+			if (!exists(currentEmail)) { // +++ximprove: should return existent email
+				return String.valueOf(currentEmail);
+			}
+		}
+
+		/* This is in case all email trials failed */
+		/* This, for sure, does not exists as includes the docket, which is unique */
+		return defaultEmail;
+	}
+
+	private boolean exists(final StringBuilder email) {
+		List<String> emails = jdbcTemplate.query(GET_EMAILS, emailRowMapper);
+		return emails.contains(String.valueOf(email));
+	}
 
 
 
