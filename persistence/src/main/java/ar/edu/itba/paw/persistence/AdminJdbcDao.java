@@ -8,12 +8,14 @@ import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 
+@Repository
 public class AdminJdbcDao implements AdminDao {
 
     /* TABLE NAMES */
