@@ -46,8 +46,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private UserDetailsServiceImpl userDetailsService;
 
-	@Autowired
-	private SgaAuthenticationSuccessHandler authSuccessHandler;
+	/*@Autowired
+	private SgaAuthenticationSuccessHandler authSuccessHandler;*/
 
 	@Override
 	protected void configure(final HttpSecurity http) throws Exception {
@@ -65,7 +65,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 				.usernameParameter("username")
 				.passwordParameter("password")
 				.defaultSuccessUrl("/", false)
-				.successHandler(authSuccessHandler)
+//				.successHandler(authSuccessHandler)
 				.failureUrl("/login?error")
 				.loginPage("/login")
 				.loginProcessingUrl("/login")

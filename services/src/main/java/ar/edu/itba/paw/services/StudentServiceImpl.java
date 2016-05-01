@@ -190,6 +190,11 @@ public class StudentServiceImpl implements StudentService {
 		return docket <= 0 ? null : studentDao.getApprovedCourses(docket);
 	}
 
+	@Override
+	public Student getByDni(final int dni) {
+		return dni <= 0 ? null : studentDao.getByDni(dni);
+	}
+
 	/* Test purpose only */
 	/* default */ void setStudentDao(final StudentDao studentDao) {
 		this.studentDao = studentDao;

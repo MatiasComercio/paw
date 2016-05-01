@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -123,4 +124,13 @@ public interface StudentService {
 	 *          an empty collection will be returned if no course was approved
 	 */
 	Collection<Course> getApprovedCourses(int docket);
+
+	/* +++xtest */
+	/**
+	 * Gets the student's main data that matches the given dni.
+	 * If no student exists with that dni, null is returned.
+	 * @param dni The student's dni
+	 * @return The student with the given dni, if exists; null otherwise.
+	 */
+	Student getByDni(final int dni);
 }

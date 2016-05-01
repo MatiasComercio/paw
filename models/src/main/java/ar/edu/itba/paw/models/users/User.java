@@ -3,10 +3,10 @@ package ar.edu.itba.paw.models.users;
 
 
 import ar.edu.itba.paw.models.Address;
+import ar.edu.itba.paw.models.Role;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class User {
 	private final int dni;
@@ -16,6 +16,7 @@ public abstract class User {
 	private final LocalDate birthday;
 	private final String email;
 	private final Address address;
+	private final Collection<Role> roles;
 
 	protected User(final Builder builder) {
 		this.dni = builder.dni;
@@ -25,6 +26,7 @@ public abstract class User {
 		this.birthday = builder.birthday;
 		this.email = builder.email;
 		this.address = builder.address;
+		this.roles = builder.roles;
 	}
 
 	public int getDni() {
@@ -92,6 +94,10 @@ public abstract class User {
 				'}';
 	}
 
+	public Collection<Role> getRoles() {
+		return Collections.unmodifiableCollection(roles);
+	}
+
 	public static abstract class Builder<V extends User, T extends Builder<V,T>> {
 		private int dni;
 		private T thisBuilder;
@@ -102,10 +108,12 @@ public abstract class User {
 		private LocalDate birthday = null;
 		private String email = null;
 		private Address address = null;
+		private Collection<Role> roles = null;
 
 		public Builder(final int dni) {
 			this.dni = dni;
 			this.thisBuilder = thisBuilder();
+			this.roles = new HashSet<>();
 		}
 
 		/* Each subclass should implement how a user should be build */
@@ -152,6 +160,20 @@ public abstract class User {
 		public T address(final Address address) {
 			if (address != null) {
 				this.address = address;
+			}
+			return thisBuilder;
+		}
+
+		public T role(final Role role) {
+			if (role != null) {
+				this.roles.add(role);
+			}
+			return thisBuilder;
+		}
+
+		public T roles(final Collection<Role> roles) {
+			if (roles != null) {
+				this.roles.addAll(roles);
 			}
 			return thisBuilder;
 		}

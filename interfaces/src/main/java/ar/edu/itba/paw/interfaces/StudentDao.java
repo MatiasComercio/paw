@@ -138,4 +138,13 @@ public interface StudentDao {
      * @param student The student containing the address to update
      */
     void updateAddress(final Integer dni, final Student student);
+
+	/* +++xtest */
+	/**
+	 * Gets the student's main data that matches the given dni.
+	 * If no student exists with that dni, null is returned.
+	 * @param dni The student's dni
+	 * @return The student with the given dni, if exists; null otherwise.
+	 */
+	Student getByDni(final int dni);
 }

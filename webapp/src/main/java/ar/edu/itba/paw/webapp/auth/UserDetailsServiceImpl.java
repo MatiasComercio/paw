@@ -1,21 +1,22 @@
 package ar.edu.itba.paw.webapp.auth;
 
 import ar.edu.itba.paw.interfaces.StudentService;
+import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-	/* +++xtodo */
-	/*@Autowired
-	private UserService userService;*/
-
 	@Autowired
-	private StudentService studentService;
+	private UserService userService;
 
 	/* +++xtodo */
 	/*@Autowired
@@ -46,23 +47,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			return loadAdmin(user);
 		}*/
 
-		if (user.hasRole(STUDENT)) {
-			return loadStudent(user);
+		if (user instanceof Student) {
+			return loadStudent((Student) user);
 		}
 
 		return null;
 	}
 
-	private UserDetails loadStudent(final User user) {
-		final int dni = user.getDni();
-		final int docket = studentService.getDocket(dni);
-		final StudentDetails.Builder studentDetailsBuilder = new StudentDetails.Builder(docket, dni);
+	private UserDetails loadStudent(final Student student) {
+		final StudentDetails.Builder studentDetailsBuilder =
+				new StudentDetails.Builder(student.getDocket(), student.getDni());
 		studentDetailsBuilder
-				.firstName(user.getFirstName())
-				.lastName(user.getLastName())
-				.email(user.getEmail());
-		for (String role : user.getRoles()) {
-			studentDetailsBuilder.authority(new SimpleGrantedAuthority(role));
+				.firstName(student.getFirstName())
+				.lastName(student.getLastName())
+				.email(student.getEmail());
+		for (Role role : student.getRoles()) {
+			studentDetailsBuilder.authority(new SimpleGrantedAuthority(role.toString()));
 		}
 		return studentDetailsBuilder.build();
 	}

@@ -84,6 +84,14 @@ public class StudentJdbcDao implements StudentDao {
 					"WHERE " + STUDENT__DOCKET_COLUMN + " = ? LIMIT 1" +
 					";";
 
+	private static final String GET_BY_DNI =
+			"SELECT * " +
+					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
+					" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN + " " +
+					" LEFT JOIN " + ADDRESS_TABLE + " ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + ADDRESS_TABLE + "." + ADDRESS__DNI_COLUMN + " " +
+					"WHERE " + STUDENT__DNI_COLUMN + " = ? LIMIT 1" +
+					";";
+
 	private static final String GET_ALL =
 					"SELECT * " +
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
@@ -500,7 +508,16 @@ public class StudentJdbcDao implements StudentDao {
         }
     }
 
-    private String createEmail(final int dni, final String firstName, final String lastName) {
+	@Override
+	public Student getByDni(final int dni) {
+		/* This method should return 0 or 1 student. */
+		/* Grab student's data */
+		final List<Student> students = jdbcTemplate.query(GET_BY_DNI, infoRowMapper, dni);
+
+		return students.isEmpty() ? null : students.get(0);
+	}
+
+	private String createEmail(final int dni, final String firstName, final String lastName) {
 		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
 
 		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
