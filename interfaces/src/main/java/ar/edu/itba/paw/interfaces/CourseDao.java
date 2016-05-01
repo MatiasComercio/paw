@@ -5,6 +5,7 @@ import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CourseDao {
 
@@ -59,5 +60,13 @@ public interface CourseDao {
      * @return true if the course was deleted; false in other case
      */
     Result deleteCourse(Integer id);
+
+    /**
+     *
+     * @param courseId The id of the course.
+     * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll in the
+     * given course)
+     */
+    List<Integer> getCorrelatives(Integer courseId);
 
 }

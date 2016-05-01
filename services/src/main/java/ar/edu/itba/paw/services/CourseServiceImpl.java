@@ -92,5 +92,9 @@ public class CourseServiceImpl implements CourseService {
         this.studentService = studentService;
     }
 
+    @Override
+    public List<Integer> getCorrelatives(Integer courseId) {
+        return courseDao.getCorrelatives(courseId);
+    }
 
 }

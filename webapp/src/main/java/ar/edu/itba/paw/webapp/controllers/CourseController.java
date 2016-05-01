@@ -39,7 +39,7 @@ public class CourseController {
     private CourseService courseService;
 
     @ModelAttribute("section")
-    public String sectionManager(){
+    public String sectionManager() {
         return COURSES_SECTION;
     }
 
@@ -79,9 +79,9 @@ public class CourseController {
     }
 
     @RequestMapping(value = "/courses/courseFilterForm", method = RequestMethod.GET)
-    public ModelAndView studentFilterForm(             @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-                                                       final BindingResult errors,
-                                                       final RedirectAttributes redirectAttributes) {
+    public ModelAndView studentFilterForm(@Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+                                          final BindingResult errors,
+                                          final RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
         redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
         return new ModelAndView("redirect:/courses");
@@ -109,7 +109,7 @@ public class CourseController {
 
         Course course = courseService.getById(courseId);
 
-        if (course == null){
+        if (course == null) {
             redirectAttributes.addFlashAttribute("alert", "danger");
             redirectAttributes.addFlashAttribute("message", "La materia que se intena editar no existe.");
             return new ModelAndView("redirect:/courses");
@@ -126,17 +126,17 @@ public class CourseController {
 
     @RequestMapping(value = "/courses/{courseId}/edit", method = RequestMethod.POST)
     public ModelAndView editCourse(@PathVariable final Integer courseId,
-                                  @Valid @ModelAttribute("courseForm") CourseForm courseForm,
-                                  final BindingResult errors,
-                                  RedirectAttributes redirectAttributes){
-        if (errors.hasErrors()){
+                                   @Valid @ModelAttribute("courseForm") CourseForm courseForm,
+                                   final BindingResult errors,
+                                   RedirectAttributes redirectAttributes) {
+        if (errors.hasErrors()) {
             return editCourse(courseId, courseForm, redirectAttributes);
         }
 
         Course course = courseForm.build();
         Result result = courseService.update(courseId, course);
 
-        if(!result.equals(Result.OK)){
+        if (!result.equals(Result.OK)) {
             redirectAttributes.addFlashAttribute("alert", "danger");
             redirectAttributes.addFlashAttribute("message", result.getMessage());
             return editCourse(courseId, courseForm, redirectAttributes);
@@ -144,7 +144,7 @@ public class CourseController {
 
         redirectAttributes.addFlashAttribute("alert", "success");
         redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editCourse_success",
-                new Object[] {},
+                new Object[]{},
                 Locale.getDefault()));
 
         return new ModelAndView("redirect:/courses");
@@ -191,8 +191,8 @@ public class CourseController {
     public ModelAndView courseStudentsStudentFilterForm(
             @PathVariable("id") final int id,
             @Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
-                                                       final BindingResult errors,
-                                                       final RedirectAttributes redirectAttributes) {
+            final BindingResult errors,
+            final RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.studentFilterForm", errors);
         redirectAttributes.addFlashAttribute("studentFilterForm", studentFilterForm);
         return new ModelAndView("redirect:/courses/" + id + "/students");
@@ -200,9 +200,9 @@ public class CourseController {
 
     @RequestMapping(value = "/courses/add_course", method = RequestMethod.GET)
     public ModelAndView addCourse(@ModelAttribute("courseForm") final CourseForm courseForm,
-                                  RedirectAttributes redirectAttributes){
+                                  RedirectAttributes redirectAttributes) {
         ModelAndView mav = new ModelAndView("addCourse");
-        if(redirectAttributes != null) {
+        if (redirectAttributes != null) {
             Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
             if (raMap.get("alert") != null) {
                 mav.addObject("alert", raMap.get("alert"));
@@ -216,21 +216,20 @@ public class CourseController {
 
     @RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
     public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
-                            final BindingResult errors, RedirectAttributes redirectAttributes){
-        if(errors.hasErrors()){
+                                  final BindingResult errors, RedirectAttributes redirectAttributes) {
+        if (errors.hasErrors()) {
             return addCourse(courseForm, null);
-        }
-        else{
+        } else {
             final Course course = courseForm.build();
             Result result = courseService.create(course);
-            if(!result.equals(Result.OK)){
+            if (!result.equals(Result.OK)) {
                 redirectAttributes.addFlashAttribute("alert", "danger");
                 redirectAttributes.addFlashAttribute("message", result.getMessage());
                 return addCourse(courseForm, redirectAttributes);
             }
             redirectAttributes.addFlashAttribute("alert", "success");
             redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addCourse_success",
-                    new Object[] {},
+                    new Object[]{},
                     Locale.getDefault()));
             return new ModelAndView("redirect:/courses");
         }
@@ -241,7 +240,7 @@ public class CourseController {
         final Result result = courseService.deleteCourse(id);
 //        ModelAndView mav = new ModelAndView("redirect:/courses");
 //        ModelAndView mav = new ModelAndView("coursesSearch");
-        if(result.equals(Result.OK)) {
+        if (result.equals(Result.OK)) {
             redirectAttributes.addFlashAttribute("alert", "success");
             redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteCourse_success",
                     new Object[]{},
@@ -251,6 +250,18 @@ public class CourseController {
             redirectAttributes.addFlashAttribute("message", result.getMessage());
         }
 
+        return new ModelAndView("redirect:/courses");
+    }
+
+    //TODO: DELETE
+    @RequestMapping(value = "/correlatives/{course_id}", method = RequestMethod.GET)
+    public ModelAndView getCorrelatives(@PathVariable final Integer course_id) {
+
+        List<Integer> correlatives = courseService.getCorrelatives(course_id);
+        System.out.println("getCorrelatives en CourseController");
+        for (Integer correlative : correlatives) {
+            System.out.println("102 es correlativa de: " + correlative);
+        }
         return new ModelAndView("redirect:/courses");
     }
 }

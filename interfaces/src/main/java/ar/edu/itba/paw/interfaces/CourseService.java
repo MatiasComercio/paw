@@ -68,4 +68,12 @@ public interface CourseService {
      * @return the list of students enrolled in the given course
      */
     List<Student> getCourseStudents(final Integer id, final StudentFilter studentFilter);
+
+    /**
+     *
+     * @param courseId The id of the course.
+     * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll in the
+     * given course)
+     */
+    List<Integer> getCorrelatives(Integer courseId);
 }

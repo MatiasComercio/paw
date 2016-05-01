@@ -15,10 +15,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class CourseJdbcDao implements CourseDao {
@@ -38,6 +35,10 @@ public class CourseJdbcDao implements CourseDao {
 
     private static final String GRADES_TABLE_NAME = "grade";
     private static final String GRADES_ID_COURSE = "course_id";
+
+    private static final String CORRELATIVE_TABLE_NAME = "correlative";
+    private static final String CORRELATIVE_COURSE_ID = "course_id";
+    private static final String CORRELATIVE_CORRELATIVE_ID = "correlative_id";
 
     private static final String QUERY_DELETE = "DELETE FROM " + TABLE_NAME
             + " WHERE " + ID_COLUMN + " = ?";
@@ -60,6 +61,9 @@ public class CourseJdbcDao implements CourseDao {
 
     private final RowMapper<Student> studentRowMapper = (resultSet, rowNum) ->
             new Student.Builder(resultSet.getInt(DOCKET_COLUMN), resultSet.getInt(DNI_COLUMN)).firstName(resultSet.getString(FIRST_NAME_COLUMN)).lastName(resultSet.getString(LAST_NAME_COLUMN)).build();
+
+    private final RowMapper<Integer> correlativeRowMapper = (resultSet, rowNum) ->
+            resultSet.getInt(CORRELATIVE_CORRELATIVE_ID);
 
     @Autowired
     public CourseJdbcDao(final DataSource dataSource) {
@@ -104,6 +108,14 @@ public class CourseJdbcDao implements CourseDao {
         }
 
         return Result.OK;
+    }
+
+
+    @Override
+    public List<Integer> getCorrelatives(Integer courseId) {
+        List<Integer> correlatives = jdbcTemplate.query("SELECT * FROM " + CORRELATIVE_TABLE_NAME + " WHERE " +
+                CORRELATIVE_COURSE_ID + " = ?", correlativeRowMapper, courseId);
+        return correlatives;
     }
 
     @Override
