@@ -4,16 +4,22 @@ import ar.edu.itba.paw.interfaces.AdminDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
+import ar.edu.itba.paw.shared.Result;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class AdminJdbcDao implements AdminDao {
@@ -128,9 +134,12 @@ public class AdminJdbcDao implements AdminDao {
         return studentBuilder.build();
     };
 
+    private SimpleJdbcInsert adminInsert;
+
     @Autowired
     public AdminJdbcDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        adminInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADMIN_TABLE);
     }
 
 
@@ -139,6 +148,23 @@ public class AdminJdbcDao implements AdminDao {
         List<Admin> admins = jdbcTemplate.query(GET_ADMINS, adminRowMapper);
 
         return admins;
+    }
+
+    @Override
+    public Result create(Admin admin) {
+        final int rowsAffected;
+        final Map<String, Object> adminArgs = new HashMap<>();
+
+        adminArgs.put(ADMIN__DNI_COLUMN, admin.getDni());
+
+        try {
+            rowsAffected = adminInsert.execute(adminArgs);
+        } catch (DuplicateKeyException e) {
+            return Result.ADMIN_EXISTS_DNI;
+        } catch (DataAccessException e) {
+            return Result.ERROR_UNKNOWN;
+        }
+        return Result.OK;
     }
 
     /* Private Static Methods */
