@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.models.Role;
@@ -46,6 +47,27 @@ public class UserServiceImpl implements UserService {
 //			* return;
 //			* */
 //		}
+
+		if(roles.contains(Role.ADMIN)) {
+			final Admin ta =  adminService.getByDni(dni);
+
+			if(ta == null) {
+				return null;
+			}
+
+			final Admin.Builder ab = new Admin.Builder(ta.getDni());
+
+			ab
+					.firstName(ta.getFirstName())
+					.lastName(ta.getLastName())
+					.email(ta.getEmail())
+					.birthday(ta.getBirthday())
+					.address(ta.getAddress())
+					.password(ta.getPassword())
+					.roles(roles);
+
+			return ab.build();
+		}
 
 		if (roles.contains(Role.STUDENT)) {
 			final Student ts =  studentService.getByDni(dni); /* +++xcheck: Gonza */
