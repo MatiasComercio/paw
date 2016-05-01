@@ -541,7 +541,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		return mav;
 	}
 
-	@RequestMapping(value = "/admins/")
+	@RequestMapping(value = "/admins")
 	public ModelAndView getAllAdmins() {
 		final List<Admin> admins = adminService.getAllAdmins();
 
