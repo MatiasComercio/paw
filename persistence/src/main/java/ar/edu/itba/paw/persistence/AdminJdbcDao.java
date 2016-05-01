@@ -62,6 +62,7 @@ public class AdminJdbcDao implements AdminDao {
     /* /POSTGRESQL WILDCARDS */
 
     private static final String GET_ADMINS;
+    private static final String GET_BY_DNI;
 
     static {
         GET_ADMINS =
@@ -70,6 +71,10 @@ public class AdminJdbcDao implements AdminDao {
                 + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, tableCol(USER_TABLE, USER__DNI_COLUMN)
                         ,AND,
                         tableCol(USER_TABLE, USER__DNI_COLUMN), EQUALS, tableCol(ADDRESS_TABLE, ADDRESS__DNI_COLUMN));
+        GET_BY_DNI =
+                GET_ADMINS
+                + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);
+
     }
 
     private final JdbcTemplate jdbcTemplate;
@@ -165,6 +170,13 @@ public class AdminJdbcDao implements AdminDao {
             return Result.ERROR_UNKNOWN;
         }
         return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public Admin getByDni(int dni) {
+        final List<Admin> students = jdbcTemplate.query(GET_BY_DNI, infoRowMapper, dni);
+
+        return students.isEmpty() ? null : students.get(0);
     }
 
     /* Private Static Methods */
