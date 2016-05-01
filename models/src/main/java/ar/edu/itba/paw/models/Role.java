@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.models;
 
 public enum Role {
-	STUDENT("STUDENT"), ADMIN("ADMIN");
+	STUDENT("ROLE_STUDENT"), ADMIN("ROLE_ADMIN");
 
 	private String string;
 
