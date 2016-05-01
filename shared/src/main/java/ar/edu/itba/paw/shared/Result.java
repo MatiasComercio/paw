@@ -19,7 +19,8 @@ public enum Result {
     ERROR_DOCKET_OUT_OF_BOUNDS("El legajo está fuera de los límites permitidos"),
 	ALREADY_ENROLLED("El alumno ya está inscripto en esa materia."),
 	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia"),
-    ERROR_DNI_OUT_OF_BOUNDS("El DNI está fuera de los límites permitidos");
+    ERROR_DNI_OUT_OF_BOUNDS("El DNI está fuera de los límites permitidos"),
+    ADMIN_EXISTS_DNI("Ya existe un administrador con este DNI");
 
 
     private final String message;
