@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 		}
 
 		List<Role> roles = userDao.getRoles(dni);
-		roles.add(Role.STUDENT); /* +++xdebug */
+		roles.add(Role.ADMIN); /* +++xdebug */
 
 		if (roles == null) {
 			return null;
