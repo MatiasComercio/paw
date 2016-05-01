@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -83,7 +84,14 @@ public class UserJdbcDao implements UserDao {
 
 	@Override
 	public Result changePassword(final int dni, final String prevPassword, final String newPassword) {
-		final int rowsAffected = jdbcTemplate.update(UPDATE_PASSWORD, dni, prevPassword, newPassword);
+		final int rowsAffected;
+		try {
+			rowsAffected = jdbcTemplate.update(UPDATE_PASSWORD, newPassword, dni, prevPassword);
+		} catch (DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		return rowsAffected == 1 ? Result.OK : Result.INVALID_INPUT_PARAMETERS;
 	}
 
 
