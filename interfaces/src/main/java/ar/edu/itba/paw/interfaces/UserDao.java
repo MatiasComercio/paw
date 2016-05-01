@@ -29,7 +29,9 @@ public interface UserDao {
 	 * @param dni
 	 * @param prevPassword
 	 * @param newPassword
-     * @return
+     * @return 	OK if the password could be changed;
+	 * 			INVALID_INPUT_PARAMETERS if the DNI or the password are incorrect;
+	 * 			else ERROR_UNKNOWN for an unknown error;
      */
 	Result changePassword(int dni, String prevPassword, String newPassword);
 }

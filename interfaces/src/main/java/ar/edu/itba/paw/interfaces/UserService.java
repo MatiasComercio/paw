@@ -29,7 +29,11 @@ public interface UserService {
 	 * @param prevPassword the previous password of the user
 	 * @param newPassword the new password of the user
 	 * @param repeatNewPassword the repetition of the new password of the user
-     * @return OK if the password could be changed; // TODO: add Result values here
+     * @return 	OK if the password could be changed;
+	 * 			PASSWORDS_DO_NOT_MATCH if newPassword and repeatNewPassword don't match;
+	 * 			ERROR_DNI_OUT_OF_BOUNDS if the DNI is out of the allowed limits;
+	 * 			INVALID_INPUT_PARAMETERS if the DNI or the password are incorrect;
+	 * 			else ERROR_UNKNOWN for an unknown error;
      */
 	Result changePassword(int dni, String prevPassword, String newPassword, String repeatNewPassword);
 }
