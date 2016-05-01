@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
+import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.auth.StudentDetails;
@@ -37,6 +38,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@Autowired
 	private StudentService studentService;
+
+	@Autowired
+	private UserService userService;
 
 	@ModelAttribute("section")
 	public String sectionManager(){
@@ -537,14 +541,18 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	}
 
 	/* +++xtodo: @Gonza: implement method */
-//	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
-//	public ModelAndView changePassword(@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
-//	                                   final BindingResult errors) {
-//
-//		if (errors.hasErrors()){
-//			return changePassword(passwordForm);
-//		}
-//
-//		return new ModelAndView("/"); /*
-//	}
+	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
+	public ModelAndView changePassword(@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
+	                                   final BindingResult errors) {
+		if (errors.hasErrors()){
+			return changePassword(passwordForm);
+		}
+		final Result result = userService.changePassword(
+				passwordForm.getDni(),
+				passwordForm.getCurrentPassword(),
+				passwordForm.getNewPassword(),
+				passwordForm.getRepeatNewPassword());
+
+		return new ModelAndView("/");
+	}
 }
