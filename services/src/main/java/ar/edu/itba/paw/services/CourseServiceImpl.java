@@ -92,9 +92,36 @@ public class CourseServiceImpl implements CourseService {
         this.studentService = studentService;
     }
 
+
+    //TODO: IF NOT CALLED FROM CONTROLLER, DELETE IMPLEMENTATION AND DELETE FROM INTERFACE
+
     @Override
     public List<Integer> getCorrelatives(Integer courseId) {
         return courseDao.getCorrelatives(courseId);
+    }
+
+    @Override
+    public List<Integer> getUpperCorrelatives(Integer courseId) {
+        return courseDao.getUpperCorrelatives(courseId);
+    }
+
+    //////////////////////////////////////////////////
+
+    @Override
+    public Result deleteCorrelative(Integer courseId, Integer correlativeId) {
+        List<Integer> correlatives = getCorrelatives(courseId);
+        List<Integer> upperCorrelatives = getUpperCorrelatives(courseId);
+
+        Result result = courseDao.deleteCorrelative(courseId, correlativeId);
+
+        if (result.equals(Result.OK) && correlatives != null){
+            for (Integer correlative : correlatives) {
+                for (Integer upperCorrelative : upperCorrelatives) {
+                    //addCorrelative(correlative, upperCorrelative);
+                }
+            }
+        }
+        return result;
     }
 
 }

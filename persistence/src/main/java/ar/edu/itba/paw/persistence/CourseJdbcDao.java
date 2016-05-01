@@ -65,6 +65,9 @@ public class CourseJdbcDao implements CourseDao {
     private final RowMapper<Integer> correlativeRowMapper = (resultSet, rowNum) ->
             resultSet.getInt(CORRELATIVE_CORRELATIVE_ID);
 
+    private final RowMapper<Integer> upperCorrelativeRowMapper = (resultSet, rowNum) ->
+            resultSet.getInt(CORRELATIVE_COURSE_ID);
+
     @Autowired
     public CourseJdbcDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -112,10 +115,31 @@ public class CourseJdbcDao implements CourseDao {
 
 
     @Override
-    public List<Integer> getCorrelatives(Integer courseId) {
+    public List<Integer> getCorrelatives(Integer courseId){
         List<Integer> correlatives = jdbcTemplate.query("SELECT * FROM " + CORRELATIVE_TABLE_NAME + " WHERE " +
                 CORRELATIVE_COURSE_ID + " = ?", correlativeRowMapper, courseId);
         return correlatives;
+    }
+
+    @Override
+    public List<Integer> getUpperCorrelatives(Integer courseId){
+        List<Integer> correlatives = jdbcTemplate.query("SELECT * FROM " + CORRELATIVE_TABLE_NAME + " WHERE " +
+                CORRELATIVE_CORRELATIVE_ID + " = ?", upperCorrelativeRowMapper, courseId);
+        return correlatives;
+    }
+
+    @Override
+    public Result deleteCorrelative(Integer courseId, Integer correlativeId) {
+        try {
+            int rowsAffected = jdbcTemplate.update("DELETE FROM " + CORRELATIVE_TABLE_NAME + " WHERE " + CORRELATIVE_COURSE_ID +
+                    " = ? AND " + CORRELATIVE_CORRELATIVE_ID + " = ?" , courseId, correlativeId);
+
+            return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+        } catch (final DataIntegrityViolationException e) {
+            return Result.INVALID_INPUT_PARAMETERS;
+        } catch(final DataAccessException e) {
+            return Result.ERROR_UNKNOWN;
+        }
     }
 
     @Override

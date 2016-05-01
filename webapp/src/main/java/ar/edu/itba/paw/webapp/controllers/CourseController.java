@@ -258,10 +258,19 @@ public class CourseController {
     public ModelAndView getCorrelatives(@PathVariable final Integer course_id) {
 
         List<Integer> correlatives = courseService.getCorrelatives(course_id);
+        List<Integer> upperCorrelatives = courseService.getUpperCorrelatives(course_id);
         System.out.println("getCorrelatives en CourseController");
         for (Integer correlative : correlatives) {
-            System.out.println("102 es correlativa de: " + correlative);
+            System.out.println(course_id + " es correlativa de: " + correlative);
         }
+
+        for (Integer correlative : upperCorrelatives) {
+            System.out.println(correlative + " es correlativa de: " + course_id);
+        }
+
+        Result result = courseService.deleteCorrelative(103, 102);
+
         return new ModelAndView("redirect:/courses");
     }
+
 }

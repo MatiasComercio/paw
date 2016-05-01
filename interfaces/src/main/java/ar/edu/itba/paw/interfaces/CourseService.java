@@ -70,10 +70,25 @@ public interface CourseService {
     List<Student> getCourseStudents(final Integer id, final StudentFilter studentFilter);
 
     /**
-     *
      * @param courseId The id of the course.
-     * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll in the
+     * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
      * given course)
      */
     List<Integer> getCorrelatives(Integer courseId);
+
+    /**
+     * @param courseId The id of the course.
+     * @return List of correlatives for the given course (i.d. The courses that require this course to enroll a student in the
+     * given course)
+     */
+    List<Integer> getUpperCorrelatives(Integer courseId);
+
+    /**
+     *
+     * @param courseId The id of the course.
+     * @param correlativeId The id of the correlative for the given course.
+     * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
+     */
+    Result deleteCorrelative(Integer courseId, Integer correlativeId);
+
 }
