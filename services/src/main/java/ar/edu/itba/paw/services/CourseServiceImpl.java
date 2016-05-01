@@ -86,6 +86,15 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Result addCorrelative(final Integer id, final Integer correlativeId) {
 
+        //Check courses exists
+
+
+        //Check correlativity loop
+        if (courseDao.checkCorrelativityLoop(id, correlativeId)){
+            return Result.CORRELATIVE_CORRELATIVITY_LOOP;
+        }
+
+        return courseDao.addCorrelativity(id, correlativeId);
     }
 
     /* Test purpose only */
