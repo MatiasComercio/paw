@@ -102,4 +102,10 @@ public interface CourseService {
      */
     Result deleteCorrelative(Integer courseId, Integer correlativeId);
 
+    /**
+     *
+     * @param courseId Given the id of a course, delete all the correlative
+     */
+    Result deleteCourseCorrelatives(Integer courseId);
+
 }

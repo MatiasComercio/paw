@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -242,33 +243,37 @@ public class CourseJdbcDao implements CourseDao {
                  */
     @Override
     public Result deleteCourse(Integer id) {
-        Object[] idWrapped = new Object[]{id};
-        int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_INSCRIPTION, idWrapped, Integer.class);
-
-        if(courseNumber > 0) {
-            System.out.println("Inscription exist");
-            return Result.COURSE_EXISTS_INSCRIPTION;
-        }
-
-        courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_GRADES, idWrapped, Integer.class);
-
-        if(courseNumber > 0) {
-            System.out.println("Grades exist");
-            return Result.COURSE_EXISTS_GRADE;
-        }
         try {
             int rowsAffected = jdbcTemplate.update(QUERY_DELETE, id);
-
             return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
         } catch (final DataIntegrityViolationException e) {
             return Result.INVALID_INPUT_PARAMETERS;
         } catch(final DataAccessException e) {
             return Result.ERROR_UNKNOWN;
         }
-
-
-
     }
+
+    @Override
+    public boolean inscriptionExists(Integer courseId){
+        Object[] idWrapped = new Object[]{courseId};
+        int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_INSCRIPTION, idWrapped, Integer.class);
+        if(courseNumber > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean gradeExists(Integer courseId){
+        Object[] idWrapped = new Object[]{courseId};
+        int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_GRADES, idWrapped, Integer.class);
+        if(courseNumber > 0) {
+            return true;
+        }
+        return false;
+    }
+
+
 
     private static class QueryFilter {
         private static final String WHERE = " WHERE ";

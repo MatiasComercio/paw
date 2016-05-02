@@ -93,6 +93,19 @@ public interface CourseDao {
      * @return The boolean indicating if the course exists
      */
     boolean courseExists(final Integer id);
+
+    /**
+     * @param courseId The id of the course.
+     * @return The boolean indicating if the given course has any enrolled students.
+     */
+    boolean inscriptionExists(final Integer courseId);
+
+    /**
+     * @param courseId The id of the course.
+     * @return The boolean indicating whether there are any students with grades of the given course.
+     */
+    boolean gradeExists(final Integer courseId);
+
     /**
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that require this course to enroll a student in the
@@ -107,4 +120,5 @@ public interface CourseDao {
      * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
      */
     Result deleteCorrelative(Integer courseId, Integer correlativeId);
+
 }
