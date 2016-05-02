@@ -591,23 +591,22 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@RequestMapping(value = "/user/delete_user", method = RequestMethod.POST)
 	public ModelAndView deleteUser(@Valid @ModelAttribute("userForm") UserForm userForm,
-								   final BindingResult errors, RedirectAttributes redirectAttributes) {
+								   final BindingResult errors, final RedirectAttributes redirectAttributes) {
 		if (errors.hasErrors()){
-			return deleteUser(userForm, null);
+			//return deleteUser(userForm, null); //TODO: see where it returns
 		}
-		else{
-			Result result = userService.delete(userForm.getDni());
-			if(!result.equals(Result.OK)){
-				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", result.getMessage());
-				return deleteUser(userForm, redirectAttributes);
-			}
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addStudent_success",
-					new Object[] {},
-					Locale.getDefault()));
-			return new ModelAndView("redirect:/students");
+		Result result = userService.delete(userForm.getDni());
+
+		if(!result.equals(Result.OK)){
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			//return deleteUser(userForm, redirectAttributes); //TODO: See where it returns
 		}
+		redirectAttributes.addFlashAttribute("alert", "success");
+		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addStudent_success",
+				new Object[] {},
+				Locale.getDefault()));
+		return new ModelAndView("redirect:/students");
 	}
 
 	/* +++xtodo: @Gonza: implement method */
