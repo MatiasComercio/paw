@@ -133,7 +133,7 @@ public class CourseServiceImpl implements CourseService {
         if (result.equals(Result.OK) && correlatives != null){
             for (Integer correlative : correlatives) {
                 for (Integer upperCorrelative : upperCorrelatives) {
-                    //addCorrelative(correlative, upperCorrelative);
+                    addCorrelative(correlative, upperCorrelative);
                 }
             }
         }
