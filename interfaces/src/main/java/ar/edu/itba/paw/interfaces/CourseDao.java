@@ -88,4 +88,10 @@ public interface CourseDao {
      */
     Result addCorrelativity(final Integer id, final Integer correlativeId);
 
+    /**
+     * Check whether a course exists or not
+     * @param id The id of the course;
+     * @return The boolean indicating if the course exists
+     */
+    boolean courseExists(final Integer id);
 }

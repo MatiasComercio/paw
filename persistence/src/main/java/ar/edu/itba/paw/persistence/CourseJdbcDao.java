@@ -203,9 +203,19 @@ public class CourseJdbcDao implements CourseDao {
         return Result.OK;
     }
 
+    @Override
+    public boolean courseExists(Integer id) {
+        String query = "SELECT * FROM course WHERE id = ?";
+        List<Integer> list = jdbcTemplate.query(query, (rs, rowNum) -> {
+            return rs.getInt(ID_COLUMN);
+        }, id);
+
+        return !list.isEmpty();
+    }
+
     /* +++xreference
-                http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
-             */
+                    http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
+                 */
     @Override
     public Result deleteCourse(Integer id) {
         Object[] idWrapped = new Object[]{id};
