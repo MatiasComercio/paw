@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,6 +16,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 @Repository
@@ -52,6 +55,7 @@ public class CourseJdbcDao implements CourseDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert courseInsert;
+    private final SimpleJdbcInsert correlativeInsert;
 
     private final RowMapper<Course> courseRowMapper = (resultSet, rowNum) ->
             new Course.Builder(resultSet.getInt(ID_COLUMN))
@@ -74,6 +78,9 @@ public class CourseJdbcDao implements CourseDao {
         this.courseInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME)
                 .usingColumns(ID_COLUMN, NAME_COLUMN, CREDITS_COLUMN);
+        this.correlativeInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName(CORRELATIVE_TABLE_NAME)
+                .usingColumns(CORRELATIVE_COURSE_ID, CORRELATIVE_CORRELATIVE_ID);
     }
 
 
@@ -187,9 +194,52 @@ public class CourseJdbcDao implements CourseDao {
         return courses;
     }
 
+    @Override
+    public boolean checkCorrelativityLoop(Integer id, Integer correlativeId) {
+        //TODO: Change table columns name
+        String query = "WITH RECURSIVE corr (cid, corrid) AS " +
+                "(SELECT course_id, correlative_id FROM correlative " +
+                "UNION ALL " +
+                "SELECT corr.cid, correlative.correlative_id " +
+                "FROM corr, correlative " +
+                "WHERE corr.corrid = correlative.course_id) " +
+                "SELECT cid, corrid FROM corr;";
+
+        List<Correlativity> list = jdbcTemplate.query(query, (rs, rowNum) -> {
+            return new Correlativity(rs.getInt("cid"), rs.getInt("corrid"));
+        });
+
+        return list.contains(new Correlativity(correlativeId, id));
+    }
+
+    @Override
+    public Result addCorrelativity(Integer id, Integer correlativeId) {
+        final Map<String, Object> args = new HashMap<>();
+        args.put(CORRELATIVE_COURSE_ID, id);
+        args.put(CORRELATIVE_CORRELATIVE_ID, correlativeId);
+
+        try {
+            correlativeInsert.execute(args);
+        } catch (DuplicateKeyException e){
+            return Result.CORRELATIVE_CORRELATIVITY_EXISTS;
+        }
+
+        return Result.OK;
+    }
+
+    @Override
+    public boolean courseExists(Integer id) {
+        String query = "SELECT * FROM course WHERE id = ?";
+        List<Integer> list = jdbcTemplate.query(query, (rs, rowNum) -> {
+            return rs.getInt(ID_COLUMN);
+        }, id);
+
+        return !list.isEmpty();
+    }
+
     /* +++xreference
-        http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
-     */
+                    http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
+                 */
     @Override
     public Result deleteCourse(Integer id) {
         Object[] idWrapped = new Object[]{id};
@@ -215,6 +265,9 @@ public class CourseJdbcDao implements CourseDao {
         } catch(final DataAccessException e) {
             return Result.ERROR_UNKNOWN;
         }
+
+
+
     }
 
     private static class QueryFilter {
@@ -278,6 +331,22 @@ public class CourseJdbcDao implements CourseDao {
 
         private interface FilterQueryMapper {
             void filter(final Object filter, final String filterName);
+        }
+    }
+
+    private class Correlativity {
+        private int course_id;
+        private int correlative_id;
+
+        public Correlativity(int course_id, int correlative_id) {
+            this.course_id = course_id;
+            this.correlative_id = correlative_id;
+        }
+
+        //TODO: Improve
+        @Override
+        public boolean equals(Object obj) {
+            return course_id == ((Correlativity)obj).course_id && correlative_id == ((Correlativity)obj).correlative_id;
         }
     }
 }

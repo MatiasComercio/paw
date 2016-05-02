@@ -18,7 +18,10 @@ public enum Result {
     ERROR_ID_OUT_OF_BOUNDS("El ID está fuera de los límites permitidos"),
     ERROR_DOCKET_OUT_OF_BOUNDS("El legajo está fuera de los límites permitidos"),
 	ALREADY_ENROLLED("El alumno ya está inscripto en esa materia."),
-	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia");
+	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia"),
+
+    CORRELATIVE_CORRELATIVITY_EXISTS("La correlatividad ya existe."),
+    CORRELATIVE_CORRELATIVITY_LOOP("La correlatividad generaría un ciclo en el arbol de correlatividades.");
 
 
     private final String message;

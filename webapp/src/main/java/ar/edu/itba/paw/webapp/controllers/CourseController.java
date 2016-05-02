@@ -272,5 +272,4 @@ public class CourseController {
 
         return new ModelAndView("redirect:/courses");
     }
-
 }
