@@ -599,7 +599,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		if (errors.hasErrors()){
 			//return deleteUser(userForm, null); //TODO: see where it returns
 		}
-		Result result = userService.delete(userForm.getDni());
+		final Result result = userService.delete(userForm.getDni());
 
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
