@@ -101,4 +101,12 @@ public class UserServiceImpl implements UserService {
 		return userDao.create(user);
 	}
 
+	@Override
+	public Result delete(Integer dni) {
+		if(dni <= 0) {
+			return Result.ERROR_DNI_OUT_OF_BOUNDS;
+		}
+		return userDao.delete(dni);
+	}
+
 }

@@ -32,8 +32,8 @@ public interface UserService {
 
 	/**
 	 * Delete a user with the corresponding id
-	 * @param id The user's id
+	 * @param dni The user's dni
 	 * @return OK if the user was deleted.
      */
-	Result delete(final Integer id);
+	Result delete(final Integer dni);
 }
