@@ -145,8 +145,16 @@ public class UserJdbcDao implements UserDao {
 	}
 
 	@Override
-	public Result delete(Integer dni) {
-		int rowsAffected = jdbcTemplate.update();
+	public Result delete(final Integer dni) {
+		int rowsAffected;
+
+		try {
+			rowsAffected = jdbcTemplate.update(DELETE_USER, dni);
+		} catch(DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		return rowsAffected == 1 ? Result.OK : Result.USER_NOT_EXISTS;
 	}
 
 
