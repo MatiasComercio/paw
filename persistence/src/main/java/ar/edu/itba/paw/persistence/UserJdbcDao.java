@@ -118,7 +118,6 @@ public class UserJdbcDao implements UserDao {
 	@Override
 	public Result create(User user) {
 		final Map<String, Object> userArgs = new HashMap<>();
-		final Map<String, Object> addressArgs = new HashMap<>();
 
 		userArgs.put(USER__DNI_COLUMN, user.getDni());
 		userArgs.put(USER__FIRST_NAME_COLUMN, user.getFirstName());
