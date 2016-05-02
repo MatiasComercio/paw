@@ -7,6 +7,8 @@ public enum Result {
     COURSE_EXISTS_INSCRIPTION("Existen alumnos que están inscriptos en este curso."),
     COURSE_EXISTS_ID("Ya existe un curso con este ID."),
 
+    USER_NOT_EXISTS("El usuario especificado no existe"),
+
     STUDENT_EXISTS_DOCKET("Ya existe un alumno con este legajo."),
     STUDENT_EXISTS_DNI("Ya existe un alumno con este DNI."),
     STUDENT_NOT_EXISTS("El alumno especificado no existe."),
@@ -21,6 +23,8 @@ public enum Result {
 	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia"),
     ERROR_DNI_OUT_OF_BOUNDS("El DNI está fuera de los límites permitidos"),
     ADMIN_EXISTS_DNI("Ya existe un administrador con este DNI");
+
+
 
 
     private final String message;
