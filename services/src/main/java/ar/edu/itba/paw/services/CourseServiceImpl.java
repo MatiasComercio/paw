@@ -58,11 +58,24 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Result deleteCourse(Integer id) {
-        if(id >= 0) {
-            return courseDao.deleteCourse(id);
+    public Result deleteCourse(Integer courseId) {
+
+        if(courseId<0){
+            return Result.ERROR_ID_OUT_OF_BOUNDS;
         }
-        return Result.ERROR_ID_OUT_OF_BOUNDS;
+        if(courseDao.inscriptionExists(courseId)){
+            return Result.COURSE_EXISTS_INSCRIPTION;
+        }
+        if(courseDao.gradeExists(courseId)){
+            return Result.COURSE_EXISTS_GRADE;
+        }
+
+        deleteCourseCorrelatives(courseId);
+
+        Result result = courseDao.deleteCourse(courseId);
+
+        return result;
+
     }
 
     @Override
@@ -108,9 +121,52 @@ public class CourseServiceImpl implements CourseService {
         this.studentService = studentService;
     }
 
+
+    //TODO: IF NOT CALLED FROM CONTROLLER, DELETE IMPLEMENTATION AND DELETE FROM INTERFACE
+
     @Override
     public List<Integer> getCorrelatives(Integer courseId) {
         return courseDao.getCorrelatives(courseId);
     }
 
+    @Override
+    public List<Integer> getUpperCorrelatives(Integer courseId) {
+        return courseDao.getUpperCorrelatives(courseId);
+    }
+
+    //////////////////////////////////////////////////
+
+    @Override
+    public Result deleteCorrelative(Integer courseId, Integer correlativeId) {
+        return courseDao.deleteCorrelative(courseId, correlativeId);
+    }
+
+    @Override
+    public Result deleteCourseCorrelatives(Integer courseId) {
+        List<Integer> correlatives = getCorrelatives(courseId);
+        List<Integer> upperCorrelatives = getUpperCorrelatives(courseId);
+
+        /* Adds transitive correlatives:
+         * Say c2 is the given courseId and the following correlativities exist:
+         * (c3,c2) and (c2, c1), in that case (c3, c1) is added to the correlatives table.
+         */
+        if (correlatives != null && upperCorrelatives != null){
+            for (Integer correlative : correlatives) {
+                for (Integer upperCorrelative : upperCorrelatives) {
+                    addCorrelative(upperCorrelative, correlative); //Adding correlatives after a delete can't introduce loops
+                }
+            }
+        }
+        if(correlatives != null){
+            for(Integer correlative: correlatives){
+                deleteCorrelative(courseId, correlative);
+            }
+        }
+        if(upperCorrelatives != null){
+            for(Integer upperCorrelative: upperCorrelatives){
+                deleteCorrelative(upperCorrelative, courseId);
+            }
+        }
+        return Result.OK;
+    }
 }
