@@ -118,6 +118,14 @@ public interface StudentDao {
 	 */
 	Collection<Course> getApprovedCourses(final int docket);
 
+    /**
+     * Gets the list of ids corresponding to the courses the student already approved.
+     * @param docket The student's docket
+     * @return The list of ids corresponding to the courses the student with the given docket has already approved;
+     *          an empty List will be returned if no course was approved
+     */
+    List<Integer> getApprovedCoursesId(final int docket);
+
 	/**
 	 * Returns true if there's an Address asociated with the student
 	 * @param dni The student's docket

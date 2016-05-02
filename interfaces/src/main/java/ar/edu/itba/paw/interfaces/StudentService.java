@@ -123,4 +123,13 @@ public interface StudentService {
 	 *          an empty collection will be returned if no course was approved
 	 */
 	Collection<Course> getApprovedCourses(int docket);
+
+	/**
+	 * Check if the student corresponding to docket has approved all the necessary
+	 * courses to take the course corresponding to the courseId
+	 * @param docket The docket of the student
+	 * @param courseId The id of the course
+     * @return True if the student can take de course, False if not.
+     */
+	boolean checkCorrelatives(final Integer docket, final Integer courseId);
 }

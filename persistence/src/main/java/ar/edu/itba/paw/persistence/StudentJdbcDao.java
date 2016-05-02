@@ -570,7 +570,13 @@ public class StudentJdbcDao implements StudentDao {
 		return jdbcTemplate.query(GET_APPROVED_COURSES, approvedCoursesRowMapper, docket);
 	}
 
-	private boolean exists(final StringBuilder email) {
+    @Override
+    public List<Integer> getApprovedCoursesId(int docket) {
+        final RowMapper<Integer> approvedCoursesIdRowMapper = (rs, rowMapper) -> rs.getInt(COURSE__ID_COLUMN);
+        return jdbcTemplate.query(GET_APPROVED_COURSES, approvedCoursesIdRowMapper, docket);
+    }
+
+    private boolean exists(final StringBuilder email) {
 		List<String> emails = jdbcTemplate.query(EMAILS_QUERY, emailRowMapper);
 		return emails.contains(String.valueOf(email));
 	}
