@@ -57,6 +57,7 @@ public class UserJdbcDao implements UserDao {
 
 	private static final String GET_ROLES;
 	private static final String GET_EMAILS;
+	private static final String DELETE_USER;
 
 	static {
 /*	Usage example:
@@ -137,6 +138,11 @@ public class UserJdbcDao implements UserDao {
 
 		createAddress(user);
 		return Result.OK;
+	}
+
+	@Override
+	public Result delete(Integer dni) {
+		int rowsAffected = jdbcTemplate.update();
 	}
 
 
