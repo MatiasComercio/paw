@@ -210,6 +210,14 @@ public class UserJdbcDao implements UserDao {
 
 
 	/* Private Static Methods */
+
+	private static String deleteFrom(String tableName) {
+		final StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("DELETE FROM ");
+		stringBuilder.append(tableName);
+		return stringBuilder.toString();
+	}
+
 	private static String select(final String... cols) {
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("SELECT ");
