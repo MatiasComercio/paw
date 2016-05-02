@@ -29,4 +29,11 @@ public interface UserService {
 	 * @return
      */
 	Result create(final User user);
+
+	/**
+	 * Delete a user with the corresponding id
+	 * @param id The user's id
+	 * @return OK if the user was deleted.
+     */
+	Result delete(final Integer id);
 }
