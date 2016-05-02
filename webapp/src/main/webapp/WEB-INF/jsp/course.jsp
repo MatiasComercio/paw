@@ -65,11 +65,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-4">
                     <div class="row">
-                        <div class="col-xs-12 col-md-6">
-                            <a href="<c:url value="/courses/${course.id}/students" />" type="button" class="btn btn-info" role="button">
+                        <div class="col-xs-6 col-md-6">
+                            <a href="<c:url value="/courses/${course.id}/students" />" type="button" class="btn btn-info col_vertical_margin" role="button">
                                 <i class="fa fa-users" aria-hidden="true"></i> <spring:message code="students"/></a>
+                        </div>
+                        <div class="col-xs-6 col-md-6 text-center">
+                            <a href="<c:url value="/courses/${course.id}/add_correlative" />" type="button" class="btn btn-info col_vertical_margin" role="button">
+                                <i class="fa fa-fw fa-list-alt"></i> <spring:message code="add_correlative"/></a>
                         </div>
                     </div>
                 </div>

@@ -6,10 +6,8 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
-import ar.edu.itba.paw.webapp.forms.CourseFilterForm;
-import ar.edu.itba.paw.webapp.forms.CourseForm;
+import ar.edu.itba.paw.webapp.forms.*;
 import ar.edu.itba.paw.shared.CourseFilter;
-import ar.edu.itba.paw.webapp.forms.StudentFilterForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -274,4 +272,38 @@ public class CourseController {
 
         return new ModelAndView("redirect:/courses");
     }
+
+    @RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)
+    public ModelAndView addCorrelatives(@PathVariable final Integer course_id, Model model) {
+
+        if (!model.containsAttribute("courseFilterForm")) {
+            model.addAttribute("courseFilterForm", new CourseFilterForm());
+        }
+        if (!model.containsAttribute("correlativeForm")) {
+            model.addAttribute("correlativeForm", new CorrelativeForm());
+        }
+
+        final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
+        final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
+                id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
+
+        //Check the course exists (in case the url is modified)
+        final Course course = courseService.getById(course_id);
+        if (course == null) {
+            return new ModelAndView("forward:/errors/404.html");
+        }
+
+        final ModelAndView mav = new ModelAndView("courses");
+        mav.addObject("course", course);
+        //WHAAAAAT?? mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
+        mav.addObject("courseFilterFormAction", "/courses/" + course_id + "/add_correlative/courseFilterForm");
+        mav.addObject("correlativeFormAction", "/courses/" + course_id + "/add_correlative");
+        mav.addObject("subsection_add_correlative", true);
+        mav.addObject("courses", courseService.getCorrelativesByFilter(course_id, courseFilter));
+        //mav.addObject("docket", docket);
+        return mav;
+    }
+
+
+
 }

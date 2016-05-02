@@ -73,6 +73,13 @@ public class CourseJdbcDao implements CourseDao {
     private final RowMapper<Integer> upperCorrelativeRowMapper = (resultSet, rowNum) ->
             resultSet.getInt(CORRELATIVE_COURSE_ID);
 
+    private final RowMapper<Course> correlativeCoursesRowMapper = (resultSet, rowNum) ->
+            new Course.Builder(resultSet.getInt(ID_COLUMN))
+                    .name(resultSet.getString(NAME_COLUMN))
+                    .credits(resultSet.getInt(CREDITS_COLUMN)).build();
+
+
+
     @Autowired
     public CourseJdbcDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -127,6 +134,21 @@ public class CourseJdbcDao implements CourseDao {
         List<Integer> correlatives = jdbcTemplate.query("SELECT * FROM " + CORRELATIVE_TABLE_NAME + " WHERE " +
                 CORRELATIVE_COURSE_ID + " = ?", correlativeRowMapper, courseId);
         return correlatives;
+    }
+
+    @Override
+    public List<Course> getCorrelativeCourses(Integer courseId) {
+        String queryCorrelativeId = "SELECT " + CORRELATIVE_CORRELATIVE_ID + " FROM " +
+                CORRELATIVE_TABLE_NAME + " JOIN " + TABLE_NAME + " ON "
+                + CORRELATIVE_TABLE_NAME + "." + CORRELATIVE_COURSE_ID + " = " + TABLE_NAME + "." + ID_COLUMN + " WHERE "
+                + CORRELATIVE_COURSE_ID + " = ?";
+        String queryCorrelativeCourses = "SELECT * FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + " IN " + "("
+                + queryCorrelativeId + ")";
+
+
+
+        List<Course> correlativeCourses = jdbcTemplate.query(queryCorrelativeCourses, correlativeCoursesRowMapper, courseId);
+        return correlativeCourses;
     }
 
     @Override
