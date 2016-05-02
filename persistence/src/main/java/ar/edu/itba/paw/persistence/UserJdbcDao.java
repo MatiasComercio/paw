@@ -71,6 +71,10 @@ public class UserJdbcDao implements UserDao {
 				select(USER__EMAIL_COLUMN)
 				+ from(USERS_TABLE);
 
+		DELETE_USER =
+				deleteFrom(USERS_TABLE)
+						+ where(USER__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
+
 
 	}
 
