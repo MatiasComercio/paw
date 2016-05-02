@@ -28,6 +28,7 @@ public class CourseJdbcDao implements CourseDao {
     private static final String ID_COLUMN = "id";
     private static final String NAME_COLUMN = "name";
     private static final String CREDITS_COLUMN = "credits";
+    private static final String SEMESTER_COLUMN = "semester";
 
     private static final String DOCKET_COLUMN = "docket";
     private static final String DNI_COLUMN = "dni";
@@ -62,6 +63,7 @@ public class CourseJdbcDao implements CourseDao {
             new Course.Builder(resultSet.getInt(ID_COLUMN))
                         .name(resultSet.getString(NAME_COLUMN))
                         .credits(resultSet.getInt(CREDITS_COLUMN))
+                        .semester(resultSet.getInt(SEMESTER_COLUMN))
                         .build();
 
     private final RowMapper<Student> studentRowMapper = (resultSet, rowNum) ->
