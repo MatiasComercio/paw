@@ -268,7 +268,9 @@ public class CourseController {
             System.out.println(correlative + " es correlativa de: " + course_id);
         }
 
-        Result result = courseService.deleteCorrelative(103, 102);
+        //Result result = courseService.deleteCorrelative(103, 102);
+        Result result = courseService.addCorrelative(106, 104); //Herbology - DDA IV
+        System.out.println(result);
 
         return new ModelAndView("redirect:/courses");
     }
