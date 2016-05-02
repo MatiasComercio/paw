@@ -142,12 +142,9 @@ public class StudentServiceImpl implements StudentService {
 
 		Result result;
 
-		/* +++xtodo: implement
-		result = checkCorrelatives(studentDocket, courseId);
-		if (result.equals(Result.DISPROVED_CORRELATIVES)) {
-			return Result.ERROR_UNKNOWN;
+		if (!checkCorrelatives(studentDocket, courseId)) {
+			return Result.ERROR_CORRELATIVE_NOT_APPROVED;
 		}
-		*/
 
 		result = studentDao.enroll(studentDocket, courseId);
 		if (result == null) {
@@ -160,6 +157,20 @@ public class StudentServiceImpl implements StudentService {
 		/* notifyInscription(studentDocket, courseId); mail +++xtodo */
 
 		return result;
+	}
+
+	@Override
+	public boolean checkCorrelatives(Integer docket, Integer courseId) {
+		List<Integer> correlatives = courseService.getCorrelatives(courseId);
+        List<Integer> approvedCourses = studentDao.getApprovedCoursesId(docket);
+
+        for (Integer correlative : correlatives){
+            if (!approvedCourses.contains(correlative)){
+                return false;
+            }
+        }
+
+        return true;
 	}
 
 	@Override

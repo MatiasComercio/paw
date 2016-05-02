@@ -17,6 +17,7 @@ public enum Result {
     ERROR_UNKNOWN("Un error desconocido ha ocurrido"),
     ERROR_ID_OUT_OF_BOUNDS("El ID está fuera de los límites permitidos"),
     ERROR_DOCKET_OUT_OF_BOUNDS("El legajo está fuera de los límites permitidos"),
+    ERROR_CORRELATIVE_NOT_APPROVED("El alumno no aprobó todas las correlativas necesarias."),
 	ALREADY_ENROLLED("El alumno ya está inscripto en esa materia."),
 	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia"),
 
