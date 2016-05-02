@@ -115,7 +115,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	@RequestMapping("/students/{docket}/grades")
 	public ModelAndView getStudentGrades(@PathVariable final int docket, Model model,
 										 RedirectAttributes redirectAttributes) {
-		final Student student =  studentService.getGrades(docket);
+		final Student student = studentService.getGrades(docket);
 		final ModelAndView mav;
 
 		if (student == null) {

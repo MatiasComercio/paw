@@ -22,7 +22,7 @@ public interface StudentService {
 	Student getByDocket(final int docket);
 
 	/**
-	 * Gets the student with the given docket containing all the grades of the courses they took.
+	 * Gets the student with the given docket containing all the grades of the courses it took.
 	 * If no student exists with that docket, null is returned.
 	 * @param docket The student's docket
 	 * @return The student with the given docket, if exists; null otherwise.

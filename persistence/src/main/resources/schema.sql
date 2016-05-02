@@ -34,17 +34,19 @@ CREATE TABLE IF NOT EXISTS student (
   password VARCHAR (100) DEFAULT 'pass',
 
   PRIMARY KEY (docket),
-  FOREIGN KEY (dni) REFERENCES users ON UPDATE CASCADE
+  FOREIGN KEY (dni) REFERENCES users ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS course (
   id INTEGER NOT NULL,
   name VARCHAR(50) NOT NULL,
   credits INTEGER NOT NULL,
+  semester INTEGER NOT NULL,
 
   PRIMARY KEY (id),
   CHECK (id > 0),
-  CHECK (credits >= 0)
+  CHECK (credits >= 0),
+  CHECK (semester >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS inscription (
