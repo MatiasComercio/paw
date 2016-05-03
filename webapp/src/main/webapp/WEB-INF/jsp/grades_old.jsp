@@ -33,6 +33,8 @@
             </div>
 
             <!-- content -->
+            <c:forEach items="${semesters}" var="semester" varStatus="loop">
+            <h2>Cuatrimeste ${loop.index+1}</h2>
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -44,7 +46,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${student.grades}" var="grade">
+                <c:forEach items="${semester}" var="grade">
                     <tr>
                         <td>${ grade.courseId }</td>
                         <td>${ grade.courseName }</td>
@@ -65,6 +67,7 @@
                 </c:forEach>
                 </tbody>
             </table>
+            </c:forEach>
 
             <!-- /content -->
 

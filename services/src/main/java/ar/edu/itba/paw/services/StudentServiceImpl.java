@@ -196,7 +196,7 @@ public class StudentServiceImpl implements StudentService {
 
         for (Course course : availCourses){
             int semesterIndex = course.getSemester() - 1;
-            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).build());
+            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).build());
         }
 
 		return semesterList;
