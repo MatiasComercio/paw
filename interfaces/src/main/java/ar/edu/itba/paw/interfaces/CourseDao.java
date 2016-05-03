@@ -129,6 +129,4 @@ public interface CourseDao {
      */
     List<Course> getCorrelativeCourses(Integer courseId);
 
-
-
 }

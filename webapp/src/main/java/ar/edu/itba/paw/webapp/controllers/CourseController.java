@@ -72,6 +72,7 @@ public class CourseController {
 
         final ModelAndView mav = new ModelAndView("courses");
         mav.addObject("courses", courses);
+        mav.addObject("subsection_get_courses", true);
         mav.addObject("courseFilterFormAction", "/courses/courseFilterForm");
         return mav;
     }
@@ -266,6 +267,10 @@ public class CourseController {
             System.out.println(correlative + " es correlativa de: " + course_id);
         }
 
+
+        //TODO: DELETE
+        //mav.addObject("courses", courseService.getCorrelativesByFilter(course_id, courseFilter));
+
         //Result result = courseService.deleteCorrelative(103, 102);
         Result result = courseService.addCorrelative(106, 104); //Herbology - DDA IV
         System.out.println(result);
@@ -274,7 +279,7 @@ public class CourseController {
     }
 
     @RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)
-    public ModelAndView addCorrelatives(@PathVariable final Integer course_id, Model model) {
+    public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model) {
 
         if (!model.containsAttribute("courseFilterForm")) {
             model.addAttribute("courseFilterForm", new CourseFilterForm());
@@ -294,14 +299,51 @@ public class CourseController {
         }
 
         final ModelAndView mav = new ModelAndView("courses");
-        mav.addObject("course", course);
-        //WHAAAAAT?? mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
+        mav.addObject("course_details", course);
         mav.addObject("courseFilterFormAction", "/courses/" + course_id + "/add_correlative/courseFilterForm");
         mav.addObject("correlativeFormAction", "/courses/" + course_id + "/add_correlative");
         mav.addObject("subsection_add_correlative", true);
-        mav.addObject("courses", courseService.getCorrelativesByFilter(course_id, courseFilter));
-        //mav.addObject("docket", docket);
+        mav.addObject("courses", courseService.getAvailableAddCorrelatives(course_id, courseFilter));
         return mav;
+    }
+
+    @RequestMapping(value = "/courses/{course_id}/add_correlative/courseFilterForm", method = RequestMethod.GET)
+    public ModelAndView studentInscriptionCourseFilter(@PathVariable final int course_id,
+                                                       @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+                                                       final BindingResult errors,
+                                                       final RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
+        redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
+        return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
+    }
+
+    @RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.POST)
+    public ModelAndView addCorrelative(@PathVariable final Integer course_id,
+                                           @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
+                                           final BindingResult errors, final RedirectAttributes redirectAttributes){
+        if (errors.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
+            redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
+            return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
+        }
+
+        Result result = courseService.addCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
+        if (result == null) {
+            result = Result.ERROR_UNKNOWN;
+        }
+        if (!result.equals(Result.OK)) {
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", result.getMessage());
+
+        } else {
+            redirectAttributes.addFlashAttribute("alert", "success");
+            redirectAttributes.addFlashAttribute("message",
+                    messageSource.getMessage("correlative_add_success",
+                            new Object[] {correlativeForm.getCourseName(), correlativeForm.getCorrelativeName()},
+                            Locale.getDefault()));
+        }
+
+        return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
     }
 
 

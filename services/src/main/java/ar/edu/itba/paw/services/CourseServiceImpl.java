@@ -180,7 +180,7 @@ public class CourseServiceImpl implements CourseService {
             return null;
         }
 
-        List<Course> correlatives = getCorrelativeCourses(courseId);
+        List<Course> correlatives = courseDao.getCorrelativeCourses(courseId);
         if(correlatives == null){
             return null;
         }
@@ -192,7 +192,15 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> getCorrelativeCourses(Integer courseId) {
-        return courseDao.getCorrelativeCourses(courseId);
+    public List<Course> getAvailableAddCorrelatives(Integer courseId, CourseFilter courseFilter) {
+        List<Course> courses =  getByFilter(courseFilter);
+        List<Course> correlatives = getCorrelativesByFilter(courseId, null);
+
+        //Remove all correlatives from the list
+        courses.removeAll(correlatives);
+
+        //Remove the course itself from the list
+        courses.remove(getById(courseId));
+        return courses;
     }
 }

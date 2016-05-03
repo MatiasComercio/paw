@@ -119,10 +119,9 @@ public interface CourseService {
 
     /**
      *
-     * @param courseId The course Id
-     * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
-     * given course)
+     * @param courseId The id of the course
+     * @return A list of the courses that are available to be added as correlatives for the given course
      */
-    List<Course> getCorrelativeCourses(Integer courseId);
+    List<Course> getAvailableAddCorrelatives(Integer courseId, CourseFilter courseFilter);
 
 }

@@ -73,7 +73,7 @@
                         </div>
                         <div class="col-xs-6 col-md-6 text-center">
                             <a href="<c:url value="/courses/${course.id}/add_correlative" />" type="button" class="btn btn-info col_vertical_margin" role="button">
-                                <i class="fa fa-fw fa-list-alt"></i> <spring:message code="add_correlative"/></a>
+                                <i class="fa fa-fw fa-list-alt"></i> <spring:message code="add_correlatives"/></a>
                         </div>
                     </div>
                 </div>
