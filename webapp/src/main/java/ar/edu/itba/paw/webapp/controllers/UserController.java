@@ -43,6 +43,9 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	@Autowired
 	private UserService userService;
 
+	/* Validators */
+	@Autowired
+	PasswordValidator passwordValidator;
 
 	@ModelAttribute("section")
 	public String sectionManager(){
@@ -555,8 +558,6 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
 	public ModelAndView changePassword(@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
 	                                   final BindingResult errors, final RedirectAttributes redirectAttributes) {
-		/** ask if @Autowired is correct to use for validators */
-		PasswordValidator passwordValidator = new PasswordValidator();
 		passwordValidator.validate(passwordForm, errors);
 
 		if (errors.hasErrors()){
