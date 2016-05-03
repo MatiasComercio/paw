@@ -87,9 +87,17 @@ public class CourseController {
     }
 
     @RequestMapping("/courses/{id}/info")
-    public ModelAndView getCourse(@PathVariable final Integer id) {
+    public ModelAndView getCourse(@PathVariable final Integer id, Model model) {
         final ModelAndView mav = new ModelAndView("course");
+
+        if (!model.containsAttribute("correlativeForm")) {
+            model.addAttribute("correlativeForm", new CorrelativeForm());
+        }
+
         mav.addObject("course", courseService.getById(id));
+        mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
+        mav.addObject("subsection_delete_correlative", true);
+        mav.addObject("correlatives", courseService.getCorrelativesByFilter(id, null));
         return mav;
     }
 
@@ -252,32 +260,6 @@ public class CourseController {
         return new ModelAndView("redirect:/courses");
     }
 
-    //TODO: DELETE
-    @RequestMapping(value = "/correlatives/{course_id}", method = RequestMethod.GET)
-    public ModelAndView getCorrelatives(@PathVariable final Integer course_id) {
-
-        List<Integer> correlatives = courseService.getCorrelatives(course_id);
-        List<Integer> upperCorrelatives = courseService.getUpperCorrelatives(course_id);
-        System.out.println("getCorrelatives en CourseController");
-        for (Integer correlative : correlatives) {
-            System.out.println(course_id + " es correlativa de: " + correlative);
-        }
-
-        for (Integer correlative : upperCorrelatives) {
-            System.out.println(correlative + " es correlativa de: " + course_id);
-        }
-
-
-        //TODO: DELETE
-        //mav.addObject("courses", courseService.getCorrelativesByFilter(course_id, courseFilter));
-
-        //Result result = courseService.deleteCorrelative(103, 102);
-        Result result = courseService.addCorrelative(106, 104); //Herbology - DDA IV
-        System.out.println(result);
-
-        return new ModelAndView("redirect:/courses");
-    }
-
     @RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)
     public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model) {
 
@@ -346,6 +328,35 @@ public class CourseController {
         return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
     }
 
+    @RequestMapping(value = "/courses/{course_id}/delete_correlative", method = RequestMethod.POST)
+    public ModelAndView deleteCorrelative(@PathVariable final Integer course_id,
+                                       @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
+                                       final BindingResult errors, final RedirectAttributes redirectAttributes) {
 
+        if (errors.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
+            redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
+            return new ModelAndView("redirect:/courses/" + course_id + "/info");
+        }
+
+        Result result = courseService.deleteCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
+        if (result == null) {
+            result = Result.ERROR_UNKNOWN;
+        }
+        if (!result.equals(Result.OK)) {
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", result.getMessage());
+
+        } else {
+            redirectAttributes.addFlashAttribute("alert", "success");
+            redirectAttributes.addFlashAttribute("message",
+                    messageSource.getMessage("correlative_delete_success",
+                            new Object[] {correlativeForm.getCourseName(), correlativeForm.getCorrelativeName()},
+                            Locale.getDefault()));
+        }
+
+        return new ModelAndView("redirect:/courses/" + course_id + "/info");
+
+    }
 
 }

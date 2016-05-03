@@ -15,6 +15,9 @@
                         <c:when test="${subsection_add_correlative}">
                             <spring:message code="add_correlative"/>
                         </c:when>
+                        <c:when test="${subsection_add_correlative}">
+                            <spring:message code="delete_correlative"/>
+                        </c:when>
                     </c:choose>
                 </h4>
             </div>
@@ -66,9 +69,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="cancel"/></button>
-                <c:if test="${subsection_add_correlative}">
-                    <button id="correlativeFormConfirmAction" type="button" class="btn btn-info"><spring:message code="confirm"/></button>
-                </c:if>
+                <button id="correlativeFormConfirmAction" type="button" class="btn btn-info"><spring:message code="confirm"/></button>
             </div>
         </div>
     </div>

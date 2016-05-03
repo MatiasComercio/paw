@@ -38,7 +38,7 @@
                     <jsp:include page="template/deleteCourseForm.jsp" />
                 </c:when>
                 <c:when test="${subsection_add_correlative}">
-                    <jsp:include page="template/addCorrelativeForm.jsp" />
+                    <jsp:include page="template/CorrelativeForm.jsp" />
                 </c:when>
             </c:choose>
         </c:when>

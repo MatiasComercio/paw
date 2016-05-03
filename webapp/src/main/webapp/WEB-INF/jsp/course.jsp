@@ -14,7 +14,7 @@
 <body>
 <div id="wrapper">
     <jsp:include page="base/nav.jsp" />
-
+    <jsp:include page="template/CorrelativeForm.jsp" />
     <div id="page-wrapper">
 
         <div class="container-fluid">
@@ -28,6 +28,11 @@
                 </div>
             </div>
             <!-- Content -->
+            <div class="row">
+                <div class="col-xs-12">
+                    <jsp:include page="base/alerts.jsp" />
+                </div>
+            </div>
             <div class="row">
                 <div class="col-xs-12 col-md-6">
                     <div class="well">
@@ -79,11 +84,49 @@
                 </div>
             </div>
 
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th><spring:message code="id"/></th>
+                    <th><spring:message code="course"/></th>
+                    <th><spring:message code="credits"/></th>
+                    <th><spring:message code="actions"/></th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${correlatives}" var="correlative">
+                    <tr>
+                        <td>${ correlative.id }</td>
+                        <td>${ correlative.name }</td>
+                        <td>${ correlative.credits }</td>
+                        <td>
+                            <a class="btn btn-default btn-xs" href="<c:url value="/courses/${correlative.id}/info" />" role="button">
+                                <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/> <spring:message code="course"/>
+                            </a>
+                            <button name="deleteCorrelativeButton" class="btn btn-danger btn-xs" type="button"
+                                    data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                    data-correlative_id="${correlative.id}" data-correlative_name="${correlative.name}"
+                                    data-toggle="modal" data-target="#correlativeFormConfirmationModal">
+                                <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
+                            </button>
+                        <td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+
             <!-- Content -->
         </div>
     </div>
 </div>
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
+<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/addCorrelativeForm.js"%></script>
+<script>
+    $( document ).ready(function() {
+        loadCorrelativeForm("deleteCorrelativeButton");
+    });
+</script>
+
 </body>
 </html>
