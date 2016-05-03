@@ -216,6 +216,7 @@ public class CourseJdbcDaoTest {
         inscriptionArgs.put(INSCRIPTION__DOCKET_COLUMN, docket1);
         inscriptionInsert.execute(inscriptionArgs);
 
+        //TODO: deleteCourse not returning COURSE_EXISTS_INSCRIPTION in any moment.
         result = courseJdbcDao.deleteCourse(COURSE_ID_2);
         assertEquals(Result.COURSE_EXISTS_INSCRIPTION, result);
 
