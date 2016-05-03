@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.webapp.forms.validators;
 
 import ar.edu.itba.paw.webapp.forms.PasswordForm;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+@Component
 public class PasswordValidator implements Validator {
 
     @Override
