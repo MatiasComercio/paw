@@ -74,6 +74,7 @@ public class StudentJdbcDaoTest {
 	private static final String COURSE__ID_COLUMN = "id";
 	private static final String COURSE__NAME_COLUMN = "name";
 	private static final String COURSE__CREDITS_COLUMN = "credits";
+	private static final String COURSE__SEMESTER_COLUMN = "semester";
 
 	private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
 	private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
@@ -141,10 +142,12 @@ public class StudentJdbcDaoTest {
 	private static final int COURSE_ID_1 = 1;
 	private static final String COURSE_NAME_1 = "Course 1";
 	private static final int COURSE_CREDITS_1 = 1;
+	private static final int COURSE_SEMESTER_1 = 1;
 
 	private static final int COURSE_ID_2 = 2;
 	private static final String COURSE_NAME_2 = "Course 2";
 	private static final int COURSE_CREDITS_2 = 2;
+	private static final int COURSE_SEMESTER_2 = 1;
 
 	private static final int COURSE_ID_VALID = 7357;
 	private static final int COURSE_ID_VALID_LIMIT = 1;
@@ -326,6 +329,7 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs);
 
 		studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -423,10 +427,12 @@ public class StudentJdbcDaoTest {
 		courseArgs1.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs1.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs1.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseArgs1.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs1);
 		courseArgs2.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs2.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs2.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+		courseArgs2.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
 		courseInsert.execute(courseArgs2);
 
 		inscriptionArgs.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
@@ -447,8 +453,8 @@ public class StudentJdbcDaoTest {
 
 		/* Student with courses */
 		Course[] expectedCourses = new Course[] {
-				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).build(),
-				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).build()
+				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).semester(COURSE_SEMESTER_1).build(),
+				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).semester(COURSE_SEMESTER_2).build()
 		};
 		courses = studentJdbcDao.getStudentCourses(docket2);
 		assertNotNull(courses);
@@ -580,10 +586,12 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs);
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
 		courseInsert.execute(courseArgs);
 
 		/* Invalid student */
@@ -662,10 +670,12 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs);
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+		courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
 		courseInsert.execute(courseArgs);
 
 
@@ -741,10 +751,12 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
-		courseInsert.execute(courseArgs);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
+        courseInsert.execute(courseArgs);
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
 		courseInsert.execute(courseArgs);
 
 
@@ -824,11 +836,13 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs);
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
-		courseInsert.execute(courseArgs);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
+        courseInsert.execute(courseArgs);
 
 		/* Invalid student */
 		Collection<Course> courses = studentJdbcDao.getApprovedCourses(DOCKET_INVALID);
@@ -847,7 +861,7 @@ public class StudentJdbcDaoTest {
 		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
 		gradeInsert.execute(gradeArgs);
 		Course[] expectedApprovedCourses = new Course[] {
-				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).build()
+				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).semester(COURSE_SEMESTER_1).build()
 		};
 
 		/* Student with one approved course */
@@ -884,8 +898,8 @@ public class StudentJdbcDaoTest {
 		gradeInsert.execute(gradeArgs);
 
 		expectedApprovedCourses = new Course[] {
-				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).build(),
-				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).build()
+				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).semester(COURSE_SEMESTER_1).build(),
+				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).semester(COURSE_SEMESTER_2).build()
 		};
 
 		/* Student with more than one grade, but only two course approved */

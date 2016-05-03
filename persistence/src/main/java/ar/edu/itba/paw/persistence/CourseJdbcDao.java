@@ -94,6 +94,7 @@ public class CourseJdbcDao implements CourseDao {
         args.put(ID_COLUMN, course.getId());
         args.put(NAME_COLUMN, course.getName());
         args.put(CREDITS_COLUMN, course.getCredits());
+        args.put(SEMESTER_COLUMN, course.getSemester());
         try{
             courseInsert.execute(args);
         }

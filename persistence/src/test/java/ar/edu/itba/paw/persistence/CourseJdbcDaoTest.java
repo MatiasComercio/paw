@@ -40,6 +40,7 @@ public class CourseJdbcDaoTest {
     private static final String COURSE__ID_COLUMN = "id";
     private static final String COURSE__NAME_COLUMN = "name";
     private static final String COURSE__CREDITS_COLUMN = "credits";
+    private static final String COURSE__SEMESTER_COLUMN = "semester";
 
     private static final String STUDENT__DOCKET_COLUMN = "docket";
     private static final String STUDENT__DNI_COLUMN = "dni";
@@ -63,15 +64,19 @@ public class CourseJdbcDaoTest {
     private static final int COURSE_ID_1 = 1;
     private static final String COURSE_NAME_1 = "Metodos";
     private static final int COURSE_CREDITS_1 = 3;
+    private static final int COURSE_SEMESTER_1 = 1;
     private static final int COURSE_ID_2 = 2;
     private static final String COURSE_NAME_2 = "PI";
     private static final int COURSE_CREDITS_2 = 9;
+    private static final int COURSE_SEMESTER_2 = 2;
     private static final int COURSE_ID_3 = 3;
     private static final String COURSE__NAME_3 = "Logica";
     private static final int COURSE_CREDITS_3 = 6;
+    private static final int COURSE_SEMESTER_3 = 3;
     private static final int COURSE_ID_4 = 4;
     private static final String COURSE_NAME_4 = "EDA";
     private static final int COURSE_CREDITS_4 = 6;
+    private static final int COURSE_SEMESTER_4 = 4;
 
     private static final int DOCKET_1 = 1;
     private static final int DOCKET_2 = 2;
@@ -159,12 +164,15 @@ public class CourseJdbcDaoTest {
         courseArgs1.put(COURSE__ID_COLUMN, COURSE_ID_1);
         courseArgs1.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
         courseArgs1.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+        courseArgs1.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
         courseArgs2.put(COURSE__ID_COLUMN, COURSE_ID_2);
         courseArgs2.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
         courseArgs2.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+        courseArgs2.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
         courseArgs3.put(COURSE__ID_COLUMN, COURSE_ID_3);
         courseArgs3.put(COURSE__NAME_COLUMN, COURSE__NAME_3);
         courseArgs3.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_3);
+        courseArgs3.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_3);
 
         courseInsert.execute(courseArgs1);
         courseInsert.execute(courseArgs2);
@@ -272,7 +280,7 @@ public class CourseJdbcDaoTest {
 
         /* OK insertion */
         Result result = courseJdbcDao.create(new Course.Builder(COURSE_ID_4).name(COURSE_NAME_4).
-                credits(COURSE_CREDITS_4).build());
+                credits(COURSE_CREDITS_4).semester(COURSE_SEMESTER_4).build());
         assertEquals(Result.OK, result);
         /******************/
 
