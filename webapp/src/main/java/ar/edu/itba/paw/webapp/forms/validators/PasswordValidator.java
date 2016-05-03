@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.forms.validators;
 
 import ar.edu.itba.paw.webapp.forms.PasswordForm;
 import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 public class PasswordValidator implements Validator {
