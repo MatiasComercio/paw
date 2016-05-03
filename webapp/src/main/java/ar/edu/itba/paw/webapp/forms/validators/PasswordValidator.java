@@ -18,9 +18,6 @@ public class PasswordValidator implements Validator {
         final String newPassword = pw.getNewPassword();
         final String repeatNewPassword = pw.getRepeatNewPassword();
 
-        System.out.println(newPassword);
-        System.out.println(repeatNewPassword);
-
         if(!newPassword.equals(repeatNewPassword)) {
             errors.rejectValue("repeatNewPassword", "repeatNewPassword.notequal");
         }
