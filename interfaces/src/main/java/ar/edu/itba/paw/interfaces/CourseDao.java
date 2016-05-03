@@ -121,4 +121,10 @@ public interface CourseDao {
      */
     Result deleteCorrelative(Integer courseId, Integer correlativeId);
 
+    /**
+     * Get the number of semesters.
+     * @return Integer indicating the number of semesters
+     */
+    Integer getTotalSemesters();
+
 }

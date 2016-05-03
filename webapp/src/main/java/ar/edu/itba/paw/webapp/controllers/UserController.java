@@ -134,6 +134,16 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		mav.addObject("subsection_grades", true);
 		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/edit");
 
+		//TODO: Remove
+		int i = 0;
+		for (List<Grade> l : studentService.getTranscript(docket)) {
+			i++;
+			System.out.println("SEMESTER " + i);
+			for (Grade g : l) {
+				System.out.println(g.toString());
+			}
+		}
+
 		return mav;
 	}
 

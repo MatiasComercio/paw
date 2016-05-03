@@ -23,12 +23,22 @@ public interface StudentDao {
 	Student getByDocket(final int docket);
 
 	/**
-	 * Gets the student with the given docket containing all the grades of the courses they took.
+	 * Gets the student with the given docket containing all the grades of the courses it took.
 	 * If no student exists with that docket, null is returned.
 	 * @param docket The student's docket
 	 * @return The student with the given docket, if exists; null otherwise.
 	 */
 	Student getGrades(int docket);
+
+	/**
+	 * Gets the student with the given docket containing all the grades of the courses it took in a specified semester.
+	 * If no student exists with that docket, null is returned.
+	 *
+	 * @param docket The student's docket
+	 * @param semesterIndex The number of semester
+	 * @return The student with the given docket, if exists; null otherwise.
+     */
+	Student getGrades(Integer docket, Integer semesterIndex);
 
 	/**
 	 * Gets the courses which match to a student, given a docket.
@@ -146,5 +156,4 @@ public interface StudentDao {
      * @param student The student containing the address to update
      */
     void updateAddress(final Integer dni, final Student student);
-
 }

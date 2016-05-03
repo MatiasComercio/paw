@@ -108,4 +108,10 @@ public interface CourseService {
      */
     Result deleteCourseCorrelatives(Integer courseId);
 
+    /**
+     * Get the number of semesters.
+     * @return Integer indicating the number of semesters
+     */
+    Integer getTotalSemesters();
+
 }

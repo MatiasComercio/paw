@@ -97,6 +97,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Integer getTotalSemesters() {
+        return courseDao.getTotalSemesters();
+    }
+
+    @Override
     public Result addCorrelative(final Integer id, final Integer correlativeId) {
 
         //Check courses exists

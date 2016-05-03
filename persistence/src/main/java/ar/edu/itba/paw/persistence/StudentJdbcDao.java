@@ -72,6 +72,7 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String COURSE__ID_COLUMN = "id";
 	private static final String COURSE__NAME_COLUMN = "name";
 	private static final String COURSE__CREDITS_COLUMN = "credits";
+    private static final String COURSE__SEMESTER_COLUMN = "semester";
 
 	private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
 	private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
@@ -100,6 +101,14 @@ public class StudentJdbcDao implements StudentDao {
 						GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." +  COURSE__ID_COLUMN +
 				" WHERE " + GRADE__DOCKET_COLUMN + " = ? " +
 				";";
+
+
+    private static final String GET_GRADES_SEMESTER =
+            "SELECT * " +
+                    "FROM " + GRADE_TABLE + " JOIN " + COURSE_TABLE + " ON " +
+                    GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." +  COURSE__ID_COLUMN +
+                    " WHERE " + GRADE__DOCKET_COLUMN + " = ? AND " + COURSE__SEMESTER_COLUMN + " = ?" +
+                    ";";
 
 	private static final String GET_COURSES =
 				"SELECT * " +
@@ -284,6 +293,23 @@ public class StudentJdbcDao implements StudentDao {
 
 		return studentBuilder.build();
 	}
+
+    @Override
+	public Student getGrades(final Integer docket, final Integer semester) {
+        final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_BY_DOCKET, studentBasicRowMapper, docket);
+
+        if (studentBuilders.isEmpty())
+            return null;
+
+        final Student.Builder studentBuilder = studentBuilders.get(0);
+
+        final List<Grade> grades = jdbcTemplate.query(GET_GRADES_SEMESTER, gradesRowMapper, docket, semester);
+
+        studentBuilder.addGrades(grades);
+
+        return studentBuilder.build();
+
+    }
 
 	@Override
 	public List<Course> getStudentCourses(int docket) {

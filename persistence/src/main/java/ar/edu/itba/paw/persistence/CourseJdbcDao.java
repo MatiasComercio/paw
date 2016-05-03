@@ -201,12 +201,12 @@ public class CourseJdbcDao implements CourseDao {
     public boolean checkCorrelativityLoop(Integer id, Integer correlativeId) {
         //TODO: Change table columns name
         String query = "WITH RECURSIVE corr (cid, corrid) AS " +
-                "(SELECT course_id, correlative_id FROM correlative " +
-                "UNION ALL " +
-                "SELECT corr.cid, correlative.correlative_id " +
-                "FROM corr, correlative " +
-                "WHERE corr.corrid = correlative.course_id) " +
-                "SELECT cid, corrid FROM corr;";
+                        "(SELECT course_id, correlative_id FROM correlative " +
+                        "UNION ALL " +
+                        "SELECT corr.cid, correlative.correlative_id " +
+                        "FROM corr, correlative " +
+                        "WHERE corr.corrid = correlative.course_id) " +
+                        "SELECT cid, corrid FROM corr;";
 
         List<Correlativity> list = jdbcTemplate.query(query, (rs, rowNum) -> {
             return new Correlativity(rs.getInt("cid"), rs.getInt("corrid"));
@@ -275,7 +275,13 @@ public class CourseJdbcDao implements CourseDao {
         return false;
     }
 
-
+    @Override
+    public Integer getTotalSemesters() {
+        String query = "SELECT MAX(" + SEMESTER_COLUMN + ") as " + SEMESTER_COLUMN + " FROM " + TABLE_NAME + ";";
+        RowMapper<Integer> rm = (rs, rowNum) -> rs.getInt(SEMESTER_COLUMN);
+        List<Integer> list = jdbcTemplate.query(query, rm);
+        return list.isEmpty() ? 0 : list.get(0);
+    }
 
     private static class QueryFilter {
         private static final String WHERE = " WHERE ";
