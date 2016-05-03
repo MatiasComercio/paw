@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 
 @ComponentScan({
 		"ar.edu.itba.paw.webapp.controllers",
+		"ar.edu.itba.paw.webapp.forms.validators",
 		"ar.edu.itba.paw.services",
 		"ar.edu.itba.paw.persistence"
 })
