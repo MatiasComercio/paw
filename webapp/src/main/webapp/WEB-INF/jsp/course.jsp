@@ -83,7 +83,11 @@
                     </div>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="page-header"> <spring:message code="correlatives"/> </h3>
+                </div>
+            </div>
             <table class="table table-striped">
                 <thead>
                 <tr>
