@@ -9,6 +9,7 @@ import ar.edu.itba.paw.webapp.forms.*;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
+import ar.edu.itba.paw.webapp.forms.validators.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
@@ -41,6 +42,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@Autowired
 	private UserService userService;
+
 
 	@ModelAttribute("section")
 	public String sectionManager(){
@@ -553,9 +555,14 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
 	public ModelAndView changePassword(@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
 	                                   final BindingResult errors, final RedirectAttributes redirectAttributes) {
+		/** ask if @Autowired is correct to use for validators */
+		PasswordValidator passwordValidator = new PasswordValidator();
+		passwordValidator.validate(passwordForm, errors);
+
 		if (errors.hasErrors()){
 			return changePassword(passwordForm, redirectAttributes);
 		}
+
 		final Result result = userService.changePassword(
 				passwordForm.getDni(),
 				passwordForm.getCurrentPassword(),
