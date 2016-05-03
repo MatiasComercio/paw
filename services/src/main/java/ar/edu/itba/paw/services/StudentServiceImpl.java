@@ -175,8 +175,9 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public List<List<Grade>> getTranscript(Integer docket) {
-		List<List<Grade>> semesterList = new ArrayList<>();
-		Integer totalSemesters = courseService.getTotalSemesters();
+		final List<List<Grade>> semesterList = new ArrayList<>();
+		final Integer totalSemesters = courseService.getTotalSemesters();
+
 
 		for (int i = 0; i < totalSemesters; i++) {
             int semesterIndex = i + 1;
@@ -191,8 +192,14 @@ public class StudentServiceImpl implements StudentService {
             }
 		}
 
-        //Complete with the rest of the courses
-        List<Course> availCourses = getAvailableInscriptionCourses(docket, null);
+        //Add courses that are being taken
+        final List<Course> coursesTaken = getStudentCourses(docket, null);
+        for (Course course : coursesTaken){
+            semesterList.get(course.getSemester()).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).build());
+        }
+
+        //Complete with the rest of the courses that are not taken
+        final List<Course> availCourses = getAvailableInscriptionCourses(docket, null);
 
         for (Course course : availCourses){
             int semesterIndex = course.getSemester() - 1;
