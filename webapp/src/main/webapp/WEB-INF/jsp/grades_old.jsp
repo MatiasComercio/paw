@@ -56,12 +56,14 @@
                             <a class="btn btn-default btn-xs" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">
                                 <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/> <spring:message code="course"/>
                             </a>
+                            <c:if test="${grade.modified != null }">
                             <button name="gradeButton" class="btn btn-info btn-xs" type="button"
                                         data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
                                         data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
                                         data-target="#gradeFormConfirmationModal">
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
                             </button>
+                            </c:if>
                         <td>
                     </tr>
                 </c:forEach>
