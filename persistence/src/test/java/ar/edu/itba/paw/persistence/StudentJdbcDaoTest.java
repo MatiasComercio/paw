@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.test.context.ContextConfiguration;
@@ -155,6 +156,7 @@ public class StudentJdbcDaoTest {
 	private static final BigDecimal GRADE_APPROVED_LIMIT = BigDecimal.valueOf(4);
 	private static final BigDecimal GRADE_DISAPPROVED_LIMIT = BigDecimal.valueOf(3.99);
 	private static final BigDecimal GRADE_DISAPPROVED = BigDecimal.valueOf(2);
+	private static final BigDecimal GRADE_NEW = BigDecimal.valueOf(5.5);
 
 	/**************************************/
 
@@ -896,34 +898,50 @@ public class StudentJdbcDaoTest {
 	}
 
 
-/*
+
 	@Test
 	public void createStudent() {
 
 		Address address = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
-				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED_2).floor(ADDRESS__FLOOR_EXPECTED_2).door(ADDRESS__DOOR_EXPECTED).
-				telephone(ADDRESS__TELEPHONE_EXPECTED_2).zipCode(ADDRESS__ZIP_CODE_EXPECTED_2).build();
-
-		//Address address = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
-		//		ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED).build();
-
-		//Address address = new Address.Builder("Argentina", "Bs. As.", ADDRESS__NEIGHBORHOOD_EXPECTED,
-		//		"Gascon", 600).build();
-
+				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED).build();
 		// OK insertion
-		Student student = new Student.Builder(0, 27).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M).
-				birthday(BIRTHDAY_1).address(address).build();
+
+		Student student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1)
+				.genre(User.Genre.M).build();//address(address).build();
 
 		Result result = studentJdbcDao.create(student);
 		assertEquals(Result.OK, result);
 
-
 		// Existing  DNI
-		student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M).
-				birthday(BIRTHDAY_1).address(address).build();
+		student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M)
+				.address(address).build();
 
 		result = studentJdbcDao.create(student);
 		assertEquals(Result.STUDENT_EXISTS_DNI, result);
+
+	}
+/*
+	@Test
+	public void editGrade(){
+		Result result;
+		final Map<String, Object> gradeArgs = new HashMap<>();
+
+		gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
+		gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_1);
+		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
+		KeyHolder keys = gradeInsert.executeAndReturnKeyHolder(gradeArgs);
+		Timestamp modified = (Timestamp)keys.getKeys().get(GRADE__MODIFIED_COLUMN);
+		Grade expectedGrade = new Grade.Builder(docket1, COURSE_ID_1, GRADE_APPROVED).modified(modified).build();
+
+		result = studentJdbcDao.editGrade(expectedGrade, GRADE_NEW);
+		assertEquals(Result.OK, result);
+
+		//Check the grade actually changed
+		for( Grade grade : studentJdbcDao.getGrades(docket1).getGrades()){
+			if(grade.getModified() != null && grade.getModified().equals(modified)){
+				assertEquals(grade.getGrade(),  GRADE_NEW);
+			}
+		}
 
 	}
 */

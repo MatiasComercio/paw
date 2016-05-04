@@ -6,10 +6,10 @@ CREATE TABLE IF NOT EXISTS users (
 	birthday DATE ,
 	email VARCHAR(100) NOT NULL,
 
-PRIMARY KEY (dni),
-UNIQUE (email),
-CHECK (dni > 0),
-CHECK (birthday <= current_timestamp)
+	PRIMARY KEY (dni),
+	UNIQUE (email),
+	CHECK (dni > 0),
+	CHECK (birthday <= current_timestamp)
 );
 
 CREATE TABLE IF NOT EXISTS address (
