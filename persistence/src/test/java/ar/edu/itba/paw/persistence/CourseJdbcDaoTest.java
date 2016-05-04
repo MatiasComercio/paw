@@ -209,7 +209,12 @@ public class CourseJdbcDaoTest {
         inscriptionInsert.execute(inscriptionArgs);
 
         result = courseJdbcDao.deleteCourse(COURSE_ID_2);
-        assertEquals(Result.COURSE_EXISTS_INSCRIPTION, result);
+        //assertEquals(Result.COURSE_EXISTS_INSCRIPTION, result); Note: This is now checked in the Service!!
+        assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
+        /* INVALID_INPUT_PARAMETER is returned when a DataIntegrityViolation is thrown, which means a DB
+        restriction is being violated (In this case, the foreign key from inscription table(courseId) cannot be
+        null, and we are trying to be removed the course)
+        */
 
         course = courseJdbcDao.getById(COURSE_ID_2);
         assertNotNull(course);
@@ -236,7 +241,8 @@ public class CourseJdbcDaoTest {
         gradeInsert.execute(gradeArgs);
 
         result = courseJdbcDao.deleteCourse(COURSE_ID_3);
-        assertEquals(Result.COURSE_EXISTS_GRADE, result);
+        assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
+        //assertEquals(Result.COURSE_EXISTS_GRADE, result);
 
         course = courseJdbcDao.getById(COURSE_ID_3);
         assertNotNull(course);
