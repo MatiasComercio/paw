@@ -35,6 +35,7 @@ public class CourseJdbcDaoTest {
     private static final String USER_TABLE = "users";
     private static final String GRADE_TABLE = "grade";
     private static final String INSCRIPTION_TABLE = "inscription";
+    private static final String CORRELATIVE_TABLE = "correlative";
 
     /* Columns */
     private static final String COURSE__ID_COLUMN = "id";
@@ -58,6 +59,10 @@ public class CourseJdbcDaoTest {
 
     private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
     private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
+
+    private static final String CORRELATIVE__COURSE_ID_COLUMN = "course_id";
+    private static final String CORRELATIVE__CORRELATIVE_ID_COLUMN = "correlative_id";
+
 
     /* Example Args */
     private static final int COURSE_ID_1 = 1;
@@ -128,6 +133,7 @@ public class CourseJdbcDaoTest {
     private SimpleJdbcInsert studentInsert;
     private SimpleJdbcInsert inscriptionInsert;
     private SimpleJdbcInsert gradeInsert;
+    private SimpleJdbcInsert correlativeInsert;
 
     /* Keys */
     private int id1;
@@ -142,9 +148,11 @@ public class CourseJdbcDaoTest {
         studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
         inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE).usingColumns(INSCRIPTION__COURSE_ID_COLUMN, INSCRIPTION__DOCKET_COLUMN);
         gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);;
+        correlativeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(CORRELATIVE_TABLE).usingColumns(CORRELATIVE__COURSE_ID_COLUMN, CORRELATIVE__CORRELATIVE_ID_COLUMN);
 
         /* Clean DB */
 
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, CORRELATIVE_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, GRADE_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, INSCRIPTION_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
@@ -304,5 +312,125 @@ public class CourseJdbcDaoTest {
         assertEquals(course1, course2);
 
     }
+
+    @Test
+    public void getCorrelatives(){
+        final Map<String, Object> correlativeArgs = new HashMap<>();
+        final Map<String, Object> correlativeArgs2 = new HashMap<>();
+
+        correlativeArgs.put(CORRELATIVE__COURSE_ID_COLUMN, COURSE_ID_3);
+        correlativeArgs.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_1);
+        correlativeInsert.execute(correlativeArgs);
+
+        correlativeArgs2.put(CORRELATIVE__COURSE_ID_COLUMN, COURSE_ID_3);
+        correlativeArgs2.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_2);
+        correlativeInsert.execute(correlativeArgs2);
+
+        List<Integer> list = courseJdbcDao.getCorrelatives(COURSE_ID_3);
+
+        assertEquals(list.size(), 2);
+        assertTrue( (list.get(0).equals(COURSE_ID_1) || list.get(0).equals(COURSE_ID_2) ));
+        assertTrue( (list.get(1).equals(COURSE_ID_1) || list.get(1).equals(COURSE_ID_2) ));
+    }
+
+
+    @Test
+    public void getUpperCorrelatives(){
+        final Map<String, Object> correlativeArgs = new HashMap<>();
+        final Map<String, Object> correlativeArgs2 = new HashMap<>();
+
+        correlativeArgs.put(CORRELATIVE__COURSE_ID_COLUMN, COURSE_ID_3);
+        correlativeArgs.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_1);
+        correlativeInsert.execute(correlativeArgs);
+
+        correlativeArgs2.put(CORRELATIVE__COURSE_ID_COLUMN, COURSE_ID_2);
+        correlativeArgs2.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_1);
+        correlativeInsert.execute(correlativeArgs2);
+
+        List<Integer> list = courseJdbcDao.getUpperCorrelatives(COURSE_ID_1);
+
+        assertEquals(list.size(), 2);
+        assertTrue( (list.get(0).equals(COURSE_ID_3) || list.get(0).equals(COURSE_ID_2) ));
+        assertTrue( (list.get(1).equals(COURSE_ID_3) || list.get(1).equals(COURSE_ID_2) ));
+    }
+
+    @Test
+    public void inscriptionExists(){
+
+        final Map<String, Object> userArgs = new HashMap<>();
+        final Map<String, Object> studentArgs = new HashMap<>();
+        final Map<String, Object> inscriptionArgs = new HashMap<>();
+
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userInsert.execute(userArgs);
+
+        studentArgs.put(USER__DNI_COLUMN, DNI_1);
+        Number key = studentInsert.executeAndReturnKey(studentArgs);
+        docket1 = key.intValue();
+
+        //Request with no inscription
+        assertFalse(courseJdbcDao.inscriptionExists(COURSE_ID_1));
+
+        //Request with an existing inscription
+        inscriptionArgs.put(INSCRIPTION__DOCKET_COLUMN, docket1);
+        inscriptionArgs.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
+        inscriptionInsert.execute(inscriptionArgs);
+
+        assertTrue(courseJdbcDao.inscriptionExists(COURSE_ID_1));
+    }
+
+    @Test
+    public void deleteCorrelative() {
+
+        final Map<String, Object> correlativeArgs = new HashMap<>();
+        final Map<String, Object> correlativeArgs2 = new HashMap<>();
+        Result result;
+
+        correlativeArgs.put(CORRELATIVE__COURSE_ID_COLUMN, COURSE_ID_3);
+        correlativeArgs.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_1);
+        correlativeInsert.execute(correlativeArgs);
+
+        correlativeArgs2.put(CORRELATIVE__COURSE_ID_COLUMN, COURSE_ID_2);
+        correlativeArgs2.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_1);
+        correlativeInsert.execute(correlativeArgs2);
+
+
+        // Delete non existant correlativity
+        result = courseJdbcDao.deleteCorrelative(COURSE_ID_4, COURSE_ID_1);
+        assertEquals(Result.ERROR_UNKNOWN, result);
+
+        //Delete existant correlativity
+        result = courseJdbcDao.deleteCorrelative(COURSE_ID_3, COURSE_ID_1);
+        assertEquals(Result.OK, result);
+
+    }
+
+    @Test
+    public void getCorrelativeCourses(){
+        final Map<String, Object> correlativeArgs = new HashMap<>();
+        final Map<String, Object> correlativeArgs2 = new HashMap<>();
+
+        correlativeArgs.put(CORRELATIVE__COURSE_ID_COLUMN, COURSE_ID_3);
+        correlativeArgs.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_1);
+        correlativeInsert.execute(correlativeArgs);
+
+        correlativeArgs2.put(CORRELATIVE__COURSE_ID_COLUMN, COURSE_ID_3);
+        correlativeArgs2.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_2);
+        correlativeInsert.execute(correlativeArgs2);
+
+        Course course1 = courseJdbcDao.getById(COURSE_ID_1);
+        Course course2 = courseJdbcDao.getById(COURSE_ID_2);
+
+        List<Course> list = courseJdbcDao.getCorrelativeCourses(COURSE_ID_3);
+
+        assertEquals(list.size(), 2);
+        assertTrue( (list.get(0).equals(course1) || list.get(0).equals(course2) ));
+        assertTrue( (list.get(1).equals(course1) || list.get(1).equals(course2) ));
+    }
+
+
 
 }
