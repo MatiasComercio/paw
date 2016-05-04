@@ -97,6 +97,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public Result changePassword(int dni, String prevPassword, String newPassword, String repeatNewPassword) {
+		if (!newPassword.equals(repeatNewPassword)) {
+			return Result.PASSWORDS_DO_NOT_MATCH;
+		}
+		if(dni < 0) {
+			return Result.ERROR_DNI_OUT_OF_BOUNDS;
+		}
+		return userDao.changePassword(dni, prevPassword, newPassword);
+	}
+	@Override
 	public Result create(User user) {
 		return userDao.create(user);
 	}

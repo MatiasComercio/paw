@@ -13,6 +13,7 @@ import ar.edu.itba.paw.webapp.forms.*;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
+import ar.edu.itba.paw.webapp.forms.validators.PasswordValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
@@ -48,6 +49,10 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 	@Autowired
 	private AdminService adminService;
+
+	/* Validators */
+	@Autowired
+	PasswordValidator passwordValidator;
 
 	@ModelAttribute("section")
 	public String sectionManager(){
@@ -533,7 +538,8 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	}
 
 	@RequestMapping(value = "/user/changePassword")
-	public ModelAndView changePassword(@ModelAttribute("changePasswordForm") final PasswordForm passwordForm) {
+	public ModelAndView changePassword(@ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
+									   final RedirectAttributes redirectAttributes) {
 		final ModelAndView mav = new ModelAndView("changePassword");
 		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth == null) {
@@ -542,11 +548,47 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 		UserDetails userDetails = (UserDetails) auth.getPrincipal();
 		/* userDetails.getUsername() == user's dni; used to load on the PasswordForm */
+
+		if(redirectAttributes != null) {
+			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
+			if (raMap.get("alert") != null) {
+				mav.addObject("alert", raMap.get("alert"));
+				mav.addObject("message", raMap.get("message"));
+			}
+		}
+
 		mav.addObject("dni", userDetails.getUsername());
 
 		return mav;
 	}
 
+	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
+	public ModelAndView changePassword(@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
+	                                   final BindingResult errors, final RedirectAttributes redirectAttributes) {
+		passwordValidator.validate(passwordForm, errors);
+
+		if (errors.hasErrors()){
+			return changePassword(passwordForm, redirectAttributes);
+		}
+
+		final Result result = userService.changePassword(
+				passwordForm.getDni(),
+				passwordForm.getCurrentPassword(),
+				passwordForm.getNewPassword(),
+				passwordForm.getRepeatNewPassword());
+
+		if (!result.equals(Result.OK)) {
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+		} else {
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
+					new Object[] {},
+					Locale.getDefault()));
+		}
+
+		return new ModelAndView("redirect:/user/changePassword");
+	}
 	@RequestMapping(value = "/admins")
 	public ModelAndView getAllAdmins() {
 		final List<Admin> admins = adminService.getAllAdmins();

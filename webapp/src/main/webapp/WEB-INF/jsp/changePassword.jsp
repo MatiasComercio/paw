@@ -51,14 +51,17 @@
 					<div class="col-xs-12 form-group">
 						<form:label path="currentPassword"><spring:message code="currentPassword" /></form:label>
 						<form:input type="password" path="currentPassword" class="form-control" autocomplete="new-password"/>
+						<form:errors path="currentPassword" cssStyle="color: red;" element="div"/>
 					</div>
 					<div class="col-xs-12 form-group">
 						<form:label path="newPassword"><spring:message code="newPassword" /></form:label>
 						<form:input type="password" path="newPassword" class="form-control"/>
+						<form:errors path="newPassword" cssStyle="color: red;" element="div"/>
 					</div>
 					<div class="col-xs-12 form-group">
 						<form:label path="repeatNewPassword"><spring:message code="repeatNewPassword" /></form:label>
 						<form:input type="password" path="repeatNewPassword" class="form-control"/>
+						<form:errors path="repeatNewPassword" cssStyle="color: red;" element="div"/>
 					</div>
 					<div class="col-sm-4 hidden-xs"></div>
 					<div class="col-xs-6 col-sm-2 text-center">

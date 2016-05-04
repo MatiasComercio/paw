@@ -38,4 +38,15 @@ public interface UserDao {
 	 * @return OK if the user was deleted.
 	 */
 	Result delete(final Integer dni);
+
+	/**
+	 * Change the password of a given user
+	 * @param dni The user's dni.
+	 * @param prevPassword The user's previous password
+	 * @param newPassword The user's new password
+     * @return 	OK if the password could be changed;
+	 * 			INVALID_INPUT_PARAMETERS if the DNI or the password are incorrect;
+	 * 			else ERROR_UNKNOWN for an unknown error;
+     */
+	Result changePassword(int dni, String prevPassword, String newPassword);
 }

@@ -3,11 +3,13 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,8 +39,7 @@ public class UserJdbcDao implements UserDao {
 	private static final String USER__GENRE_COLUMN = "genre";
 	private static final String USER__BIRTHDAY_COLUMN = "birthday";
 	private static final String USER__EMAIL_COLUMN = "email";
-	private static final String USER__PASSWORD_COLUMN = "password";
-
+	private static final String USERS__PWD_COLUMN = "password";
 	private static final String ADDRESS__DNI_COLUMN = "dni";
 	private static final String ADDRESS__COUNTRY_COLUMN = "country";
 	private static final String ADDRESS__CITY_COLUMN = "city";
@@ -50,12 +51,13 @@ public class UserJdbcDao implements UserDao {
 	private static final String ADDRESS__TELEPHONE_COLUMN = "telephone";
 	private static final String ADDRESS__ZIP_CODE_COLUMN = "zip_code";
 
-
+	private static final String AND = "AND";
 	private static final String EVERYTHING = "*";
 	private static final String EQUALS = "=";
 	private static final String GIVEN_PARAMETER = "?";
 
 	private static final String GET_ROLES;
+	private static final String UPDATE_PASSWORD;
 	private static final String GET_EMAILS;
 	private static final String DELETE_USER;
 
@@ -76,6 +78,11 @@ public class UserJdbcDao implements UserDao {
 						+ where(USER__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
 
 
+		UPDATE_PASSWORD =
+				update(USERS_TABLE) +
+						set(USERS__PWD_COLUMN, EQUALS, GIVEN_PARAMETER) +
+						where(tableCol(USERS_TABLE, USERS__DNI_COLUMN), EQUALS, GIVEN_PARAMETER
+						,AND, tableCol(USERS_TABLE, USERS__PWD_COLUMN), EQUALS, GIVEN_PARAMETER);
 	}
 
 	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(USER__EMAIL_COLUMN);
@@ -157,6 +164,18 @@ public class UserJdbcDao implements UserDao {
 		return rowsAffected == 1 ? Result.OK : Result.USER_NOT_EXISTS;
 	}
 
+	@Override
+	public Result changePassword(final int dni, final String prevPassword, final String newPassword) {
+		final int rowsAffected;
+		try {
+			rowsAffected = jdbcTemplate.update(UPDATE_PASSWORD, newPassword, dni, prevPassword);
+		} catch (DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		return rowsAffected == 1 ? Result.OK : Result.INVALID_INPUT_PARAMETERS;
+	}
+
 
 
 	/* /Public Methods */
@@ -233,10 +252,28 @@ public class UserJdbcDao implements UserDao {
 		return stringBuilder.toString();
 	}
 
+	private static String update(final String table) {
+		final StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("UPDATE ");
+		buildSentence(stringBuilder, table);
+		return stringBuilder.toString();
+	}
+
 	private static String from(final String... cols) {
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("FROM ");
 		buildSentence(stringBuilder, cols);
+		return stringBuilder.toString();
+	}
+
+
+	private static String set(final String... cols) {
+		final StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("SET ");
+		for(String col : cols) {
+			stringBuilder.append(col);
+		}
+		stringBuilder.append(" ");
 		return stringBuilder.toString();
 	}
 
@@ -245,8 +282,8 @@ public class UserJdbcDao implements UserDao {
 		stringBuilder.append("WHERE ");
 		for (String col : cols) {
 			stringBuilder.append(col);
+			stringBuilder.append(" ");
 		}
-		stringBuilder.append(" ");
 		return stringBuilder.toString();
 	}
 
