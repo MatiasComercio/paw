@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.AdminDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
+import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import javax.sql.DataSource;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -184,6 +186,11 @@ public class AdminJdbcDao implements AdminDao {
         return admin.isEmpty() ? null : admin.get(0);
     }
 
+    @Override
+    public List<Admin> getByFilter(AdminFilter adminFilter) {
+
+    }
+
     /* Private Static Methods */
     private static String select(final String... cols) {
         final StringBuilder stringBuilder = new StringBuilder();
@@ -236,5 +243,88 @@ public class AdminJdbcDao implements AdminDao {
 
     private static String tableCol(final String table, final String column) {
         return table + "." + column;
+    }
+
+    private static class QueryFilter {
+        private static final String WHERE = " WHERE ";
+        private static final String AND = " AND ";
+        private static final String ILIKE = " ILIKE ? ";
+        private static final String EQUAL = " = ? ";
+
+        private static final String FILTER_DNI = "CAST(" + ADMIN__DNI_COLUMN + " AS TEXT) ";
+        private static final String FILTER_NAME_FIRST = USER__FIRST_NAME_COLUMN;
+        private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN;
+        private static final String FILTER_GENRE = USER__GENRE_COLUMN;
+
+        private final StringBuffer query = new StringBuffer(GET_ALL);
+        private boolean filterApplied = false;
+        private final List<String> filters;
+
+        private final FilterQueryMapper filterBySubWord = (filter, filterName) -> {
+            if(filter != null && !filter.toString().equals("")) {
+                String escapedFilter = escapeFilter(filter);
+                String stringFilter = "%" + escapedFilter + "%";
+                appendFilter(filterName, stringFilter);
+            }
+        };
+
+        private final FilterQueryMapper filterByExactWord = (filter, filterName) -> {
+            if(filter != null && !filter.toString().equals("")) {
+                String escapedFilter = escapeFilter(filter);
+                String stringFilter = escapedFilter;
+                appendFilter(filterName, stringFilter);
+            }
+        };
+
+        private QueryFilter() {
+            filters = new LinkedList<>();
+        }
+
+        public void filterByDni(final AdminFilter courseFilter) {
+            filterBySubWord.filter(courseFilter.getDni(), FILTER_DNI + ILIKE);
+        }
+
+        public void filterByFirstName(final AdminFilter courseFilter) {
+            filterBySubWord.filter(courseFilter.getFirstName(), FILTER_NAME_FIRST + ILIKE);
+        }
+
+        public void filterByLastName(final AdminFilter courseFilter) {
+            filterBySubWord.filter(courseFilter.getLastName(), FILTER_NAME_LAST + ILIKE);
+        }
+
+        public void filterByGenre(AdminFilter studentFilter) {
+            filterByExactWord.filter(studentFilter.getGenre(), FILTER_GENRE + EQUAL);
+        }
+
+        public List<String> getFilters() {
+            return filters;
+        }
+
+        public String getQuery() {
+            return query.toString();
+        }
+
+        private void appendFilterConcatenation() {
+            if(!filterApplied) {
+                filterApplied = true;
+                query.append(WHERE);
+            } else {
+                query.append(AND);
+            }
+        }
+
+        private String escapeFilter(final Object filter) {
+            return filter.toString().replace("%", "\\%").replace("_", "\\_");
+        }
+
+        private void appendFilter(final String filter, final String stringFilter) {
+            appendFilterConcatenation();
+            query.append(filter);
+            filters.add(stringFilter);
+        }
+
+        private interface FilterQueryMapper {
+            void filter(final Object filter, final String filterName);
+        }
     }
 }
