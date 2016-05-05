@@ -40,7 +40,7 @@
                     <p class="lead"><spring:message code="actions"/>:</p>
                 </div>
                 <div class="col-xs-12 col-md-2 text-center">
-                    <a class="btn btn-info" href="./add_admin" role="button">
+                    <a class="btn btn-info" href="<c:url value="/admins/add_admin"/>" role="button">
                         <i class="fa fa-plus-circle" aria-hidden="true"></i> <spring:message code="addAdmin"/>
                     </a>
                 </div>
@@ -61,7 +61,7 @@
 <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchAdmins.js"%></script>
 <script>
     $( document ).ready(function() {
-        loadadminsSearch();
+        loadAdminSearch();
     });
 </script>
 </body>

@@ -117,7 +117,7 @@
                         <form:errors path="zipCode" cssStyle="color: red;" element="div"/>
                     </div>
                     <!-- End Data Input -->
-                    <input type="submit" class="btn btn-info" value="addAdmin"/>
+                    <input type="submit" class="btn btn-info" value="<spring:message code="addAdmin"/>"/>
                 </form:form>
             </div>
 

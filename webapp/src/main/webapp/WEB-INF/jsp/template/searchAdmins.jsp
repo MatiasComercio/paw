@@ -4,7 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!-- search -->
 <%--Student Filter Form--%>
-<form:form id="admin_filter_form" modelAttribute="adminsFilterForm" action="${adminFilterFormAction}" method="get" enctype="application/x-www-form-urlencoded">
+<form:form id="admin_filter_form" modelAttribute="adminFilterForm" action="${adminFilterFormAction}" method="get" enctype="application/x-www-form-urlencoded">
 
     <div class="row well">
         <div class="col-xs-12 col-md-2">
@@ -93,7 +93,7 @@
         <tbody>
         <c:if test="${empty admins}">
             <tr class="bg-warning">
-                <td colspan="4" class="text-danger text-center"><spring:message code="noStudentsFound"/></td>
+                <td colspan="4" class="text-danger text-center"><spring:message code="noAdminsFound"/></td>
             </tr>
         </c:if>
         <c:forEach items="${admins}" var="admin">

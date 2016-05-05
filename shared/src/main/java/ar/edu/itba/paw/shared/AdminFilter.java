@@ -2,7 +2,7 @@ package ar.edu.itba.paw.shared;
 
 public class AdminFilter extends UserFilter {
 
-    protected AdminFilter(AdminFilterBuilder builder) {
+    private AdminFilter(AdminFilterBuilder builder) {
         super(builder);
     }
 

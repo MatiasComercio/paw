@@ -2,7 +2,7 @@ package ar.edu.itba.paw.shared;
 
 import ar.edu.itba.paw.models.users.User;
 
-public class UserFilter {
+public abstract class UserFilter {
     private final Object dni;
 
     private final Object firstName;

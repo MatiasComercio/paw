@@ -130,14 +130,12 @@ public class AdminJdbcDao implements AdminDao {
     public List<Admin> getByFilter(AdminFilter adminFilter) {
         QueryFilter queryFilter = new QueryFilter();
 
-        if (queryFilter != null) {
+        if (adminFilter != null) {
             queryFilter.filterByDni(adminFilter);
             queryFilter.filterByFirstName(adminFilter);
             queryFilter.filterByLastName(adminFilter);
             queryFilter.filterByGenre(adminFilter);
         }
-
-        System.out.println(queryFilter.getQuery());
 
         return jdbcTemplate.query(queryFilter.getQuery(), adminRowMapper, queryFilter.getFilters().toArray());
     }
@@ -196,7 +194,22 @@ public class AdminJdbcDao implements AdminDao {
         return table + "." + column;
     }
 
+	/*  +++xcheck: @Gonza: try to generalize this and use a User Filter
+		+++xremove: Genre filter
+	 */
     private static class QueryFilter {
+		private static final String USERS_TABLE = "users";
+		private static final String USER__DNI_COLUMN = "dni";
+		private static final String USER__FIRST_NAME_COLUMN = "first_name";
+		private static final String USER__LAST_NAME_COLUMN = "last_name";
+		private static final String USER__GENRE_COLUMN = "genre";
+		private static final String FILTER_QUERY;
+		static {
+			FILTER_QUERY =
+					select(EVERYTHING) +
+							from(join(USERS_TABLE, ADMIN_TABLE, USER__DNI_COLUMN, ADMIN__DNI_COLUMN));
+		}
+
         private static final String WHERE = " WHERE ";
         private static final String AND = " AND ";
         private static final String ILIKE = " ILIKE ? ";
@@ -207,7 +220,7 @@ public class AdminJdbcDao implements AdminDao {
         private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN;
         private static final String FILTER_GENRE = USER__GENRE_COLUMN;
 
-        private final StringBuffer query = new StringBuffer(GET_ADMINS_WITH_ADDRESS);
+        private final StringBuffer query = new StringBuffer(FILTER_QUERY);
         private boolean filterApplied = true;
         private final List<String> filters;
 
@@ -231,16 +244,16 @@ public class AdminJdbcDao implements AdminDao {
             filters = new LinkedList<>();
         }
 
-        public void filterByDni(final AdminFilter courseFilter) {
-            filterBySubWord.filter(courseFilter.getDni(), FILTER_DNI + ILIKE);
+        public void filterByDni(final AdminFilter adminFilter) {
+            filterBySubWord.filter(adminFilter.getDni(), FILTER_DNI + ILIKE);
         }
 
-        public void filterByFirstName(final AdminFilter courseFilter) {
-            filterBySubWord.filter(courseFilter.getFirstName(), FILTER_NAME_FIRST + ILIKE);
+        public void filterByFirstName(final AdminFilter adminFilter) {
+            filterBySubWord.filter(adminFilter.getFirstName(), FILTER_NAME_FIRST + ILIKE);
         }
 
-        public void filterByLastName(final AdminFilter courseFilter) {
-            filterBySubWord.filter(courseFilter.getLastName(), FILTER_NAME_LAST + ILIKE);
+        public void filterByLastName(final AdminFilter adminFilter) {
+            filterBySubWord.filter(adminFilter.getLastName(), FILTER_NAME_LAST + ILIKE);
         }
 
         public void filterByGenre(AdminFilter studentFilter) {
