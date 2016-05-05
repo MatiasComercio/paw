@@ -64,6 +64,7 @@
                     <th><spring:message code="id"/></th>
                     <th><spring:message code="name"/></th>
                     <th><spring:message code="credits"/></th>
+                    <th><spring:message code="semester"/></th>
                     <th><spring:message code="actions"/></th>
                 </tr>
                 </thead>
@@ -73,6 +74,7 @@
                         <td>${ course.id }</td>
                         <td>${ course.name }</td>
                         <td>${ course.credits }</td>
+                        <td>${ course.semester }</td>
                         <td>
                             <a href="<c:url value="courses/${course.id}/info" />">Ver</a>
                             <form action="courses/${course.id}/delete" method="post">
