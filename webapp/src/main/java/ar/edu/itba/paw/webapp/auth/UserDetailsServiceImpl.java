@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.auth;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.models.Authority;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.Student;
@@ -72,8 +73,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				.lastName(student.getLastName())
 				.email(student.getEmail())
 				.password(student.getPassword());
-		for (Role role : student.getRoles()) {
-			studentDetailsBuilder.authority(new SimpleGrantedAuthority(role.toString()));
+		for (Authority authority : student.getAuthorities()) {
+			studentDetailsBuilder.authority(new SimpleGrantedAuthority(authority.toString()));
 		}
 		return studentDetailsBuilder.build();
 	}

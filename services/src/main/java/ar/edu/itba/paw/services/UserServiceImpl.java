@@ -46,8 +46,10 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}
 
+		/* +++xcheck: should User know its subclasses? */
 		if(roles.contains(Role.ADMIN)) {
-			final Admin ta =  adminService.getByDni(dni);
+			return adminService.getByDni(dni);
+/*			final Admin ta =  adminService.getByDni(dni);
 
 			if(ta == null) {
 				return null;
@@ -64,11 +66,12 @@ public class UserServiceImpl implements UserService {
 					.password(ta.getPassword())
 					.roles(roles);
 
-			return ab.build();
+			return ab.build();*/
 		}
 
 		if (roles.contains(Role.STUDENT)) {
-			final Student ts =  studentService.getByDni(dni); /* +++xcheck: Gonza */
+			return studentService.getByDni(dni);
+			/*final Student ts =  studentService.getByDni(dni); *//* +++xcheck: Gonza *//*
 			if (ts == null) {
 				return null;
 			}
@@ -83,7 +86,7 @@ public class UserServiceImpl implements UserService {
 					.address(ts.getAddress())
 					.password(ts.getPassword())
 					.roles(roles);
-			return sb.build();
+			return sb.build();*/
 		}
 
 		return null;

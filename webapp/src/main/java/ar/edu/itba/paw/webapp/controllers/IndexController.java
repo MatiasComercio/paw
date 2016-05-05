@@ -1,10 +1,14 @@
 package ar.edu.itba.paw.webapp.controllers;
 
+import ar.edu.itba.paw.webapp.auth.StudentDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.security.Security;
 
 @Controller
 public class IndexController {
@@ -15,6 +19,8 @@ public class IndexController {
 	public ModelAndView index() {
 		/* +++xchange: implement the index later */
 		/* tmp solution */
+		final StudentDetails studentDetails = (StudentDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		LOGGER.debug("Logged User: {}", studentDetails);
 		LOGGER.info("Temporarily redirecting to /students...");
 		return new ModelAndView("redirect:/students");
 	}

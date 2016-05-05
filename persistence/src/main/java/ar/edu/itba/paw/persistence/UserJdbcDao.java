@@ -57,6 +57,7 @@ public class UserJdbcDao implements UserDao {
 	private static final String EVERYTHING = "*";
 	private static final String EQUALS = "=";
 	private static final String GIVEN_PARAMETER = "?";
+	private static final String LIMIT_1 = "LIMIT 1";
 
 	private static final String GET_BY_DNI;
 	private static final String GET_ROLE;
@@ -66,10 +67,14 @@ public class UserJdbcDao implements UserDao {
 	private static final String GET_ROLE_AUTHORITIES;
 
 	static {
-		GET_BY_DNI =
+/*		GET_BY_DNI =
 				select(EVERYTHING) +
 						from(USERS_TABLE) +
-						where(USER__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
+						where(USER__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);*/
+		GET_BY_DNI =
+				select(EVERYTHING) +
+						from(leftJoin(USERS_TABLE, ADDRESS_TABLE, USER__DNI_COLUMN, ADDRESS__DNI_COLUMN)) +
+						where (tableCol(USERS_TABLE, USER__DNI_COLUMN), EQUALS, GIVEN_PARAMETER, LIMIT_1);
 
 		GET_ROLE =
 				select(USER__ROLE_COLUMN) +
@@ -137,12 +142,11 @@ public class UserJdbcDao implements UserDao {
 	}
 
 	private List<Authority> getAuthorities(final Role role) {
-		final RowMapper<Authority> authoritiesRowMapper = ((rs, rowNum) -> {
-			return new Authority(rs.getString(ROLE_AUTHORITIES__AUTHORITY_COLUMN));
-		});
+		final RowMapper<Authority> authoritiesRowMapper = ((rs, rowNum) -> new Authority(rs.getString(ROLE_AUTHORITIES__AUTHORITY_COLUMN)));
 
+		assert (role != null);
 		final List<Authority> authorities =
-				jdbcTemplate.query(GET_ROLE_AUTHORITIES, authoritiesRowMapper, Objects.requireNonNull(role));
+				jdbcTemplate.query(GET_ROLE_AUTHORITIES, authoritiesRowMapper, role.originalString());
 
 		return authorities == null ? new LinkedList<>() : authorities;
 	}
@@ -414,6 +418,10 @@ public class UserJdbcDao implements UserDao {
 
 	private static String join(final String t1, final String t2, final String c1, final String c2) {
 		return t1 + " JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
+	}
+
+	private static String leftJoin(final String t1, final String t2, final String c1, final String c2) {
+		return t1 + " LEFT JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
 	}
 
 	private static String tableCol(final String table, final String column) {
