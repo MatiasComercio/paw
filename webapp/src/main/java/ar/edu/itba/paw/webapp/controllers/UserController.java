@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Admin;
+import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.auth.StudentDetails;
 import ar.edu.itba.paw.webapp.auth.UserDetailsServiceImpl;
@@ -603,6 +604,21 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 	@RequestMapping(value = "/admin/add_admin", method = RequestMethod.GET)
 	public ModelAndView addAdmin(@ModelAttribute("adminForm") final AdminForm adminForm,
 								 final RedirectAttributes redirectAttributes){
+		/**
+		 * Test
+		 */
+
+		AdminFilter adminFilter = new AdminFilter.AdminFilterBuilder()
+				.dni(123456789)
+				.build();
+
+		List<Admin> admins = adminService.getByFilter(adminFilter);
+
+		admins.forEach(System.out::println);
+
+		/**
+		 * Test FINISHING
+		 */
 		ModelAndView mav = new ModelAndView("addAdmin");
 		if(redirectAttributes != null) {
 			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
@@ -621,6 +637,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		if (errors.hasErrors()){
 			return addAdmin(adminForm, null);
 		}
+
 		Admin admin = adminForm.build();
 		Result result = adminService.create(admin);
 		if(!result.equals(Result.OK)){
