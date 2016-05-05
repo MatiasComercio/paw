@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Authority;
@@ -14,58 +15,57 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private AdminService adminService;
+
+	@Autowired
+	private StudentService studentService;
+
 	@Override
-	public UserDetails loadUserByUsername(final String dni) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(final String dniString) throws UsernameNotFoundException {
 
-		final User user = userService.getByDni(dni); /* our own User impl */
-
-		if (user != null) {
-			final UserDetails userDetails = loadUserDetails(user);
-
-			if (userDetails == null) {
-				throw new IllegalStateException();
-			}
-
-			return userDetails;
+		final int dni;
+		try {
+			dni = Integer.valueOf(dniString);
+		} catch (final NumberFormatException e) {
+			throw new UsernameNotFoundException("No user was found with the DNI " + dniString);
 		}
 
-		throw new UsernameNotFoundException("No user found by " + dni);
+		List<Role> roles = userService.getRole(dni);
+
+		if (roles == null || roles.isEmpty()) {
+			throw new UsernameNotFoundException("No user was found with the DNI " + dniString);
+		}
+
+		UserDetails userDetails = null;
+		if(roles.contains(Role.ADMIN)) {
+			userDetails = loadAdmin(dni);
+		} else if (roles.contains(Role.STUDENT)) {
+			userDetails = loadStudent(dni);
+		}
+
+		if (userDetails == null) {
+			throw new UsernameNotFoundException("No user was found with the DNI " + dniString);
+		}
+
+		return userDetails;
 	}
 
-	private UserDetails loadUserDetails(final User user) {
-		/* From top to bottom role (greatest privilege to lowest privilege) */
-		if (user instanceof Admin) {
-			return loadAdmin((Admin) user);
+	/* +++ximprove */
+	private UserDetails loadStudent(final int dni) {
+		final Student student = studentService.getByDni(dni);
+		if (student == null) {
+			return null;
 		}
 
-		if (user instanceof Student) {
-			return loadStudent((Student) user);
-		}
-
-		return null;
-	}
-
-	private UserDetails loadAdmin(final Admin admin) {
-		final AdminDetails.Builder adminDetailsBuilder =
-				new AdminDetails.Builder(admin.getDni());
-		adminDetailsBuilder
-				.firstName(admin.getFirstName())
-				.lastName(admin.getLastName())
-				.email(admin.getEmail())
-				.password(admin.getPassword());
-		for (Authority authority : admin.getAuthorities()) {
-			adminDetailsBuilder.authority(new SimpleGrantedAuthority(authority.toString()));
-		}
-		return adminDetailsBuilder.build();
-	}
-
-	private UserDetails loadStudent(final Student student) {
 		final StudentDetails.Builder studentDetailsBuilder =
 				new StudentDetails.Builder(student.getDocket(), student.getDni());
 		studentDetailsBuilder
@@ -74,9 +74,28 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				.email(student.getEmail())
 				.password(student.getPassword());
 		for (Authority authority : student.getAuthorities()) {
-			studentDetailsBuilder.authority(new SimpleGrantedAuthority(authority.toString()));
+			studentDetailsBuilder.authority(new SimpleGrantedAuthority(authority.getRoleAuthority()));
 		}
 		return studentDetailsBuilder.build();
 	}
 
+	/* +++ximprove */
+	private UserDetails loadAdmin(final int dni) {
+		final Admin admin = adminService.getByDni(dni);
+		if (admin == null) {
+			return null;
+		}
+
+		final AdminDetails.Builder adminDetailsBuilder =
+				new AdminDetails.Builder(admin.getDni());
+		adminDetailsBuilder
+				.firstName(admin.getFirstName())
+				.lastName(admin.getLastName())
+				.email(admin.getEmail())
+				.password(admin.getPassword());
+		for (Authority authority : admin.getAuthorities()) {
+			adminDetailsBuilder.authority(new SimpleGrantedAuthority(authority.getRoleAuthority()));
+		}
+		return adminDetailsBuilder.build();
+	}
 }

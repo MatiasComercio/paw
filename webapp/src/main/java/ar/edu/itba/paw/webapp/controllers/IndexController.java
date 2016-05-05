@@ -20,8 +20,6 @@ public class IndexController {
 	public ModelAndView index() {
 		/* +++xchange: implement the index later */
 		/* tmp solution */
-		final UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		LOGGER.debug("Logged User: {}", userDetails);
 		LOGGER.info("Temporarily redirecting to /students...");
 		return new ModelAndView("redirect:/students");
 	}

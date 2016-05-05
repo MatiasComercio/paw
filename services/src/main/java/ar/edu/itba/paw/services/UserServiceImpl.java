@@ -27,70 +27,40 @@ public class UserServiceImpl implements UserService {
 	private AdminService adminService;
 
 	@Override
-	public User getByDni(final String dniString) {
-		int dni;
-		try {
-			dni = Integer.valueOf(dniString);
-		} catch (final NumberFormatException e) {
-			dni = -1;
-		}
-
-		if (dni <= 0) {
-			return null;
-		}
-
-		List<Role> roles = userDao.getRole(dni);
-//		roles.add(Role.ADMIN); /* +++xdebug */
-
-		if (roles == null) {
-			return null;
-		}
-
-		/* +++xcheck: should User know its subclasses? */
-		if(roles.contains(Role.ADMIN)) {
-			return adminService.getByDni(dni);
-/*			final Admin ta =  adminService.getByDni(dni);
-
-			if(ta == null) {
-				return null;
-			}
-
-			final Admin.Builder ab = new Admin.Builder(ta.getDni());
-
-			ab
-					.firstName(ta.getFirstName())
-					.lastName(ta.getLastName())
-					.email(ta.getEmail())
-					.birthday(ta.getBirthday())
-					.address(ta.getAddress())
-					.password(ta.getPassword())
-					.roles(roles);
-
-			return ab.build();*/
-		}
-
-		if (roles.contains(Role.STUDENT)) {
-			return studentService.getByDni(dni);
-			/*final Student ts =  studentService.getByDni(dni); *//* +++xcheck: Gonza *//*
-			if (ts == null) {
-				return null;
-			}
-
-			final Student.Builder sb = new Student.Builder(ts.getDocket(), ts.getDni());
-			sb
-					.firstName(ts.getFirstName())
-					.lastName(ts.getLastName())
-					.email(ts.getEmail())
-					.birthday(ts.getBirthday())
-//					.genre(ts.getGenre()) +++xcheck
-					.address(ts.getAddress())
-					.password(ts.getPassword())
-					.roles(roles);
-			return sb.build();*/
-		}
-
-		return null;
+	public List<Role> getRole(final int dni) {
+		return userDao.getRole(dni);
 	}
+
+//	@Override
+//	public User getByDni(final String dniString) {
+//		int dni;
+//		try {
+//			dni = Integer.valueOf(dniString);
+//		} catch (final NumberFormatException e) {
+//			dni = -1;
+//		}
+//
+//		if (dni <= 0) {
+//			return null;
+//		}
+//
+//		List<Role> roles = userDao.getRole(dni);
+//
+//		if (roles == null) {
+//			return null;
+//		}
+//
+//		/* +++xcheck: should User know its subclasses? */
+//		if(roles.contains(Role.ADMIN)) {
+//			return adminService.getByDni(dni);
+//		}
+//
+//		if (roles.contains(Role.STUDENT)) {
+//			return studentService.getByDni(dni);
+//		}
+//
+//		return null;
+//	}
 
 	@Override
 	public Result changePassword(int dni, String prevPassword, String newPassword, String repeatNewPassword) {

@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.webapp.auth.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -59,7 +58,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
 				.and().authorizeRequests()
 				.antMatchers("/login/**").anonymous()
-				.antMatchers("/admin/**").hasRole("ADMIN")
+				.antMatchers("/admin/**").hasRole("VIEW_ADMIN")
+				.antMatchers("/admins/**").hasRole("VIEW_ADMINS")
 				.antMatchers("/**").authenticated()
 
 				.and().formLogin()
