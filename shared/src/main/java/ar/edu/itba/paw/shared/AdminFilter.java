@@ -7,16 +7,8 @@ public class AdminFilter extends UserFilter {
     }
 
     public static class AdminFilterBuilder extends UserFilter.UserFilterBuilder<AdminFilter, AdminFilterBuilder> {
-        private Object docket;
-
-        public AdminFilterBuilder docket(final Object docket) {
-            this.docket = docket;
-
-            return this;
-        }
-
         public AdminFilter build() {
-            return new AdminFilterBuilder(this);
+            return new AdminFilter(this);
         }
 
         @Override
