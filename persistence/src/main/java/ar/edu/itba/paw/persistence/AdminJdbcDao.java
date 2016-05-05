@@ -188,7 +188,16 @@ public class AdminJdbcDao implements AdminDao {
 
     @Override
     public List<Admin> getByFilter(AdminFilter adminFilter) {
+        QueryFilter queryFilter = new QueryFilter();
 
+        if (queryFilter != null) {
+            queryFilter.filterByDni(adminFilter);
+            queryFilter.filterByFirstName(adminFilter);
+            queryFilter.filterByLastName(adminFilter);
+            queryFilter.filterByGenre(adminFilter);
+        }
+
+        return jdbcTemplate.query(queryFilter.getQuery(), adminRowMapper, queryFilter.getFilters().toArray());
     }
 
     /* Private Static Methods */
@@ -256,7 +265,7 @@ public class AdminJdbcDao implements AdminDao {
         private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN;
         private static final String FILTER_GENRE = USER__GENRE_COLUMN;
 
-        private final StringBuffer query = new StringBuffer(GET_ALL);
+        private final StringBuffer query = new StringBuffer(GET_ADMINS);
         private boolean filterApplied = false;
         private final List<String> filters;
 
