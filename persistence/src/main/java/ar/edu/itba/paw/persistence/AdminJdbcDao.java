@@ -202,6 +202,8 @@ public class AdminJdbcDao implements AdminDao {
             queryFilter.filterByGenre(adminFilter);
         }
 
+        System.out.println(queryFilter.getQuery());
+
         return jdbcTemplate.query(queryFilter.getQuery(), adminRowMapper, queryFilter.getFilters().toArray());
     }
 
@@ -270,8 +272,8 @@ public class AdminJdbcDao implements AdminDao {
         private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN;
         private static final String FILTER_GENRE = USER__GENRE_COLUMN;
 
-        private final StringBuffer query = new StringBuffer(GET_ADMINS);
-        private boolean filterApplied = false;
+        private final StringBuffer query = new StringBuffer(GET_ADMINS_WITH_ADDRESS);
+        private boolean filterApplied = true;
         private final List<String> filters;
 
         private final FilterQueryMapper filterBySubWord = (filter, filterName) -> {
