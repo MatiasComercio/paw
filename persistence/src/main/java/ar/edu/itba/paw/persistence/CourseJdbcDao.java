@@ -80,7 +80,7 @@ public class CourseJdbcDao implements CourseDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.courseInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME)
-                .usingColumns(ID_COLUMN, NAME_COLUMN, CREDITS_COLUMN);
+                .usingColumns(ID_COLUMN, NAME_COLUMN, CREDITS_COLUMN, SEMESTER_COLUMN);
         this.correlativeInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(CORRELATIVE_TABLE_NAME)
                 .usingColumns(CORRELATIVE_COURSE_ID, CORRELATIVE_CORRELATIVE_ID);
@@ -95,6 +95,7 @@ public class CourseJdbcDao implements CourseDao {
         args.put(NAME_COLUMN, course.getName());
         args.put(CREDITS_COLUMN, course.getCredits());
         args.put(SEMESTER_COLUMN, course.getSemester());
+
         try{
             courseInsert.execute(args);
         }

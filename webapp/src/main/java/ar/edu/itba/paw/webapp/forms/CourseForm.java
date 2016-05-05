@@ -67,5 +67,6 @@ public class CourseForm {
         this.id = course.getId();
         this.name = course.getName();
         this.credits = course.getCredits();
+        this.semester = course.getSemester();
     }
 }
