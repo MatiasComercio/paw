@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <!-- -->
+            <!-- TODO: FIX THIS -->
             <div class="container">
                 <jsp:include page="base/alerts.jsp" />
                 <c:if test="${task == 'add' }">
@@ -63,6 +63,11 @@
                             <form:label path="credits"><spring:message code="credits"/>:</form:label>
                             <form:input type="text" class="form-control" path="credits"/>
                             <form:errors path="credits" cssStyle="color: red;" element="div"/>
+                        </div>
+                        <div class="form-group">
+                            <form:label path="semester"><spring:message code="semester"/>:</form:label>
+                            <form:input type="text" class="form-control" path="semester"/>
+                            <form:errors path="semester" cssStyle="color: red;" element="div"/>
                         </div>
                         <spring:message code="addCourse" var="buttonValue"/>
                         <input type="submit" class="btn btn-info" value="${buttonValue}"/>
@@ -84,6 +89,11 @@
                             <form:label for="credits" path="credits"><spring:message code="credits"/>:</form:label>
                             <form:input type="text" class="form-control" id="credits" path="credits"/>
                             <form:errors path="credits" cssStyle="color: red;" element="div"/>
+                        </div>
+                        <div class="form-group">
+                            <form:label for="semester" path="semester"><spring:message code="semester"/>:</form:label>
+                            <form:input type="text" class="form-control" id="semester" path="semester"/>
+                            <form:errors path="semester" cssStyle="color: red;" element="div"/>
                         </div>
                         <spring:message code="saveChanges" var="saveChangesButton"/>
                         <input type="submit" class="btn btn-info" value="${saveChangesButton}"/>
