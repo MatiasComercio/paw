@@ -270,7 +270,7 @@ public class AdminJdbcDao implements AdminDao {
         private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN;
         private static final String FILTER_GENRE = USER__GENRE_COLUMN;
 
-        private final StringBuffer query = new StringBuffer(GET_ADMINS_WITH_ADDRESS);
+        private final StringBuffer query = new StringBuffer(GET_ADMINS);
         private boolean filterApplied = false;
         private final List<String> filters;
 
