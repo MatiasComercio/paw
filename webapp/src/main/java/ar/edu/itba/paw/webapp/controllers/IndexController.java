@@ -29,4 +29,9 @@ public class IndexController {
 	public ModelAndView login() {
 		return new ModelAndView("login");
 	}
+
+	@RequestMapping("/logout")
+	public ModelAndView logout() {
+		return new ModelAndView("login?logout");
+	}
 }

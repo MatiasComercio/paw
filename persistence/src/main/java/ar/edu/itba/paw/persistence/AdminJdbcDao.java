@@ -126,6 +126,13 @@ public class AdminJdbcDao implements AdminDao {
 		return !(admins == null || admins.isEmpty());
 	}
 
+	/* +++xcheck: try to remove */
+	private static final String USERS_TABLE = "users";
+	private static final String USER__DNI_COLUMN = "dni";
+	private static final String USER__FIRST_NAME_COLUMN = "first_name";
+	private static final String USER__LAST_NAME_COLUMN = "last_name";
+	private static final String USER__GENRE_COLUMN = "genre";
+
     @Override
     public List<Admin> getByFilter(AdminFilter adminFilter) {
         QueryFilter queryFilter = new QueryFilter();
@@ -137,7 +144,14 @@ public class AdminJdbcDao implements AdminDao {
             queryFilter.filterByGenre(adminFilter);
         }
 
-        return jdbcTemplate.query(queryFilter.getQuery(), adminRowMapper, queryFilter.getFilters().toArray());
+	    final RowMapper<Admin> getByFilterRowMapper = ((rs, rowNum) -> {
+		    final Admin.Builder adminBuilder = new Admin.Builder(rs.getInt(USER__DNI_COLUMN));
+		    adminBuilder
+				    .firstName(rs.getString(USER__FIRST_NAME_COLUMN))
+				    .lastName(rs.getString(USER__LAST_NAME_COLUMN));
+		    return adminBuilder.build();
+	    });
+	    return jdbcTemplate.query(queryFilter.getQuery(), getByFilterRowMapper, queryFilter.getFilters().toArray());
     }
 
     /* Private Static Methods */
@@ -198,11 +212,6 @@ public class AdminJdbcDao implements AdminDao {
 		+++xremove: Genre filter
 	 */
     private static class QueryFilter {
-		private static final String USERS_TABLE = "users";
-		private static final String USER__DNI_COLUMN = "dni";
-		private static final String USER__FIRST_NAME_COLUMN = "first_name";
-		private static final String USER__LAST_NAME_COLUMN = "last_name";
-		private static final String USER__GENRE_COLUMN = "genre";
 		private static final String FILTER_QUERY;
 		static {
 			FILTER_QUERY =

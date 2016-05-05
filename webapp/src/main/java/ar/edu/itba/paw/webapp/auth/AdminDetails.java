@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.auth;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.users.Admin;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.time.LocalDate;
@@ -10,7 +11,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AdminDetails extends User {
+public class AdminDetails extends User implements UserSessionDetails {
     private Admin admin;
 
     private AdminDetails(final Builder builder) {
@@ -31,6 +32,12 @@ public class AdminDetails extends User {
         return admin.getDni();
     }
 
+    @Override
+    public int getId() {
+        return getDni();
+    }
+
+    @Override
     public String getFirstName() {
         return admin.getFirstName();
     }
@@ -43,14 +50,22 @@ public class AdminDetails extends User {
         return admin.getAddress();
     }
 
+    @Override
     public String getFullName() {
         return admin.getFullName();
+    }
+
+    @Override
+    public boolean hasAuthority(final String authority) {
+        final StringBuilder builder =  new StringBuilder("ROLE_");
+        return getAuthorities().contains(new SimpleGrantedAuthority(builder.append(authority).toString()));
     }
 
     public ar.edu.itba.paw.models.users.User.Genre getGenre() {
         return admin.getGenre();
     }
 
+    @Override
     public String getLastName() {
         return admin.getLastName();
     }

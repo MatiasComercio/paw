@@ -15,33 +15,36 @@
     </div>
     <!-- Top Menu Items -->
     <%--@elvariable id="student" type="ar.edu.itba.paw.models.users.Student"--%>
-    <c:if test="${student != null}">
+    <%--@elvariable id="user" type="ar.edu.itba.paw.webapp.auth.UserSessionDetails"--%>
+    <c:if test="${user != null}">
         <ul class="nav navbar-right top-nav">
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> ${student.fullName}<strong class="caret"></strong></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> ${user.fullName}<strong class="caret"></strong></a>
                 <ul class="dropdown-menu" role="menu">
+                    <%--+++xtodo: decide this --%>
+                    <%--<li>--%>
+                        <%--<a href="<c:url value="${userInfo}" />"><i class="fa fa-fw fa-user"></i> <spring:message code="profile"/></a>--%>
+                    <%--</li>--%>
+                    <%--<li>--%>
+                        <%--<a href="<c:url value="${userCourses}" />"><i class="fa fa-fw fa-university"></i> <spring:message code="courses"/></a>--%>
+                    <%--</li>--%>
+                    <%--<li>--%>
+                        <%--<a href="<c:url value="${userGrades}" />"><i class="fa fa-fw fa-graduation-cap"></i> <spring:message code="grades"/></a>--%>
+                    <%--</li>--%>
+                    <%--<li>--%>
+                        <%--<a href="<c:url value="${userInscription}" />"><i class="fa fa-fw fa-list-alt"></i> <spring:message code="inscriptions"/></a>--%>
+                    <%--</li>--%>
+                    <%--<li class="divider"></li>--%>
+                        <%--<li>
+                            <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
+                        </li>--%>
                     <li>
-                        <a href="/students/${student.docket}/info"><i class="fa fa-fw fa-user"></i> <spring:message code="profile"/></a>
+                        <a href="<c:url value="/user/changePassword" />"><i class="fa fa-fw fa-gear"></i> <spring:message code="changePassword"/></a>
                     </li>
+                    <li class="divider"></li>
                     <li>
-                        <a href="/students/${student.docket}/courses"><i class="fa fa-fw fa-university"></i> <spring:message code="courses"/></a>
+                        <a href="<c:url value="/logout" />"><i class="fa fa-fw fa-power-off"></i> <spring:message code="logout" /> </a>
                     </li>
-                    <li>
-                        <a href="/students/${student.docket}/grades"><i class="fa fa-fw fa-graduation-cap"></i> <spring:message code="grades"/></a>
-                    </li>
-                    <li>
-                        <a href="/students/${student.docket}/inscription"><i class="fa fa-fw fa-list-alt"></i> <spring:message code="inscriptions"/></a>
-                    </li>
-                        <%--                <li>
-                                            <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
-                                        </li>
-                                        <li class="divider"></li>
-                                        <li>
-                                            <a href="#"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                                        </li>--%>
                 </ul>
             </li>
         </ul>
@@ -51,23 +54,43 @@
     <%--@elvariable id="section" type="ar.edu.itba.paw.webapp.controllers"--%>
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
-        <c:choose>
+            <c:if test="${user.hasAuthority('VIEW_ADMIN')}">
+                <c:choose>
+                    <c:when test="${section=='admins'}">
+                        <li class="active" >
+                    </c:when>
+                    <c:otherwise>
+                        <li>
+                    </c:otherwise>
+                </c:choose>
+                <a href="<c:url value="/admins" />"><i class="fa fa-lock" aria-hidden="true"></i> <spring:message code="admins"/></a>
+                </li>
+            </c:if>
+
+
+            <c:choose>
             <c:when test="${section=='students'}">
-            <li class="active">
+            <li class="active" >
                 </c:when>
-            <c:otherwise><li></c:otherwise>
-            </c:choose>
-            <a href="<c:url value="/" />"><i class="fa fa-fw fa-dashboard"></i> <spring:message code="students"/></a>
-        </li>
+                <c:otherwise>
+            <li>
+                </c:otherwise>
+                </c:choose>
+                <a href="<c:url value="/students" />"><i class="fa fa-fw fa-users"></i> <spring:message code="students"/></a>
+            </li>
 
             <c:choose>
             <c:when test="${section=='courses'}">
             <li class="active">
                 </c:when>
-            <c:otherwise><li></c:otherwise>
-            </c:choose>
-            <a href="<c:url value="/courses" />"><i class="fa fa-fw fa-edit"></i> <spring:message code="courses"/></a>
-        </li>
+                <c:otherwise>
+            <li>
+                </c:otherwise>
+                </c:choose>
+                <a href="<c:url value="/courses" />"><i class="fa fa-graduation-cap" aria-hidden="true"></i> <spring:message code="courses"/></a>
+            </li>
+
+
             <!--<li>
                 <a href="#"><i class="fa fa-fw fa-bar-chart-o"></i> Buscar Alumno</a>
             </li>

@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import ar.edu.itba.paw.models.users.User.Genre;
 
@@ -16,7 +17,7 @@ import java.util.Set;
 /**
  * Adapter class: Adapts our Student model to be a Spring.User
  */
-public class StudentDetails extends User {
+public class StudentDetails extends User implements UserSessionDetails {
 	private Student student;
 
 	private StudentDetails(final Builder builder) {
@@ -45,6 +46,12 @@ public class StudentDetails extends User {
 		return student.getDni();
 	}
 
+	@Override
+	public int getId() {
+		return getDocket();
+	}
+
+	@Override
 	public String getFirstName() {
 		return student.getFirstName();
 	}
@@ -57,14 +64,22 @@ public class StudentDetails extends User {
 		return student.getAddress();
 	}
 
+	@Override
 	public String getFullName() {
 		return student.getFullName();
+	}
+
+	@Override
+	public boolean hasAuthority(final String authority) {
+		final StringBuilder builder =  new StringBuilder("ROLE_");
+		return getAuthorities().contains(new SimpleGrantedAuthority(builder.append(authority).toString()));
 	}
 
 	public Genre getGenre() {
 		return student.getGenre();
 	}
 
+	@Override
 	public String getLastName() {
 		return student.getLastName();
 	}

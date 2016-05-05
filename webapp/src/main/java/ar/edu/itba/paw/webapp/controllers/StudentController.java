@@ -6,11 +6,13 @@ import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
+import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -44,6 +46,10 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		return STUDENTS_SECTION;
 	}
 
+	@ModelAttribute("user")
+	public UserSessionDetails user(final Authentication authentication) {
+		return (UserSessionDetails) authentication.getPrincipal();
+	}
 
 	@RequestMapping(value = "/students", method = RequestMethod.GET)
 	public ModelAndView getStudents(@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
