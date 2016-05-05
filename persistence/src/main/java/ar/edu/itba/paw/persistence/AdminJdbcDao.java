@@ -265,7 +265,7 @@ public class AdminJdbcDao implements AdminDao {
         private static final String ILIKE = " ILIKE ? ";
         private static final String EQUAL = " = ? ";
 
-        private static final String FILTER_DNI = "CAST(" + ADMIN__DNI_COLUMN + " AS TEXT) ";
+        private static final String FILTER_DNI = "CAST(" + ADMIN_TABLE + "." + ADMIN__DNI_COLUMN + " AS TEXT) ";
         private static final String FILTER_NAME_FIRST = USER__FIRST_NAME_COLUMN;
         private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN;
         private static final String FILTER_GENRE = USER__GENRE_COLUMN;
