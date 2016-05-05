@@ -11,9 +11,10 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/"><strong><spring:message code="webAbbreviation"/></strong> - <spring:message code="webName"/></a>
+        <a class="navbar-brand" href="<c:url value="/" />"><strong><spring:message code="webAbbreviation"/></strong> - <spring:message code="webName"/></a>
     </div>
     <!-- Top Menu Items -->
+    <%--@elvariable id="student" type="ar.edu.itba.paw.models.users.Student"--%>
     <c:if test="${student != null}">
         <ul class="nav navbar-right top-nav">
             <li class="dropdown">
@@ -47,9 +48,10 @@
     </c:if>
 
     <!-- navbar-collapse -->
+    <%--@elvariable id="section" type="ar.edu.itba.paw.webapp.controllers"--%>
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
-            <c:choose>
+        <c:choose>
             <c:when test="${section=='students'}">
             <li class="active">
                 </c:when>

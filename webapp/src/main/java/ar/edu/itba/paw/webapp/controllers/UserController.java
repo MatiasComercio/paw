@@ -14,6 +14,8 @@ import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.forms.validators.PasswordValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
@@ -36,6 +38,7 @@ import java.util.Map;
 @Controller
 public class UserController { /* +++xchange: see if it's necessary to call this StudentController */
 
+	private final static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 	private static final String STUDENTS_SECTION = "students";
 
 	@Autowired
@@ -61,16 +64,26 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 
 
 	@RequestMapping(value = "/students", method = RequestMethod.GET)
-	public ModelAndView getStudents(final Model model) {
+	public ModelAndView getStudents(@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
+	                                final BindingResult errors,
+	                                final Model model) {
 
-		if (!model.containsAttribute("studentFilterForm")) {
-			model.addAttribute("studentFilterForm", new StudentFilterForm());
+		final ModelAndView mav = new ModelAndView("students");
+
+		if (errors.hasErrors()) {
+			/* Cancel current search */
+			studentFilterForm.empty();
+
+			mav.addObject("alert", "danger");
+			mav.addObject("message", messageSource.getMessage("search_fail",
+					new Object[] {},
+					Locale.getDefault()));
 		}
+
 		if (!model.containsAttribute("deleteStudentForm")) {
 			model.addAttribute("deleteStudentForm", new StudentFilterForm()); /* +++xcheck: if it is necessary to create a new Form */
 		}
 
-		final StudentFilterForm studentFilterForm = (StudentFilterForm) model.asMap().get("studentFilterForm");
 		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
 				.docket(studentFilterForm.getDocket())
 				.firstName(studentFilterForm.getFirstName())
@@ -83,39 +96,11 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			return new ModelAndView("forward:/errors/404.html");
 		}
 
-		final ModelAndView mav = new ModelAndView("students");
 		mav.addObject("students", students);
-		mav.addObject("studentFilterFormAction", "/students/studentFilterForm");
+		mav.addObject("studentFilterFormAction", "/students");
 		mav.addObject("subsection_students", true);
 		return mav;
 	}
-
-	@RequestMapping(value = "/students/studentFilterForm", method = RequestMethod.GET)
-	public ModelAndView studentFilterForm(             @Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
-	                                                   final BindingResult errors,
-	                                                   final RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.studentFilterForm", errors);
-		redirectAttributes.addFlashAttribute("studentFilterForm", studentFilterForm);
-		return new ModelAndView("redirect:/students");
-	}
-/*
-	@RequestMapping("/students")
-	public ModelAndView getStudentsByFilter(@RequestParam(required = false) final Integer docket,
-	                                        @RequestParam(required = false) final String firstName,
-	                                        @RequestParam(required = false) final String lastName,
-	                                        @RequestParam(required = false) final String genre) {
-		final ModelAndView mav = new ModelAndView("studentsSearch");
-		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
-				.docket(docket)
-				.firstName(firstName)
-				.lastName(lastName)
-				.genre(genre)
-				.build();
-		final List<Student> students = studentService.getByFilter(studentFilter);
-		mav.addObject("students", students);
-		return mav;
-	}
-*/
 
 	@RequestMapping("/students/{docket}/info")
 	public ModelAndView getStudent(@PathVariable final int docket) {
@@ -600,7 +585,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		return new ModelAndView("redirect:/"); /* +++xfix */
 	}
 
-	@RequestMapping(value = "/admin/add_admin", method = RequestMethod.GET)
+	@RequestMapping(value = "/admins/add_admin", method = RequestMethod.GET)
 	public ModelAndView addAdmin(@ModelAttribute("adminForm") final AdminForm adminForm,
 								 final RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("addAdmin");
@@ -615,7 +600,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		return mav;
 	}
 
-	@RequestMapping(value = "/admin/add_admin", method = RequestMethod.POST)
+	@RequestMapping(value = "/admins/add_admin", method = RequestMethod.POST)
 	public ModelAndView addAdmin(@Valid @ModelAttribute("adminForm") AdminForm adminForm,
 								   final BindingResult errors, final RedirectAttributes redirectAttributes) {
 		if (errors.hasErrors()){

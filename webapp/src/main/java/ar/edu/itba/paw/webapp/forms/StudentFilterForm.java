@@ -29,4 +29,10 @@ public class StudentFilterForm {
 	public void setLastName(final String lastName) {
 		this.lastName = lastName;
 	}
+
+	public void empty() {
+		docket = null;
+		firstName = null;
+		lastName = null;
+	}
 }

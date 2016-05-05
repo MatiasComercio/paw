@@ -19,12 +19,11 @@ public class IndexController {
 	@RequestMapping("/")
 	public ModelAndView index() {
 		/* +++xchange: implement the index later */
-		/* tmp solution */
 		LOGGER.info("Temporarily redirecting to /students...");
 		return new ModelAndView("redirect:/students");
 	}
 
-	@RequestMapping("/login") /* +++xcheck: if loginForm is necessary or not */
+	@RequestMapping("/login")
 	public ModelAndView login() {
 		return new ModelAndView("login");
 	}
