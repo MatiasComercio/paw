@@ -63,11 +63,16 @@ public class AdminJdbcDao implements AdminDao {
     private static final String GIVEN_PARAMETER = "?";
     /* /POSTGRESQL WILDCARDS */
 
-    private static final String GET_ADMINS;
+    private static final String GET_ADMINS_WITH_ADDRESS;
     private static final String GET_BY_DNI;
+    private static final String GET_ADMINS;
 
     static {
         GET_ADMINS =
+                select(EVERYTHING)
+                + from(join(USER_TABLE, ADMIN_TABLE, USER__DNI_COLUMN, ADMIN__DNI_COLUMN));
+
+        GET_ADMINS_WITH_ADDRESS =
                 select(EVERYTHING)
                 + from(ADMIN_TABLE, USER_TABLE, ADDRESS_TABLE)
                 + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, tableCol(USER_TABLE, USER__DNI_COLUMN)
@@ -157,7 +162,7 @@ public class AdminJdbcDao implements AdminDao {
 
     @Override
     public List<Admin> getAllAdmins() {
-        List<Admin> admins = jdbcTemplate.query(GET_ADMINS, adminRowMapper);
+        List<Admin> admins = jdbcTemplate.query(GET_ADMINS_WITH_ADDRESS, adminRowMapper);
 
         return admins;
     }
@@ -265,7 +270,7 @@ public class AdminJdbcDao implements AdminDao {
         private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN;
         private static final String FILTER_GENRE = USER__GENRE_COLUMN;
 
-        private final StringBuffer query = new StringBuffer(GET_ADMINS);
+        private final StringBuffer query = new StringBuffer(GET_ADMINS_WITH_ADDRESS);
         private boolean filterApplied = false;
         private final List<String> filters;
 
