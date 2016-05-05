@@ -59,8 +59,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				.lastName(admin.getLastName())
 				.email(admin.getEmail())
 				.password(admin.getPassword());
-		for (Role role : admin.getRoles()) {
-			adminDetailsBuilder.authority(new SimpleGrantedAuthority(role.toString()));
+		for (Authority authority : admin.getAuthorities()) {
+			adminDetailsBuilder.authority(new SimpleGrantedAuthority(authority.toString()));
 		}
 		return adminDetailsBuilder.build();
 	}
