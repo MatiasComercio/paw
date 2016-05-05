@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Address;
+import ar.edu.itba.paw.models.Authority;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.models.users.User;
@@ -15,9 +16,11 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.*;
 
 @Repository
 public class UserJdbcDao implements UserDao {
@@ -25,6 +28,7 @@ public class UserJdbcDao implements UserDao {
 
 	private static final String USERS_TABLE = "users";
 	private static final String ADDRESS_TABLE = "address";
+	private static final String ROLE_AUTHORITIES_TABLE = "role_authorities";
 
 	private static final String USER__DNI_COLUMN = "dni";
 	private static final String USER__FIRST_NAME_COLUMN = "first_name";
@@ -46,24 +50,31 @@ public class UserJdbcDao implements UserDao {
 	private static final String ADDRESS__TELEPHONE_COLUMN = "telephone";
 	private static final String ADDRESS__ZIP_CODE_COLUMN = "zip_code";
 
+	private static final String ROLE_AUTHORITIES__ROLE_COLUMN = "role";
+	private static final String ROLE_AUTHORITIES__AUTHORITY_COLUMN = "authority";
+
 	private static final String AND = "AND";
 	private static final String EVERYTHING = "*";
 	private static final String EQUALS = "=";
 	private static final String GIVEN_PARAMETER = "?";
 
+	private static final String GET_BY_DNI;
 	private static final String GET_ROLE;
 	private static final String UPDATE_PASSWORD;
 	private static final String GET_EMAILS;
 	private static final String DELETE_USER;
+	private static final String GET_ROLE_AUTHORITIES;
 
 	static {
-/*	Usage example:
 		GET_BY_DNI =
 				select(EVERYTHING) +
-						from(join(USER_TABLE, ROLES_TABLE, USER__DNI_COLUMN, ROLES__DNI_COLUMN)) +
-						where(tableCol(USER_TABLE, USER__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);*/
+						from(USERS_TABLE) +
+						where(USER__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
+
 		GET_ROLE =
-				select(USER__ROLE_COLUMN) + from(USERS_TABLE) + where(USER__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
+				select(USER__ROLE_COLUMN) +
+						from(USERS_TABLE) +
+						where(USER__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
 		GET_EMAILS =
 				select(USER__EMAIL_COLUMN)
 				+ from(USERS_TABLE);
@@ -72,12 +83,16 @@ public class UserJdbcDao implements UserDao {
 				deleteFrom(USERS_TABLE)
 						+ where(USER__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
 
-
 		UPDATE_PASSWORD =
 				update(USERS_TABLE) +
 						set(USER__PWD_COLUMN, EQUALS, GIVEN_PARAMETER) +
 						where(tableCol(USERS_TABLE, USER__DNI_COLUMN), EQUALS, GIVEN_PARAMETER
 						,AND, tableCol(USERS_TABLE, USER__PWD_COLUMN), EQUALS, GIVEN_PARAMETER);
+
+		GET_ROLE_AUTHORITIES =
+				select(ROLE_AUTHORITIES__AUTHORITY_COLUMN) +
+						from(ROLE_AUTHORITIES_TABLE) +
+						where(ROLE_AUTHORITIES__ROLE_COLUMN, EQUALS, GIVEN_PARAMETER);
 	}
 
 	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(USER__EMAIL_COLUMN);
@@ -100,6 +115,38 @@ public class UserJdbcDao implements UserDao {
 
 
 	/* Public Methods */
+	@Override
+	public <V extends User, T extends User.Builder<V,T>> V getByDni(final int dni, final User.Builder<V, T> builder) {
+		final BuilderRowMapper<V, T> builderRowMapper = new BuilderRowMapper<V, T>(Objects.requireNonNull(builder));
+
+		final List<User.Builder<V, T>> userBuilders = jdbcTemplate.query(GET_BY_DNI, builderRowMapper, dni);
+		if (userBuilders == null || userBuilders.isEmpty()) {
+			return null;
+		}
+
+		final User.Builder<V, T> userBuilder = userBuilders.get(0);
+
+		final List<Role> roles = getRole(dni);
+		if (roles != null && !roles.isEmpty()) {
+			final Role role = roles.get(0);
+			final List<Authority> authorities = getAuthorities(role);
+			userBuilder.role(role).authorities(authorities);
+		}
+
+		return userBuilder.build();
+	}
+
+	private List<Authority> getAuthorities(final Role role) {
+		final RowMapper<Authority> authoritiesRowMapper = ((rs, rowNum) -> {
+			return new Authority(rs.getString(ROLE_AUTHORITIES__AUTHORITY_COLUMN));
+		});
+
+		final List<Authority> authorities =
+				jdbcTemplate.query(GET_ROLE_AUTHORITIES, authoritiesRowMapper, Objects.requireNonNull(role));
+
+		return authorities == null ? new LinkedList<>() : authorities;
+	}
+
 	@Override
 	public List<Role> getRole(final int requestedDni) {
 		final RowMapper<Role> getRoleRowMapper = ((rs, rowNum) ->  {
@@ -230,10 +277,78 @@ public class UserJdbcDao implements UserDao {
 		return emails.contains(String.valueOf(email));
 	}
 
-
-
-
 	/* Private Static Methods */
+
+	private static class BuilderRowMapper<V extends User, T extends User.Builder<V,T>> implements RowMapper<User.Builder<V, T>> {
+		private final User.Builder<V, T> builder;
+
+		private BuilderRowMapper(final User.Builder<V, T> builder) {
+			this.builder = builder;
+		}
+
+		@Override
+		public User.Builder<V, T> mapRow(final ResultSet resultSet, final int rowNum) throws SQLException {
+			final String firstName = WordUtils.capitalizeFully(resultSet.getString(USER__FIRST_NAME_COLUMN));
+			final String lastName = WordUtils.capitalizeFully(resultSet.getString(USER__LAST_NAME_COLUMN));
+			final Date birthdayDate = resultSet.getDate(USER__BIRTHDAY_COLUMN);
+			final LocalDate birthday;
+
+			if (birthdayDate != null) {
+				birthday = birthdayDate.toLocalDate();
+			} else {
+				birthday = null;
+			}
+
+			final String genreString = resultSet.getString(USER__GENRE_COLUMN);
+			final User.Genre genre;
+			if (genreString != null) {
+				genre = User.Genre.valueOf(resultSet.getString(USER__GENRE_COLUMN));
+			} else {
+				genre = null;
+			}
+
+			String email = resultSet.getString(USER__EMAIL_COLUMN);
+
+			final String country = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__COUNTRY_COLUMN));
+			final String city = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__CITY_COLUMN));
+			final String neighborhood = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__NEIGHBORHOOD_COLUMN));
+			final String street = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__STREET_COLUMN));
+			Integer number = resultSet.getInt(ADDRESS__NUMBER_COLUMN);
+			if (resultSet.wasNull()) {
+				number = null;
+			}
+			Integer floor = resultSet.getInt(ADDRESS__FLOOR_COLUMN);
+			if (resultSet.wasNull()) {
+				floor = null;
+			}
+			String door = resultSet.getString(ADDRESS__DOOR_COLUMN);
+			if (door != null) {
+				door = door.toUpperCase();
+			}
+			Long telephone = resultSet.getLong(ADDRESS__TELEPHONE_COLUMN);
+			if (resultSet.wasNull()) {
+				telephone = null;
+			}
+			Integer zipCode = resultSet.getInt(ADDRESS__ZIP_CODE_COLUMN);
+			if (resultSet.wasNull()) {
+				zipCode = null;
+			}
+			final Address.Builder addressBuilder = new Address.Builder(country, city, neighborhood, street, number);
+			addressBuilder.floor(floor).door(door).telephone(telephone).zipCode(zipCode);
+			final Address address = addressBuilder.build();
+
+			final String password = resultSet.getString(USER__PWD_COLUMN);
+
+			builder.firstName(firstName)
+					.lastName(lastName)
+					.genre(genre)
+					.birthday(birthday)
+					.email(email)
+					.address(address)
+					.password(password);
+			return builder;
+		}
+	}
 
 	private static String deleteFrom(String tableName) {
 		final StringBuilder stringBuilder = new StringBuilder();

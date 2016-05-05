@@ -2,12 +2,9 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.AdminDao;
 import ar.edu.itba.paw.interfaces.UserDao;
-import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
-import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
-import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
@@ -17,231 +14,167 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/* +++xcheck: all methods */
 @Repository
 public class AdminJdbcDao implements AdminDao {
 
-    /* TABLE NAMES */
-    private static final String ADMIN_TABLE = "admin";
-    private static final String USER_TABLE = "users";
-    private static final String ADDRESS_TABLE = "address";
+	/* TABLE NAMES */
+	private static final String ADMIN_TABLE = "admin";
 
-    /* /TABLE NAMES */
+	/* COLS NAMES */
+	private static final String ADMIN__DNI_COLUMN = "dni";
 
-    /* COLS NAMES */
-    private static final String ADMIN__DNI_COLUMN = "dni";
+	/* POSTGRESQL WILDCARDS */
+	private static final String AND = "AND";
+	private static final String EVERYTHING = "*";
+	private static final String EQUALS = "=";
+	private static final String GIVEN_PARAMETER = "?";
 
-    private static final String USER__DNI_COLUMN = "dni";
-    private static final String USER__FIRST_NAME_COLUMN = "first_name";
-    private static final String USER__LAST_NAME_COLUMN = "last_name";
-    private static final String USER__GENRE_COLUMN = "genre";
-    private static final String USER__BIRTHDAY_COLUMN = "birthday";
-    private static final String USER__EMAIL_COLUMN = "email";
-    private static final String USER__PASSWORD_COLUMN = "password";
+//    private static final String GET_ADMINS;
+	private static final String GET_BY_DNI;
+	private static final String GET_ADMIN_DNI_LIST;
 
-    private static final String ADDRESS__DNI_COLUMN = "dni";
-    private static final String ADDRESS__COUNTRY_COLUMN = "country";
-    private static final String ADDRESS__CITY_COLUMN = "city";
-    private static final String ADDRESS__NEIGHBORHOOD_COLUMN = "neighborhood";
-    private static final String ADDRESS__STREET_COLUMN = "street";
-    private static final String ADDRESS__NUMBER_COLUMN = "number";
-    private static final String ADDRESS__FLOOR_COLUMN = "floor";
-    private static final String ADDRESS__DOOR_COLUMN = "door";
-    private static final String ADDRESS__TELEPHONE_COLUMN = "telephone";
-    private static final String ADDRESS__ZIP_CODE_COLUMN = "zip_code";
-    /* COLS NAMES */
+	static {
+		GET_BY_DNI =
+				select(ADMIN__DNI_COLUMN)
+						+ from(ADMIN_TABLE)
+						+ where(ADMIN__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
 
-    /* POSTGRESQL WILDCARDS */
-    private static final String AND = "AND";
-    private static final String EVERYTHING = "*";
-    private static final String EQUALS = "=";
-    private static final String GIVEN_PARAMETER = "?";
-    /* /POSTGRESQL WILDCARDS */
+		GET_ADMIN_DNI_LIST =
+				select(ADMIN__DNI_COLUMN) +
+						from(ADMIN_TABLE);
 
-    private static final String GET_ADMINS;
-    private static final String GET_BY_DNI;
+	}
 
-    static {
-        GET_ADMINS =
-                select(EVERYTHING)
-                + from(ADMIN_TABLE, USER_TABLE, ADDRESS_TABLE)
-                + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, tableCol(USER_TABLE, USER__DNI_COLUMN)
-                        ,AND,
-                        tableCol(USER_TABLE, USER__DNI_COLUMN), EQUALS, tableCol(ADDRESS_TABLE, ADDRESS__DNI_COLUMN));
-        GET_BY_DNI =
-                select(EVERYTHING)
-                        + from(
-                            leftJoinSpecial(
-                                    join(ADMIN_TABLE, USER_TABLE, ADMIN__DNI_COLUMN, USER__DNI_COLUMN),
-                                    ADMIN_TABLE, ADDRESS_TABLE, ADMIN__DNI_COLUMN, ADDRESS__DNI_COLUMN)
-                        )
-                        + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);
+	private final JdbcTemplate jdbcTemplate;
 
-    }
+	private final RowMapper<Admin> adminRowMapper = (resultSet, rowNumber) -> {
+		final int dni = resultSet.getInt(ADMIN__DNI_COLUMN);
 
-    private final JdbcTemplate jdbcTemplate;
+		return new Admin.Builder(dni).build();
+	};
 
-    private final RowMapper<Admin> adminRowMapper = (resultSet, rowNumber) -> {
-        final int dni = resultSet.getInt(ADMIN__DNI_COLUMN);
-        final String firstName = WordUtils.capitalizeFully(resultSet.getString(USER__FIRST_NAME_COLUMN));
-        final String lastName = WordUtils.capitalizeFully(resultSet.getString(USER__LAST_NAME_COLUMN));
-        final Date birthdayDate = resultSet.getDate(USER__BIRTHDAY_COLUMN);
-        final LocalDate birthday;
+	private SimpleJdbcInsert adminInsert;
 
-        if (birthdayDate != null) {
-            birthday = birthdayDate.toLocalDate();
-        } else {
-            birthday = null;
-        }
+	@Autowired
+	private UserDao userDao;
 
-        final String genreString = resultSet.getString(USER__GENRE_COLUMN);
-        final User.Genre genre;
-        if (genreString != null) {
-            genre = User.Genre.valueOf(resultSet.getString(USER__GENRE_COLUMN));
-        } else {
-            genre = null;
-        }
-
-        String email = resultSet.getString(USER__EMAIL_COLUMN);
-
-        final String country = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__COUNTRY_COLUMN));
-        final String city = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__CITY_COLUMN));
-        final String neighborhood = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__NEIGHBORHOOD_COLUMN));
-        final String street = WordUtils.capitalizeFully(resultSet.getString(ADDRESS__STREET_COLUMN));
-        Integer number = resultSet.getInt(ADDRESS__NUMBER_COLUMN);
-        if (resultSet.wasNull()) {
-            number = null;
-        }
-        Integer floor = resultSet.getInt(ADDRESS__FLOOR_COLUMN);
-        if (resultSet.wasNull()) {
-            floor = null;
-        }
-        String door = resultSet.getString(ADDRESS__DOOR_COLUMN);
-        if (door != null) {
-            door = door.toUpperCase();
-        }
-        Long telephone = resultSet.getLong(ADDRESS__TELEPHONE_COLUMN);
-        if (resultSet.wasNull()) {
-            telephone = null;
-        }
-        Integer zipCode = resultSet.getInt(ADDRESS__ZIP_CODE_COLUMN);
-        if (resultSet.wasNull()) {
-            zipCode = null;
-        }
-        final Address.Builder addressBuilder = new Address.Builder(country, city, neighborhood, street, number);
-        addressBuilder.floor(floor).door(door).telephone(telephone).zipCode(zipCode);
-        final Address address = addressBuilder.build();
-
-        final String password = resultSet.getString(USER__PASSWORD_COLUMN);
-
-        final Admin.Builder studentBuilder = new Admin.Builder(dni);
-        studentBuilder.firstName(firstName).lastName(lastName).
-                genre(genre).birthday(birthday).email(email).address(address).password(password);
-
-        return studentBuilder.build();
-    };
-
-    private SimpleJdbcInsert adminInsert;
-
-    @Autowired
-    private UserDao userDao;
-
-    @Autowired
-    public AdminJdbcDao(final DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        adminInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADMIN_TABLE);
-    }
+	@Autowired
+	public AdminJdbcDao(final DataSource dataSource) {
+		this.jdbcTemplate = new JdbcTemplate(dataSource);
+		adminInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADMIN_TABLE);
+	}
 
 
-    @Override
-    public List<Admin> getAllAdmins() {
-        List<Admin> admins = jdbcTemplate.query(GET_ADMINS, adminRowMapper);
+	@Override
+	public List<Admin> getAllAdmins() {
+		final RowMapper<Integer> adminDniListRowMapper = ((rs, rowNum) -> rs.getInt(ADMIN__DNI_COLUMN));
 
-        return admins;
-    }
+		final List<Integer> adminDniList = jdbcTemplate.query(GET_ADMIN_DNI_LIST, adminDniListRowMapper);
+		final List<Admin> admins = new LinkedList<>();
+		Admin admin;
+		Admin.Builder adminBuilder;
+		for (Integer dni : adminDniList) {
+			adminBuilder = new Admin.Builder(dni);
+			admin = userDao.getByDni(dni, adminBuilder);
+			if (admin != null) {
+				admins.add(admin);
+			}
+		}
 
-    @Override
-    public Result create(Admin admin) {
-        userDao.create(admin, Role.ADMIN);
+		return admins;
+	}
 
-        final int rowsAffected;
-        final Map<String, Object> adminArgs = new HashMap<>();
+	@Override
+	public Result create(Admin admin) {
+		userDao.create(admin, Role.ADMIN);
 
-        adminArgs.put(ADMIN__DNI_COLUMN, admin.getDni());
+		final int rowsAffected;
+		final Map<String, Object> adminArgs = new HashMap<>();
 
-        try {
-            rowsAffected = adminInsert.execute(adminArgs);
-        } catch (DuplicateKeyException e) {
-            return Result.ADMIN_EXISTS_DNI;
-        } catch (DataAccessException e) {
-            return Result.ERROR_UNKNOWN;
-        }
-        return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
-    }
+		adminArgs.put(ADMIN__DNI_COLUMN, admin.getDni());
 
-    @Override
-    public Admin getByDni(int dni) {
-        final List<Admin> admin = jdbcTemplate.query(GET_BY_DNI, adminRowMapper, dni);
+		try {
+			rowsAffected = adminInsert.execute(adminArgs);
+		} catch (DuplicateKeyException e) {
+			return Result.ADMIN_EXISTS_DNI;
+		} catch (DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
+		}
+		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+	}
 
-        return admin.isEmpty() ? null : admin.get(0);
-    }
+	@Override
+	public Admin getByDni(int dni) {
+		if (!isAdmin(dni)) {
+			return null;
+		}
+		final Admin.Builder adminBuilder = new Admin.Builder(dni);
+		return userDao.getByDni(dni, adminBuilder);
+	}
 
-    /* Private Static Methods */
-    private static String select(final String... cols) {
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("SELECT ");
-        buildSentence(stringBuilder, cols);
-        return stringBuilder.toString();
-    }
+    /* Private Methods */
+	private boolean isAdmin(final int dni) {
+		final List<Admin> admins = jdbcTemplate.query(GET_BY_DNI, adminRowMapper, dni);
+		return !(admins == null || admins.isEmpty());
+	}
 
-    private static String from(final String... cols) {
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("FROM ");
-        buildSentence(stringBuilder, cols);
-        return stringBuilder.toString();
-    }
+	/* Private Static Methods */
+	private static String select(final String... cols) {
+		final StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("SELECT ");
+		buildSentence(stringBuilder, cols);
+		return stringBuilder.toString();
+	}
 
-    private static String where(final String... cols) {
-        final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("WHERE ");
-        for (String col : cols) {
-            stringBuilder.append(col);
-            stringBuilder.append(" ");
-        }
-        return stringBuilder.toString();
-    }
+	private static String from(final String... cols) {
+		final StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("FROM ");
+		buildSentence(stringBuilder, cols);
+		return stringBuilder.toString();
+	}
 
-    private static void buildSentence(final StringBuilder stringBuilder, final String... cols) {
-        int i = 0;
-        final int lCols = cols.length;
-        for (String col : cols) {
-            i++;
-            stringBuilder.append(col);
-            if (i < lCols) {
-                stringBuilder.append(" ,");
-            }
-        }
-        stringBuilder.append(" ");
-    }
+	private static String where(final String... cols) {
+		final StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("WHERE ");
+		for (String col : cols) {
+			stringBuilder.append(col);
+			stringBuilder.append(" ");
+		}
+		return stringBuilder.toString();
+	}
 
-    private static String leftJoin(final String t1, final String t2, final String c1, final String c2) {
-        return t1 + " LEFT JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
-    }
+	private static void buildSentence(final StringBuilder stringBuilder, final String... cols) {
+		int i = 0;
+		final int lCols = cols.length;
+		for (String col : cols) {
+			i++;
+			stringBuilder.append(col);
+			if (i < lCols) {
+				stringBuilder.append(" ,");
+			}
+		}
+		stringBuilder.append(" ");
+	}
 
-    private static String leftJoinSpecial(final String concat, final String t1, final String t2, final String c1, final String c2) {
-        return concat + " LEFT JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
-    }
+	private static String leftJoin(final String t1, final String t2, final String c1, final String c2) {
+		return t1 + " LEFT JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
+	}
 
-    private static String join(final String t1, final String t2, final String c1, final String c2) {
-        return t1 + " JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
-    }
+	private static String leftJoinSpecial(final String concat, final String t1, final String t2, final String c1, final String c2) {
+		return concat + " LEFT JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
+	}
 
-    private static String tableCol(final String table, final String column) {
-        return table + "." + column;
-    }
+	private static String join(final String t1, final String t2, final String c1, final String c2) {
+		return t1 + " JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
+	}
+
+	private static String tableCol(final String table, final String column) {
+		return table + "." + column;
+	}
 }

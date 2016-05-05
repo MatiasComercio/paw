@@ -8,14 +8,22 @@ import java.util.List;
 
 public interface UserDao {
 
+
+
 	/**
+	 *
 	 * Gets all the data associated with the user that has the
 	 * given dni.
 	 * @param dni The user's dni.
+	 * @param builder The user's builder already instantiated with mandatory params.
+	 *                Cannot be null.
+	 *                This builder will be used to construct the corresponding User instance.
+	 * @param <V> User created type
+	 * @param <T> User.Builder type
 	 * @return The user that has the given dni; null if no user was found.
+	 * @throws NullPointerException if builder is null
 	 */
-//	User getByDni(final int dni);
-
+	<V extends User, T extends User.Builder<V,T>> V getByDni(int dni, User.Builder<V, T> builder);
 
 	/* +++xtest *//* +++xchange: should return only one role */
 	/**
