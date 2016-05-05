@@ -39,11 +39,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	private UserDetails loadUserDetails(final User user) {
 		/* From top to bottom role (greatest privilege to lowest privilege) */
-		/* +++xtodo */
-/*		if (user.hasRole(ADMIN)) {
-			return loadAdmin(user);
-		}*/
-
 		if (user instanceof Admin) {
 			return loadAdmin((Admin) user);
 		}

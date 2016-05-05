@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
@@ -53,6 +54,7 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String USER__BIRTHDAY_COLUMN = "birthday";
 	private static final String USER__EMAIL_COLUMN = "email";
 	private static final String USER__PASSWORD_COLUMN = "password";
+	private static final String USER__ROLE_COLUMN = "role";
 
 	private static final String ADDRESS__DNI_COLUMN = "dni";
 	private static final String ADDRESS__COUNTRY_COLUMN = "country";
@@ -261,7 +263,7 @@ public class StudentJdbcDao implements StudentDao {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE)
 		.usingColumns(USER__DNI_COLUMN, USER__FIRST_NAME_COLUMN, USER__LAST_NAME_COLUMN,
-				USER__GENRE_COLUMN, USER__BIRTHDAY_COLUMN, USER__EMAIL_COLUMN);
+				USER__GENRE_COLUMN, USER__BIRTHDAY_COLUMN, USER__EMAIL_COLUMN, USER__ROLE_COLUMN);
 		studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
 		addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
 		inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE);
@@ -410,6 +412,7 @@ public class StudentJdbcDao implements StudentDao {
 		userArgs.put(USER__BIRTHDAY_COLUMN, student.getBirthday());
 		userArgs.put(USER__EMAIL_COLUMN, createEmail(student.getDni(), student.getFirstName(),
 				student.getLastName()));
+		userArgs.put(USER__ROLE_COLUMN, Role.STUDENT.originalString().toUpperCase());
 		try {
 			userInsert.execute(userArgs);
 		}catch(DuplicateKeyException e){

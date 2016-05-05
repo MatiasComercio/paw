@@ -39,19 +39,12 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}
 
-		List<Role> roles = userDao.getRoles(dni);
-		roles.add(Role.ADMIN); /* +++xdebug */
+		List<Role> roles = userDao.getRole(dni);
+//		roles.add(Role.ADMIN); /* +++xdebug */
 
 		if (roles == null) {
 			return null;
 		}
-
-		/* +++xtodo */
-//		if (roles.contains(Role.ADMIN)) {
-//			/* loadAdmin data
-//			* return;
-//			* */
-//		}
 
 		if(roles.contains(Role.ADMIN)) {
 			final Admin ta =  adminService.getByDni(dni);
@@ -105,10 +98,6 @@ public class UserServiceImpl implements UserService {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
 		}
 		return userDao.changePassword(dni, prevPassword, newPassword);
-	}
-	@Override
-	public Result create(User user) {
-		return userDao.create(user);
 	}
 
 	@Override

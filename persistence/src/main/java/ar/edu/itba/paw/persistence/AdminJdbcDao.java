@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.AdminDao;
+import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Address;
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
@@ -147,6 +149,9 @@ public class AdminJdbcDao implements AdminDao {
     private SimpleJdbcInsert adminInsert;
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
     public AdminJdbcDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         adminInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADMIN_TABLE);
@@ -162,6 +167,8 @@ public class AdminJdbcDao implements AdminDao {
 
     @Override
     public Result create(Admin admin) {
+        userDao.create(admin, Role.ADMIN);
+
         final int rowsAffected;
         final Map<String, Object> adminArgs = new HashMap<>();
 

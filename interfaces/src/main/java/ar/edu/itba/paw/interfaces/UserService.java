@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 
@@ -21,14 +22,7 @@ public interface UserService {
 	 * @param dni The user's dni as a String
 	 * @return The user's roles; null if no user was found with the given dni.
 	 */
-//	List<Role> getRoles(final String dni);
-
-	/**
-	 * +++xdocument
-	 * @param user
-	 * @return
-     */
-	Result create(final User user);
+//	List<Role> getRole(final String dni);
 
 	/**
 	 * Delete a user with the corresponding id

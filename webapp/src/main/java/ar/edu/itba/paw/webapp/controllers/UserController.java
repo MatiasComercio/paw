@@ -494,7 +494,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 		}
 
 		Student student = studentService.getByDocket(docket);
-		System.out.println(student.getDocket());
+
 		if (student == null){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editStudent_fail",
@@ -597,7 +597,7 @@ public class UserController { /* +++xchange: see if it's necessary to call this 
 			System.out.println(admin);
 		}
 
-		return new ModelAndView("redirect:/");
+		return new ModelAndView("redirect:/"); /* +++xfix */
 	}
 
 	@RequestMapping(value = "/admin/add_admin", method = RequestMethod.GET)

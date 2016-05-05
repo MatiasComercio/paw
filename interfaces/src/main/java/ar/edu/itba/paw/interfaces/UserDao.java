@@ -17,20 +17,20 @@ public interface UserDao {
 //	User getByDni(final int dni);
 
 
-	/* +++xtest */
+	/* +++xtest *//* +++xchange: should return only one role */
 	/**
 	 * Gets all the roles the user with the given dni has associated.
 	 * @param dni The user's dni
 	 * @return The user's roles; null if no user was found with the given dni.
 	 */
-	List<Role> getRoles(final int dni);
+	List<Role> getRole(final int dni);
 
 	/**
 	 * +++xdocument
 	 * @param user
 	 * @return
      */
-	Result create(User user);
+	Result create(User user, final Role role);
 
 	/**
 	 * Delete a user with the corresponding id

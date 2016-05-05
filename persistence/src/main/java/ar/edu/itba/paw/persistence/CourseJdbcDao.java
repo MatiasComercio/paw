@@ -160,14 +160,12 @@ public class CourseJdbcDao implements CourseDao {
         int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_INSCRIPTION, idWrapped, Integer.class);
 
         if(courseNumber > 0) {
-            System.out.println("Inscription exist");
             return Result.COURSE_EXISTS_INSCRIPTION;
         }
 
         courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_GRADES, idWrapped, Integer.class);
 
         if(courseNumber > 0) {
-            System.out.println("Grades exist");
             return Result.COURSE_EXISTS_GRADE;
         }
         try {

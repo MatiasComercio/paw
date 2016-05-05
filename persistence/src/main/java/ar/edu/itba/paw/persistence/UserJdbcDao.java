@@ -23,12 +23,8 @@ import java.util.Map;
 public class UserJdbcDao implements UserDao {
 	private static final String EMAIL_DOMAIN = "@bait.edu.ar";
 
-	private static final String ROLES_TABLE = "roles";
 	private static final String USERS_TABLE = "users";
 	private static final String ADDRESS_TABLE = "address";
-
-	private static final String ROLES__DNI_COLUMN = "dni";
-	private static final String ROLES__ROLE_COLUMN = "role";
 
 	private static final String USER__DNI_COLUMN = "dni";
 	private static final String USER__FIRST_NAME_COLUMN = "first_name";
@@ -37,6 +33,8 @@ public class UserJdbcDao implements UserDao {
 	private static final String USER__BIRTHDAY_COLUMN = "birthday";
 	private static final String USER__EMAIL_COLUMN = "email";
 	private static final String USER__PWD_COLUMN = "password";
+	private static final String USER__ROLE_COLUMN = "role";
+
 	private static final String ADDRESS__DNI_COLUMN = "dni";
 	private static final String ADDRESS__COUNTRY_COLUMN = "country";
 	private static final String ADDRESS__CITY_COLUMN = "city";
@@ -53,7 +51,7 @@ public class UserJdbcDao implements UserDao {
 	private static final String EQUALS = "=";
 	private static final String GIVEN_PARAMETER = "?";
 
-	private static final String GET_ROLES;
+	private static final String GET_ROLE;
 	private static final String UPDATE_PASSWORD;
 	private static final String GET_EMAILS;
 	private static final String DELETE_USER;
@@ -64,8 +62,8 @@ public class UserJdbcDao implements UserDao {
 				select(EVERYTHING) +
 						from(join(USER_TABLE, ROLES_TABLE, USER__DNI_COLUMN, ROLES__DNI_COLUMN)) +
 						where(tableCol(USER_TABLE, USER__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);*/
-		GET_ROLES =
-				select(ROLES__ROLE_COLUMN) + from(ROLES_TABLE) + where(ROLES__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
+		GET_ROLE =
+				select(USER__ROLE_COLUMN) + from(USERS_TABLE) + where(USER__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
 		GET_EMAILS =
 				select(USER__EMAIL_COLUMN)
 				+ from(USERS_TABLE);
@@ -95,7 +93,7 @@ public class UserJdbcDao implements UserDao {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 		this.userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USERS_TABLE)
 				.usingColumns(USER__DNI_COLUMN, USER__FIRST_NAME_COLUMN, USER__LAST_NAME_COLUMN,
-						USER__GENRE_COLUMN, USER__BIRTHDAY_COLUMN, USER__EMAIL_COLUMN);
+						USER__GENRE_COLUMN, USER__BIRTHDAY_COLUMN, USER__EMAIL_COLUMN, USER__ROLE_COLUMN);
 		this.addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
 	}
 	/* /Constructors */
@@ -103,9 +101,9 @@ public class UserJdbcDao implements UserDao {
 
 	/* Public Methods */
 	@Override
-	public List<Role> getRoles(final int requestedDni) {
-		final RowMapper<Role> getRolesRowMapper = ((rs, rowNum) ->  {
-			final String roleString = rs.getString(ROLES__ROLE_COLUMN);
+	public List<Role> getRole(final int requestedDni) {
+		final RowMapper<Role> getRoleRowMapper = ((rs, rowNum) ->  {
+			final String roleString = rs.getString(USER__ROLE_COLUMN);
 
 			final Role role;
 			if (roleString != null) {
@@ -117,15 +115,13 @@ public class UserJdbcDao implements UserDao {
 			return role;
 		});
 
-		/* This method should return 0 or 1 student. */
-		/* Grab student's data */
-		final List<Role> roles = jdbcTemplate.query(GET_ROLES, getRolesRowMapper, requestedDni);
+		final List<Role> roles = jdbcTemplate.query(GET_ROLE, getRoleRowMapper, requestedDni);
 
 		return roles;
 	}
 
 	@Override
-	public Result create(User user) {
+	public Result create(User user, final Role role) {
 		final Map<String, Object> userArgs = new HashMap<>();
 
 		userArgs.put(USER__DNI_COLUMN, user.getDni());
@@ -136,10 +132,14 @@ public class UserJdbcDao implements UserDao {
 		userArgs.put(USER__BIRTHDAY_COLUMN, user.getBirthday());
 		userArgs.put(USER__EMAIL_COLUMN, createEmail(user.getDni(), user.getFirstName(),
 				user.getLastName()));
+		if (role == null) {
+			return null;
+		}
+		userArgs.put(USER__ROLE_COLUMN, role.originalString());
 		try {
 			userInsert.execute(userArgs);
 		}catch(DuplicateKeyException e){
-			return Result.STUDENT_EXISTS_DNI;
+			return Result.USER_EXISTS_DNI;
 		} catch (DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
 		}

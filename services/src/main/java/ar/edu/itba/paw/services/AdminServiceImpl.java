@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.AdminDao;
 import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
@@ -25,9 +26,9 @@ public class AdminServiceImpl implements AdminService {
         return adminDao.getAllAdmins();
     }
 
-    @Override
+    @Override /*+++xtodo: @Gonza improve: you are not validating if the userService creates the admin */
     public Result create(Admin admin) {
-        userService.create(admin);
+//        userService.create(admin);
         Result result = adminDao.create(admin);
 
         //TODO: add role to roles table which indicates (dni, role)

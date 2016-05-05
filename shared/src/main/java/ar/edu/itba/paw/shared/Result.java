@@ -23,7 +23,8 @@ public enum Result {
 	ALREADY_ENROLLED("El alumno ya está inscripto en esa materia."),
 	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia"),
     PASSWORDS_DO_NOT_MATCH("La contraseña y su repetición no coinciden"),
-    ADMIN_EXISTS_DNI("Ya existe un administrador con este DNI");
+    ADMIN_EXISTS_DNI("Ya existe un administrador con este DNI"),
+    USER_EXISTS_DNI("Ya existe un usuario con este DNI");
 
 
 
