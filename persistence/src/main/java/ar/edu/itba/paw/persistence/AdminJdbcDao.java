@@ -4,6 +4,8 @@ import ar.edu.itba.paw.interfaces.AdminDao;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
+import ar.edu.itba.paw.models.users.User;
+import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -124,13 +126,29 @@ public class AdminJdbcDao implements AdminDao {
 		return !(admins == null || admins.isEmpty());
 	}
 
-	/* Private Static Methods */
-	private static String select(final String... cols) {
-		final StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("SELECT ");
-		buildSentence(stringBuilder, cols);
-		return stringBuilder.toString();
-	}
+    @Override
+    public List<Admin> getByFilter(AdminFilter adminFilter) {
+        QueryFilter queryFilter = new QueryFilter();
+
+        if (queryFilter != null) {
+            queryFilter.filterByDni(adminFilter);
+            queryFilter.filterByFirstName(adminFilter);
+            queryFilter.filterByLastName(adminFilter);
+            queryFilter.filterByGenre(adminFilter);
+        }
+
+        System.out.println(queryFilter.getQuery());
+
+        return jdbcTemplate.query(queryFilter.getQuery(), adminRowMapper, queryFilter.getFilters().toArray());
+    }
+
+    /* Private Static Methods */
+    private static String select(final String... cols) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SELECT ");
+        buildSentence(stringBuilder, cols);
+        return stringBuilder.toString();
+    }
 
 	private static String from(final String... cols) {
 		final StringBuilder stringBuilder = new StringBuilder();
@@ -174,7 +192,90 @@ public class AdminJdbcDao implements AdminDao {
 		return t1 + " JOIN " + t2 + " ON " + t1 + "." + c1 + " = " + t2 + "." + c2;
 	}
 
-	private static String tableCol(final String table, final String column) {
-		return table + "." + column;
-	}
+    private static String tableCol(final String table, final String column) {
+        return table + "." + column;
+    }
+
+    private static class QueryFilter {
+        private static final String WHERE = " WHERE ";
+        private static final String AND = " AND ";
+        private static final String ILIKE = " ILIKE ? ";
+        private static final String EQUAL = " = ? ";
+
+        private static final String FILTER_DNI = "CAST(" + ADMIN_TABLE + "." + ADMIN__DNI_COLUMN + " AS TEXT) ";
+        private static final String FILTER_NAME_FIRST = USER__FIRST_NAME_COLUMN;
+        private static final String FILTER_NAME_LAST = USER__LAST_NAME_COLUMN;
+        private static final String FILTER_GENRE = USER__GENRE_COLUMN;
+
+        private final StringBuffer query = new StringBuffer(GET_ADMINS_WITH_ADDRESS);
+        private boolean filterApplied = true;
+        private final List<String> filters;
+
+        private final FilterQueryMapper filterBySubWord = (filter, filterName) -> {
+            if(filter != null && !filter.toString().equals("")) {
+                String escapedFilter = escapeFilter(filter);
+                String stringFilter = "%" + escapedFilter + "%";
+                appendFilter(filterName, stringFilter);
+            }
+        };
+
+        private final FilterQueryMapper filterByExactWord = (filter, filterName) -> {
+            if(filter != null && !filter.toString().equals("")) {
+                String escapedFilter = escapeFilter(filter);
+                String stringFilter = escapedFilter;
+                appendFilter(filterName, stringFilter);
+            }
+        };
+
+        private QueryFilter() {
+            filters = new LinkedList<>();
+        }
+
+        public void filterByDni(final AdminFilter courseFilter) {
+            filterBySubWord.filter(courseFilter.getDni(), FILTER_DNI + ILIKE);
+        }
+
+        public void filterByFirstName(final AdminFilter courseFilter) {
+            filterBySubWord.filter(courseFilter.getFirstName(), FILTER_NAME_FIRST + ILIKE);
+        }
+
+        public void filterByLastName(final AdminFilter courseFilter) {
+            filterBySubWord.filter(courseFilter.getLastName(), FILTER_NAME_LAST + ILIKE);
+        }
+
+        public void filterByGenre(AdminFilter studentFilter) {
+            filterByExactWord.filter(studentFilter.getGenre(), FILTER_GENRE + EQUAL);
+        }
+
+        public List<String> getFilters() {
+            return filters;
+        }
+
+        public String getQuery() {
+            return query.toString();
+        }
+
+        private void appendFilterConcatenation() {
+            if(!filterApplied) {
+                filterApplied = true;
+                query.append(WHERE);
+            } else {
+                query.append(AND);
+            }
+        }
+
+        private String escapeFilter(final Object filter) {
+            return filter.toString().replace("%", "\\%").replace("_", "\\_");
+        }
+
+        private void appendFilter(final String filter, final String stringFilter) {
+            appendFilterConcatenation();
+            query.append(filter);
+            filters.add(stringFilter);
+        }
+
+        private interface FilterQueryMapper {
+            void filter(final Object filter, final String filterName);
+        }
+    }
 }

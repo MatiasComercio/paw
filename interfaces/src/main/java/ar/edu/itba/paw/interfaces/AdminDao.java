@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 
 import ar.edu.itba.paw.models.users.Admin;
+import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
@@ -30,4 +31,12 @@ public interface AdminDao {
      * @return
      */
     Admin getByDni(int dni);
+
+    /**
+     * Gets the admins that comply to a list of filters
+     * @param adminFilter The list of filters to apply
+     * @return the list of admins that match the list of filters. If no student matches the filters, it returns
+     * an empty list.
+     */
+    List<Admin> getByFilter(AdminFilter adminFilter);
 }

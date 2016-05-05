@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
+import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,5 +40,10 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Admin getByDni(int dni) {
         return adminDao.getByDni(dni);
+    }
+
+    @Override
+    public List<Admin> getByFilter(AdminFilter adminFilter) {
+        return adminDao.getByFilter(adminFilter);
     }
 }
