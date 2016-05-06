@@ -194,7 +194,7 @@ public class AdminJdbcDaoTest {
         assertEquals(Result.ERROR_UNKNOWN, result);
 
         /**
-         * Delete an existant admin
+         * Delete an existant admin and check that it was deleted
          */
         adminArgs.put(ADMIN__DNI_COLUMN, DNI_1);
         adminInsert.execute(adminArgs);
