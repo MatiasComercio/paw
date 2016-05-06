@@ -58,33 +58,35 @@
             </div>
 
             <!-- content -->
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th><spring:message code="id"/></th>
-                    <th><spring:message code="name"/></th>
-                    <th><spring:message code="credits"/></th>
-                    <th><spring:message code="semester"/></th>
-                    <th><spring:message code="actions"/></th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach items="${courses}" var="course">
+            <div class="table-responsive">
+                <table class="table table-hover <%--table-bordered--%> <%--table-condensed--%>">
+                    <thead>
                     <tr>
-                        <td>${ course.id }</td>
-                        <td>${ course.name }</td>
-                        <td>${ course.credits }</td>
-                        <td>${ course.semester }</td>
-                        <td>
-                            <a href="<c:url value="courses/${course.id}/info" />">Ver</a>
-                            <form action="courses/${course.id}/delete" method="post">
-                                <button type="submit" value="courses/${course.id}/delete"><spring:message code="delete"/></button>
-                            </form>
-                        </td>
+                        <th><spring:message code="id"/></th>
+                        <th><spring:message code="name"/></th>
+                        <th><spring:message code="credits"/></th>
+                        <th><spring:message code="semester"/></th>
+                        <th><spring:message code="actions"/></th>
                     </tr>
-                </c:forEach>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${courses}" var="course">
+                        <tr>
+                            <td>${ course.id }</td>
+                            <td>${ course.name }</td>
+                            <td>${ course.credits }</td>
+                            <td>${ course.semester }</td>
+                            <td>
+                                <a href="<c:url value="courses/${course.id}/info" />">Ver</a>
+                                <form action="courses/${course.id}/delete" method="post">
+                                    <button type="submit" value="courses/${course.id}/delete"><spring:message code="delete"/></button>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
 
             <!-- /content -->
 
@@ -120,7 +122,7 @@
             var code = (e.keyCode ? e.keyCode : e.which);
             if (code == 13) { //Enter keycode
                 e.preventDefault();
-               urlWithFilters();
+                urlWithFilters();
             }
         };
 

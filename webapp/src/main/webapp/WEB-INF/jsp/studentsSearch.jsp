@@ -58,32 +58,34 @@
             </div>
 
             <!-- content -->
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th><spring:message code="docket"/></th>
-                    <th><spring:message code="firstName"/></th>
-                    <th><spring:message code="lastName"/></th>
-                    <th><spring:message code="email"/></th>
-                    <th><spring:message code="actions"/></th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach items="${students}" var="student">
+            <div class="table-responsive">
+                <table class="table table-hover <%--table-bordered--%> <%--table-condensed--%>">
+                    <thead>
                     <tr>
-                        <td>${ student.docket }</td>
-                        <td>${ student.firstName }</td>
-                        <td>${ student.lastName }</td>
-                        <td>${ student.email }</td>
-                        <td><a href="<c:url value="/students/${student.docket}/info" />"><spring:message code="see"/></a>
-                            <form action="students/${student.docket}/delete" method="post">
-                                <button type="submit" value="students/${student.docket}/delete"><spring:message code="delete"/></button>
-                            </form>
-                        </td>
+                        <th><spring:message code="docket"/></th>
+                        <th><spring:message code="firstName"/></th>
+                        <th><spring:message code="lastName"/></th>
+                        <th><spring:message code="email"/></th>
+                        <th><spring:message code="actions"/></th>
                     </tr>
-                </c:forEach>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${students}" var="student">
+                        <tr>
+                            <td>${ student.docket }</td>
+                            <td>${ student.firstName }</td>
+                            <td>${ student.lastName }</td>
+                            <td>${ student.email }</td>
+                            <td><a href="<c:url value="/students/${student.docket}/info" />"><spring:message code="see"/></a>
+                                <form action="students/${student.docket}/delete" method="post">
+                                    <button type="submit" value="students/${student.docket}/delete"><spring:message code="delete"/></button>
+                                </form>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </div>
 
             <!-- /content -->
 

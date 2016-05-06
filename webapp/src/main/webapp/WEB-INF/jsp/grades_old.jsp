@@ -28,7 +28,7 @@
             </div>
 
             <%--<div class="col-md-1">--%>
-                <%--<a href="/students/${student.docket}/grades/add" id="addGrade" type="button" class="btn btn-default">Agregar Nota</a>--%><%-- implemented in /students/{docket}/courses --%>
+            <%--<a href="/students/${student.docket}/grades/add" id="addGrade" type="button" class="btn btn-default">Agregar Nota</a>--%><%-- implemented in /students/{docket}/courses --%>
             <%--</div>--%>
             <!-- Transcript details -->
             <div class="row">
@@ -53,13 +53,13 @@
                                 </div>
                             </div>
                             <div class="row">
-                               <div class="col-xs-8">
+                                <div class="col-xs-8">
                                     <div class="progress">
                                         <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" style="width: ${percentage}%">
                                             <span class="sr-only">${percentage}% Completado</span>
                                         </div>
                                     </div>
-                               </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -68,46 +68,48 @@
             <!-- /Transcript details -->
             <!-- content -->
             <c:forEach items="${semesters}" var="semester" varStatus="loop">
-            <h2>Cuatrimeste ${loop.index+1}</h2>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th class="col-xs-5">
-                        <span class="col-xs-2"><spring:message code="id"/></span>
-                        <span class="col-xs-10"><spring:message code="course"/></span>
-                    </th>
-                    <th class="col-xs-2"><spring:message code="grade"/></th>
-                    <th class="col-xs-2"><spring:message code="modified"/></th>
-                    <th class="col-xs-3"><spring:message code="actions"/></th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach items="${semester}" var="grade">
-                    <tr>
-                        <td>
-                            <span class="col-xs-2"> ${ grade.courseId }</span>
-                            <span class="col-xs-10"> ${ grade.courseName }</span>
-                        </td>
-                        <%--<td>${ grade.courseName }</td>--%>
-                        <td><c:if test="${grade.taking}">Cursando</c:if>${ grade.grade }</td>
-                        <td><c:if test="${grade.modified == null}">-</c:if>${ grade.modified }</td>
-                        <td>
-                            <a class="btn btn-default btn-xs" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">
-                                <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/> <spring:message code="course"/>
-                            </a>
-                            <c:if test="${grade.modified != null }">
-                            <button name="gradeButton" class="btn btn-info btn-xs" type="button"
-                                        data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
-                                        data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
-                                        data-target="#gradeFormConfirmationModal">
-                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-                            </button>
-                            </c:if>
-                        <td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
+                <h2>Cuatrimeste ${loop.index+1}</h2>
+                <div class="table-responsive">
+                    <table class="table table-hover <%--table-bordered--%> <%--table-condensed--%>">
+                        <thead>
+                        <tr>
+                            <th class="col-xs-5">
+                                <span class="col-xs-2"><spring:message code="id"/></span>
+                                <span class="col-xs-10"><spring:message code="course"/></span>
+                            </th>
+                            <th class="col-xs-2"><spring:message code="grade"/></th>
+                            <th class="col-xs-2"><spring:message code="modified"/></th>
+                            <th class="col-xs-3"><spring:message code="actions"/></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach items="${semester}" var="grade">
+                            <tr>
+                                <td>
+                                    <span class="col-xs-2"> ${ grade.courseId }</span>
+                                    <span class="col-xs-10"> ${ grade.courseName }</span>
+                                </td>
+                                    <%--<td>${ grade.courseName }</td>--%>
+                                <td><c:if test="${grade.taking}">Cursando</c:if>${ grade.grade }</td>
+                                <td><c:if test="${grade.modified == null}">-</c:if>${ grade.modified }</td>
+                                <td>
+                                    <a class="btn btn-default btn-xs" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">
+                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/> <spring:message code="course"/>
+                                    </a>
+                                    <c:if test="${grade.modified != null }">
+                                    <button name="gradeButton" class="btn btn-info btn-xs" type="button"
+                                            data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
+                                            data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
+                                            data-target="#gradeFormConfirmationModal">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                                    </button>
+                                    </c:if>
+                                <td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
             </c:forEach>
 
             <!-- /content -->
