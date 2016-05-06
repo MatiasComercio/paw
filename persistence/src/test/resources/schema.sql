@@ -9,12 +9,14 @@ CREATE TABLE IF NOT EXISTS users (
 	genre CHAR (1) ,
 	birthday DATE ,
 	email VARCHAR(100) NOT NULL,
-password VARCHAR (100) DEFAULT 'pass',
+  password VARCHAR (100) DEFAULT 'pass',
+  role VARCHAR(50) NOT NULL,
 
 	PRIMARY KEY (dni),
 	UNIQUE (email),
 	CHECK (dni > 0),
 	CHECK (birthday <= current_timestamp)
+	FOREIGN KEY (role) REFERENCES role ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS address (
