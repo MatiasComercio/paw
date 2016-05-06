@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private AdminService adminService;
 
+	@Autowired
+	private AddressService addressService;
+
 	@Override
 	public User getByDni(final String dniString) {
 		int dni;
@@ -112,6 +115,11 @@ public class UserServiceImpl implements UserService {
 		if(dni <= 0) {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
 		}
+		final int resultHasAddress = addressService.hasAddress(dni);
+
+		/**
+		 * +++xfinish
+		 */
 		return userDao.update(dni, user);
 	}
 
