@@ -47,12 +47,4 @@ public interface AdminDao {
      * 		ERROR_UNKNOWN else;
      */
     Result deleteAdmin(Integer dni);
-
-    /**
-     * Update student
-     * @param dni  The dni of the old admin
-     * @param admin The new admin
-     * @return The Result code of update
-     */
-    Result update(Integer dni, Admin admin);
 }

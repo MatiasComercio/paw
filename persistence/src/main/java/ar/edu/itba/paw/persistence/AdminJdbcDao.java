@@ -68,6 +68,7 @@ public class AdminJdbcDao implements AdminDao {
     private static final String GET_BY_DNI;
     private static final String GET_ADMINS;
     private static final String DELETE_ADMIN;
+    private static final String UPDATE_ADMIN;
 
     static {
         GET_ADMINS =
@@ -92,8 +93,6 @@ public class AdminJdbcDao implements AdminDao {
         DELETE_ADMIN =
                 deleteFrom(ADMIN_TABLE)
                         + where(ADMIN__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
-
-
     }
 
     private final JdbcTemplate jdbcTemplate;
@@ -224,21 +223,6 @@ public class AdminJdbcDao implements AdminDao {
             return Result.ERROR_UNKNOWN;
         }
         return adminRowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
-    }
-
-    @Override
-    public Result update(Integer dni, Admin admin) {
-        try {
-            jdbcTemplate.update(UPDATE_ADMIN, admin.getDni(), admin.getFirstName(), admin.getLastName(), dni);
-        } catch (DuplicateKeyException e){
-            return Result.ADMIN_EXISTS_DNI;
-        } catch (final DataIntegrityViolationException e) {
-            return Result.INVALID_INPUT_PARAMETERS;
-        } catch(final DataAccessException e) {
-            return Result.ERROR_UNKNOWN;
-        }
-
-        return Result.OK;
     }
 
     /* Private Static Methods */
