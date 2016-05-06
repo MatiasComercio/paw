@@ -151,6 +151,9 @@ public class AddressJdbcDaoTest {
         addressArgs.put(ADDRESS__NUMBER_COLUMN, ADDRESS__NUMBER_VALUE);
         addressInsert.execute(addressArgs);
 
+        /**
+         * User that does have an address
+         */
         hasAddress = addressJdbcDao.hasAddress(DNI_1);
         assertTrue(hasAddress);
     }
