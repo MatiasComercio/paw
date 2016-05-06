@@ -88,13 +88,6 @@ public class AddressJdbcDaoTest {
     private static final String ROLE_1 = "ADMIN";
     private static final String ROLE_2 = "STUDENT";
 
-    /* POSTGRESQL WILDCARDS */
-    private static final String AND = "AND";
-    private static final String EVERYTHING = "*";
-    private static final String EQUALS = "=";
-    private static final String GIVEN_PARAMETER = "?";
-    /* /POSTGRESQL WILDCARDS */
-
     @Autowired
     private DataSource dataSource;
 
