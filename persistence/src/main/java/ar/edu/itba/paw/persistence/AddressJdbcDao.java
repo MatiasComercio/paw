@@ -3,11 +3,14 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.AddressDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.shared.Result;
+import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 @Repository
 public class AddressJdbcDao implements AddressDao {
@@ -60,7 +63,25 @@ public class AddressJdbcDao implements AddressDao {
 
     @Override
     public Result createAddress(Integer dni, Address address) {
-        return null;
+        Map<String, Object> addressArgs = new HashMap<>();
+
+        addressArgs.put(ADDRESS__DNI_COLUMN, dni);
+        addressArgs.put(ADDRESS__COUNTRY_COLUMN, WordUtils.capitalize(address.getCountry().toLowerCase()));
+        addressArgs.put(ADDRESS__CITY_COLUMN, WordUtils.capitalize(address.getCity()).toLowerCase());
+        addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, WordUtils.capitalize(address.getNeighborhood()).toLowerCase());
+        addressArgs.put(ADDRESS__STREET_COLUMN, WordUtils.capitalize(address.getStreet()).toLowerCase());
+        addressArgs.put(ADDRESS__NUMBER_COLUMN,address.getNumber());
+        addressArgs.put(ADDRESS__FLOOR_COLUMN, address.getFloor());
+        addressArgs.put(ADDRESS__DOOR_COLUMN, address.getDoor());
+        addressArgs.put(ADDRESS__TELEPHONE_COLUMN, address.getTelephone());
+        addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, address.getZipCode());
+
+        /**
+         * +++xcheck not checking if the address was correctly inserted
+         */
+        addressInsert.executeAndReturnKey(addressArgs);
+
+        return Result.OK;
     }
 
     @Override
