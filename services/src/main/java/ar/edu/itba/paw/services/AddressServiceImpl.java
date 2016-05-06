@@ -15,16 +15,16 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public boolean hasAddress(Integer dni) {
-        return false;
+        return addressDao.hasAddress(dni);
     }
 
     @Override
     public Result createAddress(Integer dni, Address address) {
-        return null;
+        return addressDao.createAddress(dni, address);
     }
 
     @Override
     public Result updateAddress(Integer dni, Address address) {
-        return null;
+        return addressDao.updateAddress(dni, address);
     }
 }
