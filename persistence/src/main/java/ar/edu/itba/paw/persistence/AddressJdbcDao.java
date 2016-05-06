@@ -52,7 +52,10 @@ public class AddressJdbcDao implements AddressDao {
 
     @Override
     public boolean hasAddress(Integer dni) {
+        final Object[] dniObject = new Object[]{dni};
+        final int count = jdbcTemplate.queryForObject(COUNT_ADDRESS, dniObject, Integer.class);
 
+        return count == 1;
     }
 
     @Override
