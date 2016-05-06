@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 
 @Repository
 public class AddressJdbcDao implements AddressDao {
+
     private static final String ADDRESS_TABLE = "address";
 
 
@@ -26,7 +27,9 @@ public class AddressJdbcDao implements AddressDao {
 
     static {
         COUNT_ADDRESS =
-
+            select(count(EVERYTHING))
+                + from(ADDRESS_TABLE)
+                + where(ADDRESS__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
     }
 
     private final JdbcTemplate jdbcTemplate;
