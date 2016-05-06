@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.interfaces.AdminService;
-import ar.edu.itba.paw.interfaces.StudentService;
-import ar.edu.itba.paw.interfaces.UserDao;
-import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
@@ -115,7 +112,7 @@ public class UserServiceImpl implements UserService {
 		if(dni <= 0) {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
 		}
-		final int resultHasAddress = addressService.hasAddress(dni);
+		final boolean resultHasAddress = addressService.hasAddress(dni);
 
 		/**
 		 * +++xfinish
