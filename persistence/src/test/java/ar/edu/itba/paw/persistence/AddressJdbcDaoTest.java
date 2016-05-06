@@ -83,6 +83,8 @@ public class AddressJdbcDaoTest {
     private static final Long ADDRESS__TELEPHONE_EXPECTED = 45666666L;
     private static final Integer ADDRESS__ZIP_CODE_EXPECTED = 1418;
 
+    private static final String ADDRESS__COUNTRY_VALUE_2 = "Brasil";
+
     private static final String ROLE_1 = "ADMIN";
     private static final String ROLE_2 = "STUDENT";
 
@@ -190,6 +192,20 @@ public class AddressJdbcDaoTest {
     }
 
     public void updateAddress() {
+        Result result;
+        Address address = new Address.Builder(
+                ADDRESS__COUNTRY_VALUE_2,
+                ADDRESS__CITY_VALUE,
+                ADDRESS__NEIGHBORHOOD_VALUE,
+                ADDRESS__STREET_VALUE,
+                ADDRESS__NUMBER_VALUE
+        )
+                .floor(ADDRESS__FLOOR_VALUE)
+                .door(ADDRESS__DOOR_VALUE)
+                .telephone(ADDRESS__TELEPHONE_VALUE)
+                .zipCode(ADDRESS__ZIP_CODE_VALUE)
+                .build();
 
+        result = addressJdbcDao.updateAddress(DNI_1, address);
     }
 }
