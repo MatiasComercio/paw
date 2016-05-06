@@ -116,7 +116,8 @@ public class AddressJdbcDao implements AddressDao {
                 address.getFloor(),
                 address.getDoor(),
                 address.getTelephone(),
-                address.getZipCode()
+                address.getZipCode(),
+                dni
         );
 
         return rowsUpdated == 1 ? Result.OK : Result.ERROR_UNKNOWN;
