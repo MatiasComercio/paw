@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.services;
+package ar.edu.itba.paw.interfaces;
 
 public interface AddressService {
 
