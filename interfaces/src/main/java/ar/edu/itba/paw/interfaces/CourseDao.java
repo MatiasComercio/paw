@@ -135,4 +135,10 @@ public interface CourseDao {
      */
     List<Course> getCorrelativeCourses(Integer courseId);
 
+    /**
+     * Get the total credits of the plan.
+     * @return Integer indicating the total credits of the plan.
+     */
+    Integer getTotalPlanCredits();
+
 }

@@ -240,6 +240,13 @@ public class CourseJdbcDao implements CourseDao {
     }
 
     @Override
+    public Integer getTotalPlanCredits() {
+        String query = "SELECT SUM(" + CREDITS_COLUMN + ") as " + CREDITS_COLUMN + " FROM " + TABLE_NAME + ";";
+        RowMapper<Integer> rm = (rs, rowNumber) -> rs.getInt(CREDITS_COLUMN);
+        return jdbcTemplate.query(query, rm).get(0);
+    }
+
+    @Override
     public Result addCorrelativity(Integer id, Integer correlativeId) {
         final Map<String, Object> args = new HashMap<>();
         args.put(CORRELATIVE_COURSE_ID, id);

@@ -139,4 +139,17 @@ public interface StudentService {
 	 * @return A list containing lists in which all the grades of a semester are placed
      */
 	List<List<Grade>> getTranscript(final Integer docket);
+
+	/**
+	 * Get the total credits of the plan.
+	 * @return Integer indicating the total credits of the plan.
+	 */
+	Integer getTotalPlanCredits();
+
+	/**
+	 * Get the total amount of passed credits given a student.
+	 * @param docket The student's docket.
+	 * @return Integer indicating the amount of credits passed.
+     */
+	Integer getPassedCredits(final Integer docket);
 }
