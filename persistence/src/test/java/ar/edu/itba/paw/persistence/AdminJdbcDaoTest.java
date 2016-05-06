@@ -225,17 +225,17 @@ public class AdminJdbcDaoTest {
 //        admins = adminJdbcDao.getByFilter(adminFilter);
 //        assertNotNull(admins);
 //        assertEquals(1, admins.size());
-
-        /**
-         * Filter by First Name (1 match)
-         */
-        adminFilter = new AdminFilter.AdminFilterBuilder()
-                .firstName(FIRST_NAME_1)
-                .build();
-        admins = adminJdbcDao.getByFilter(adminFilter);
-        assertNotNull(admins);
-        assertEquals(1, admins.size());
-
+//
+//        /**
+//         * Filter by First Name (1 match)
+//         */
+//        adminFilter = new AdminFilter.AdminFilterBuilder()
+//                .firstName(FIRST_NAME_1)
+//                .build();
+//        admins = adminJdbcDao.getByFilter(adminFilter);
+//        assertNotNull(admins);
+//        assertEquals(1, admins.size());
+//
 //        /**
 //         * Filter by First Name and DNI (0 matches)
 //         */
@@ -246,7 +246,7 @@ public class AdminJdbcDaoTest {
 //        admins = adminJdbcDao.getByFilter(adminFilter);
 //        assertNotNull(admins);
 //        assertEquals(0, admins.size());
-
+//
 //        /**
 //         * Filter by First Name and DNI (1 match)
 //         */
