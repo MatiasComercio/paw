@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -75,14 +76,18 @@ public class UserJdbcDaoTest {
         /* Insertions */
 
         final Map<String, Object> roleArgs = new HashMap<>();
-        final Map<String, Object> userArgs = new HashMap<>();
 
         roleArgs.put(ROLE__ROLE_COLUMN, ROLE_1);
         roleInsert.execute(roleArgs);
         roleArgs.put(ROLE__ROLE_COLUMN, ROLE_2);
         roleInsert.execute(roleArgs);
+    }
 
-        /* Insertion of User */
+    @Test
+    public void update() {
+        final Map<String, Object> userArgs = new HashMap<>();
+
+
         userArgs.put(USER__DNI_COLUMN, DNI_1);
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
@@ -90,8 +95,6 @@ public class UserJdbcDaoTest {
         userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
         userArgs.put(USER__ROLE_COLUMN, ROLE_1);
         userInsert.execute(userArgs);
-
-        /* // Insertions */
     }
 
 }
