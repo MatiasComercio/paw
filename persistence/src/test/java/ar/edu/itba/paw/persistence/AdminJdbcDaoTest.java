@@ -1,10 +1,12 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.users.Admin;
+import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runner.manipulation.Filter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -185,10 +187,77 @@ public class AdminJdbcDaoTest {
     public void getByDni() {
     }
 
+    /**
+     * +++xcheck BIG PROBLEM:
+     * HSQLDB doesn't recognize TEXT type, so I can't cast
+     * the DNI
+     * HSQLDB doesn't recognize ILIKE statement
+     */
     @Test
     public void getByFilter() {
         final Map<String, Object> adminArgs = new HashMap<>();
+        AdminFilter adminFilter;
         List<Admin> admins;
+
+        adminArgs.put(ADMIN__DNI_COLUMN, DNI_1);
+        adminInsert.execute(adminArgs);
+
+        adminArgs.put(ADMIN__DNI_COLUMN, DNI_2);
+        adminInsert.execute(adminArgs);
+
+        /**
+         * Filter with no params (2 matches)
+         */
+        adminFilter = new AdminFilter.AdminFilterBuilder()
+                .build();
+
+        admins = adminJdbcDao.getByFilter(adminFilter);
+        assertNotNull(admins);
+        assertEquals(2, admins.size());
+
+//        /**
+//         * Filter by DNI (1 match)
+//         */
+//        adminFilter = new AdminFilter.AdminFilterBuilder()
+//                .dni(DNI_1)
+//                .build();
+//
+//        admins = adminJdbcDao.getByFilter(adminFilter);
+//        assertNotNull(admins);
+//        assertEquals(1, admins.size());
+
+        /**
+         * Filter by First Name (1 match)
+         */
+        adminFilter = new AdminFilter.AdminFilterBuilder()
+                .firstName(FIRST_NAME_1)
+                .build();
+        admins = adminJdbcDao.getByFilter(adminFilter);
+        assertNotNull(admins);
+        assertEquals(1, admins.size());
+
+//        /**
+//         * Filter by First Name and DNI (0 matches)
+//         */
+//        adminFilter = new AdminFilter.AdminFilterBuilder()
+//                .dni(DNI_1)
+//                .firstName(FIRST_NAME_2)
+//                .build();
+//        admins = adminJdbcDao.getByFilter(adminFilter);
+//        assertNotNull(admins);
+//        assertEquals(0, admins.size());
+
+//        /**
+//         * Filter by First Name and DNI (1 match)
+//         */
+//        adminFilter = new AdminFilter.AdminFilterBuilder()
+//                .dni(DNI_1)
+//                .firstName(FIRST_NAME_1)
+//                .build();
+//        admins = adminJdbcDao.getByFilter(adminFilter);
+//        assertNotNull(admins);
+//        assertEquals(1, admins.size());
+
     }
 
     @Test
