@@ -134,13 +134,6 @@ public class AddressJdbcDaoTest {
         userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
         userArgs.put(USER__ROLE_COLUMN, ROLE_1);
         userInsert.execute(userArgs);
-        userArgs.put(USER__DNI_COLUMN, DNI_2);
-        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
-        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
-        userArgs.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
-        userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_2);
-        userArgs.put(USER__ROLE_COLUMN, ROLE_2);
-        userInsert.execute(userArgs);
     }
 
     @Test
@@ -169,9 +162,19 @@ public class AddressJdbcDaoTest {
 
     @Test
     public void createAddress() {
+        Address address = new Address.Builder(
+                ADDRESS__COUNTRY_VALUE,
+                ADDRESS__CITY_VALUE,
+                ADDRESS__NEIGHBORHOOD_VALUE,
+                ADDRESS__STREET_VALUE,
+                ADDRESS__NUMBER_VALUE
+                ).build();
+
         /**
          * Insert address for non existent user
          */
+        Result result = addressJdbcDao.createAddress(DNI_2, address);
+        assertEquals(Result.DNI_NOT_EXISTS, result);
 
         /**
          * Insert address for existent user
