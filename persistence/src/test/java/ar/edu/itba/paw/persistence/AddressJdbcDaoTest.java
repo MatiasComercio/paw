@@ -169,7 +169,12 @@ public class AddressJdbcDaoTest {
                 ADDRESS__NEIGHBORHOOD_VALUE,
                 ADDRESS__STREET_VALUE,
                 ADDRESS__NUMBER_VALUE
-                ).build();
+        )
+                .floor(ADDRESS__FLOOR_VALUE)
+                .door(ADDRESS__DOOR_VALUE)
+                .telephone(ADDRESS__TELEPHONE_VALUE)
+                .zipCode(ADDRESS__ZIP_CODE_VALUE)
+                .build();
 
         /**
          * Insert address for non existent user
