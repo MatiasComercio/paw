@@ -3,14 +3,29 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.AddressDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.shared.Result;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
+import javax.sql.DataSource;
 
 @Repository
 public class AddressJdbcDao implements AddressDao {
+    private static final String ADDRESS_TABLE = "address";
+
+    private final JdbcTemplate jdbcTemplate;
+
+    private final SimpleJdbcInsert addressInsert;
+
+
+    public AddressJdbcDao(final DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
+    }
 
     @Override
     public boolean hasAddress(Integer dni) {
-        return false;
+
     }
 
     @Override
