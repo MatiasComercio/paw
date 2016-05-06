@@ -36,12 +36,28 @@ public class AddressJdbcDao implements AddressDao {
     /* /POSTGRESQL WILDCARDS */
 
     private static final String COUNT_ADDRESS;
+    private static final String ADDRESS_UPDATE;
 
     static {
         COUNT_ADDRESS =
             select(count(EVERYTHING))
                 + from(ADDRESS_TABLE)
                 + where(ADDRESS__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
+
+        ADDRESS_UPDATE =
+                update(ADDRESS_TABLE) +
+                        set(    ADDRESS__CITY_COLUMN, GIVEN_PARAMETER,
+                                ADDRESS__COUNTRY_COLUMN, GIVEN_PARAMETER,
+                                ADDRESS__NEIGHBORHOOD_COLUMN, GIVEN_PARAMETER,
+                                ADDRESS__STREET_COLUMN, GIVEN_PARAMETER,
+                                ADDRESS__NUMBER_COLUMN, GIVEN_PARAMETER,
+                                ADDRESS__FLOOR_COLUMN, GIVEN_PARAMETER,
+                                ADDRESS__DOOR_COLUMN, GIVEN_PARAMETER,
+                                ADDRESS__TELEPHONE_COLUMN, GIVEN_PARAMETER,
+                                ADDRESS__ZIP_CODE_COLUMN, GIVEN_PARAMETER
+                        )
+                + where(ADDRESS__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
+
     }
 
     private final JdbcTemplate jdbcTemplate;
@@ -95,7 +111,8 @@ public class AddressJdbcDao implements AddressDao {
                 address.getFloor(),
                 address.getDoor(),
                 address.getTelephone(),
-                address.getZipCode());
+                address.getZipCode()
+        );
 
         return rowsUpdated == 1 ? Result.OK : Result.ERROR_UNKNOWN;
     }
@@ -112,6 +129,31 @@ public class AddressJdbcDao implements AddressDao {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT ");
         buildSentence(stringBuilder, cols);
+        return stringBuilder.toString();
+    }
+
+    private static String update(final String table) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("UPDATE ");
+        buildSentence(stringBuilder, table);
+        return stringBuilder.toString();
+    }
+
+    private static String set(final String... cols) {
+        int i = 0;
+        final int lCols = cols.length;
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("SET ");
+        for(String col : cols) {
+            stringBuilder.append(col);
+            if(i % 2 == 0) {
+                stringBuilder.append(EQUALS);
+            } else if(i < lCols -1) {
+                stringBuilder.append(" ,");
+            }
+            i++;
+        }
+        stringBuilder.append(" ");
         return stringBuilder.toString();
     }
 
