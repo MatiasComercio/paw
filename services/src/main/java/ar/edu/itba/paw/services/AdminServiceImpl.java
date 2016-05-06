@@ -45,4 +45,12 @@ public class AdminServiceImpl implements AdminService {
     public List<Admin> getByFilter(AdminFilter adminFilter) {
         return adminDao.getByFilter(adminFilter);
     }
+
+    @Override
+    public Result deleteAdmin(Integer dni) {
+        if(dni <= 0) {
+            return Result.ERROR_DNI_OUT_OF_BOUNDS;
+        }
+        return adminDao.deleteAdmin(dni);
+    }
 }
