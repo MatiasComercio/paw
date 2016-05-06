@@ -103,17 +103,27 @@ public class UserJdbcDaoTest {
         userArgs.put(USER__ROLE_COLUMN, ROLE_1);
         userInsert.execute(userArgs);
 
-        /**
-         * Update a valid user
-         */
         user = new Admin.Builder(DNI_1)
                 .firstName(FIRST_NAME_2)
-                .lastName(FIRST_NAME_2)
+                .lastName(LAST_NAME_2)
                 .email(EMAIL_2)
                 .birthday(BIRTHDAY_1)
                 .genre(GENRE_1)
                 .build();
 
+
+        /**
+         * Update an invalid user
+         */
+        result = userJdbcDao.update(DNI_2, user);
+        /**
+         * +++xcheck This asserts OK but because the update is failing
+         */
+        assertEquals(Result.ERROR_UNKNOWN, result);
+
+        /**
+         * Update a valid user
+         */
         result = userJdbcDao.update(DNI_1, user);
         assertEquals(Result.OK, result);
     }
