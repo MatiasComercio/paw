@@ -58,6 +58,7 @@ public class UserJdbcDao implements UserDao {
 	private static final String UPDATE_PASSWORD;
 	private static final String GET_EMAILS;
 	private static final String DELETE_USER;
+	private static final String UPDATE_USER;
 
 	static {
 /*	Usage example:
@@ -282,10 +283,18 @@ public class UserJdbcDao implements UserDao {
 
 
 	private static String set(final String... cols) {
+		int i = 0;
+		final int lCols = cols.length;
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("SET ");
 		for(String col : cols) {
 			stringBuilder.append(col);
+			if(i % 2 == 0) {
+				stringBuilder.append(EQUALS);
+			} else if(i < lCols -1) {
+				stringBuilder.append(" ,");
+			}
+			i++;
 		}
 		stringBuilder.append(" ");
 		return stringBuilder.toString();
