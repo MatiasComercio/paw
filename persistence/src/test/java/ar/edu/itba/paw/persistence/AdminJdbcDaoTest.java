@@ -109,17 +109,26 @@ public class AdminJdbcDaoTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, ROLE_TABLE);
 
         final Map<String, Object> roleArgs = new HashMap<>();
+        final Map<String, Object> userArgs = new HashMap<>();
 
         roleArgs.put(ROLE__ROLE_COLUMN, ROLE_1);
         roleInsert.execute(roleArgs);
         roleArgs.put(ROLE__ROLE_COLUMN, ROLE_2);
         roleInsert.execute(roleArgs);
+
+        /* Insertion of User */
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
+        userArgs.put(USER__ROLE_COLUMN, ROLE_1);
+        userInsert.execute(userArgs);
     }
 
     @Test
     public void getAllAdmins() {
         final Map<String, Object> adminArgs = new HashMap<>();
-        final Map<String, Object> userArgs = new HashMap<>();
         List<Admin> admins;
 
         /**
@@ -132,14 +141,7 @@ public class AdminJdbcDaoTest {
         /**
          *  Table with one admin
          */
-        /* Insertion of User */
-        userArgs.put(USER__DNI_COLUMN, DNI_1);
-        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
-        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
-        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
-        userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
-        userArgs.put(USER__ROLE_COLUMN, ROLE_1);
-        userInsert.execute(userArgs);
+
 
         /* Insertion of Admin */
         adminArgs.put(ADMIN__DNI_COLUMN, DNI_1);
@@ -153,17 +155,8 @@ public class AdminJdbcDaoTest {
 
     @Test
     public void create() {
-        final Map<String, Object> userArgs = new HashMap<>();
         Result result;
         Admin admin;
-
-        userArgs.put(USER__DNI_COLUMN, DNI_1);
-        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
-        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
-        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
-        userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
-        userArgs.put(USER__ROLE_COLUMN, ROLE_1);
-        userInsert.execute(userArgs);
 
         /** 
          * Insert non existant admin 
