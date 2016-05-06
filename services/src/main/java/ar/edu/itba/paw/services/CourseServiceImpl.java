@@ -11,6 +11,7 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -173,5 +174,38 @@ public class CourseServiceImpl implements CourseService {
             }
         }
         return Result.OK;
+    }
+
+    @Override
+    public List<Course> getCorrelativesByFilter(Integer courseId, CourseFilter courseFilter) {
+
+        final List<Course> courses = getByFilter(courseFilter);
+
+        if (courses == null) {
+            return null;
+        }
+
+        List<Course> correlatives = courseDao.getCorrelativeCourses(courseId);
+        if(correlatives == null){
+            return null;
+        }
+
+        //Remove all courses that do not match the filter
+        correlatives.retainAll(courses);
+
+        return correlatives;
+    }
+
+    @Override
+    public List<Course> getAvailableAddCorrelatives(Integer courseId, CourseFilter courseFilter) {
+        List<Course> courses =  getByFilter(courseFilter);
+        List<Course> correlatives = getCorrelativesByFilter(courseId, null);
+
+        //Remove all correlatives from the list
+        courses.removeAll(correlatives);
+
+        //Remove the course itself from the list
+        courses.remove(getById(courseId));
+        return courses;
     }
 }

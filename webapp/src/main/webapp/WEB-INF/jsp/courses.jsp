@@ -33,7 +33,14 @@
             </c:if>
         </c:when>
         <c:when test="${section=='courses'}">
-            <jsp:include page="template/deleteCourseForm.jsp" />
+            <c:choose>
+                <c:when test="${subsection_get_courses}">
+                    <jsp:include page="template/deleteCourseForm.jsp" />
+                </c:when>
+                <c:when test="${subsection_add_correlative}">
+                    <jsp:include page="template/CorrelativeForm.jsp" />
+                </c:when>
+            </c:choose>
         </c:when>
     </c:choose>
 
@@ -73,16 +80,18 @@
             </div>
             <c:choose>
                 <c:when test="${section=='courses'}">
-                    <div class="row">
-                        <div class="col-xs-12 col-md-2 text-center">
-                            <p class="lead"><spring:message code="actions"/>:</p>
+                    <c:if test="${subsection_get_courses}">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-2 text-center">
+                                <p class="lead"><spring:message code="actions"/>:</p>
+                            </div>
+                            <div class="col-xs-12 col-md-2 text-center">
+                                <a class="btn btn-info" href="/courses/add_course" role="button">
+                                    <i class="fa fa-plus-circle" aria-hidden="true"></i> <spring:message code="addCourse"/>
+                                </a>
+                            </div>
                         </div>
-                        <div class="col-xs-12 col-md-2 text-center">
-                            <a class="btn btn-info" href="/courses/add_course" role="button">
-                                <i class="fa fa-plus-circle" aria-hidden="true"></i> <spring:message code="addCourse"/>
-                            </a>
-                        </div>
-                    </div>
+                    </c:if>
                 </c:when>
             </c:choose>
             <jsp:include page="template/searchCourses.jsp" />
@@ -108,7 +117,14 @@
         </c:if>
     </c:when>
     <c:when test="${section=='courses'}">
-        <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteCourseForm.js"%></script>
+        <c:choose>
+            <c:when test="${subsection_get_courses}">
+                <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteCourseForm.js"%></script>
+            </c:when>
+            <c:when test="${subsection_add_correlative}">
+                <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/addCorrelativeForm.js"%></script>
+            </c:when>
+        </c:choose>
     </c:when>
 </c:choose>
 
@@ -129,7 +145,14 @@
                 </c:choose>
             </c:when>
             <c:when test="${section=='courses'}">
-                loadDeleteCourseForm("deleteCourseButton");
+                <c:choose>
+                    <c:when test="${subsection_get_courses}">
+                        loadDeleteCourseForm("deleteCourseButton");
+                    </c:when>
+                    <c:when test="${subsection_add_correlative}">
+                        loadCorrelativeForm("correlativeButton");
+                    </c:when>
+                </c:choose>
             </c:when>
         </c:choose>
     });

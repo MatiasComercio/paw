@@ -109,14 +109,26 @@
                             </c:choose>
                         </c:when>
                         <c:when test="${section=='courses'}">
-                            <a class="btn btn-info btn-xs" href="<c:url value="/courses/${course.id}/edit"/>">
-                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-                            </a>
-                            <button name="deleteCourseButton" class="btn btn-danger btn-xs" type="button"
-                                    data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                    data-toggle="modal" data-target="#deleteCourseFormConfirmationModal">
-                                <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
-                            </button>
+                            <c:choose>
+                                <c:when test="${subsection_get_courses}">
+                                    <a class="btn btn-info btn-xs" href="<c:url value="/courses/${course.id}/edit"/>">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                                    </a>
+                                    <button name="deleteCourseButton" class="btn btn-danger btn-xs" type="button"
+                                            data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                            data-toggle="modal" data-target="#deleteCourseFormConfirmationModal">
+                                        <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
+                                    </button>
+                                </c:when>
+                                <c:when test="${subsection_add_correlative}">
+                                    <button name="correlativeButton" class="btn btn-info btn-xs" type="button"
+                                            data-course_id="${ course_details.id }" data-course_name="${ course_details.name }"
+                                            data-correlative_id="${course.id}" data-correlative_name="${course.name}"
+                                            data-toggle="modal" data-target="#correlativeFormConfirmationModal">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="add_correlative"/>
+                                    </button>
+                                </c:when>
+                            </c:choose>
                         </c:when>
                     </c:choose>
                     <a class="btn btn-default btn-xs" href="<c:url value="/courses/${course.id}/info" />" role="button">
