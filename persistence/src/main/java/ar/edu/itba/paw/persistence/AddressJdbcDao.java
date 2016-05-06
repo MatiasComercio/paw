@@ -80,6 +80,14 @@ public class AddressJdbcDao implements AddressDao {
         return stringBuilder.toString();
     }
 
+    private static String count(final String col) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("COUNT( ");
+        stringBuilder.append(col);
+        stringBuilder.append(")");
+        return stringBuilder.toString();
+    }
+
     private static String from(final String... cols) {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("FROM ");
