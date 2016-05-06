@@ -75,6 +75,8 @@ public class AdminJdbcDaoTest {
     private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
     private static final String PASSWORD_1 = "pass1";
 
+    private static final Integer DNI_INVALID = -1;
+
 
     private static final int DNI_2 = 87654321;
     private static final String FIRST_NAME_2 = "BreNda LiHuéN ";
@@ -181,6 +183,15 @@ public class AdminJdbcDaoTest {
          */
         result = adminJdbcDao.create(admin);
         assertEquals(Result.ADMIN_EXISTS_DNI, result);
+
+        /**
+         * Insert admin with invalid DNI
+         */
+        admin = new Admin.Builder(DNI_INVALID)
+                .build();
+
+        result = adminJdbcDao.create(admin);
+        assertEquals(Result.ERROR_UNKNOWN, result);
     }
 
     @Test
