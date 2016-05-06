@@ -89,7 +89,8 @@ public class UserJdbcDao implements UserDao {
 						, 	USER__LAST_NAME_COLUMN, GIVEN_PARAMETER
 						,	USER__EMAIL_COLUMN,	GIVEN_PARAMETER
 						,	USER__BIRTHDAY_COLUMN, GIVEN_PARAMETER
-						,	USER__GENRE_COLUMN, GIVEN_PARAMETER) +
+						,	USER__GENRE_COLUMN, GIVEN_PARAMETER
+						) +
 						where(USER__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
 	}
 
@@ -186,18 +187,26 @@ public class UserJdbcDao implements UserDao {
 
 	@Override
 	public Result update(Integer dni, User user) {
+		int rowsAffected;
+
 		try {
 			/**
 			 * +++xnotfinished (update address)
 			 */
-			jdbcTemplate.update(UPDATE_USER, user.getFirstName(), user.getFirstName(), user.getLastName(), dni);
+			rowsAffected = jdbcTemplate.update(UPDATE_USER,
+					user.getFirstName(),
+					user.getLastName(),
+					user.getEmail(),
+					user.getBirthday(),
+					user.getGenre(),
+					dni);
 		} catch (final DataIntegrityViolationException e) {
 			return Result.INVALID_INPUT_PARAMETERS;
 		} catch(final DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
 		}
 
-		return Result.OK;
+		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 	}
 
 
