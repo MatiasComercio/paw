@@ -240,14 +240,20 @@ public class UserJdbcDao implements UserDao {
 	@Override
 	public Result update(Integer dni, User user) {
 		int rowsAffected;
+		Date birthday = null;
+		final String genre = user.getGenre().name();
+
+		if(user.getBirthday() != null) {
+			birthday = Date.valueOf(user.getBirthday());
+		}
 
 		try {
 			rowsAffected = jdbcTemplate.update(UPDATE_USER,
 					user.getFirstName(),
 					user.getLastName(),
 					user.getEmail(),
-					user.getBirthday(),
-					user.getGenre(),
+					birthday,
+					genre,
 					dni);
 		} catch (final DataIntegrityViolationException e) {
 			return Result.INVALID_INPUT_PARAMETERS;
