@@ -39,4 +39,12 @@ public interface AdminDao {
      * an empty list.
      */
     List<Admin> getByFilter(AdminFilter adminFilter);
+
+    /**
+     * Delete the admin that matches the given dni.
+     * @param dni The admin's dni
+     * @return 	OK if the dni was deleted;
+     * 		ERROR_UNKNOWN else;
+     */
+    Result deleteAdmin(Integer dni);
 }

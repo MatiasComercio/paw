@@ -41,7 +41,7 @@ public interface AdminService {
 
     /**
      * Delete the admin that matches the given dni.
-     * @param dni The admin's docket
+     * @param dni The admin's dni
      * @return 	OK if the admin was deleted;
      * 		ERROR_DNI_OUT_OF_BOUNDS if the dni is invalid;
      * 		ERROR_UNKNOWN else;
