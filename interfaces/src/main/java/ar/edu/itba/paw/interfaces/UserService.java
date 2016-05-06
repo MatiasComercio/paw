@@ -56,7 +56,7 @@ public interface UserService {
 	 * @param dni the user's dni
 	 * @param user the new user's details
      * @return OK if the user's data was changed correctly
-	 * 		+++xdocument
+	 * 		ERROR_DNI_OUT_OF_BOUNDS if the dni limit was out of bounds;
      */
 	Result update(Integer dni, User user);
 }
