@@ -31,6 +31,7 @@ public class AdminJdbcDaoTest {
     private static final String ADMIN_TABLE = "admin";
     private static final String USER_TABLE = "users";
     private static final String ADDRESS_TABLE = "address";
+    private static final String ROLE_TABLE = "role";
 
     /* /TABLE NAMES */
 
@@ -44,6 +45,7 @@ public class AdminJdbcDaoTest {
     private static final String USER__BIRTHDAY_COLUMN = "birthday";
     private static final String USER__EMAIL_COLUMN = "email";
     private static final String USER__PASSWORD_COLUMN = "password";
+    private static final String USER__ROLE_COLUMN = "role";
 
     private static final String ADDRESS__DNI_COLUMN = "dni";
     private static final String ADDRESS__COUNTRY_COLUMN = "country";
@@ -55,6 +57,9 @@ public class AdminJdbcDaoTest {
     private static final String ADDRESS__DOOR_COLUMN = "door";
     private static final String ADDRESS__TELEPHONE_COLUMN = "telephone";
     private static final String ADDRESS__ZIP_CODE_COLUMN = "zip_code";
+
+    private static final String ROLE__ROLE_COLUMN = "role";
+
     /* COLS NAMES */
 
     private static final int DNI_1 = 12345678;
@@ -66,6 +71,8 @@ public class AdminJdbcDaoTest {
     private static final String GENRE_1_EXPECTED = "Male";
     private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
     private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
+    private static final String PASSWORD_1 = "pass1";
+
 
     private static final int DNI_2 = 87654321;
     private static final String FIRST_NAME_2 = "BreNda LiHuéN ";
@@ -73,6 +80,9 @@ public class AdminJdbcDaoTest {
     private static final String LAST_NAME_2 = "MaYan";
     private static final String LAST_NAME_2_EXPECTED = "Mayan";
     private static final String EMAIL_2 = "blihuen@bait.edu.ar";
+
+    private static final String ROLE_1 = "ADMIN";
+    private static final String ROLE_2 = "STUDENT";
 
     @Autowired
     private DataSource dataSource;
@@ -84,16 +94,26 @@ public class AdminJdbcDaoTest {
 
     private SimpleJdbcInsert userInsert;
     private SimpleJdbcInsert adminInsert;
+    private SimpleJdbcInsert roleInsert;
 
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(dataSource);
 
+        roleInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ROLE_TABLE);
         userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
         adminInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADMIN_TABLE);
 
         JdbcTestUtils.deleteFromTables(jdbcTemplate, ADMIN_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, ROLE_TABLE);
+
+        final Map<String, Object> roleArgs = new HashMap<>();
+
+        roleArgs.put(ROLE__ROLE_COLUMN, ROLE_1);
+        roleInsert.execute(roleArgs);
+        roleArgs.put(ROLE__ROLE_COLUMN, ROLE_2);
+        roleInsert.execute(roleArgs);
     }
 
     @Test
@@ -117,6 +137,8 @@ public class AdminJdbcDaoTest {
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
+        userArgs.put(USER__ROLE_COLUMN, ROLE_1);
         userInsert.execute(userArgs);
 
         /* Insertion of Admin */
@@ -139,6 +161,8 @@ public class AdminJdbcDaoTest {
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
+        userArgs.put(USER__ROLE_COLUMN, ROLE_1);
         userInsert.execute(userArgs);
 
         /** 
