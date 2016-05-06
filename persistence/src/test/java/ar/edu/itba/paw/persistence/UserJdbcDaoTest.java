@@ -1,10 +1,21 @@
 package ar.edu.itba.paw.persistence;
 
-import ar.edu.itba.paw.persistence.TestConfig;
+import org.junit.Before;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.jdbc.JdbcTestUtils;
+
+import javax.sql.DataSource;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -40,7 +51,47 @@ public class UserJdbcDaoTest {
     private static final String EMAIL_2 = "blihuen@bait.edu.ar";
     private static final String PASSWORD_2 = "pass2";
 
+    @Autowired
+    private DataSource dataSource;
 
+    private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private UserJdbcDao userJdbcDao;
+
+    private SimpleJdbcInsert roleInsert;
+    private SimpleJdbcInsert userInsert;
+
+    @Before
+    public void setUp() {
+        jdbcTemplate = new JdbcTemplate(dataSource);
+
+        roleInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ROLE_TABLE);
+        userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USERS_TABLE);
+
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, USERS_TABLE);
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, ROLE_TABLE);
+
+        /* Insertions */
+
+        final Map<String, Object> roleArgs = new HashMap<>();
+        final Map<String, Object> userArgs = new HashMap<>();
+
+        roleArgs.put(ROLE__ROLE_COLUMN, ROLE_1);
+        roleInsert.execute(roleArgs);
+        roleArgs.put(ROLE__ROLE_COLUMN, ROLE_2);
+        roleInsert.execute(roleArgs);
+
+        /* Insertion of User */
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
+        userArgs.put(USER__ROLE_COLUMN, ROLE_1);
+        userInsert.execute(userArgs);
+
+        /* // Insertions */
+    }
 
 }
