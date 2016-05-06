@@ -59,6 +59,6 @@ public class AdminServiceImpl implements AdminService {
         if(dni <= 0) {
             return Result.ERROR_DNI_OUT_OF_BOUNDS;
         }
-        return adminDao.update(dni, admin);
+        return userService.update(dni, admin);
     }
 }
