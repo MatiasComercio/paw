@@ -72,18 +72,23 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th><spring:message code="id"/></th>
-                    <th><spring:message code="course"/></th>
-                    <th><spring:message code="grade"/></th>
-                    <th><spring:message code="modified"/></th>
-                    <th><spring:message code="actions"/></th>
+                    <th class="col-xs-5">
+                        <span class="col-xs-2"><spring:message code="id"/></span>
+                        <span class="col-xs-10"><spring:message code="course"/></span>
+                    </th>
+                    <th class="col-xs-2"><spring:message code="grade"/></th>
+                    <th class="col-xs-2"><spring:message code="modified"/></th>
+                    <th class="col-xs-3"><spring:message code="actions"/></th>
                 </tr>
                 </thead>
                 <tbody>
                 <c:forEach items="${semester}" var="grade">
                     <tr>
-                        <td>${ grade.courseId }</td>
-                        <td>${ grade.courseName }</td>
+                        <td>
+                            <span class="col-xs-2"> ${ grade.courseId }</span>
+                            <span class="col-xs-10"> ${ grade.courseName }</span>
+                        </td>
+                        <%--<td>${ grade.courseName }</td>--%>
                         <td><c:if test="${grade.taking}">Cursando</c:if>${ grade.grade }</td>
                         <td><c:if test="${grade.modified == null}">-</c:if>${ grade.modified }</td>
                         <td>
