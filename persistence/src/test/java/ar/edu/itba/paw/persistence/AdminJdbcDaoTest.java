@@ -150,6 +150,9 @@ public class AdminJdbcDaoTest {
         /**
          *  Table with one admin
          */
+        /* Insertion of Admin */
+        adminArgs.put(ADMIN__DNI_COLUMN, DNI_1);
+        adminInsert.execute(adminArgs);
 
         admins = adminJdbcDao.getAllAdmins();
         assertNotNull(admins);
