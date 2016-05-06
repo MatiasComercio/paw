@@ -185,6 +185,23 @@ public class AdminJdbcDaoTest {
 
     @Test
     public void getByDni() {
+        final Map<String, Object> adminArgs = new HashMap<>();
+        Admin admin;
+
+        /**
+         * Get non existant admin
+         */
+        admin = adminJdbcDao.getByDni(DNI_1);
+        assertNull(admin);
+
+        /**
+         * Get existant admin
+         */
+        adminArgs.put(ADMIN__DNI_COLUMN, DNI_1);
+        adminInsert.execute(adminArgs);
+
+        admin = adminJdbcDao.getByDni(DNI_1);
+        assertNotNull(admin);
     }
 
     /**
