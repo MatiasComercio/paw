@@ -6,12 +6,14 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
+import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.CourseFilterForm;
 import ar.edu.itba.paw.webapp.forms.CourseForm;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.webapp.forms.StudentFilterForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,14 +45,10 @@ public class CourseController {
 		return COURSES_SECTION;
 	}
 
-/*    @RequestMapping(value = "/courses")
-	public ModelAndView getCoursesByFilter(@RequestParam(required = false) String keyword,
-										   @RequestParam(required = false) Integer id) {
-		final ModelAndView mav = new ModelAndView("coursesSearch");
-		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().keyword(keyword).id(id).build();
-		mav.addObject("courses", courseService.getByFilter(courseFilter));
-		return mav;
-	}*/
+	@ModelAttribute("user")
+	public UserSessionDetails user(final Authentication authentication) {
+		return (UserSessionDetails) authentication.getPrincipal();
+	}
 
 	@RequestMapping(value = "/courses", method = RequestMethod.GET)
 	public ModelAndView getCourses(final Model model) {

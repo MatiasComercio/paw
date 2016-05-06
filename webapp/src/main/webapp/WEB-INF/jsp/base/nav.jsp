@@ -42,8 +42,8 @@
                         <li>
                             <a href="<c:url value="/students/${user.id}/inscription" />"><i class="fa fa-fw fa-list-alt"></i> <spring:message code="inscriptions"/></a>
                         </li>
-                        <li class="divider"></li>
                     </sec:authorize>
+                    <li class="divider"></li>
                         <%--<li>
                             <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
                         </li>--%>
@@ -65,7 +65,7 @@
         <ul class="nav navbar-nav side-nav">
             <c:choose>
                 <c:when test="${section=='admins'}">
-                    <c:set var="adminsActive" value="active" />>
+                    <c:set var="adminsActive" value="active" />
                 </c:when>
                 <c:when test="${section=='students'}">
                     <c:set var="studentsActive" value="active" />
@@ -85,7 +85,7 @@
             <li class="${coursesActive}">
                 <a href="<c:url value="/courses" />"><i class="fa fa-university" aria-hidden="true"></i> <spring:message code="courses"/></a>
             </li>
-            <!--
+<%--            <!--
             <li>
             <a href="#"><i class="fa fa-fw fa-wrench"></i> Settings</a>
             </li>
@@ -108,7 +108,7 @@
             </li>
             <li>
                 <a href="index-rtl.html"><i class="fa fa-fw fa-dashboard"></i> RTL Dashboard</a>
-            </li>-->
+            </li>-->--%>
         </ul>
     </div>
     <!-- /.navbar-collapse -->

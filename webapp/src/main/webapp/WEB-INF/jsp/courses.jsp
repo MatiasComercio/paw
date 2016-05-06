@@ -27,7 +27,7 @@
 
     <c:choose>
         <c:when test="${section=='students'}">
-            <<jsp:include page="template/enrollForm.jsp" />
+            <jsp:include page="template/enrollForm.jsp" />
             <c:if test="${subsection_courses}">
                 <jsp:include page="template/gradeForm.jsp" />
             </c:if>

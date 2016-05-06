@@ -4,12 +4,14 @@ import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.AdminFilterForm;
 import ar.edu.itba.paw.webapp.forms.AdminForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -45,8 +47,11 @@ public class AdminController {
 		return ADMINS_SECTION;
 	}
 
+	@ModelAttribute("user")
+	public UserSessionDetails user(final Authentication authentication) {
+		return (UserSessionDetails) authentication.getPrincipal();
+	}
 
-	/* +++xtodo: @Gonza: AdminFilterForm */
 	@RequestMapping(value = "/admins", method = RequestMethod.GET)
 	public ModelAndView admins(@Valid @ModelAttribute("adminFilterForm") final AdminFilterForm adminFilterForm,
 	                                final BindingResult errors,
