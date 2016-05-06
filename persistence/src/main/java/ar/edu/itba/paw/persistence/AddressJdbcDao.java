@@ -86,7 +86,18 @@ public class AddressJdbcDao implements AddressDao {
 
     @Override
     public Result updateAddress(Integer dni, Address address) {
-        return null;
+        int rowsUpdated = jdbcTemplate.update(ADDRESS_UPDATE,
+                address.getCountry(),
+                address.getCity(),
+                address.getNeighborhood(),
+                address.getStreet(),
+                address.getNumber(),
+                address.getFloor(),
+                address.getDoor(),
+                address.getTelephone(),
+                address.getZipCode());
+
+        return rowsUpdated == 1 ? Result.OK : Result.ERROR_UNKNOWN;
     }
 
     /* Private Static Methods */
