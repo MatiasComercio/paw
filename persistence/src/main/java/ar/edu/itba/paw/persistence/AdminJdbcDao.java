@@ -87,6 +87,9 @@ public class AdminJdbcDao implements AdminDao {
                         )
                         + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);
 
+        DELETE_ADMIN =
+
+
     }
 
     private final JdbcTemplate jdbcTemplate;
@@ -207,7 +210,26 @@ public class AdminJdbcDao implements AdminDao {
         return jdbcTemplate.query(queryFilter.getQuery(), adminRowMapper, queryFilter.getFilters().toArray());
     }
 
+    @Override
+    public Result deleteAdmin(Integer dni) {
+        int adminRowsAffected;
+
+        try {
+            adminRowsAffected = jdbcTemplate.update(DELETE_ADMIN, dni);
+        } catch (DataAccessException dae) {
+            return Result.ERROR_UNKNOWN;
+        }
+        return adminRowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+    }
+
     /* Private Static Methods */
+    private static String deleteFrom(String tableName) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("DELETE FROM ");
+        stringBuilder.append(tableName);
+        return stringBuilder.toString();
+    }
+
     private static String select(final String... cols) {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT ");
