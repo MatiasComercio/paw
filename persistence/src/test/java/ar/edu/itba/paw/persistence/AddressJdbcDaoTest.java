@@ -115,6 +115,8 @@ public class AddressJdbcDaoTest {
 
         JdbcTestUtils.deleteFromTables(jdbcTemplate, ADDRESS_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, ROLE_TABLE);
+
 
         final Map<String, Object> roleArgs = new HashMap<>();
         final Map<String, Object> userArgs = new HashMap<>();
