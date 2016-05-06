@@ -56,7 +56,7 @@
                             <div class="row">
                                <div class="col-xs-8">
                                     <div class="progress">
-                                        <div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" style="width: ${percentage}%">
+                                        <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" style="width: ${percentage}%">
                                             <span class="sr-only">${percentage}% Completado</span>
                                         </div>
                                     </div>
