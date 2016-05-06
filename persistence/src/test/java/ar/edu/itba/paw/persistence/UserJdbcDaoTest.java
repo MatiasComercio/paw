@@ -1,5 +1,8 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.users.Admin;
+import ar.edu.itba.paw.models.users.User;
+import ar.edu.itba.paw.shared.Result;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,6 +16,7 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 
 import javax.sql.DataSource;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +49,8 @@ public class UserJdbcDaoTest {
     private static final String LAST_NAME_1 = "Comercio vazquez";
     private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
     private static final String PASSWORD_1 = "pass1";
+    private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
+    private static final User.Genre GENRE_1 = User.Genre.M;
 
     private static final int DNI_2 = 87654321;
     private static final String FIRST_NAME_2 = "BreNda LiHuéN ";
@@ -86,7 +92,8 @@ public class UserJdbcDaoTest {
     @Test
     public void update() {
         final Map<String, Object> userArgs = new HashMap<>();
-
+        User user;
+        Result result;
 
         userArgs.put(USER__DNI_COLUMN, DNI_1);
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
@@ -95,6 +102,20 @@ public class UserJdbcDaoTest {
         userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
         userArgs.put(USER__ROLE_COLUMN, ROLE_1);
         userInsert.execute(userArgs);
+
+        /**
+         * Update a valid user
+         */
+        user = new Admin.Builder(DNI_1)
+                .firstName(FIRST_NAME_2)
+                .lastName(FIRST_NAME_2)
+                .email(EMAIL_2)
+                .birthday(BIRTHDAY_1)
+                .genre(GENRE_1)
+                .build();
+
+        result = userJdbcDao.update(DNI_1, user);
+        assertEquals(Result.OK, result);
     }
 
 }
