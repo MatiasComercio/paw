@@ -38,4 +38,13 @@ public interface AdminService {
      * an empty list.
      */
     List<Admin> getByFilter(AdminFilter adminFilter);
+
+    /**
+     * Delete the admin that matches the given dni.
+     * @param dni The admin's docket
+     * @return 	OK if the admin was deleted;
+     * 		ERROR_DNI_OUT_OF_BOUNDS if the dni is invalid;
+     * 		ERROR_UNKNOWN else;
+     */
+    Result deleteAdmin(Integer dni);
 }
