@@ -106,17 +106,29 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	}
 
 	@RequestMapping("/students/{docket}/grades")
-	public ModelAndView getStudentGrades(@PathVariable final int docket) {
-		final Student student =  studentService.getGrades(docket);
-
+	public ModelAndView getStudentGrades(@PathVariable final int docket, Model model,
+	                                     RedirectAttributes redirectAttributes) {
+		final Student student = studentService.getGrades(docket);
 		final ModelAndView mav;
 
 		if (student == null) {
 			return new ModelAndView("forward:/errors/404.html");
 		}
 
+		if (!model.containsAttribute("gradeForm")) {
+			model.addAttribute("gradeForm", new GradeForm());
+		}
+
 		mav = new ModelAndView("grades_old"); // +++xchange
+
+		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
+
 		mav.addObject("student", student);
+		mav.addObject("subsection_grades", true);
+		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/edit");
+
+		mav.addObject("semesters", studentService.getTranscript(docket));
+
 		return mav;
 	}
 
@@ -295,48 +307,54 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		}
 	}
 
-	@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.GET)
-	public ModelAndView editGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
-	                              @PathVariable Integer docket, @PathVariable Integer courseId, @PathVariable Timestamp modified,
-								  @PathVariable BigDecimal grade, @PathVariable String courseName,
-								  RedirectAttributes redirectAttributes){
-		ModelAndView mav = new ModelAndView("editGrade");
-		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
-		gradeForm.setGrade(grade); //Set the old grade (to be displayed in the edit view)
-		gradeForm.setDocket(docket);
-		gradeForm.setCourseId(courseId);
-		gradeForm.setModified(modified);
-		gradeForm.setCourseName(courseName); //Avoid the @NotBlank validation
+//	@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.GET)
+//	public ModelAndView editGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
+//	                              @PathVariable Integer docket, @PathVariable Integer courseId, @PathVariable Timestamp modified,
+//								  @PathVariable BigDecimal grade, @PathVariable String courseName,
+//								  RedirectAttributes redirectAttributes){
+//		ModelAndView mav = new ModelAndView("editGrade");
+//		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
+//		gradeForm.setGrade(grade); //Set the old grade (to be displayed in the edit view)
+//		gradeForm.setDocket(docket);
+//		gradeForm.setCourseId(courseId);
+//		gradeForm.setModified(modified);
+//		gradeForm.setCourseName(courseName); //Avoid the @NotBlank validation
+//
+//		mav.addObject("docket", docket);
+//		mav.addObject("courseId", courseId);
+//		mav.addObject("courseName", courseName);
+//
+//		return mav;
+//	}
 
-		mav.addObject("docket", docket);
-		mav.addObject("courseId", courseId);
-		mav.addObject("courseName", courseName);
-
-		return mav;
-	}
-
-	@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.POST)
+	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.POST)
 	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
-	                              @PathVariable Integer docket, @PathVariable Integer courseId,
-	                              @PathVariable Timestamp modified, @PathVariable BigDecimal grade,
-								  @PathVariable String courseName,
-	                              RedirectAttributes redirectAttributes){
+	                              @PathVariable Integer docket, RedirectAttributes redirectAttributes){
+
 		if (errors.hasErrors()){
-			return editGrade(gradeForm, docket, courseId, modified, grade, courseName, null);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
+			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message",
+					messageSource.getMessage("editGrade_fail",
+							new Object[] {},
+							Locale.getDefault()));
+
+			return new ModelAndView("redirect:/students/" + docket + "/grades");
 		}
 
 		Grade newGrade = gradeForm.build();
 
-		Result result = studentService.editGrade(newGrade, grade);
+		Result result = studentService.editGrade(newGrade, gradeForm.getOldGrade());
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return editGrade(gradeForm, docket, courseId, modified, grade, courseName,redirectAttributes);
+			return new ModelAndView("redirect:/students/" + docket + "/grades");
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message",
 				messageSource.getMessage("editGrade_success",
-						null,
+						new Object[] {},
 						Locale.getDefault()));
 		return new ModelAndView("redirect:/students/" + docket + "/grades");
 
@@ -351,7 +369,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message",
 					messageSource.getMessage("addGrade_fail",
-							null,
+							new Object[] {},
 							Locale.getDefault()));
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
 			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
@@ -374,11 +392,26 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addGrade_success",
-					null,
+					new Object[] {},
 					Locale.getDefault()));
 		}
 
 		return new ModelAndView("redirect:/students/" + docket + "/courses");
+
+		/********************/
+
+/*		*//*gradeForm.setDocket(docket);*//*
+		Grade grade = gradeForm.build();
+		Result result = studentService.addGrade(grade);
+		if(!result.equals(Result.OK)) {
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			return addGrade(gradeForm, redirectAttributes);
+		}
+		redirectAttributes.addFlashAttribute("alert", "success");
+		redirectAttributes.addFlashAttribute("message", "La nota se ha guardado correctamente.");
+		*//* +++xchange redirect *//*
+		return new ModelAndView("redirect:/students/" + docket + "/info");*/
 	}
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)

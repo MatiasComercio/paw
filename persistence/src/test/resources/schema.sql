@@ -80,15 +80,6 @@ CREATE TABLE IF NOT EXISTS correlative (
 	FOREIGN KEY (correlative_id) REFERENCES course ON UPDATE CASCADE
 );
 
--- +++xcheck: compare to main/resources/squema.sql
-CREATE TABLE IF NOT EXISTS roles (
-	dni INTEGER NOT NULL,
-role VARCHAR(50) NOT NULL,
-
-PRIMARY KEY (dni, role),
-FOREIGN KEY (dni) REFERENCES users ON DELETE CASCADE ON UPDATE CASCADE
-);
-
 
 CREATE TABLE IF NOT EXISTS role (
 role VARCHAR(50) NOT NULL PRIMARY KEY

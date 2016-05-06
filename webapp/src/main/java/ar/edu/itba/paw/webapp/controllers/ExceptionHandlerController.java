@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 @ControllerAdvice /* Global Handler */
+/* +++xcheck +++xchange: used when changing a @PathVariable --> BadCast for example */
 public class ExceptionHandlerController {
 
 	private static final String PAGE_HEADER =

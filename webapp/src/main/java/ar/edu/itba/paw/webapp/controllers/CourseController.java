@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
+import ar.edu.itba.paw.webapp.forms.CorrelativeForm;
 import ar.edu.itba.paw.webapp.forms.CourseFilterForm;
 import ar.edu.itba.paw.webapp.forms.CourseForm;
 import ar.edu.itba.paw.shared.CourseFilter;
@@ -31,8 +32,8 @@ public class CourseController {
 	private static final String COURSES_SECTION = "courses";
 
 	/* +++xtodo TODO: why not final? */
-	private static String TASK_FORM_ADD = "add";
-	private static String TASK_FORM_EDIT = "edit";
+	private static final String TASK_FORM_ADD = "add";
+	private static final String TASK_FORM_EDIT = "edit";
 
 	@Autowired
 	private MessageSource messageSource;
