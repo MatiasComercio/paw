@@ -1,5 +1,8 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.Address;
+import ar.edu.itba.paw.shared.Result;
+
 public interface AddressService {
 
     /**
@@ -9,4 +12,13 @@ public interface AddressService {
      *          false in other case
      */
     boolean hasAddress(Integer dni);
+
+    /**
+     * Creates a given address mapped to a user's dni
+     * @param dni the user's dni
+     * @param address the address' data
+     * @return OK if the operation was successful;
+     *      +++xdocument
+     */
+    Result createAddress(Integer dni, Address address);
 }
