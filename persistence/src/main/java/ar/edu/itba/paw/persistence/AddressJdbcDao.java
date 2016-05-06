@@ -13,10 +13,25 @@ import javax.sql.DataSource;
 public class AddressJdbcDao implements AddressDao {
     private static final String ADDRESS_TABLE = "address";
 
+
+
+    /* POSTGRESQL WILDCARDS */
+    private static final String AND = "AND";
+    private static final String EVERYTHING = "*";
+    private static final String EQUALS = "=";
+    private static final String GIVEN_PARAMETER = "?";
+    /* /POSTGRESQL WILDCARDS */
+
+    private static final String COUNT_ADDRESS;
+
+    static {
+        COUNT_ADDRESS =
+
+    }
+
     private final JdbcTemplate jdbcTemplate;
 
     private final SimpleJdbcInsert addressInsert;
-
 
     public AddressJdbcDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
