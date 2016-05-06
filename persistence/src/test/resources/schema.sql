@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
 	PRIMARY KEY (dni),
 	UNIQUE (email),
 	CHECK (dni > 0),
-	CHECK (birthday <= current_timestamp)
+	CHECK (birthday <= current_timestamp),
 	FOREIGN KEY (role) REFERENCES role ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
