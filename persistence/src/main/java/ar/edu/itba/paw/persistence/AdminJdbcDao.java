@@ -9,6 +9,7 @@ import ar.edu.itba.paw.shared.Result;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -223,6 +224,21 @@ public class AdminJdbcDao implements AdminDao {
             return Result.ERROR_UNKNOWN;
         }
         return adminRowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+    }
+
+    @Override
+    public Result update(Integer dni, Admin admin) {
+        try {
+            jdbcTemplate.update(UPDATE_ADMIN, admin.getDni(), admin.getFirstName(), admin.getLastName(), dni);
+        } catch (DuplicateKeyException e){
+            return Result.ADMIN_EXISTS_DNI;
+        } catch (final DataIntegrityViolationException e) {
+            return Result.INVALID_INPUT_PARAMETERS;
+        } catch(final DataAccessException e) {
+            return Result.ERROR_UNKNOWN;
+        }
+
+        return Result.OK;
     }
 
     /* Private Static Methods */
