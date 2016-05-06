@@ -85,7 +85,7 @@
                     <tr>
                         <td>${ grade.courseId }</td>
                         <td>${ grade.courseName }</td>
-                        <td><c:if test="${grade.grade == null}">-</c:if>${ grade.grade }</td>
+                        <td><c:if test="${grade.taking}">Cursando</c:if>${ grade.grade }</td>
                         <td><c:if test="${grade.modified == null}">-</c:if>${ grade.modified }</td>
                         <td>
                             <a class="btn btn-default btn-xs" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">

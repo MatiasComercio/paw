@@ -213,7 +213,7 @@ public class StudentServiceImpl implements StudentService {
         final List<Course> coursesTaken = getStudentCourses(docket, null);
         for (Course course : coursesTaken){
             int semesterIndex = course.getSemester() - 1;
-            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).build());
+            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).taking(true).build());
         }
 
         //Complete with the rest of the courses that are not taken
