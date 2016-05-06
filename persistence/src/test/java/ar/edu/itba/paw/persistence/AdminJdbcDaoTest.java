@@ -184,6 +184,22 @@ public class AdminJdbcDaoTest {
 
     @Test
     public void deleteAdmin() {
+        Result result;
+        final Map<String, Object> adminArgs = new HashMap<>();
 
+        /**
+         * Delete non existant admin
+         */
+        result = adminJdbcDao.deleteAdmin(DNI_1);
+        assertEquals(Result.ERROR_UNKNOWN, result);
+
+        /**
+         * Delete an existant admin
+         */
+        adminArgs.put(ADMIN__DNI_COLUMN, DNI_1);
+        adminInsert.execute(adminArgs);
+
+        result = adminJdbcDao.deleteAdmin(DNI_1);
+        assertEquals(Result.ERROR_UNKNOWN, result);
     }
 }
