@@ -206,6 +206,17 @@ public class AddressJdbcDaoTest {
                 .zipCode(ADDRESS__ZIP_CODE_VALUE)
                 .build();
 
+        /**
+         * Update address of existant user
+         */
         result = addressJdbcDao.updateAddress(DNI_1, address);
+        assertEquals(Result.OK, result);
+
+
+        /**
+         * Update address of non existent user
+         */
+        result = addressJdbcDao.updateAddress(DNI_2, address);
+        assertEquals(Result.ERROR_UNKNOWN, result);
     }
 }
