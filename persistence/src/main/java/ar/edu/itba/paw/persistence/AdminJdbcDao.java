@@ -254,7 +254,7 @@ public class AdminJdbcDao implements AdminDao {
         private static final String FILTER_GENRE = USER__GENRE_COLUMN;
 
         private final StringBuffer query = new StringBuffer(FILTER_QUERY);
-        private boolean filterApplied = true;
+        private boolean filterApplied = false;
         private final List<String> filters;
 
         private final FilterQueryMapper filterBySubWord = (filter, filterName) -> {
