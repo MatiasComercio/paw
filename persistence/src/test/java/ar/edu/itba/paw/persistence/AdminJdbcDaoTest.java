@@ -80,6 +80,7 @@ public class AdminJdbcDaoTest {
     private static final String LAST_NAME_2 = "MaYan";
     private static final String LAST_NAME_2_EXPECTED = "Mayan";
     private static final String EMAIL_2 = "blihuen@bait.edu.ar";
+    private static final String PASSWORD_2 = "pass2";
 
     private static final String ROLE_1 = "ADMIN";
     private static final String ROLE_2 = "STUDENT";
@@ -110,6 +111,7 @@ public class AdminJdbcDaoTest {
 
         final Map<String, Object> roleArgs = new HashMap<>();
         final Map<String, Object> userArgs = new HashMap<>();
+        final Map<String, Object> adminArgs = new HashMap<>();
 
         roleArgs.put(ROLE__ROLE_COLUMN, ROLE_1);
         roleInsert.execute(roleArgs);
@@ -124,6 +126,17 @@ public class AdminJdbcDaoTest {
         userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
         userArgs.put(USER__ROLE_COLUMN, ROLE_1);
         userInsert.execute(userArgs);
+        userArgs.put(USER__DNI_COLUMN, DNI_2);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
+        userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_2);
+        userArgs.put(USER__ROLE_COLUMN, ROLE_2);
+        userInsert.execute(userArgs);
+
+        /* Insertion of Admin */
+        adminArgs.put(ADMIN__DNI_COLUMN, DNI_1);
+        adminInsert.execute(adminArgs);
     }
 
     @Test
@@ -141,9 +154,6 @@ public class AdminJdbcDaoTest {
         /**
          *  Table with one admin
          */
-        /* Insertion of Admin */
-        adminArgs.put(ADMIN__DNI_COLUMN, DNI_1);
-        adminInsert.execute(adminArgs);
 
         admins = adminJdbcDao.getAllAdmins();
         assertNotNull(admins);
@@ -174,12 +184,12 @@ public class AdminJdbcDaoTest {
 
     @Test
     public void getByDni() {
-
     }
 
     @Test
     public void getByFilter() {
-
+        final Map<String, Object> adminArgs = new HashMap<>();
+        List<Admin> admins;
     }
 
     @Test
