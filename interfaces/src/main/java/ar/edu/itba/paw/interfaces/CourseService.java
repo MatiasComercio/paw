@@ -130,4 +130,10 @@ public interface CourseService {
      */
     List<Course> getAvailableAddCorrelatives(Integer courseId, CourseFilter courseFilter);
 
+    /**
+     * Get the total credits of the plan.
+     * @return Integer indicating the total credits of the plan.
+     */
+    Integer getTotalPlanCredits();
+
 }

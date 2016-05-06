@@ -225,6 +225,7 @@ public class StudentJdbcDao implements StudentDao {
 			new Course.Builder(resultSet.getInt(COURSE__ID_COLUMN))
 					.name(resultSet.getString(COURSE__NAME_COLUMN))
 					.credits(resultSet.getInt(COURSE__CREDITS_COLUMN))
+                    .semester(resultSet.getInt(COURSE__SEMESTER_COLUMN))
 					.build();
 
 	private final RowMapper<Student.Builder> studentBasicRowMapper = this::getStudentBasicInfo;

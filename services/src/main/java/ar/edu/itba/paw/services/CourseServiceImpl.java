@@ -59,6 +59,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Integer getTotalPlanCredits() {
+        return courseDao.getTotalPlanCredits();
+    }
+
+    @Override
     public Result deleteCourse(Integer courseId) {
 
         if(courseId<0){

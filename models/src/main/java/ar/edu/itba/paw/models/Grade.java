@@ -12,6 +12,7 @@ public class Grade {
 	private final String courseName;
 	private final BigDecimal grade;
 	private final Timestamp modified;
+    private final Boolean taking;
 
 	private Grade(final Builder builder) {
 		this.studentDocket = builder.studentDocket;
@@ -21,6 +22,7 @@ public class Grade {
 		this.courseName = builder.courseName;
 		this.grade = builder.grade;
 		this.modified = builder.modified;
+        this.taking = builder.taking;
 	}
 
 	public int getStudentDocket() {
@@ -48,6 +50,10 @@ public class Grade {
 	}
 
 	public Timestamp getModified() { return modified; }
+
+    public Boolean getTaking() {
+        return taking;
+    }
 
 
 	@Override
@@ -86,6 +92,7 @@ public class Grade {
 		private String studentLastName = "";
 		private String courseName = "";
 		private Timestamp modified;
+        private Boolean taking = false;
 
 		public Builder(final int studentDocket, final int courseId, final BigDecimal grade) {
 			this.studentDocket = studentDocket;
@@ -112,6 +119,11 @@ public class Grade {
 			this.modified = modified;
 			return this;
 		}
+
+        public Builder taking(final Boolean taking){
+            this.taking = taking;
+            return this;
+        }
 
 		public Grade build() {
 			return new Grade(this);

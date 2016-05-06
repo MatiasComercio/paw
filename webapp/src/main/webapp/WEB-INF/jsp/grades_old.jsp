@@ -28,10 +28,45 @@
                 </div>
             </div>
 
-            <div class="col-md-1">
+            <%--<div class="col-md-1">--%>
                 <%--<a href="/students/${student.docket}/grades/add" id="addGrade" type="button" class="btn btn-default">Agregar Nota</a>--%><%-- implemented in /students/{docket}/courses --%>
-            </div>
+            <%--</div>--%>
+            <!-- Transcript details -->
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <div class="well">
+                        <div class="row">
 
+                            <div class="row">
+                                <div class="col-xs-6 right-effect">
+                                    <strong>Créditos aprobados</strong>
+                                </div>
+                                <div class="col-xs-6">
+                                    ${passed_credits}/${total_credits}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-6 right-effect">
+                                    <strong>Porcentaje de carrera completado</strong>
+                                </div>
+                                <div class="col-xs-6">
+                                    ${percentage}%
+                                </div>
+                            </div>
+                            <div class="row">
+                               <div class="col-xs-8">
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" style="width: ${percentage}%">
+                                            <span class="sr-only">${percentage}% Completado</span>
+                                        </div>
+                                    </div>
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /Transcript details -->
             <!-- content -->
             <c:forEach items="${semesters}" var="semester" varStatus="loop">
             <h2>Cuatrimeste ${loop.index+1}</h2>
@@ -50,7 +85,7 @@
                     <tr>
                         <td>${ grade.courseId }</td>
                         <td>${ grade.courseName }</td>
-                        <td><c:if test="${grade.grade == null}">-</c:if>${ grade.grade }</td>
+                        <td><c:if test="${grade.taking}">Cursando</c:if>${ grade.grade }</td>
                         <td><c:if test="${grade.modified == null}">-</c:if>${ grade.modified }</td>
                         <td>
                             <a class="btn btn-default btn-xs" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">
