@@ -66,6 +66,7 @@ public class AdminJdbcDao implements AdminDao {
     private static final String GET_ADMINS_WITH_ADDRESS;
     private static final String GET_BY_DNI;
     private static final String GET_ADMINS;
+    private static final String DELETE_ADMIN;
 
     static {
         GET_ADMINS =
@@ -88,6 +89,8 @@ public class AdminJdbcDao implements AdminDao {
                         + where(tableCol(ADMIN_TABLE, ADMIN__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);
 
         DELETE_ADMIN =
+                deleteFrom(ADMIN_TABLE)
+                        + where(ADMIN__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
 
 
     }
