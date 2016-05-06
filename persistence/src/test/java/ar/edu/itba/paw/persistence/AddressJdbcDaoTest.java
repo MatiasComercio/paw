@@ -162,6 +162,7 @@ public class AddressJdbcDaoTest {
 
     @Test
     public void createAddress() {
+        Result result;
         Address address = new Address.Builder(
                 ADDRESS__COUNTRY_VALUE,
                 ADDRESS__CITY_VALUE,
@@ -173,12 +174,14 @@ public class AddressJdbcDaoTest {
         /**
          * Insert address for non existent user
          */
-        Result result = addressJdbcDao.createAddress(DNI_2, address);
+        result = addressJdbcDao.createAddress(DNI_2, address);
         assertEquals(Result.DNI_NOT_EXISTS, result);
 
         /**
          * Insert address for existent user
          */
+        result = addressJdbcDao.createAddress(DNI_1, address);
+        assertEquals(Result.OK, result);
     }
 
     public void updateAddress() {
