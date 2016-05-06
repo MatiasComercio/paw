@@ -57,4 +57,13 @@ public interface UserDao {
 	 * 			else ERROR_UNKNOWN for an unknown error;
      */
 	Result changePassword(int dni, String prevPassword, String newPassword);
+
+	/**
+	 * Update the user
+	 * @param dni the user's dni
+	 * @param user the new user's details
+	 * @return OK if the user's data was changed correctly
+	 * 		+++xdocument
+	 */
+	Result update(Integer dni, User user);
 }

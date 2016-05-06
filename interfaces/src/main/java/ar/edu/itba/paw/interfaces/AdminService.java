@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.users.Admin;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 
@@ -38,4 +39,21 @@ public interface AdminService {
      * an empty list.
      */
     List<Admin> getByFilter(AdminFilter adminFilter);
+
+    /**
+     * Delete the admin that matches the given dni.
+     * @param dni The admin's dni
+     * @return 	OK if the admin was deleted;
+     * 		ERROR_DNI_OUT_OF_BOUNDS if the dni is invalid;
+     * 		ERROR_UNKNOWN else;
+     */
+    Result deleteAdmin(Integer dni);
+
+    /**
+     * Update an admin
+     * @param dni  The dni of the old admin
+     * @param admin The new student
+     * @return The Result code of update
+     */
+    Result update(Integer dni, Admin admin);
 }

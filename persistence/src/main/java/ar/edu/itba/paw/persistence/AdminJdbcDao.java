@@ -9,6 +9,7 @@ import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -51,7 +52,10 @@ public class AdminJdbcDao implements AdminDao {
 				select(ADMIN__DNI_COLUMN) +
 						from(ADMIN_TABLE);
 
-	}
+        DELETE_ADMIN =
+                deleteFrom(ADMIN_TABLE)
+                        + where(ADMIN__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
+    }
 
 	private final JdbcTemplate jdbcTemplate;
 
@@ -154,7 +158,26 @@ public class AdminJdbcDao implements AdminDao {
 	    return jdbcTemplate.query(queryFilter.getQuery(), getByFilterRowMapper, queryFilter.getFilters().toArray());
     }
 
+    @Override
+    public Result deleteAdmin(Integer dni) {
+        int adminRowsAffected;
+
+        try {
+            adminRowsAffected = jdbcTemplate.update(DELETE_ADMIN, dni);
+        } catch (DataAccessException dae) {
+            return Result.ERROR_UNKNOWN;
+        }
+        return adminRowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+    }
+
     /* Private Static Methods */
+    private static String deleteFrom(String tableName) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("DELETE FROM ");
+        stringBuilder.append(tableName);
+        return stringBuilder.toString();
+    }
+
     private static String select(final String... cols) {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("SELECT ");

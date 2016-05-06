@@ -9,6 +9,7 @@ import ar.edu.itba.paw.models.users.User;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -65,6 +66,7 @@ public class UserJdbcDao implements UserDao {
 	private static final String GET_EMAILS;
 	private static final String DELETE_USER;
 	private static final String GET_ROLE_AUTHORITIES;
+	private static final String UPDATE_USER;
 
 	static {
 /*		GET_BY_DNI =
@@ -90,14 +92,25 @@ public class UserJdbcDao implements UserDao {
 
 		UPDATE_PASSWORD =
 				update(USERS_TABLE) +
-						set(USER__PWD_COLUMN, EQUALS, GIVEN_PARAMETER) +
+						set(USER__PWD_COLUMN, GIVEN_PARAMETER) +
 						where(tableCol(USERS_TABLE, USER__DNI_COLUMN), EQUALS, GIVEN_PARAMETER
 						,AND, tableCol(USERS_TABLE, USER__PWD_COLUMN), EQUALS, GIVEN_PARAMETER);
+
+		UPDATE_USER =
+				update(USERS_TABLE) +
+						set(USER__FIRST_NAME_COLUMN, GIVEN_PARAMETER
+						, 	USER__LAST_NAME_COLUMN, GIVEN_PARAMETER
+						,	USER__EMAIL_COLUMN,	GIVEN_PARAMETER
+						,	USER__BIRTHDAY_COLUMN, GIVEN_PARAMETER
+						,	USER__GENRE_COLUMN, GIVEN_PARAMETER
+						) +
+						where(USER__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
 
 		GET_ROLE_AUTHORITIES =
 				select(ROLE_AUTHORITIES__AUTHORITY_COLUMN) +
 						from(ROLE_AUTHORITIES_TABLE) +
 						where(ROLE_AUTHORITIES__ROLE_COLUMN, EQUALS, GIVEN_PARAMETER);
+
 	}
 
 	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(USER__EMAIL_COLUMN);
@@ -222,6 +235,30 @@ public class UserJdbcDao implements UserDao {
 		}
 
 		return rowsAffected == 1 ? Result.OK : Result.INVALID_INPUT_PARAMETERS;
+	}
+
+	@Override
+	public Result update(Integer dni, User user) {
+		int rowsAffected;
+
+		try {
+			/**
+			 * +++xnotfinished (update address)
+			 */
+			rowsAffected = jdbcTemplate.update(UPDATE_USER,
+					user.getFirstName(),
+					user.getLastName(),
+					user.getEmail(),
+					user.getBirthday(),
+					user.getGenre(),
+					dni);
+		} catch (final DataIntegrityViolationException e) {
+			return Result.INVALID_INPUT_PARAMETERS;
+		} catch(final DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 	}
 
 
@@ -384,10 +421,18 @@ public class UserJdbcDao implements UserDao {
 
 
 	private static String set(final String... cols) {
+		int i = 0;
+		final int lCols = cols.length;
 		final StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append("SET ");
 		for(String col : cols) {
 			stringBuilder.append(col);
+			if(i % 2 == 0) {
+				stringBuilder.append(EQUALS);
+			} else if(i < lCols -1) {
+				stringBuilder.append(" ,");
+			}
+			i++;
 		}
 		stringBuilder.append(" ");
 		return stringBuilder.toString();

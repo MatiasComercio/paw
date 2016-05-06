@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private AdminService adminService;
 
+	@Autowired
+	private AddressService addressService;
+
 	@Override
 	public List<Role> getRole(final int dni) {
 		return userDao.getRole(dni);
@@ -71,6 +74,29 @@ public class UserServiceImpl implements UserService {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
 		}
 		return userDao.changePassword(dni, prevPassword, newPassword);
+	}
+
+	@Override
+	public Result update(Integer dni, User user) {
+		if(dni <= 0) {
+			return Result.ERROR_DNI_OUT_OF_BOUNDS;
+		}
+
+		if(addressService.hasAddress(dni)) {
+			addressService.updateAddress(dni, user.getAddress());
+		} else {
+			addressService.createAddress(dni, user.getAddress());
+		}
+
+		/**
+		 * +++xfinish
+		 */
+		return userDao.update(dni, user);
+	}
+
+	@Override
+	public Result create(User user) {
+		return userDao.create(user);
 	}
 
 	@Override
