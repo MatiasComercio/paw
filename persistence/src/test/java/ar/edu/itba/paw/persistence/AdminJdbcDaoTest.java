@@ -202,6 +202,10 @@ public class AdminJdbcDaoTest {
 
         admin = adminJdbcDao.getByDni(DNI_1);
         assertNotNull(admin);
+        assertEquals(DNI_1, admin.getDni());
+        assertEquals(FIRST_NAME_1_EXPECTED, admin.getFirstName());
+        assertEquals(LAST_NAME_1_EXPECTED, admin.getLastName());
+        assertEquals(EMAIL_1, admin.getEmail());
     }
 
     /**
