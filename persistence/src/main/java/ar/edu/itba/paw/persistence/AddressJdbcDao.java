@@ -165,7 +165,7 @@ public class AddressJdbcDao implements AddressDao {
 
     private static String count(final String col) {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("COUNT( ");
+        stringBuilder.append("COUNT(");
         stringBuilder.append(col);
         stringBuilder.append(")");
         return stringBuilder.toString();
