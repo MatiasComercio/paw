@@ -9,7 +9,6 @@
     </title>
     <jsp:include page="base/head.jsp" />
 </head>
-<>
 
 <div id="wrapper">
 

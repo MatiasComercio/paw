@@ -110,6 +110,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	                                     RedirectAttributes redirectAttributes) {
 		final Student student = studentService.getGrades(docket);
 		final ModelAndView mav;
+		final Integer totalCredits, passedCredits, percentage;
 
 		if (student == null) {
 			return new ModelAndView("forward:/errors/404.html");
@@ -127,8 +128,14 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		mav.addObject("subsection_grades", true);
 		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/edit");
 
-		mav.addObject("semesters", studentService.getTranscript(docket));
+		totalCredits = studentService.getTotalPlanCredits();
+		passedCredits = studentService.getPassedCredits(docket);
+		percentage = (!totalCredits.equals(0))? (passedCredits * 100)/totalCredits: 0;
 
+		mav.addObject("semesters", studentService.getTranscript(docket));
+		mav.addObject("total_credits", totalCredits);
+		mav.addObject("passed_credits", passedCredits);
+		mav.addObject("percentage", percentage);
 		return mav;
 	}
 
