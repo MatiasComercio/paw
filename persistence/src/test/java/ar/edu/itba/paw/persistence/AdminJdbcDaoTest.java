@@ -310,6 +310,6 @@ public class AdminJdbcDaoTest {
         adminInsert.execute(adminArgs);
 
         result = adminJdbcDao.deleteAdmin(DNI_1);
-        assertEquals(Result.ERROR_UNKNOWN, result);
+        assertEquals(Result.OK, result);
     }
 }
