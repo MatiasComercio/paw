@@ -1,13 +1,8 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.interfaces.AdminService;
-import ar.edu.itba.paw.interfaces.StudentService;
-import ar.edu.itba.paw.interfaces.UserDao;
-import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.models.users.Admin;
-import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.models.users.User;
+import ar.edu.itba.paw.interfaces.*;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +15,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDao userDao;
 
-	@Autowired
-	private StudentService studentService;
-
-	@Autowired
-	private AdminService adminService;
-
-	@Autowired
+	@Autowired /* +++xremove: this should not be here: smells like an action that we should be doing at our UserDao */
 	private AddressService addressService;
 
 	@Override
@@ -92,11 +81,6 @@ public class UserServiceImpl implements UserService {
 		 * +++xfinish
 		 */
 		return userDao.update(dni, user);
-	}
-
-	@Override
-	public Result create(User user) {
-		return userDao.create(user);
 	}
 
 	@Override

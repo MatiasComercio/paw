@@ -41,6 +41,7 @@ public class AdminJdbcDao implements AdminDao {
 //    private static final String GET_ADMINS;
 	private static final String GET_BY_DNI;
 	private static final String GET_ADMIN_DNI_LIST;
+	private static final String DELETE_ADMIN;
 
 	static {
 		GET_BY_DNI =
