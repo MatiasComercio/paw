@@ -14,7 +14,16 @@ public class AddressJdbcDao implements AddressDao {
 
     private static final String ADDRESS_TABLE = "address";
 
-
+    private static final String ADDRESS__DNI_COLUMN = "dni";
+    private static final String ADDRESS__COUNTRY_COLUMN = "country";
+    private static final String ADDRESS__CITY_COLUMN = "city";
+    private static final String ADDRESS__NEIGHBORHOOD_COLUMN = "neighborhood";
+    private static final String ADDRESS__STREET_COLUMN = "street";
+    private static final String ADDRESS__NUMBER_COLUMN = "number";
+    private static final String ADDRESS__FLOOR_COLUMN = "floor";
+    private static final String ADDRESS__DOOR_COLUMN = "door";
+    private static final String ADDRESS__TELEPHONE_COLUMN = "telephone";
+    private static final String ADDRESS__ZIP_CODE_COLUMN = "zip_code";
 
     /* POSTGRESQL WILDCARDS */
     private static final String AND = "AND";
