@@ -7,7 +7,6 @@ import ar.edu.itba.paw.models.Authority;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.models.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -66,8 +65,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			return null;
 		}
 
-		final StudentDetails.Builder studentDetailsBuilder =
-				new StudentDetails.Builder(student.getDocket(), student.getDni());
+		final StudentSessionDetails.Builder studentDetailsBuilder =
+				new StudentSessionDetails.Builder(student.getDocket(), student.getDni());
 		studentDetailsBuilder
 				.firstName(student.getFirstName())
 				.lastName(student.getLastName())
@@ -86,8 +85,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			return null;
 		}
 
-		final AdminDetails.Builder adminDetailsBuilder =
-				new AdminDetails.Builder(admin.getDni());
+		final AdminSessionDetails.Builder adminDetailsBuilder =
+				new AdminSessionDetails.Builder(admin.getDni());
 		adminDetailsBuilder
 				.firstName(admin.getFirstName())
 				.lastName(admin.getLastName())

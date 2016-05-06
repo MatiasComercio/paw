@@ -100,6 +100,12 @@
         <artifactId>spring-security-config</artifactId>
         <version>${spring.security.version}</version>
       </dependency>
+      <dependency> <!-- Added for the secutiry/tags library, as mentioned here:
+      http://stackoverflow.com/questions/16099840/spring-security-taglib-cannot-be-found#answer-19896543-->
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-taglibs</artifactId>
+        <version>${spring.security.version}</version>
+      </dependency>
       <!-- /Spring Security -->
       <!--logback-->
       <dependency>

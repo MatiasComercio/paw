@@ -11,10 +11,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AdminDetails extends User implements UserSessionDetails {
+public class AdminSessionDetails extends User implements UserSessionDetails {
     private Admin admin;
 
-    private AdminDetails(final Builder builder) {
+    private AdminSessionDetails(final Builder builder) {
         super (
                 String.valueOf(builder.admin.getDni()),
                 builder.password,
@@ -158,9 +158,9 @@ public class AdminDetails extends User implements UserSessionDetails {
             return this;
         }
 
-        public AdminDetails build() {
+        public AdminSessionDetails build() {
             admin = adminBuilder.build();
-            return new AdminDetails(this);
+            return new AdminSessionDetails(this);
         }
     }
 }

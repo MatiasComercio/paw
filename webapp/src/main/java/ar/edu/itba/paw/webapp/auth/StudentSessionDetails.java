@@ -17,10 +17,10 @@ import java.util.Set;
 /**
  * Adapter class: Adapts our Student model to be a Spring.User
  */
-public class StudentDetails extends User implements UserSessionDetails {
+public class StudentSessionDetails extends User implements UserSessionDetails {
 	private Student student;
 
-	private StudentDetails(final Builder builder) {
+	private StudentSessionDetails(final Builder builder) {
 		super (
 				String.valueOf(builder.student.getDni()),
 				builder.password,
@@ -184,9 +184,9 @@ public class StudentDetails extends User implements UserSessionDetails {
 			return this;
 		}
 
-		public StudentDetails build() {
+		public StudentSessionDetails build() {
 			student = studentBuilder.build();
-			return new StudentDetails(this);
+			return new StudentSessionDetails(this);
 		}
 	}
 }

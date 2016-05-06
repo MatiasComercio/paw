@@ -1,6 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page language="java" pageEncoding="UTF-8"%>
+<%--See: http://docs.spring.io/spring-security/site/docs/4.1.0.RELEASE/reference/htmlsingle/#taglibs-authorize--%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
 <!-- Navigation -->
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -21,20 +24,26 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> ${user.fullName}<strong class="caret"></strong></a>
                 <ul class="dropdown-menu" role="menu">
-                    <%--+++xtodo: decide this --%>
-                    <%--<li>--%>
-                        <%--<a href="<c:url value="${userInfo}" />"><i class="fa fa-fw fa-user"></i> <spring:message code="profile"/></a>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                        <%--<a href="<c:url value="${userCourses}" />"><i class="fa fa-fw fa-university"></i> <spring:message code="courses"/></a>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                        <%--<a href="<c:url value="${userGrades}" />"><i class="fa fa-fw fa-graduation-cap"></i> <spring:message code="grades"/></a>--%>
-                    <%--</li>--%>
-                    <%--<li>--%>
-                        <%--<a href="<c:url value="${userInscription}" />"><i class="fa fa-fw fa-list-alt"></i> <spring:message code="inscriptions"/></a>--%>
-                    <%--</li>--%>
-                    <%--<li class="divider"></li>--%>
+                        <%--+++xtodo: decide this --%>
+                    <c:set var="profileUrl" value="/students/${user.id}/info" />
+                    <sec:authorize url="/admins">
+                        <c:set var="profileUrl" value="/admins/${user.id}/info" />
+                    </sec:authorize>
+                    <li>
+                        <a href="<c:url value="${profileUrl}" />"><i class="fa fa-fw fa-user"></i> <spring:message code="profile"/></a>
+                    </li>
+                    <sec:authorize access="hasAuthority('ROLE_STUDENT')">
+                        <li>
+                            <a href="<c:url value="/students/${user.id}/courses" />"><i class="fa fa-fw fa-university"></i> <spring:message code="courses"/></a>
+                        </li>
+                        <li>
+                            <a href="<c:url value="/students/${user.id}/grades" />"><i class="fa fa-fw fa-graduation-cap"></i> <spring:message code="grades"/></a>
+                        </li>
+                        <li>
+                            <a href="<c:url value="/students/${user.id}/inscription" />"><i class="fa fa-fw fa-list-alt"></i> <spring:message code="inscriptions"/></a>
+                        </li>
+                        <li class="divider"></li>
+                    </sec:authorize>
                         <%--<li>
                             <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
                         </li>--%>
@@ -54,49 +63,29 @@
     <%--@elvariable id="section" type="ar.edu.itba.paw.webapp.controllers"--%>
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
-            <c:if test="${user.hasAuthority('VIEW_ADMIN')}">
-                <c:choose>
-                    <c:when test="${section=='admins'}">
-                        <li class="active" >
-                    </c:when>
-                    <c:otherwise>
-                        <li>
-                    </c:otherwise>
-                </c:choose>
-                <a href="<c:url value="/admins" />"><i class="fa fa-lock" aria-hidden="true"></i> <spring:message code="admins"/></a>
-                </li>
-            </c:if>
-
-
             <c:choose>
-            <c:when test="${section=='students'}">
-            <li class="active" >
+                <c:when test="${section=='admins'}">
+                    <c:set var="adminsActive" value="active" />>
                 </c:when>
-                <c:otherwise>
-            <li>
-                </c:otherwise>
-                </c:choose>
+                <c:when test="${section=='students'}">
+                    <c:set var="studentsActive" value="active" />
+                </c:when>
+                <c:when test="${section=='courses'}">
+                    <c:set var="coursesActive" value="active" />
+                </c:when>
+            </c:choose>
+            <sec:authorize url="/admins">
+                <li class="${adminsActive}">
+                    <a href="<c:url value="/admins" />"><i class="fa fa-lock" aria-hidden="true"></i> <spring:message code="admins"/></a>
+                </li>
+            </sec:authorize>
+            <li class="${studentsActive}">
                 <a href="<c:url value="/students" />"><i class="fa fa-fw fa-users"></i> <spring:message code="students"/></a>
             </li>
-
-            <c:choose>
-            <c:when test="${section=='courses'}">
-            <li class="active">
-                </c:when>
-                <c:otherwise>
-            <li>
-                </c:otherwise>
-                </c:choose>
-                <a href="<c:url value="/courses" />"><i class="fa fa-graduation-cap" aria-hidden="true"></i> <spring:message code="courses"/></a>
+            <li class="${coursesActive}">
+                <a href="<c:url value="/courses" />"><i class="fa fa-university" aria-hidden="true"></i> <spring:message code="courses"/></a>
             </li>
-
-
-            <!--<li>
-                <a href="#"><i class="fa fa-fw fa-bar-chart-o"></i> Buscar Alumno</a>
-            </li>
-            <li>
-                <a href="#" />"><i class="fa fa-fw fa-desktop"></i> Buscar Materia</a>
-            </li>
+            <!--
             <li>
             <a href="#"><i class="fa fa-fw fa-wrench"></i> Settings</a>
             </li>
