@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.AddressDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.shared.Result;
 import org.apache.commons.lang3.text.WordUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -64,6 +65,7 @@ public class AddressJdbcDao implements AddressDao {
 
     private final SimpleJdbcInsert addressInsert;
 
+    @Autowired
     public AddressJdbcDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
@@ -95,13 +97,16 @@ public class AddressJdbcDao implements AddressDao {
         /**
          * +++xcheck not checking if the address was correctly inserted
          */
-        addressInsert.executeAndReturnKey(addressArgs);
+        addressInsert.execute(addressArgs);
 
         return Result.OK;
     }
 
     @Override
     public Result updateAddress(Integer dni, Address address) {
+        System.out.println(ADDRESS_UPDATE);
+        System.out.println(COUNT_ADDRESS);
+
         int rowsUpdated = jdbcTemplate.update(ADDRESS_UPDATE,
                 address.getCountry(),
                 address.getCity(),
