@@ -112,7 +112,12 @@ public class UserServiceImpl implements UserService {
 		if(dni <= 0) {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
 		}
-		final boolean resultHasAddress = addressService.hasAddress(dni);
+
+		if(addressService.hasAddress(dni)) {
+			addressService.updateAddress(dni, user.getAddress());
+		} else {
+			addressService.createAddress(dni, user.getAddress());
+		}
 
 		/**
 		 * +++xfinish
