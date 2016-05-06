@@ -79,9 +79,18 @@ public class UserJdbcDao implements UserDao {
 
 		UPDATE_PASSWORD =
 				update(USERS_TABLE) +
-						set(USER__PWD_COLUMN, EQUALS, GIVEN_PARAMETER) +
+						set(USER__PWD_COLUMN, GIVEN_PARAMETER) +
 						where(tableCol(USERS_TABLE, USER__DNI_COLUMN), EQUALS, GIVEN_PARAMETER
 						,AND, tableCol(USERS_TABLE, USER__PWD_COLUMN), EQUALS, GIVEN_PARAMETER);
+
+		UPDATE_USER =
+				update(USERS_TABLE) +
+						set(USER__FIRST_NAME_COLUMN, GIVEN_PARAMETER
+						, 	USER__LAST_NAME_COLUMN, GIVEN_PARAMETER
+						,	USER__EMAIL_COLUMN,	GIVEN_PARAMETER
+						,	USER__BIRTHDAY_COLUMN, GIVEN_PARAMETER
+						,	USER__GENRE_COLUMN, GIVEN_PARAMETER) +
+						where(USER__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
 	}
 
 	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(USER__EMAIL_COLUMN);
