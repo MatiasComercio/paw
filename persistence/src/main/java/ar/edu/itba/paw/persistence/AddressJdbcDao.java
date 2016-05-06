@@ -96,9 +96,6 @@ public class AddressJdbcDao implements AddressDao {
         addressArgs.put(ADDRESS__TELEPHONE_COLUMN, address.getTelephone());
         addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, address.getZipCode());
 
-        /**
-         * +++xcheck not checking if the address was correctly inserted
-         */
         try {
             addressInsert.execute(addressArgs);
         } catch (DataIntegrityViolationException e) {
