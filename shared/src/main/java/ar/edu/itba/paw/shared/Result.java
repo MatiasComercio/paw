@@ -28,7 +28,8 @@ public enum Result {
     CORRELATIVE_CORRELATIVITY_LOOP("La correlatividad generaría un ciclo en el árbol de correlatividades."),
     PASSWORDS_DO_NOT_MATCH("La contraseña y su repetición no coinciden"),
     ADMIN_EXISTS_DNI("Ya existe un administrador con este DNI"),
-    USER_EXISTS_DNI("Ya existe un usuario con este DNI");
+    USER_EXISTS_DNI("Ya existe un usuario con este DNI"),
+    DNI_NOT_EXISTS("El usuario con el DNI correspondiente no existe");
 
 
 
