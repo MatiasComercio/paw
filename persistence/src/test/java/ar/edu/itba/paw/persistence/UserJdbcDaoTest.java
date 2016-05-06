@@ -106,7 +106,7 @@ public class UserJdbcDaoTest {
         user = new Admin.Builder(DNI_1)
                 .firstName(FIRST_NAME_2)
                 .lastName(LAST_NAME_2)
-                .email(EMAIL_2)
+                .email(EMAIL_1)
                 .birthday(BIRTHDAY_1)
                 .genre(GENRE_1)
                 .build();
