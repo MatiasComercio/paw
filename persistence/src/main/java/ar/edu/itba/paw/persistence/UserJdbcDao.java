@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.users.User;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -171,6 +172,19 @@ public class UserJdbcDao implements UserDao {
 		}
 
 		return rowsAffected == 1 ? Result.OK : Result.INVALID_INPUT_PARAMETERS;
+	}
+
+	@Override
+	public Result update(Integer dni, User user) {
+		try {
+			jdbcTemplate.update(UPDATE_USER, user.getFirstName(), user.getFirstName(), user.getLastName(), dni);
+		} catch (final DataIntegrityViolationException e) {
+			return Result.INVALID_INPUT_PARAMETERS;
+		} catch(final DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		return Result.OK;
 	}
 
 
