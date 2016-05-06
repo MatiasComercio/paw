@@ -113,19 +113,28 @@ public class UserJdbcDaoTest {
 
 
         /**
-         * Update an invalid user
+         * Update an invalid user and check that it fails
          */
         result = userJdbcDao.update(DNI_2, user);
-        /**
-         * +++xcheck This asserts OK but because the update is failing
-         */
         assertEquals(Result.ERROR_UNKNOWN, result);
 
         /**
-         * Update a valid user
+         * Update a valid user and check that they updated ok
          */
         result = userJdbcDao.update(DNI_1, user);
         assertEquals(Result.OK, result);
+
+        /**
+         * Update with not all the parameters filled
+         */
+        user = new Admin.Builder(DNI_1)
+                .firstName(FIRST_NAME_1)
+                .build();
+
+        result = userJdbcDao.update(DNI_1, user);
+        assertEquals(Result.OK, result);
+
+
     }
 
 }
