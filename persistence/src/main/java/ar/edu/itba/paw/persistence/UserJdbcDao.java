@@ -242,9 +242,6 @@ public class UserJdbcDao implements UserDao {
 		int rowsAffected;
 
 		try {
-			/**
-			 * +++xnotfinished (update address)
-			 */
 			rowsAffected = jdbcTemplate.update(UPDATE_USER,
 					user.getFirstName(),
 					user.getLastName(),
