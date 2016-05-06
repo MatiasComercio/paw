@@ -1,3 +1,7 @@
+CREATE TABLE IF NOT EXISTS role (
+role VARCHAR(50) NOT NULL PRIMARY KEY
+);
+
 CREATE TABLE IF NOT EXISTS users (
 	dni INTEGER NOT NULL ,
 	first_name VARCHAR (50) NOT NULL,
@@ -6,6 +10,8 @@ CREATE TABLE IF NOT EXISTS users (
 	birthday DATE ,
 	email VARCHAR(100) NOT NULL,
 password VARCHAR (100) DEFAULT 'pass',
+role VARCHAR(50) NOT NULL,
+
 
 	PRIMARY KEY (dni),
 	UNIQUE (email),
@@ -78,11 +84,6 @@ CREATE TABLE IF NOT EXISTS correlative (
 	PRIMARY KEY (course_id, correlative_id),
 	FOREIGN KEY (course_id) REFERENCES course ON UPDATE CASCADE,
 	FOREIGN KEY (correlative_id) REFERENCES course ON UPDATE CASCADE
-);
-
-
-CREATE TABLE IF NOT EXISTS role (
-role VARCHAR(50) NOT NULL PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS authority (
