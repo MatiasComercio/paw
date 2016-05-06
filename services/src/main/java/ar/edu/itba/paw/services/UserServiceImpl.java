@@ -106,6 +106,15 @@ public class UserServiceImpl implements UserService {
 		}
 		return userDao.changePassword(dni, prevPassword, newPassword);
 	}
+
+	@Override
+	public Result update(Integer dni, User user) {
+		if(dni <= 0) {
+			return Result.ERROR_DNI_OUT_OF_BOUNDS;
+		}
+		return userDao.update(dni, user);
+	}
+
 	@Override
 	public Result create(User user) {
 		return userDao.create(user);
