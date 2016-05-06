@@ -133,10 +133,6 @@ public class AdminJdbcDaoTest {
         userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_2);
         userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
-
-        /* Insertion of Admin */
-        adminArgs.put(ADMIN__DNI_COLUMN, DNI_1);
-        adminInsert.execute(adminArgs);
     }
 
     @Test
