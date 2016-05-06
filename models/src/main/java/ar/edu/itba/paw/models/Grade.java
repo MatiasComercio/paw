@@ -68,8 +68,12 @@ public class Grade {
 	public int hashCode() {
 		int result = studentDocket;
 		result = 31 * result + courseId;
-		result = 31 * result + grade.hashCode();
-		result = 31 * result + modified.hashCode();
+
+        //TODO: grade and modified could be null
+        if (grade != null)
+            result = 31 * result + grade.hashCode();
+		if (modified != null)
+            result = 31 * result + modified.hashCode();
 		return result;
 	}
 

@@ -68,4 +68,66 @@ public interface CourseService {
      * @return the list of students enrolled in the given course
      */
     List<Student> getCourseStudents(final Integer id, final StudentFilter studentFilter);
+
+    /**
+     * @param courseId The id of the course.
+     * @return The id's of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
+     * given course)
+     */
+    List<Integer> getCorrelatives(Integer courseId);
+
+    /**
+     * Make the course corresponding to the correlativeId necessary
+     * to take the course corresponding to the id. Checks that no correlativity
+     * loop is generated.
+     *
+     * @param id The id of the course to which a correlative course is going to be added
+     * @param correlativeId The id of the correlative course
+     * @return The result indicating if the action could be done.
+     */
+    Result addCorrelative(final Integer id, final Integer correlativeId);
+
+    /**
+     * @param courseId The id of the course.
+     * @return List of correlatives for the given course (i.d. The courses that require this course to enroll a student in the
+     * given course)
+     */
+    List<Integer> getUpperCorrelatives(Integer courseId);
+
+    /**
+     *
+     * @param courseId The id of the course.
+     * @param correlativeId The id of the correlative for the given course.
+     * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
+     */
+    Result deleteCorrelative(Integer courseId, Integer correlativeId);
+
+    /**
+     *
+     * @param courseId Given the id of a course, delete all the correlative
+     * @return The result code of the operation
+     */
+    Result deleteCourseCorrelatives(Integer courseId);
+
+    /**
+     * Get the number of semesters.
+     * @return Integer indicating the number of semesters
+     */
+    Integer getTotalSemesters();
+
+    /**
+     *
+     * @param courseId The id of the course.
+     * @param courseFilter The course's filter. If null, no filter is applied.
+     * @return A list of correlatives courses to the given course, with the filter applied.
+     */
+    List<Course> getCorrelativesByFilter(Integer courseId, CourseFilter courseFilter);
+
+    /**
+     *
+     * @param courseId The id of the course
+     * @return A list of the courses that are available to be added as correlatives for the given course
+     */
+    List<Course> getAvailableAddCorrelatives(Integer courseId, CourseFilter courseFilter);
+
 }

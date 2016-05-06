@@ -9,6 +9,9 @@
         <spring:message code="webAbbreviation"/> | <spring:message code="addStudent"/>
     </title>
     <jsp:include page="base/head.jsp" />
+    <style>
+        span {color:red;}
+    </style>
 </head>
 <body>
 <div id="wrapper">
@@ -35,19 +38,19 @@
                 <form:form modelAttribute="studentForm" method="post" action="/students/add_student">
                     <!-- User Data -->
                     <div class="form-group">
-                        <form:label for="dni" path="dni"><span style="color:red"><spring:message code="requiredIcon"/> </span><spring:message code="dni"/></form:label>
+                        <form:label for="dni" path="dni"><span><spring:message code="requiredIcon"/> </span><spring:message code="dni"/></form:label>
                         <form:input type="text" class="form-control" id="dni" path="dni"/>
-                        <form:errors path="dni" cssStyle="color: red;" element="div"/>
+                        <form:errors path="dni" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group">
-                        <form:label for="firstName" path="firstName"><span style="color:red"><spring:message code="requiredIcon"/> </span><spring:message code="firstName"/></form:label>
+                        <form:label for="firstName" path="firstName"><span><spring:message code="requiredIcon"/> </span><spring:message code="firstName"/></form:label>
                         <form:input type="text" class="form-control" id="firstName" path="firstName"/>
-                        <form:errors path="firstName" cssStyle="color: red;" element="div"/>
+                        <form:errors path="firstName" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group">
-                        <form:label for="lastName" path="lastName"><span style="color:red"><spring:message code="requiredIcon"/> </span><spring:message code="lastName"/></form:label>
+                        <form:label for="lastName" path="lastName"><span><spring:message code="requiredIcon"/> </span><spring:message code="lastName"/></form:label>
                         <form:input type="text" class="form-control" id="lastName" path="lastName"/>
-                        <form:errors path="lastName" cssStyle="color: red;" element="div"/>
+                        <form:errors path="lastName" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class ="form-group">
                         <div class ="row">
@@ -68,53 +71,53 @@
                         <form:label for="birthday" path="birthday"><spring:message code="birthday"/>:</form:label>
                         <spring:message code="birthdayPlaceholder" var="birthdayPlaceholder"/>
                         <form:input id="birthday" type="text" class="form-control" placeholder="${birthdayPlaceholder}" path="birthday"/>
-                        <form:errors path="birthday" cssStyle="color: red;" element="div"/>
+                        <form:errors path="birthday" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                      <!-- Address Data -->
                     <div class="form-group">
-                        <form:label for="country" path="country"><span style="color:red"><spring:message code="requiredIcon"/> </span><spring:message code="country"/></form:label>
+                        <form:label for="country" path="country"><span><spring:message code="requiredIcon"/> </span><spring:message code="country"/></form:label>
                         <form:input type="text" class="form-control" id="country" path="country"/>
-                        <form:errors path="country" cssStyle="color: red;" element="div"/>
+                        <form:errors path="country" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group">
-                        <form:label for="city" path="city"><span style="color:red"><spring:message code="requiredIcon"/> </span><spring:message code="city"/></form:label>
+                        <form:label for="city" path="city"><span><spring:message code="requiredIcon"/> </span><spring:message code="city"/></form:label>
                         <form:input type="text" class="form-control" id="city" path="city"/>
-                        <form:errors path="city" cssStyle="color: red;" element="div"/>
+                        <form:errors path="city" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group">
-                        <form:label for="neighborhood" path="neighborhood"><span style="color:red"><spring:message code="requiredIcon"/> </span><spring:message code="neighbourhood"/></form:label>
+                        <form:label for="neighborhood" path="neighborhood"><span><spring:message code="requiredIcon"/> </span><spring:message code="neighbourhood"/></form:label>
                         <form:input type="text" class="form-control" id="neighborhood" path="neighborhood"/>
-                        <form:errors path="neighborhood" cssStyle="color: red;" element="div"/>
+                        <form:errors path="neighborhood" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group">
-                        <form:label for="street" path="street"><span style="color:red"><spring:message code="requiredIcon"/> </span><spring:message code="street"/></form:label>
+                        <form:label for="street" path="street"><span><spring:message code="requiredIcon"/> </span><spring:message code="street"/></form:label>
                         <form:input type="text" class="form-control" id="street" path="street"/>
-                        <form:errors path="street" cssStyle="color: red;" element="div"/>
+                        <form:errors path="street" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group">
-                        <form:label for="number" path="number"><span style="color:red"><spring:message code="requiredIcon"/> </span><spring:message code="number"/></form:label>
+                        <form:label for="number" path="number"><span><spring:message code="requiredIcon"/> </span><spring:message code="number"/></form:label>
                         <form:input type="text" class="form-control" id="number" path="number"/>
-                        <form:errors path="number" cssStyle="color: red;" element="div"/>
+                        <form:errors path="number" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group">
                         <form:label for="floor" path="floor"><spring:message code="floor"/></form:label>
                         <form:input type="text" class="form-control" id="floor" path="floor"/>
-                        <form:errors path="floor" cssStyle="color: red;" element="div"/>
+                        <form:errors path="floor" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group">
                         <form:label for="door" path="door"><spring:message code="door"/></form:label>
                         <form:input type="text" class="form-control" id="door" path="door"/>
-                        <form:errors path="door" cssStyle="color: red;" element="div"/>
+                        <form:errors path="door" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group">
                         <form:label for="telephone" path="telephone"><spring:message code="telephone"/></form:label>
                         <form:input type="text" class="form-control" id="telephone" path="telephone"/>
-                        <form:errors path="telephone" cssStyle="color: red;" element="div"/>
+                        <form:errors path="telephone" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group">
                         <form:label for="zipCode" path="zipCode"><spring:message code="zipCode"/></form:label>
                         <form:input type="text" class="form-control" id="zipCode" path="zipCode"/>
-                        <form:errors path="zipCode" cssStyle="color: red;" element="div"/>
+                        <form:errors path="zipCode" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <!-- End Data Input -->
                     <input type="submit" class="btn btn-info" value="Agregar alumno"/>

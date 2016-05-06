@@ -9,11 +9,12 @@
     </title>
     <jsp:include page="base/head.jsp" />
 </head>
-<body>
+<>
 
 <div id="wrapper">
 
     <jsp:include page="base/nav.jsp" />
+    <jsp:include page="template/gradeForm.jsp" />
 
     <div id="page-wrapper">
         <div class="container-fluid">
@@ -32,6 +33,8 @@
             </div>
 
             <!-- content -->
+            <c:forEach items="${semesters}" var="semester" varStatus="loop">
+            <h2>Cuatrimeste ${loop.index+1}</h2>
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -39,21 +42,34 @@
                     <th><spring:message code="course"/></th>
                     <th><spring:message code="grade"/></th>
                     <th><spring:message code="modified"/></th>
+                    <th><spring:message code="actions"/></th>
                 </tr>
                 </thead>
                 <tbody>
-                <c:forEach items="${student.grades}" var="grade">
+                <c:forEach items="${semester}" var="grade">
                     <tr>
                         <td>${ grade.courseId }</td>
                         <td>${ grade.courseName }</td>
-                        <td>${ grade.grade }</td>
-                        <td>${ grade.modified }</td>
-                        <td><a href="<c:url value="/courses/${grade.courseId}/info" />"><spring:message code="see"/> <spring:message code="course"/></a></td>
-                        <td><a href="<c:url value="/students/${student.docket}/grades/edit/${grade.courseName}/${grade.grade}/${grade.modified}/${grade.courseId}" />"><spring:message code="editGrade"/></a></td>
+                        <td><c:if test="${grade.grade == null}">-</c:if>${ grade.grade }</td>
+                        <td><c:if test="${grade.modified == null}">-</c:if>${ grade.modified }</td>
+                        <td>
+                            <a class="btn btn-default btn-xs" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">
+                                <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/> <spring:message code="course"/>
+                            </a>
+                            <c:if test="${grade.modified != null }">
+                            <button name="gradeButton" class="btn btn-info btn-xs" type="button"
+                                        data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
+                                        data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
+                                        data-target="#gradeFormConfirmationModal">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                            </button>
+                            </c:if>
+                        <td>
                     </tr>
                 </c:forEach>
                 </tbody>
             </table>
+            </c:forEach>
 
             <!-- /content -->
 
@@ -66,5 +82,15 @@
 </div>
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
+<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/gradeForm.js"%></script>
+
+<script>
+    $( document ).ready(function() {
+        loadGradeForm("gradeButton")
+    });
+
+
+</script>
+
 </body>
 </html>

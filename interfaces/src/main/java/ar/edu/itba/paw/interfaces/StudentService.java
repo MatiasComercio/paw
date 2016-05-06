@@ -125,6 +125,7 @@ public interface StudentService {
 	 */
 	Collection<Course> getApprovedCourses(int docket);
 
+
 	/* +++xtest */
 	/**
 	 * Gets the student's main data that matches the given dni.
@@ -133,4 +134,20 @@ public interface StudentService {
 	 * @return The student with the given dni, if exists; null otherwise.
 	 */
 	Student getByDni(final int dni);
+
+	/**
+	 * Check if the student corresponding to docket has approved all the necessary
+	 * courses to take the course corresponding to the courseId
+	 * @param docket The docket of the student
+	 * @param courseId The id of the course
+     * @return True if the student can take de course, False if not.
+     */
+	boolean checkCorrelatives(final Integer docket, final Integer courseId);
+
+	/**
+	 * Get the representation of a student's transcript
+	 * @param docket
+	 * @return A list containing lists in which all the grades of a semester are placed
+     */
+	List<List<Grade>> getTranscript(final Integer docket);
 }

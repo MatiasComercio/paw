@@ -70,11 +70,12 @@ public class CourseController {
 			return new ModelAndView("forward:/errors/404.html");
 		}
 
-		final ModelAndView mav = new ModelAndView("courses");
-		mav.addObject("courses", courses);
-		mav.addObject("courseFilterFormAction", "/courses/courseFilterForm");
-		return mav;
-	}
+        final ModelAndView mav = new ModelAndView("courses");
+        mav.addObject("courses", courses);
+        mav.addObject("subsection_get_courses", true);
+        mav.addObject("courseFilterFormAction", "/courses/courseFilterForm");
+        return mav;
+    }
 
 	@RequestMapping(value = "/courses/courseFilterForm", method = RequestMethod.GET)
 	public ModelAndView studentFilterForm(             @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
@@ -85,12 +86,20 @@ public class CourseController {
 		return new ModelAndView("redirect:/courses");
 	}
 
-	@RequestMapping("/courses/{id}/info")
-	public ModelAndView getCourse(@PathVariable final Integer id) {
-		final ModelAndView mav = new ModelAndView("course");
-		mav.addObject("course", courseService.getById(id));
-		return mav;
-	}
+    @RequestMapping("/courses/{id}/info")
+    public ModelAndView getCourse(@PathVariable final Integer id, Model model) {
+        final ModelAndView mav = new ModelAndView("course");
+
+        if (!model.containsAttribute("correlativeForm")) {
+            model.addAttribute("correlativeForm", new CorrelativeForm());
+        }
+
+        mav.addObject("course", courseService.getById(id));
+        mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
+        mav.addObject("subsection_delete_correlative", true);
+        mav.addObject("correlatives", courseService.getCorrelativesByFilter(id, null));
+        return mav;
+    }
 
 	@RequestMapping("/courses/{courseId}/edit")
 	public ModelAndView editCourse(
@@ -231,13 +240,113 @@ public class CourseController {
 		if(result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteCourse_success",
-					new Object[]{},
+					null,
 					Locale.getDefault()));
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 		}
 
-		return new ModelAndView("redirect:/courses");
-	}
+        return new ModelAndView("redirect:/courses");
+    }
+
+    @RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)
+    public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model) {
+
+        if (!model.containsAttribute("courseFilterForm")) {
+            model.addAttribute("courseFilterForm", new CourseFilterForm());
+        }
+        if (!model.containsAttribute("correlativeForm")) {
+            model.addAttribute("correlativeForm", new CorrelativeForm());
+        }
+
+        final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
+        final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
+                id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
+
+        //Check the course exists (in case the url is modified)
+        final Course course = courseService.getById(course_id);
+        if (course == null) {
+            return new ModelAndView("forward:/errors/404.html");
+        }
+
+        final ModelAndView mav = new ModelAndView("courses");
+        mav.addObject("course_details", course);
+        mav.addObject("courseFilterFormAction", "/courses/" + course_id + "/add_correlative/courseFilterForm");
+        mav.addObject("correlativeFormAction", "/courses/" + course_id + "/add_correlative");
+        mav.addObject("subsection_add_correlative", true);
+        mav.addObject("courses", courseService.getAvailableAddCorrelatives(course_id, courseFilter));
+        return mav;
+    }
+
+    @RequestMapping(value = "/courses/{course_id}/add_correlative/courseFilterForm", method = RequestMethod.GET)
+    public ModelAndView studentInscriptionCourseFilter(@PathVariable final int course_id,
+                                                       @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+                                                       final BindingResult errors,
+                                                       final RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
+        redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
+        return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
+    }
+
+    @RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.POST)
+    public ModelAndView addCorrelative(@PathVariable final Integer course_id,
+                                           @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
+                                           final BindingResult errors, final RedirectAttributes redirectAttributes){
+        if (errors.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
+            redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
+            return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
+        }
+
+        Result result = courseService.addCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
+        if (result == null) {
+            result = Result.ERROR_UNKNOWN;
+        }
+        if (!result.equals(Result.OK)) {
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", result.getMessage());
+
+        } else {
+            redirectAttributes.addFlashAttribute("alert", "success");
+            redirectAttributes.addFlashAttribute("message",
+                    messageSource.getMessage("correlative_add_success",
+                            new Object[] {correlativeForm.getCourseName(), correlativeForm.getCorrelativeName()},
+                            Locale.getDefault()));
+        }
+
+        return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
+    }
+
+    @RequestMapping(value = "/courses/{course_id}/delete_correlative", method = RequestMethod.POST)
+    public ModelAndView deleteCorrelative(@PathVariable final Integer course_id,
+                                       @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
+                                       final BindingResult errors, final RedirectAttributes redirectAttributes) {
+
+        if (errors.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
+            redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
+            return new ModelAndView("redirect:/courses/" + course_id + "/info");
+        }
+
+        Result result = courseService.deleteCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
+        if (result == null) {
+            result = Result.ERROR_UNKNOWN;
+        }
+        if (!result.equals(Result.OK)) {
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", result.getMessage());
+
+        } else {
+            redirectAttributes.addFlashAttribute("alert", "success");
+            redirectAttributes.addFlashAttribute("message",
+                    messageSource.getMessage("correlative_delete_success",
+                            new Object[] {correlativeForm.getCourseName(), correlativeForm.getCorrelativeName()},
+                            Locale.getDefault()));
+        }
+
+        return new ModelAndView("redirect:/courses/" + course_id + "/info");
+
+    }
+
 }

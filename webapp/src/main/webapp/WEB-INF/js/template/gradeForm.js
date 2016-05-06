@@ -8,6 +8,14 @@ function loadGradeForm(nameAttr) {
         gradeForm.find("input[name='courseId']").val(courseId);
         gradeForm.find("input[name='courseName']").val(courseName);
         gradeForm.find("input[name='modified']").val(modified);
+
+        var grade = $(this).data("grade");
+        if (grade != null){
+            gradeForm.find("input[name='grade']").val(grade);
+            gradeForm.find("input[name='oldGrade']").val(grade);
+        }
+
+
     });
 
     $("#gradeFormConfirmAction").on("click", function() {

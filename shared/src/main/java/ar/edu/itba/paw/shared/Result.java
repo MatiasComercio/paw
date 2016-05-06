@@ -20,12 +20,15 @@ public enum Result {
     ERROR_ID_OUT_OF_BOUNDS("El ID está fuera de los límites permitidos"),
     ERROR_DNI_OUT_OF_BOUNDS("El DNI está fuera de los límites permitidos"),
     ERROR_DOCKET_OUT_OF_BOUNDS("El legajo está fuera de los límites permitidos"),
+    ERROR_CORRELATIVE_NOT_APPROVED("El alumno no aprobó todas las correlativas necesarias."),
 	ALREADY_ENROLLED("El alumno ya está inscripto en esa materia."),
 	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia"),
+
+    CORRELATIVE_CORRELATIVITY_EXISTS("La correlatividad ya existe."),
+    CORRELATIVE_CORRELATIVITY_LOOP("La correlatividad generaría un ciclo en el árbol de correlatividades."),
     PASSWORDS_DO_NOT_MATCH("La contraseña y su repetición no coinciden"),
     ADMIN_EXISTS_DNI("Ya existe un administrador con este DNI"),
     USER_EXISTS_DNI("Ya existe un usuario con este DNI");
-
 
 
 

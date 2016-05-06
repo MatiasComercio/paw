@@ -5,6 +5,8 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,10 +17,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 @Repository
 public class CourseJdbcDao implements CourseDao {
@@ -27,6 +28,7 @@ public class CourseJdbcDao implements CourseDao {
     private static final String ID_COLUMN = "id";
     private static final String NAME_COLUMN = "name";
     private static final String CREDITS_COLUMN = "credits";
+    private static final String SEMESTER_COLUMN = "semester";
 
     private static final String DOCKET_COLUMN = "docket";
     private static final String DNI_COLUMN = "dni";
@@ -38,6 +40,10 @@ public class CourseJdbcDao implements CourseDao {
 
     private static final String GRADES_TABLE_NAME = "grade";
     private static final String GRADES_ID_COURSE = "course_id";
+
+    private static final String CORRELATIVE_TABLE_NAME = "correlative";
+    private static final String CORRELATIVE_COURSE_ID = "course_id";
+    private static final String CORRELATIVE_CORRELATIVE_ID = "correlative_id";
 
     private static final String QUERY_DELETE = "DELETE FROM " + TABLE_NAME
             + " WHERE " + ID_COLUMN + " = ?";
@@ -51,22 +57,40 @@ public class CourseJdbcDao implements CourseDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert courseInsert;
+    private final SimpleJdbcInsert correlativeInsert;
 
     private final RowMapper<Course> courseRowMapper = (resultSet, rowNum) ->
             new Course.Builder(resultSet.getInt(ID_COLUMN))
                         .name(resultSet.getString(NAME_COLUMN))
                         .credits(resultSet.getInt(CREDITS_COLUMN))
+                        .semester(resultSet.getInt(SEMESTER_COLUMN))
                         .build();
 
     private final RowMapper<Student> studentRowMapper = (resultSet, rowNum) ->
             new Student.Builder(resultSet.getInt(DOCKET_COLUMN), resultSet.getInt(DNI_COLUMN)).firstName(resultSet.getString(FIRST_NAME_COLUMN)).lastName(resultSet.getString(LAST_NAME_COLUMN)).build();
+
+    private final RowMapper<Integer> correlativeRowMapper = (resultSet, rowNum) ->
+            resultSet.getInt(CORRELATIVE_CORRELATIVE_ID);
+
+    private final RowMapper<Integer> upperCorrelativeRowMapper = (resultSet, rowNum) ->
+            resultSet.getInt(CORRELATIVE_COURSE_ID);
+
+    private final RowMapper<Course> correlativeCoursesRowMapper = (resultSet, rowNum) ->
+            new Course.Builder(resultSet.getInt(ID_COLUMN))
+                    .name(resultSet.getString(NAME_COLUMN))
+                    .credits(resultSet.getInt(CREDITS_COLUMN)).build();
+
+
 
     @Autowired
     public CourseJdbcDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.courseInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME)
-                .usingColumns(ID_COLUMN, NAME_COLUMN, CREDITS_COLUMN);
+                .usingColumns(ID_COLUMN, NAME_COLUMN, CREDITS_COLUMN, SEMESTER_COLUMN);
+        this.correlativeInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName(CORRELATIVE_TABLE_NAME)
+                .usingColumns(CORRELATIVE_COURSE_ID, CORRELATIVE_CORRELATIVE_ID);
     }
 
 
@@ -77,6 +101,8 @@ public class CourseJdbcDao implements CourseDao {
         args.put(ID_COLUMN, course.getId());
         args.put(NAME_COLUMN, course.getName());
         args.put(CREDITS_COLUMN, course.getCredits());
+        args.put(SEMESTER_COLUMN, course.getSemester());
+
         try{
             courseInsert.execute(args);
         }
@@ -94,7 +120,7 @@ public class CourseJdbcDao implements CourseDao {
     @Override
     public Result update(Integer id, Course course) {
         try {
-            jdbcTemplate.update("UPDATE course SET id = ?, name = ?, credits = ? WHERE id = ?;", course.getId(), course.getName(), course.getCredits(), id);
+            jdbcTemplate.update("UPDATE course SET id = ?, name = ?, credits = ?, semester = ? WHERE id = ?;", course.getId(), course.getName(), course.getCredits(), course.getSemester(), id);
         } catch (DuplicateKeyException e){
             return Result.COURSE_EXISTS_ID;
         } catch (final DataIntegrityViolationException e) {
@@ -104,6 +130,50 @@ public class CourseJdbcDao implements CourseDao {
         }
 
         return Result.OK;
+    }
+
+
+    @Override
+    public List<Integer> getCorrelatives(Integer courseId){
+        List<Integer> correlatives = jdbcTemplate.query("SELECT * FROM " + CORRELATIVE_TABLE_NAME + " WHERE " +
+                CORRELATIVE_COURSE_ID + " = ?", correlativeRowMapper, courseId);
+        return correlatives;
+    }
+
+    @Override
+    public List<Course> getCorrelativeCourses(Integer courseId) {
+        String queryCorrelativeId = "SELECT " + CORRELATIVE_CORRELATIVE_ID + " FROM " +
+                CORRELATIVE_TABLE_NAME + " JOIN " + TABLE_NAME + " ON "
+                + CORRELATIVE_TABLE_NAME + "." + CORRELATIVE_COURSE_ID + " = " + TABLE_NAME + "." + ID_COLUMN + " WHERE "
+                + CORRELATIVE_COURSE_ID + " = ?";
+        String queryCorrelativeCourses = "SELECT * FROM " + TABLE_NAME + " WHERE " + ID_COLUMN + " IN " + "("
+                + queryCorrelativeId + ")";
+
+
+
+        List<Course> correlativeCourses = jdbcTemplate.query(queryCorrelativeCourses, correlativeCoursesRowMapper, courseId);
+        return correlativeCourses;
+    }
+
+    @Override
+    public List<Integer> getUpperCorrelatives(Integer courseId){
+        List<Integer> correlatives = jdbcTemplate.query("SELECT * FROM " + CORRELATIVE_TABLE_NAME + " WHERE " +
+                CORRELATIVE_CORRELATIVE_ID + " = ?", upperCorrelativeRowMapper, courseId);
+        return correlatives;
+    }
+
+    @Override
+    public Result deleteCorrelative(Integer courseId, Integer correlativeId) {
+        try {
+            int rowsAffected = jdbcTemplate.update("DELETE FROM " + CORRELATIVE_TABLE_NAME + " WHERE " + CORRELATIVE_COURSE_ID +
+                    " = ? AND " + CORRELATIVE_CORRELATIVE_ID + " = ?" , courseId, correlativeId);
+
+            return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+        } catch (final DataIntegrityViolationException e) {
+            return Result.INVALID_INPUT_PARAMETERS;
+        } catch(final DataAccessException e) {
+            return Result.ERROR_UNKNOWN;
+        }
     }
 
     @Override
@@ -151,32 +221,103 @@ public class CourseJdbcDao implements CourseDao {
         return courses;
     }
 
+    @Override
+    public boolean checkCorrelativityLoop(Integer id, Integer correlativeId) {
+        //TODO: Change table columns name
+        String query = "WITH RECURSIVE corr (cid, corrid) AS " +
+                        "(SELECT course_id, correlative_id FROM correlative " +
+                        "UNION ALL " +
+                        "SELECT corr.cid, correlative.correlative_id " +
+                        "FROM corr, correlative " +
+                        "WHERE corr.corrid = correlative.course_id) " +
+                        "SELECT cid, corrid FROM corr;";
+
+        List<Correlativity> list = jdbcTemplate.query(query, (rs, rowNum) -> {
+            return new Correlativity(rs.getInt("cid"), rs.getInt("corrid"));
+        });
+
+        return list.contains(new Correlativity(correlativeId, id));
+    }
+
+    @Override
+    public Result addCorrelativity(Integer id, Integer correlativeId) {
+        final Map<String, Object> args = new HashMap<>();
+        args.put(CORRELATIVE_COURSE_ID, id);
+        args.put(CORRELATIVE_CORRELATIVE_ID, correlativeId);
+
+        try {
+            correlativeInsert.execute(args);
+        } catch (DuplicateKeyException e){
+            return Result.CORRELATIVE_CORRELATIVITY_EXISTS;
+        }
+
+        return Result.OK;
+    }
+
+    @Override
+    public boolean courseExists(Integer id) {
+        String query = "SELECT * FROM course WHERE id = ?";
+        List<Integer> list = jdbcTemplate.query(query, (rs, rowNum) -> {
+            return rs.getInt(ID_COLUMN);
+        }, id);
+
+        return !list.isEmpty();
+    }
+
     /* +++xreference
-        http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
-     */
+                    http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
+                 */
     @Override
     public Result deleteCourse(Integer id) {
-        Object[] idWrapped = new Object[]{id};
-        int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_INSCRIPTION, idWrapped, Integer.class);
-
-        if(courseNumber > 0) {
-            return Result.COURSE_EXISTS_INSCRIPTION;
-        }
-
-        courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_GRADES, idWrapped, Integer.class);
-
-        if(courseNumber > 0) {
-            return Result.COURSE_EXISTS_GRADE;
-        }
+// +++xcheck: branch login has this; transcript had it deleted
+//        Object[] idWrapped = new Object[]{id};
+//        int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_INSCRIPTION, idWrapped, Integer.class);
+//
+//        if(courseNumber > 0) {
+//            return Result.COURSE_EXISTS_INSCRIPTION;
+//        }
+//
+//        courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_GRADES, idWrapped, Integer.class);
+//
+//        if(courseNumber > 0) {
+//            return Result.COURSE_EXISTS_GRADE;
+//        }
         try {
             int rowsAffected = jdbcTemplate.update(QUERY_DELETE, id);
-
             return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
         } catch (final DataIntegrityViolationException e) {
             return Result.INVALID_INPUT_PARAMETERS;
         } catch(final DataAccessException e) {
             return Result.ERROR_UNKNOWN;
         }
+    }
+
+    @Override
+    public boolean inscriptionExists(Integer courseId){
+        Object[] idWrapped = new Object[]{courseId};
+        int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_INSCRIPTION, idWrapped, Integer.class);
+        if(courseNumber > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean gradeExists(Integer courseId){
+        Object[] idWrapped = new Object[]{courseId};
+        int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_GRADES, idWrapped, Integer.class);
+        if(courseNumber > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Integer getTotalSemesters() {
+        String query = "SELECT MAX(" + SEMESTER_COLUMN + ") as " + SEMESTER_COLUMN + " FROM " + TABLE_NAME + ";";
+        RowMapper<Integer> rm = (rs, rowNum) -> rs.getInt(SEMESTER_COLUMN);
+        List<Integer> list = jdbcTemplate.query(query, rm);
+        return list.isEmpty() ? 0 : list.get(0);
     }
 
     private static class QueryFilter {
@@ -240,6 +381,22 @@ public class CourseJdbcDao implements CourseDao {
 
         private interface FilterQueryMapper {
             void filter(final Object filter, final String filterName);
+        }
+    }
+
+    private class Correlativity {
+        private int course_id;
+        private int correlative_id;
+
+        public Correlativity(int course_id, int correlative_id) {
+            this.course_id = course_id;
+            this.correlative_id = correlative_id;
+        }
+
+        //TODO: Improve
+        @Override
+        public boolean equals(Object obj) {
+            return course_id == ((Correlativity)obj).course_id && correlative_id == ((Correlativity)obj).correlative_id;
         }
     }
 }

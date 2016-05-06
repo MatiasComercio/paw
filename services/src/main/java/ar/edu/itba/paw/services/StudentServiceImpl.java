@@ -142,12 +142,9 @@ public class StudentServiceImpl implements StudentService {
 
 		Result result;
 
-		/* +++xtodo: implement
-		result = checkCorrelatives(studentDocket, courseId);
-		if (result.equals(Result.DISPROVED_CORRELATIVES)) {
-			return Result.ERROR_UNKNOWN;
+		if (!checkCorrelatives(studentDocket, courseId)) {
+			return Result.ERROR_CORRELATIVE_NOT_APPROVED;
 		}
-		*/
 
 		result = studentDao.enroll(studentDocket, courseId);
 		if (result == null) {
@@ -160,6 +157,56 @@ public class StudentServiceImpl implements StudentService {
 		/* notifyInscription(studentDocket, courseId); mail +++xtodo */
 
 		return result;
+	}
+
+	@Override
+	public boolean checkCorrelatives(Integer docket, Integer courseId) {
+		List<Integer> correlatives = courseService.getCorrelatives(courseId);
+        List<Integer> approvedCourses = studentDao.getApprovedCoursesId(docket);
+
+        for (Integer correlative : correlatives){
+            if (!approvedCourses.contains(correlative)){
+                return false;
+            }
+        }
+
+        return true;
+	}
+
+	@Override
+	public List<List<Grade>> getTranscript(Integer docket) {
+		final List<List<Grade>> semesterList = new ArrayList<>();
+		final Integer totalSemesters = courseService.getTotalSemesters();
+
+
+		for (int i = 0; i < totalSemesters; i++) {
+            int semesterIndex = i + 1;
+
+            //Get all grades from that semester and add them
+            Student student = studentDao.getGrades(docket, semesterIndex);
+
+            semesterList.add(i, new ArrayList<>());
+
+            for (Grade grade : student.getGrades()) {
+                semesterList.get(i).add(grade);
+            }
+		}
+
+        //Add courses that are being taken
+        final List<Course> coursesTaken = getStudentCourses(docket, null);
+        for (Course course : coursesTaken){
+            semesterList.get(course.getSemester()).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).build());
+        }
+
+        //Complete with the rest of the courses that are not taken
+        final List<Course> availCourses = getAvailableInscriptionCourses(docket, null);
+
+        for (Course course : availCourses){
+            int semesterIndex = course.getSemester() - 1;
+            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).build());
+        }
+
+		return semesterList;
 	}
 
 	@Override

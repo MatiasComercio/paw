@@ -23,12 +23,22 @@ public interface StudentDao {
 	Student getByDocket(final int docket);
 
 	/**
-	 * Gets the student with the given docket containing all the grades of the courses they took.
+	 * Gets the student with the given docket containing all the grades of the courses it took.
 	 * If no student exists with that docket, null is returned.
 	 * @param docket The student's docket
 	 * @return The student with the given docket, if exists; null otherwise.
 	 */
 	Student getGrades(int docket);
+
+	/**
+	 * Gets the student with the given docket containing all the grades of the courses it took in a specified semester.
+	 * If no student exists with that docket, null is returned.
+	 *
+	 * @param docket The student's docket
+	 * @param semesterIndex The number of semester
+	 * @return The student with the given docket, if exists; null otherwise.
+     */
+	Student getGrades(Integer docket, Integer semesterIndex);
 
 	/**
 	 * Gets the courses which match to a student, given a docket.
@@ -117,6 +127,14 @@ public interface StudentDao {
 	 *          an empty collection will be returned if no course was approved
 	 */
 	Collection<Course> getApprovedCourses(final int docket);
+
+    /**
+     * Gets the list of ids corresponding to the courses the student already approved.
+     * @param docket The student's docket
+     * @return The list of ids corresponding to the courses the student with the given docket has already approved;
+     *          an empty List will be returned if no course was approved
+     */
+    List<Integer> getApprovedCoursesId(final int docket);
 
 	/**
 	 * Returns true if there's an Address asociated with the student

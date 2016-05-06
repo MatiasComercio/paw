@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS student (
   dni INTEGER NOT NULL ,
 
   PRIMARY KEY (docket),
-  FOREIGN KEY (dni) REFERENCES users ON UPDATE CASCADE
+  FOREIGN KEY (dni) REFERENCES users ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS admin (
@@ -48,10 +48,12 @@ CREATE TABLE IF NOT EXISTS course (
   id INTEGER NOT NULL,
   name VARCHAR(50) NOT NULL,
   credits INTEGER NOT NULL,
+  semester INTEGER NOT NULL,
 
   PRIMARY KEY (id),
   CHECK (id > 0),
-  CHECK (credits >= 0)
+  CHECK (credits >= 0),
+  CHECK (semester >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS inscription (
@@ -74,6 +76,17 @@ CREATE TABLE IF NOT EXISTS grade (
   FOREIGN KEY (course_id) REFERENCES course ON DELETE RESTRICT ON UPDATE CASCADE,
   CHECK (grade >= 0)
 );
+
+CREATE TABLE IF NOT EXISTS correlative (
+
+  course_id INTEGER NOT NULL ,
+  correlative_id INTEGER NOT NULL ,
+
+  PRIMARY KEY (course_id, correlative_id),
+  FOREIGN KEY (course_id) REFERENCES course ON UPDATE CASCADE,
+  FOREIGN KEY (correlative_id) REFERENCES course ON UPDATE CASCADE
+);
+
 
 CREATE TABLE IF NOT EXISTS role (
   role VARCHAR(50) NOT NULL PRIMARY KEY

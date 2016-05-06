@@ -5,6 +5,7 @@ import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CourseDao {
 
@@ -59,5 +60,79 @@ public interface CourseDao {
      * @return true if the course was deleted; false in other case
      */
     Result deleteCourse(Integer id);
+
+    /**
+     * @param courseId The id of the course.
+     * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
+     * given course)
+     */
+    List<Integer> getCorrelatives(Integer courseId);
+
+    /**
+     * Check if a correlativity loop is formed
+     *
+     * @param id The id of the course who will have the correlativity
+     * @param correlativeId The id of the course correlative course
+     * @return The boolean value indicating if the correlativity loop
+     * is generated.
+     */
+    boolean checkCorrelativityLoop(final Integer id, final Integer correlativeId);
+
+    /**
+     * Persist a correlativity
+     *
+     * @param id The id of the course who will have the correlativity
+     * @param correlativeId The id of the course correlative course
+     * @return The insertion result.
+     */
+    Result addCorrelativity(final Integer id, final Integer correlativeId);
+
+    /**
+     * Check whether a course exists or not
+     * @param id The id of the course;
+     * @return The boolean indicating if the course exists
+     */
+    boolean courseExists(final Integer id);
+
+    /**
+     * @param courseId The id of the course.
+     * @return The boolean indicating if the given course has any enrolled students.
+     */
+    boolean inscriptionExists(final Integer courseId);
+
+    /**
+     * @param courseId The id of the course.
+     * @return The boolean indicating whether there are any students with grades of the given course.
+     */
+    boolean gradeExists(final Integer courseId);
+
+    /**
+     * @param courseId The id of the course.
+     * @return List of correlatives for the given course (i.d. The courses that require this course to enroll a student in the
+     * given course)
+     */
+    List<Integer> getUpperCorrelatives(Integer courseId);
+
+    /**
+     *
+     * @param courseId The id of the course.
+     * @param correlativeId The id of the correlative for the given course.
+     * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
+     */
+    Result deleteCorrelative(Integer courseId, Integer correlativeId);
+
+    /**
+     * Get the number of semesters.
+     * @return Integer indicating the number of semesters
+     */
+    Integer getTotalSemesters();
+
+    /**
+     *
+     * @param courseId The course Id
+     * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
+     * given course)
+     */
+    List<Course> getCorrelativeCourses(Integer courseId);
 
 }

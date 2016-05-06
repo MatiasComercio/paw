@@ -7,10 +7,10 @@ CREATE TABLE IF NOT EXISTS users (
 	email VARCHAR(100) NOT NULL,
 password VARCHAR (100) DEFAULT 'pass',
 
-PRIMARY KEY (dni),
-UNIQUE (email),
-CHECK (dni > 0),
-CHECK (birthday <= current_timestamp)
+	PRIMARY KEY (dni),
+	UNIQUE (email),
+	CHECK (dni > 0),
+	CHECK (birthday <= current_timestamp)
 );
 
 CREATE TABLE IF NOT EXISTS address (
@@ -34,17 +34,19 @@ CREATE TABLE IF NOT EXISTS student (
 	dni INTEGER NOT NULL ,
 
 PRIMARY KEY (docket),
-FOREIGN KEY (dni) REFERENCES users ON UPDATE CASCADE
+FOREIGN KEY (dni) REFERENCES users ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS course (
 	id INTEGER NOT NULL,
-name VARCHAR(50) NOT NULL,
+  name VARCHAR(50) NOT NULL,
 	credits INTEGER NOT NULL,
+	semester INTEGER NOT NULL,
 
 PRIMARY KEY (id),
 CHECK (id > 0),
-CHECK (credits >= 0)
+CHECK (credits >= 0),
+CHECK (semester >= 0)
 );
 
 CREATE TABLE IF NOT EXISTS inscription (
@@ -68,6 +70,17 @@ FOREIGN KEY (course_id) REFERENCES course ON DELETE RESTRICT ON UPDATE CASCADE,
 CHECK (grade >= 0)
 );
 
+CREATE TABLE IF NOT EXISTS correlative (
+
+	course_id INTEGER NOT NULL ,
+	correlative_id INTEGER NOT NULL ,
+
+	PRIMARY KEY (course_id, correlative_id),
+	FOREIGN KEY (course_id) REFERENCES course ON UPDATE CASCADE,
+	FOREIGN KEY (correlative_id) REFERENCES course ON UPDATE CASCADE
+);
+
+-- +++xcheck: compare to main/resources/squema.sql
 CREATE TABLE IF NOT EXISTS roles (
 	dni INTEGER NOT NULL,
 role VARCHAR(50) NOT NULL,

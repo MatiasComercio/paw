@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.test.context.ContextConfiguration;
@@ -74,6 +75,7 @@ public class StudentJdbcDaoTest {
 	private static final String COURSE__ID_COLUMN = "id";
 	private static final String COURSE__NAME_COLUMN = "name";
 	private static final String COURSE__CREDITS_COLUMN = "credits";
+	private static final String COURSE__SEMESTER_COLUMN = "semester";
 
 	private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
 	private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
@@ -141,10 +143,12 @@ public class StudentJdbcDaoTest {
 	private static final int COURSE_ID_1 = 1;
 	private static final String COURSE_NAME_1 = "Course 1";
 	private static final int COURSE_CREDITS_1 = 1;
+	private static final int COURSE_SEMESTER_1 = 1;
 
 	private static final int COURSE_ID_2 = 2;
 	private static final String COURSE_NAME_2 = "Course 2";
 	private static final int COURSE_CREDITS_2 = 2;
+	private static final int COURSE_SEMESTER_2 = 1;
 
 	private static final int COURSE_ID_VALID = 7357;
 	private static final int COURSE_ID_VALID_LIMIT = 1;
@@ -155,6 +159,7 @@ public class StudentJdbcDaoTest {
 	private static final BigDecimal GRADE_APPROVED_LIMIT = BigDecimal.valueOf(4);
 	private static final BigDecimal GRADE_DISAPPROVED_LIMIT = BigDecimal.valueOf(3.99);
 	private static final BigDecimal GRADE_DISAPPROVED = BigDecimal.valueOf(2);
+	private static final BigDecimal GRADE_NEW = BigDecimal.valueOf(5.5);
 
 	/**************************************/
 
@@ -326,6 +331,7 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs);
 
 		studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -423,10 +429,12 @@ public class StudentJdbcDaoTest {
 		courseArgs1.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs1.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs1.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseArgs1.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs1);
 		courseArgs2.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs2.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs2.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+		courseArgs2.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
 		courseInsert.execute(courseArgs2);
 
 		inscriptionArgs.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
@@ -447,8 +455,8 @@ public class StudentJdbcDaoTest {
 
 		/* Student with courses */
 		Course[] expectedCourses = new Course[] {
-				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).build(),
-				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).build()
+				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).semester(COURSE_SEMESTER_1).build(),
+				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).semester(COURSE_SEMESTER_2).build()
 		};
 		courses = studentJdbcDao.getStudentCourses(docket2);
 		assertNotNull(courses);
@@ -580,10 +588,12 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs);
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
 		courseInsert.execute(courseArgs);
 
 		/* Invalid student */
@@ -662,10 +672,12 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs);
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+		courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
 		courseInsert.execute(courseArgs);
 
 
@@ -741,10 +753,12 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
-		courseInsert.execute(courseArgs);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
+        courseInsert.execute(courseArgs);
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
 		courseInsert.execute(courseArgs);
 
 
@@ -824,11 +838,13 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs);
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
-		courseInsert.execute(courseArgs);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
+        courseInsert.execute(courseArgs);
 
 		/* Invalid student */
 		Collection<Course> courses = studentJdbcDao.getApprovedCourses(DOCKET_INVALID);
@@ -847,7 +863,7 @@ public class StudentJdbcDaoTest {
 		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
 		gradeInsert.execute(gradeArgs);
 		Course[] expectedApprovedCourses = new Course[] {
-				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).build()
+				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).semester(COURSE_SEMESTER_1).build()
 		};
 
 		/* Student with one approved course */
@@ -884,8 +900,8 @@ public class StudentJdbcDaoTest {
 		gradeInsert.execute(gradeArgs);
 
 		expectedApprovedCourses = new Course[] {
-				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).build(),
-				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).build()
+				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).semester(COURSE_SEMESTER_1).build(),
+				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).semester(COURSE_SEMESTER_2).build()
 		};
 
 		/* Student with more than one grade, but only two course approved */
@@ -895,31 +911,54 @@ public class StudentJdbcDaoTest {
 		/***********************************/
 	}
 
-	/*
+
+
 	@Test
 	public void createStudent() {
 
 		Address address = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
-				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED_2).floor(ADDRESS__FLOOR_EXPECTED_2).door(ADDRESS__DOOR_EXPECTED).
-				telephone(ADDRESS__TELEPHONE_EXPECTED_2).zipCode(ADDRESS__ZIP_CODE_EXPECTED_2).build();
-
-
+				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED).build();
 		// OK insertion
-		Student student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M).
-				birthday(BIRTHDAY_1).address(address).build();
+
+		Student student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1)
+				.genre(User.Genre.M).build();//address(address).build();
 
 		Result result = studentJdbcDao.create(student);
 		assertEquals(Result.OK, result);
 
-
 		// Existing  DNI
-		student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M).
-				birthday(BIRTHDAY_1).address(address).build();
+		student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M)
+				.address(address).build();
 
 		result = studentJdbcDao.create(student);
 		assertEquals(Result.STUDENT_EXISTS_DNI, result);
 
-	}*/
+	}
+/*
+	@Test
+	public void editGrade(){
+		Result result;
+		final Map<String, Object> gradeArgs = new HashMap<>();
+
+		gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
+		gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_1);
+		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
+		KeyHolder keys = gradeInsert.executeAndReturnKeyHolder(gradeArgs);
+		Timestamp modified = (Timestamp)keys.getKeys().get(GRADE__MODIFIED_COLUMN);
+		Grade expectedGrade = new Grade.Builder(docket1, COURSE_ID_1, GRADE_APPROVED).modified(modified).build();
+
+		result = studentJdbcDao.editGrade(expectedGrade, GRADE_NEW);
+		assertEquals(Result.OK, result);
+
+		//Check the grade actually changed
+		for( Grade grade : studentJdbcDao.getGrades(docket1).getGrades()){
+			if(grade.getModified() != null && grade.getModified().equals(modified)){
+				assertEquals(grade.getGrade(),  GRADE_NEW);
+			}
+		}
+
+	}
+*/
 
 	private List<Matcher<? super String>> possibleEmails(final int docket, final String firstName, final String lastName) {
 		final List<Matcher<? super String>> matchers = new LinkedList<>();
