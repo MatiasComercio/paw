@@ -166,7 +166,8 @@ public class AdminJdbcDao implements AdminDao {
         try {
             adminRowsAffected = jdbcTemplate.update(DELETE_ADMIN, dni);
         } catch (DataAccessException dae) {
-            return Result.ERROR_UNKNOWN;
+			dae.printStackTrace();
+			return Result.ERROR_UNKNOWN;
         }
         return adminRowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
     }
@@ -195,7 +196,7 @@ public class AdminJdbcDao implements AdminDao {
 
 	private static String where(final String... cols) {
 		final StringBuilder stringBuilder = new StringBuilder();
-		stringBuilder.append("WHERE ");
+		stringBuilder.append(" WHERE ");
 		for (String col : cols) {
 			stringBuilder.append(col);
 			stringBuilder.append(" ");
