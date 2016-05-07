@@ -111,7 +111,6 @@ public class UserJdbcDaoTest {
                 .genre(GENRE_1)
                 .build();
 
-
         /**
          * Update an invalid user and check that it fails
          */

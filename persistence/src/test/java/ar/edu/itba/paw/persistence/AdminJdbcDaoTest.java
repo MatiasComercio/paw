@@ -311,5 +311,8 @@ public class AdminJdbcDaoTest {
 
         result = adminJdbcDao.deleteAdmin(DNI_1);
         assertEquals(Result.OK, result);
+
+        Admin adminDeleted = adminJdbcDao.getByDni(DNI_1);
+        assertNull(adminDeleted);
     }
 }
