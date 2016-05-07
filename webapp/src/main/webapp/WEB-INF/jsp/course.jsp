@@ -15,10 +15,9 @@
 <%-- Actions definition --%>
 <sec:authorize access="hasAuthority('ROLE_EDIT_COURSE')">
     <c:set var="editCourse">
-        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-<%--        <c:param name="name">
+        <a href="<c:url value="/courses/${course.id}/edit"/>" class="pushy-link">
             <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-        </c:param>--%>
+        </a>
     </c:set>
 <%--    <div class="col-xs-6 text-center col_vertical_margin">
         <a class="btn btn-info" href="<c:url value="/courses/${course.id}/edit"/>">
@@ -27,20 +26,23 @@
     </div>--%>
 </sec:authorize>
 <%--+++xdoing--%>
-<%--<sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
-    <div class="col-xs-6 text-center col_vertical_margin">
-        <button name="deleteCourseButton" class="btn btn-danger" type="button"
+<sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
+    <c:set var="deleteCourse">
+        <button name="deleteCourseButton" class="menu-btn btn-danger" type="button"
                 data-course_id="${ course.id }" data-course_name="${ course.name }"
                 data-toggle="modal" data-target="#deleteCourseFormConfirmationModal">
             <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
         </button>
-    </div>
-</sec:authorize>--%>
-<c:set var="currentActions" value="${[editCourse]}" />
+    </c:set>
+</sec:authorize>
+
 <%-- /actions definition --%>
 <body>
 <div id="wrapper">
-    <jsp:include page="base/nav.jsp" />
+    <jsp:include page="base/nav.jsp">
+        <jsp:param name="currentActionsHeader" value="${course.name}"/>
+        <jsp:param name="currentActions" value="${editCourse}, ${deleteCourse}"/>
+    </jsp:include>
     <jsp:include page="template/CorrelativeForm.jsp" />
     <div id="page-wrapper">
 

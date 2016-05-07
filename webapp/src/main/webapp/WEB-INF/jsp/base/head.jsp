@@ -7,6 +7,11 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
+<!-- Pushy CSS -->
+<%-- Speciall thanks to Chris Yee. Twitter user: @cmyee.--%>
+<%-- See Github repo: https://github.com/christophery/pushy --%>
+<link href="<c:url value="/static/pushy/css/pushy.css" />" rel="stylesheet">
+
 <!-- Bootstrap Core CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
