@@ -66,4 +66,12 @@ public interface UserDao {
 	 * 		+++xdocument
 	 */
 	Result update(Integer dni, User user);
+
+	/**
+	 * Reset a user's password to it's default value;
+	 * @param dni the user's dni
+	 * @return OK if the password was reset;
+	 * 		+++xdocument
+	 */
+	Result resetPassword(Integer dni);
 }
