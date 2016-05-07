@@ -139,7 +139,6 @@ public class UserJdbcDaoTest {
     @Test
     public void changePassword() {
         final Map<String, Object> userArgs = new HashMap<>();
-        User user;
         Result result;
 
         userArgs.put(USER__DNI_COLUMN, DNI_1);
@@ -151,10 +150,16 @@ public class UserJdbcDaoTest {
         userInsert.execute(userArgs);
 
         /**
-         * Change password with a valid DNI and
+         * Change password with a valid DNI
          */
         result = userJdbcDao.changePassword(DNI_1, PASSWORD_1, PASSWORD_2);
         assertEquals(Result.OK, result);
+
+        /**
+         * Change password with an invalid DNI
+         */
+        result = userJdbcDao.changePassword(DNI_2, PASSWORD_1, PASSWORD_2);
+        assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
     }
 
 }
