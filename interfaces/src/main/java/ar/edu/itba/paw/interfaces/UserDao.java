@@ -71,7 +71,8 @@ public interface UserDao {
 	 * Reset a user's password to it's default value;
 	 * @param dni the user's dni
 	 * @return OK if the password was reset;
-	 * 		+++xdocument
+	 *		INVALID_INPUT_PARAMETERS if the provided dni doesn't match to a user;
+	 *		else ERROR_UNKNOWN in other case;
 	 */
 	Result resetPassword(Integer dni);
 }
