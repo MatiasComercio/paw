@@ -38,7 +38,7 @@ public interface UserService {
 	 * @param dni The user's dni
 	 * @return OK if the user was deleted.
      */
-	Result delete(final Integer dni);
+	Result delete(int dni);
 
 	/**
 	 * Change the password for a given user
@@ -52,7 +52,7 @@ public interface UserService {
 	 * 			INVALID_INPUT_PARAMETERS if the DNI or the password are incorrect;
 	 * 			else ERROR_UNKNOWN for an unknown error;
      */
-	Result changePassword(Integer dni, String prevPassword, String newPassword, String repeatNewPassword);
+	Result changePassword(int dni, String prevPassword, String newPassword, String repeatNewPassword);
 
 	/**
 	 * Reset a user's password to it's default value;
@@ -62,7 +62,7 @@ public interface UserService {
 	 *		INVALID_INPUT_PARAMETERS if the provided dni doesn't match to a user;
 	 *		else ERROR_UNKNOWN in other case;
      */
-	Result resetPassword(Integer dni);
+	Result resetPassword(int dni);
 
 	/**
 	 * Update the user
@@ -71,5 +71,5 @@ public interface UserService {
      * @return OK if the user's data was changed correctly
 	 * 		ERROR_DNI_OUT_OF_BOUNDS if the dni limit was out of bounds;
      */
-	Result update(Integer dni, User user);
+	Result update(int dni, User user);
 }

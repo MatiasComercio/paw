@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
 //	}
 
 	@Override
-	public Result changePassword(final Integer dni, final String prevPassword, final String newPassword, final String repeatNewPassword) {
+	public Result changePassword(final int dni, final String prevPassword, final String newPassword, final String repeatNewPassword) {
 		if (!newPassword.equals(repeatNewPassword)) {
 			return Result.PASSWORDS_DO_NOT_MATCH;
 		}
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Result resetPassword(final Integer dni) {
+	public Result resetPassword(final int dni) {
 		if(dni <= 0) {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
 		}
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Result update(final Integer dni, final User user) {
+	public Result update(final int dni, final User user) {
 		if(dni <= 0) {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
 		}
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Result delete(final Integer dni) {
+	public Result delete(final int dni) {
 		if(dni <= 0) {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
 		}

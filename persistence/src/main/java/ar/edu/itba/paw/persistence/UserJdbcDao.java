@@ -197,7 +197,7 @@ public class UserJdbcDao implements UserDao {
 	}
 
 	@Override
-	public Result create(User user, final Role role) {
+	public Result create(final User user, final Role role) {
 		final Map<String, Object> userArgs = new HashMap<>();
 
 		userArgs.put(USER__DNI_COLUMN, user.getDni());
@@ -225,7 +225,7 @@ public class UserJdbcDao implements UserDao {
 	}
 
 	@Override
-	public Result delete(final Integer dni) {
+	public Result delete(final int dni) {
 		int rowsAffected;
 
 		try {
@@ -250,7 +250,7 @@ public class UserJdbcDao implements UserDao {
 	}
 
 	@Override
-	public Result update(Integer dni, User user) {
+	public Result update(final int dni, final User user) {
 		int rowsAffected;
 		Date birthday = null;
 		final String genre = user.getGenre().name();
@@ -283,7 +283,7 @@ public class UserJdbcDao implements UserDao {
 	}
 
 	@Override
-	public Result resetPassword(final Integer dni) {
+	public Result resetPassword(final int dni) {
 		final int rowsAffected;
 
 		try {
