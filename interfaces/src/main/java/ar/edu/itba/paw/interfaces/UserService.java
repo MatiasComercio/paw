@@ -52,7 +52,7 @@ public interface UserService {
 	 * 			INVALID_INPUT_PARAMETERS if the DNI or the password are incorrect;
 	 * 			else ERROR_UNKNOWN for an unknown error;
      */
-	Result changePassword(int dni, String prevPassword, String newPassword, String repeatNewPassword);
+	Result changePassword(Integer dni, String prevPassword, String newPassword, String repeatNewPassword);
 
 	/**
 	 * Reset a user's password to it's default value;
