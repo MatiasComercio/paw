@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.AddressDao;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Authority;
@@ -122,6 +123,9 @@ public class UserJdbcDao implements UserDao {
 	}
 
 	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(USER__EMAIL_COLUMN);
+
+	@Autowired
+	private AddressDao addressDao;
 
 	private final JdbcTemplate jdbcTemplate;
 
@@ -251,9 +255,16 @@ public class UserJdbcDao implements UserDao {
 		Date birthday = null;
 		final String genre = user.getGenre().name();
 
+		if(addressDao.hasAddress(dni)) {
+			addressDao.updateAddress(dni, user.getAddress());
+		} else {
+			addressDao.createAddress(dni, user.getAddress());
+		}
+
 		if(user.getBirthday() != null) {
 			birthday = Date.valueOf(user.getBirthday());
 		}
+
 		try {
 			rowsAffected = jdbcTemplate.update(UPDATE_USER,
 					user.getFirstName(),
