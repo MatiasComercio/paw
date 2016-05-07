@@ -57,7 +57,9 @@ public class UserJdbcDaoTest {
 
     private static final int DNI_2 = 87654321;
     private static final String FIRST_NAME_2 = "BreNda LiHuéN ";
+    private static final String FIRST_NAME_2_EXPECTED = "Brenda Lihuén";
     private static final String LAST_NAME_2 = "MaYan";
+    private static final String LAST_NAME_2_EXPECTED = "Mayan";
     private static final String EMAIL_2 = "blihuen@bait.edu.ar";
     private static final String PASSWORD_2 = "pass2";
 
@@ -131,8 +133,8 @@ public class UserJdbcDaoTest {
 
         Admin.Builder adminBuilder = new Admin.Builder(DNI_1);
         userUpdated = userJdbcDao.getByDni(DNI_1, adminBuilder);
-        assertEquals(FIRST_NAME_2, userUpdated.getFirstName());
-        assertEquals(LAST_NAME_2, userUpdated.getLastName());
+        assertEquals(FIRST_NAME_2_EXPECTED, userUpdated.getFirstName());
+        assertEquals(LAST_NAME_2_EXPECTED, userUpdated.getLastName());
         assertEquals(EMAIL_1, userUpdated.getEmail());
         assertEquals(BIRTHDAY_1, userUpdated.getBirthday());
         assertEquals(GENRE_1, userUpdated.getGenre());
