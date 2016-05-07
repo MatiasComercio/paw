@@ -281,7 +281,7 @@ public class UserJdbcDao implements UserDao {
 		} catch (DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
 		}
-		return rowsAffected == 1 ? Result.OK : Result.DNI_NOT_EXISTS;
+		return rowsAffected == 1 ? Result.OK : Result.INVALID_INPUT_PARAMETERS;
 	}
 
 
