@@ -22,7 +22,24 @@
 
 <div id="wrapper">
 
+    <jsp:include page="base/sections.jsp" />
+    <jsp:include page="template/courseActionsPanel.jsp" />
     <jsp:include page="base/nav.jsp" />
+
+    <%-- Task decision --%>
+    <%--@elvariable id="task" type="java.lang.String"--%>
+    <c:choose>
+        <c:when test="${task eq 'add'}" >
+            <c:set var="title">
+                <spring:message code="courses"/><small> - <spring:message code="add"/></small>
+            </c:set>
+        </c:when>
+        <c:when test="${task eq 'edit'}" >
+            <c:set var="title">
+                ${course.name}<small> - <spring:message code="edit"/></small>
+            </c:set>
+        </c:when>
+    </c:choose>
 
     <div id="page-wrapper">
 
@@ -32,14 +49,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        <c:choose>
-                            <c:when test="${task == 'add' }">
-                                <spring:message code="courses"/><small> - <spring:message code="add"/></small>
-                            </c:when>
-                            <c:when test="${task == 'edit' }">
-                                ${courseName}<small> - <spring:message code="edit"/></small>
-                            </c:when>
-                        </c:choose>
+                        ${title}
                     </h1>
                 </div>
             </div>
@@ -74,7 +84,7 @@
                     </form:form>
                 </c:if>
                 <c:if test="${task == 'edit' }">
-                    <form:form modelAttribute="courseForm" method="post" action="/courses/${courseId}/edit">
+                    <form:form modelAttribute="courseForm" method="post" action="/courses/${course.id}/edit">
                         <div class="form-group">
                             <form:label path="id"><spring:message code="id"/>:</form:label>
                             <form:input path="id" type="text" class="form-control" />

@@ -4,7 +4,7 @@
 <%--@elvariable id="course" type="ar.edu.itba.paw.models.Course"--%>
 <%--@elvariable id="infoActive" type="java.lang.String"--%>
 <%--@elvariable id="editActive" type="java.lang.String"--%>
-<%--@elvariable id="studentActionsActive" type="java.lang.String"--%>
+<%--@elvariable id="studentsActive" type="java.lang.String"--%>
 <%--@elvariable id="addCorrelativeActive" type="java.lang.String"--%>
 <sec:authorize access="hasAuthority('ROLE_VIEW_COURSE')">
     <c:set var="viewCourse">
@@ -26,7 +26,7 @@
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_VIEW_STUDENTS')">
     <c:set var="viewStudents">
-        <li class="${studentActionsActive}">
+        <li class="${studentsActive}">
             <a href="<c:url value="/courses/${course.id}/students" />" type="button" class="btn btn-info" role="button">
                 <i class="fa fa-users" aria-hidden="true"></i> <spring:message code="students"/>
             </a>
@@ -34,7 +34,6 @@
     </c:set>
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_ADD_CORRELATIVE')">
-    <jsp:include page="CorrelativeForm.jsp" />
     <c:set var="addCorrelative">
         <li class="${addCorrelativeActive}">
             <a href="<c:url value="/courses/${course.id}/add_correlative" />" type="button" class="btn btn-info" role="button">
@@ -44,7 +43,6 @@
     </c:set>
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
-    <jsp:include page="deleteCourseForm.jsp" />
     <c:set var="deleteCourse">
         <li>
             <button name="deleteCourseButton" class="menu-btn btn-danger" type="button"

@@ -97,7 +97,7 @@ public class CourseController {
         }
 
         mav.addObject("course", courseService.getById(id));
-	    mav.addObject("section", "info"); /* +++xcheck: if it's ok, do the same for all the URLs */
+	    mav.addObject("section2", "info"); /* +++xcheck: if it's ok, do the same for all the URLs */
         mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
         mav.addObject("subsection_delete_correlative", true);
         mav.addObject("correlatives", courseService.getCorrelativesByFilter(id, null));
@@ -122,8 +122,10 @@ public class CourseController {
 
 		courseForm.loadFromCourse(course);
 
-		mav.addObject("courseId", courseId);
-		mav.addObject("courseName", course.getName());
+		mav.addObject("section2", "edit");
+		mav.addObject("course", course);
+/*		mav.addObject("courseId", courseId);
+		mav.addObject("courseName", course.getName());*/
 		mav.addObject("task", TASK_FORM_EDIT);
 
 		return mav;
