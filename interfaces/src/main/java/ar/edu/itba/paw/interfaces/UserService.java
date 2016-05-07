@@ -58,7 +58,9 @@ public interface UserService {
 	 * Reset a user's password to it's default value;
 	 * @param dni the user's dni
 	 * @return OK if the password was reset;
-	 * 		+++xdocument
+	 * 		ERROR_DNI_OUT_OF_BOUNDS if dni is out of the allowed limits;
+	 *		DNI_NOT_EXISTS if the provided dni doesn't match to a user;
+	 *		else ERROR_UNKNOWN in other case;
      */
 	Result resetPassword(Integer dni);
 
