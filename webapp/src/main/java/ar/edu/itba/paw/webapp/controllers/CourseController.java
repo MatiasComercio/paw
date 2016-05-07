@@ -97,6 +97,7 @@ public class CourseController {
         }
 
         mav.addObject("course", courseService.getById(id));
+	    mav.addObject("section", "info"); /* +++xcheck: if it's ok, do the same for all the URLs */
         mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
         mav.addObject("subsection_delete_correlative", true);
         mav.addObject("correlatives", courseService.getCorrelativesByFilter(id, null));
@@ -249,7 +250,7 @@ public class CourseController {
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 		}
 
-        return new ModelAndView("redirect:/courses");
+        return new ModelAndView("redirect:/courses/{id}/info");
     }
 
     @RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)

@@ -16,6 +16,9 @@
     <c:when test="${section=='courses'}">
         <c:set var="coursesActive" value="active" />
     </c:when>
+    <%--<c:when test="${section=='info'}">
+        <c:set var="infoActive" value="active" />
+    </c:when>--%>
 </c:choose>
 <c:set var="actionMenuList">
     <sec:authorize url="/admins">
@@ -38,9 +41,7 @@
     </li>
     <%--@elvariable id="currentActions" type="java.util.List"--%>
     <c:forEach items="${currentActions}" var="action">
-        <li>
-                ${action}
-        </li>
+        ${action}
     </c:forEach>
 </c:set>
 
