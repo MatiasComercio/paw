@@ -264,6 +264,18 @@ public class UserJdbcDao implements UserDao {
 		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 	}
 
+	@Override
+	public Result resetPassword(final Integer dni) {
+		final int rowsAffected;
+
+		try {
+			rowsAffected = jdbcTemplate.update(RESET_PASSWORD, dni);
+		} catch (DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
+		}
+		return rowsAffected == 1 ? Result.OK : Result.DNI_NOT_EXISTS;
+	}
+
 
 
 	/* /Public Methods */
