@@ -28,9 +28,12 @@ public class AdminJdbcDao implements AdminDao {
 
 	/* TABLE NAMES */
 	private static final String ADMIN_TABLE = "admin";
+	private static final String ROLE_AUTHORITIES_TABLE = "role_authorities";
 
 	/* COLS NAMES */
 	private static final String ADMIN__DNI_COLUMN = "dni";
+	private static final String ROLE_AUTHORITIES__ROLE_COLUMN = "role";
+	private static final String ROLE_AUTHORITIES__AUTHORITY_COLUMN = "authority";
 
 	/* POSTGRESQL WILDCARDS */
 	private static final String AND = "AND";
@@ -42,6 +45,8 @@ public class AdminJdbcDao implements AdminDao {
 	private static final String GET_BY_DNI;
 	private static final String GET_ADMIN_DNI_LIST;
 	private static final String DELETE_ADMIN;
+	private static final String DISABLE_ADD_INSCRIPTION;
+	private static final String DISABLE_DELETE_INSCRIPTION;
 
 	static {
 		GET_BY_DNI =
@@ -56,6 +61,13 @@ public class AdminJdbcDao implements AdminDao {
         DELETE_ADMIN =
                 deleteFrom(ADMIN_TABLE)
                         + where(ADMIN__DNI_COLUMN, EQUALS, GIVEN_PARAMETER);
+
+		DISABLE_ADD_INSCRIPTION =
+				deleteFrom(ROLE_AUTHORITIES_TABLE) + where(ROLE_AUTHORITIES__ROLE_COLUMN, EQUALS, "STUDENT") + AND +
+						where(ROLE_AUTHORITIES__AUTHORITY_COLUMN, EQUALS, "ADD_INSCRIPTION");
+		DISABLE_DELETE_INSCRIPTION =
+				deleteFrom(ROLE_AUTHORITIES_TABLE) + where(ROLE_AUTHORITIES__ROLE_COLUMN, EQUALS, "STUDENT") + AND +
+						where(ROLE_AUTHORITIES__AUTHORITY_COLUMN, EQUALS, "DELETE_INSCRIPTION");
     }
 
 	private final JdbcTemplate jdbcTemplate;
@@ -171,7 +183,19 @@ public class AdminJdbcDao implements AdminDao {
         return adminRowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
     }
 
-    /* Private Static Methods */
+	@Override
+	public Result disableAddInscriptions() {
+		int rowsAffected;
+
+		try {
+			rowsAffected = jdbcTemplate.update(DISABLE_ADD_INSCRIPTION);
+		} catch (DataAccessException dae) {
+			return Result.ERROR_UNKNOWN;
+		}
+		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+	}
+
+	/* Private Static Methods */
     private static String deleteFrom(String tableName) {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("DELETE FROM ");

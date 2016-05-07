@@ -47,4 +47,13 @@ public interface AdminDao {
      * 		ERROR_UNKNOWN else;
      */
     Result deleteAdmin(Integer dni);
+
+    /**
+     * Disables inscription authority for Students
+     * @return The Result code of the operation
+     */
+    Result disableAddInscriptions();
+
+    //Result disableDeleteInscriptions();
+
 }

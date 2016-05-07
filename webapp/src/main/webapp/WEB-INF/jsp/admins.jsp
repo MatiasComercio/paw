@@ -39,9 +39,14 @@
                 <div class="col-xs-12 col-md-2 text-center">
                     <p class="lead"><spring:message code="actions"/>:</p>
                 </div>
-                <div class="col-xs-12 col-md-2 text-center">
+                <div class="col-xs-12 col-md-3 text-center">
                     <a class="btn btn-info" href="<c:url value="/admins/add_admin"/>" role="button">
                         <i class="fa fa-plus-circle" aria-hidden="true"></i> <spring:message code="addAdmin"/>
+                    </a>
+                </div>
+                <div class="col-xs-12 col-md-2 text-center">
+                    <a class="btn btn-info" href="<c:url value="/admins/disable_inscriptions"/>" role="button">
+                        <i class="fa fa-plus-circle" aria-hidden="true"></i> <spring:message code="disable_inscriptions"/>
                     </a>
                 </div>
             </div>

@@ -118,4 +118,19 @@ public class AdminController {
 				Locale.getDefault()));
 		return new ModelAndView("redirect:/admins/");
 	}
+
+	@RequestMapping(value= "/admins/disable_inscriptions", method=RequestMethod.POST)
+	public ModelAndView disableInscriptions(RedirectAttributes redirectAttributes){
+		Result result = adminService.disableInscriptions();
+		if(!result.equals(Result.OK)){
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+		}
+		redirectAttributes.addFlashAttribute("alert", "success");
+		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("disable_inscriptions_success",
+				null,
+				Locale.getDefault()));
+
+		return new ModelAndView("redirect:/admins/");
+	}
 }

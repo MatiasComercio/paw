@@ -56,4 +56,12 @@ public interface AdminService {
      * @return The Result code of update
      */
     Result update(Integer dni, Admin admin);
+
+    /**
+     * Disables inscription authority for Students
+     * @return The Result code of the operation
+     */
+    Result disableInscriptions();
+
+
 }

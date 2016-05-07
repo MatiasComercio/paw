@@ -62,4 +62,12 @@ public class AdminServiceImpl implements AdminService {
         }
         return userService.update(dni, admin);
     }
+
+    @Override
+    public Result disableInscriptions() {
+        Result result = adminDao.disableAddInscriptions();
+        return result;
+        //if !ok return err
+        //return adminDao.disableDeleteInscriptions();
+    }
 }
