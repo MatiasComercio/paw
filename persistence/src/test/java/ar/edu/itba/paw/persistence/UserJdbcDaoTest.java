@@ -63,6 +63,12 @@ public class UserJdbcDaoTest {
     private static final String EMAIL_2 = "blihuen@bait.edu.ar";
     private static final String PASSWORD_2 = "pass2";
 
+    private static final String FIRST_NAME_EXPECTED_EMPTY = "";
+    private static final String LAST_NAME_EXPECTED_EMPTY = "";
+    private static final String EMAIL_EXPECTED_EMPTY = "";
+    private static final LocalDate BIRTHDAY_EXPECTED_EMPTY = null;
+    private static final User.Genre GENRE_EXPECTED_EMPTY = User.Genre.N;
+
     private static final String PASSWORD_DEFAULT = "pass";
 
 
@@ -100,6 +106,7 @@ public class UserJdbcDaoTest {
     @Test
     public void update() {
         final Map<String, Object> userArgs = new HashMap<>();
+        final Map<String, Object> userArgs2 = new HashMap<>();
         User user, userUpdated;
         Result result;
 
@@ -131,8 +138,6 @@ public class UserJdbcDaoTest {
         result = userJdbcDao.update(DNI_1, user);
         assertEquals(Result.OK, result);
 
-        System.out.println(user.getFirstName());
-
         Admin.Builder adminBuilder = new Admin.Builder(DNI_1);
         userUpdated = userJdbcDao.getByDni(DNI_1, adminBuilder);
         assertEquals(FIRST_NAME_2_EXPECTED, userUpdated.getFirstName());
@@ -142,16 +147,30 @@ public class UserJdbcDaoTest {
         assertEquals(GENRE_1, userUpdated.getGenre());
 
         /**
-         * Update with not all the parameters filled
+         * Update with not all the parameters filled and check that the other params were deleted
          */
-        user = new Admin.Builder(DNI_1)
-                .firstName(FIRST_NAME_1)
+        userArgs2.put(USER__DNI_COLUMN, DNI_2);
+        userArgs2.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs2.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs2.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
+        userArgs2.put(USER__PASSWORD_COLUMN, PASSWORD_1);
+        userArgs2.put(USER__ROLE_COLUMN, ROLE_1);
+        userInsert.execute(userArgs2);
+
+        user = new Admin.Builder(DNI_2)
+                .firstName(FIRST_NAME_2)
                 .build();
 
-        result = userJdbcDao.update(DNI_1, user);
+        result = userJdbcDao.update(DNI_2, user);
         assertEquals(Result.OK, result);
 
-
+        adminBuilder =  new Admin.Builder(DNI_2);
+        userUpdated = userJdbcDao.getByDni(DNI_2, adminBuilder);
+        assertEquals(FIRST_NAME_2_EXPECTED, userUpdated.getFirstName());
+        assertEquals(LAST_NAME_EXPECTED_EMPTY, userUpdated.getLastName());
+        assertEquals(EMAIL_EXPECTED_EMPTY.toLowerCase(), userUpdated.getEmail());
+        assertEquals(BIRTHDAY_EXPECTED_EMPTY, userUpdated.getBirthday());
+        assertEquals(GENRE_EXPECTED_EMPTY, userUpdated.getGenre());
     }
 
     @Test
