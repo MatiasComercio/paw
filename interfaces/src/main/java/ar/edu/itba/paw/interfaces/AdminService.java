@@ -62,7 +62,7 @@ public interface AdminService {
      * @param dni the user's dni
      * @return OK if the password was reset;
      * 		ERROR_DNI_OUT_OF_BOUNDS if dni is out of the allowed limits;
-     *		DNI_NOT_EXISTS if the provided dni doesn't match to a user;
+     *		INVALID_INPUT_PARAMETERS if the provided dni doesn't match to a user;
      *		else ERROR_UNKNOWN in other case;
      */
     Result resetPassword(Integer dni);
