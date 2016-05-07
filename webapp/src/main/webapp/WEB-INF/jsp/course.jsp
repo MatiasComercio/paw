@@ -1,3 +1,4 @@
+<%--@elvariable id="course" type="ar.edu.itba.paw.models.Course"--%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -21,13 +22,22 @@
                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
             </a>
         </c:set>
-        <%--    <div class="col-xs-6 text-center col_vertical_margin">
-                <a class="btn btn-info" href="<c:url value="/courses/${course.id}/edit"/>">
-                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-                </a>
-            </div>--%>
     </sec:authorize>
     <%--+++xdoing--%>
+    <sec:authorize access="hasAuthority('ROLE_VIEW_STUDENTS')">
+        <c:set var="viewStudents">
+            <a href="<c:url value="/courses/${course.id}/students" />" type="button" class="btn btn-info" role="button">
+                <i class="fa fa-users" aria-hidden="true"></i> <spring:message code="students"/>
+            </a>
+        </c:set>
+    </sec:authorize>
+        <sec:authorize access="hasAuthority('ROLE_ADD_CORRELATIVE')">
+            <c:set var="addCorrelative">
+                <a href="<c:url value="/courses/${course.id}/add_correlative" />" type="button" class="btn btn-info" role="button">
+                    <i class="fa fa-fw fa-list-alt"></i> <spring:message code="add_correlatives"/>
+                </a>
+            </c:set>
+        </sec:authorize>
     <sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
         <jsp:include page="template/deleteCourseForm.jsp" />
         <c:set var="deleteCourse">
@@ -42,15 +52,12 @@
         <c:out value="${course.name}" />
     </c:set>
     <c:set var="currentActions" scope="request">
-        ${editCourse}, ${deleteCourse}
+        ${editCourse}, ${viewStudents}, ${addCorrelative}, ${deleteCourse}
     </c:set>
     <%-- /actions definition --%>
 
     <jsp:include page="base/nav.jsp" />
     <jsp:include page="template/CorrelativeForm.jsp" />
-
-
-
 
 
     <div id="page-wrapper">
@@ -72,10 +79,9 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12 col-sm-7">
+                <div class="col-xs-12">
                     <div class="well">
                         <div class="row">
-
                             <div class="row">
                                 <div class="col-xs-3 right-effect">
                                     <strong><spring:message code="id"/></strong>
@@ -111,20 +117,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-5">
-                    <div class="row">
-                        <div class="col-xs-6 col-md-6">
-                            <a href="<c:url value="/courses/${course.id}/students" />" type="button" class="btn btn-info col_vertical_margin" role="button">
-                                <i class="fa fa-users" aria-hidden="true"></i> <spring:message code="students"/></a>
-                        </div>
-                        <sec:authorize access="hasAuthority('ROLE_ADD_CORRELATIVE')">
-                            <div class="col-xs-6 col-md-6 text-center">
-                                <a href="<c:url value="/courses/${course.id}/add_correlative" />" type="button" class="btn btn-info col_vertical_margin" role="button">
-                                    <i class="fa fa-fw fa-list-alt"></i> <spring:message code="add_correlatives"/></a>
-                            </div>
-                        </sec:authorize>
-                    </div>
-                </div>
             </div>
 
             <%-- Correlatives --%>
@@ -133,38 +125,42 @@
                     <h3 class="page-header"> <spring:message code="correlatives"/> </h3>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table table-hover <%--table-bordered--%> <%--table-condensed--%>">
-                    <thead>
-                    <tr>
-                        <th><spring:message code="id"/></th>
-                        <th><spring:message code="course"/></th>
-                        <th><spring:message code="credits"/></th>
-                        <th><spring:message code="actions"/></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach items="${correlatives}" var="correlative">
-                        <tr>
-                            <td>${ correlative.id }</td>
-                            <td>${ correlative.name }</td>
-                            <td>${ correlative.credits }</td>
-                            <td>
-                                <a class="btn btn-default btn-xs" href="<c:url value="/courses/${correlative.id}/info" />" role="button">
-                                    <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
-                                </a>
-                                    <%--                            <button name="deleteCorrelativeButton" class="btn btn-danger btn-xs" type="button"
-                                                                        data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                                                        data-correlative_id="${correlative.id}" data-correlative_name="${correlative.name}"
-                                                                        data-toggle="modal" data-target="#correlativeFormConfirmationModal">
-                                                                    <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
-                                                                </button>--%>
-                            <td>
-                        </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
-            </div>
+            <c:choose>
+                <c:when test="${empty correlatives}">
+                    <div class="alert alert-info text-center">
+                        <strong><spring:message code="noCorrelativesFound"/></strong>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="table-responsive">
+                        <table class="table table-hover <%--table-bordered--%> <%--table-condensed--%>">
+                            <thead>
+                            <tr>
+                                <th><spring:message code="id"/></th>
+                                <th><spring:message code="course"/></th>
+                                <th><spring:message code="credits"/></th>
+                                <th><spring:message code="actions"/></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <%--@elvariable id="correlatives" type="java.util.List"--%>
+                            <c:forEach items="${correlatives}" var="correlative">
+                                <tr>
+                                    <td>${ correlative.id }</td>
+                                    <td>${ correlative.name }</td>
+                                    <td>${ correlative.credits }</td>
+                                    <td>
+                                        <a class="btn btn-default btn-xs" href="<c:url value="/courses/${correlative.id}/info" />" role="button">
+                                            <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                                        </a>
+                                    <td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </c:otherwise>
+            </c:choose>
 
             <!-- Content -->
         </div>
