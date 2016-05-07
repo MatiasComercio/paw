@@ -63,7 +63,8 @@ public interface UserDao {
 	 * @param dni the user's dni
 	 * @param user the new user's details
 	 * @return OK if the user's data was changed correctly
-	 * 		+++xdocument
+	 * 		INVALID_INPUT_PARAMETERS if a parameter was not correct;
+	 * 		ERROR_UNKNOWN in other case;
 	 */
 	Result update(int dni, User user);
 
