@@ -173,10 +173,19 @@ public class AdminJdbcDaoTest {
          * Insert non existant admin 
          */
         admin = new Admin.Builder(DNI_1)
+                .firstName(FIRST_NAME_1)
+                .lastName(LAST_NAME_1)
+                .email(EMAIL_1)
                 .build();
 
         result = adminJdbcDao.create(admin);
         assertEquals(Result.OK, result);
+
+        Admin adminCreated = adminJdbcDao.getByDni(DNI_1);
+        assertEquals(DNI_1, adminCreated.getDni());
+        assertEquals(FIRST_NAME_1_EXPECTED, adminCreated.getFirstName());
+        assertEquals(LAST_NAME_1_EXPECTED, adminCreated.getLastName());
+        assertEquals(EMAIL_1, adminCreated.getEmail());
 
         /** 
          * Insert duplicate admin
