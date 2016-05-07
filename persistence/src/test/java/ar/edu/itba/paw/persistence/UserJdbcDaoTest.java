@@ -58,6 +58,9 @@ public class UserJdbcDaoTest {
     private static final String EMAIL_2 = "blihuen@bait.edu.ar";
     private static final String PASSWORD_2 = "pass2";
 
+    private static final String PASSWORD_DEFAULT = "pass";
+
+
     @Autowired
     private DataSource dataSource;
 
@@ -190,6 +193,10 @@ public class UserJdbcDaoTest {
          */
         result = userJdbcDao.resetPassword(DNI_1);
         assertEquals(Result.OK, result);
+
+        Admin.Builder adminBuilder = new Admin.Builder(DNI_1);
+        User user = userJdbcDao.getByDni(DNI_1, adminBuilder);
+        assertEquals(PASSWORD_DEFAULT, user.getPassword());
 
         /**
          * Reset password from an invalid user
