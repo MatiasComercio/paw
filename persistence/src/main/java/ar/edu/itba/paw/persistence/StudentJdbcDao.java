@@ -463,18 +463,16 @@ public class StudentJdbcDao implements StudentDao {
 
         final String genre = student.getGenre().equals("Female")? "F" : "M";
 
-        final String userUpdate = "UPDATE users SET " + USER__DNI_COLUMN + " = ?, " + USER__FIRST_NAME_COLUMN + " = ?, "
+        final String userUpdate = "UPDATE users SET " + USER__FIRST_NAME_COLUMN + " = ?, "
                 + USER__LAST_NAME_COLUMN + " = ?, " + USER__GENRE_COLUMN + " = ?, " + USER__BIRTHDAY_COLUMN + " = ?, "
                 + USER__EMAIL_COLUMN + " = ? WHERE " + USER__DNI_COLUMN + " = ?";
-
-        //final String studentUpdate = "UPDATE student SET " + STUDENT__DOCKET_COLUMN + " = ? WHERE " + STUDENT__DNI_COLUMN + " = ?;";
 
 
         //Update user table
         try {
             Date birthday = student.getBirthday() != null ? Date.valueOf(student.getBirthday()) : null;
 
-            jdbcTemplate.update(userUpdate, student.getDni(), student.getFirstName(), student.getLastName(), genre,
+            jdbcTemplate.update(userUpdate, student.getFirstName(), student.getLastName(), genre,
                     birthday, createEmail(student.getDni(), student.getFirstName(),
                             student.getLastName()), dni);
         } catch (DuplicateKeyException e) {
