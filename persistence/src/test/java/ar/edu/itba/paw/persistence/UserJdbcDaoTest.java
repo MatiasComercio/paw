@@ -162,10 +162,14 @@ public class UserJdbcDaoTest {
         assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
 
         /**
-         * Change password with a valid DNI
+         * Change password with a valid DNI and check that it was changed
          */
         result = userJdbcDao.changePassword(DNI_1, PASSWORD_1, PASSWORD_2);
         assertEquals(Result.OK, result);
+
+        Admin.Builder adminBuilder = new Admin.Builder(DNI_1);
+        User user = userJdbcDao.getByDni(DNI_1, adminBuilder);
+        assertEquals(PASSWORD_2, user.getPassword());
     }
 
     @Test
