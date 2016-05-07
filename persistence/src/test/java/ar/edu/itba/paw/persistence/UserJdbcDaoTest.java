@@ -168,4 +168,30 @@ public class UserJdbcDaoTest {
         assertEquals(Result.OK, result);
     }
 
+    @Test
+    public void resetPassword() {
+        final Map<String, Object> userArgs = new HashMap<>();
+        Result result;
+
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
+        userArgs.put(USER__ROLE_COLUMN, ROLE_1);
+        userInsert.execute(userArgs);
+
+        /**
+         * Reset password from a valid user and check that it is the default
+         */
+        result = userJdbcDao.resetPassword(DNI_1);
+        assertEquals(Result.OK, result);
+
+        /**
+         * Reset password from an invalid user
+         */
+        result = userJdbcDao.resetPassword(DNI_2);
+        assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
+    }
+
 }
