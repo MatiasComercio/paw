@@ -88,7 +88,8 @@ public class CourseController {
 	}
 
     @RequestMapping("/courses/{id}/info")
-    public ModelAndView getCourse(@PathVariable final Integer id, Model model) {
+    public ModelAndView getCourse(@PathVariable final Integer id, Model model,
+                                  @ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm) {
         final ModelAndView mav = new ModelAndView("course");
 
         if (!model.containsAttribute("correlativeForm")) {

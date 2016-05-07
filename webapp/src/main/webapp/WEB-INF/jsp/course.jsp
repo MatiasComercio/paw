@@ -1,5 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
@@ -12,38 +12,47 @@
     <jsp:include page="base/head.jsp" />
     <link href="<c:url value="/static/css/course-detail.css" />" rel="stylesheet" type="text/css"/>
 </head>
-<%-- Actions definition --%>
-<sec:authorize access="hasAuthority('ROLE_EDIT_COURSE')">
-    <c:set var="editCourse">
-        <a href="<c:url value="/courses/${course.id}/edit"/>" class="pushy-link">
-            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-        </a>
-    </c:set>
-<%--    <div class="col-xs-6 text-center col_vertical_margin">
-        <a class="btn btn-info" href="<c:url value="/courses/${course.id}/edit"/>">
-            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-        </a>
-    </div>--%>
-</sec:authorize>
-<%--+++xdoing--%>
-<sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
-    <c:set var="deleteCourse">
-        <button name="deleteCourseButton" class="menu-btn btn-danger" type="button"
-                data-course_id="${ course.id }" data-course_name="${ course.name }"
-                data-toggle="modal" data-target="#deleteCourseFormConfirmationModal">
-            <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
-        </button>
-    </c:set>
-</sec:authorize>
-
-<%-- /actions definition --%>
 <body>
 <div id="wrapper">
-    <jsp:include page="base/nav.jsp">
-        <jsp:param name="currentActionsHeader" value="${course.name}"/>
-        <jsp:param name="currentActions" value="${editCourse}, ${deleteCourse}"/>
-    </jsp:include>
+    <%-- Actions definition --%>
+    <sec:authorize access="hasAuthority('ROLE_EDIT_COURSE')">
+        <c:set var="editCourse">
+            <a href="<c:url value="/courses/${course.id}/edit"/>" class="pushy-link">
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+            </a>
+        </c:set>
+        <%--    <div class="col-xs-6 text-center col_vertical_margin">
+                <a class="btn btn-info" href="<c:url value="/courses/${course.id}/edit"/>">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                </a>
+            </div>--%>
+    </sec:authorize>
+    <%--+++xdoing--%>
+    <sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
+        <jsp:include page="template/deleteCourseForm.jsp" />
+        <c:set var="deleteCourse">
+            <button name="deleteCourseButton" class="menu-btn btn-danger" type="button"
+                    data-course_id="${ course.id }" data-course_name="${ course.name }"
+                    data-toggle="modal" data-target="#deleteCourseFormConfirmationModal">
+                <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
+            </button>
+        </c:set>
+    </sec:authorize>
+    <c:set var="currentActionsHeader" scope="request">
+        <c:out value="${course.name}" />
+    </c:set>
+    <c:set var="currentActions" scope="request">
+        ${editCourse}, ${deleteCourse}
+    </c:set>
+    <%-- /actions definition --%>
+
+    <jsp:include page="base/nav.jsp" />
     <jsp:include page="template/CorrelativeForm.jsp" />
+
+
+
+
+
     <div id="page-wrapper">
 
         <div class="container-fluid">
@@ -99,12 +108,6 @@
                                     ${course.semester}
                                 </div>
                             </div>
-                        </div>
-                        <%-- +++xremove --%>
-                        <div class="row">
-                            <c:forEach items="${currentActions}" var="action">
-                                ${action}
-                            </c:forEach>
                         </div>
                     </div>
                 </div>
@@ -178,10 +181,10 @@
 <script>
     $( document ).ready(function() {
         <sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
-            loadDeleteCourseForm("deleteCourseButton");
+        loadDeleteCourseForm("deleteCourseButton");
         </sec:authorize>
         <sec:authorize access="hasAuthority('ROLE_ADD_CORRELATIVE')">
-            loadCorrelativeForm("deleteCorrelativeButton");
+        loadCorrelativeForm("deleteCorrelativeButton");
         </sec:authorize>
     });
 </script>

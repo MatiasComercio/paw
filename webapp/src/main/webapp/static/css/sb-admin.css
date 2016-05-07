@@ -295,8 +295,13 @@ ul.side-nav>li>p.current_actions_header:hover {
     color: #df8a13;
 }
 
+/* Other styles */
 .remove_out_spaces {
     margin: 0;
+}
+
+.dropdown-menu {
+    width: 300px;
 }
 
 /* Disable default button style */
