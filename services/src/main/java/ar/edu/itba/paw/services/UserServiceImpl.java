@@ -84,10 +84,6 @@ public class UserServiceImpl implements UserService {
 		} else {
 			addressService.createAddress(dni, user.getAddress());
 		}
-
-		/**
-		 * +++xfinish
-		 */
 		return userDao.update(dni, user);
 	}
 
