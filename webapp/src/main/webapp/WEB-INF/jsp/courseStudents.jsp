@@ -27,30 +27,6 @@
             </div>
             <!-- Content -->
             <jsp:include page="template/searchStudents.jsp" />
-<%--            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th><spring:message code="docket"/></th>
-                    <th><spring:message code="firstName"/></th>
-                    <th><spring:message code="lastName"/></th>
-                    <th><spring:message code="actions"/></th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach items="${courseStudents.students}" var="student">
-                    <tr>
-                        <td>${ student.docket }</td>
-                        <td>${ student.firstName }</td>
-                        <td>${ student.lastName }</td>
-                        <td>
-                            <a href="<c:url value="/students/${student.docket}/info" />">
-                                <spring:message code="see"/>
-                            </a>
-                        </td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>--%>
             <!-- Content -->
         </div>
     </div>
