@@ -56,7 +56,7 @@ public class UserJdbcDaoTest {
     private static final String GENRE_1_EXPECTED = "Male";
 
     private static final int DNI_2 = 87654321;
-    private static final String FIRST_NAME_2 = "BreNda LiHuéN ";
+    private static final String FIRST_NAME_2 = "BreNda LiHuéN";
     private static final String FIRST_NAME_2_EXPECTED = "Brenda Lihuén";
     private static final String LAST_NAME_2 = "MaYan";
     private static final String LAST_NAME_2_EXPECTED = "Mayan";
@@ -130,6 +130,8 @@ public class UserJdbcDaoTest {
          */
         result = userJdbcDao.update(DNI_1, user);
         assertEquals(Result.OK, result);
+
+        System.out.println(user.getFirstName());
 
         Admin.Builder adminBuilder = new Admin.Builder(DNI_1);
         userUpdated = userJdbcDao.getByDni(DNI_1, adminBuilder);

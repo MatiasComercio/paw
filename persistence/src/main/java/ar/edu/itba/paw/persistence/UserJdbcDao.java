@@ -254,7 +254,6 @@ public class UserJdbcDao implements UserDao {
 		if(user.getBirthday() != null) {
 			birthday = Date.valueOf(user.getBirthday());
 		}
-
 		try {
 			rowsAffected = jdbcTemplate.update(UPDATE_USER,
 					user.getFirstName(),
