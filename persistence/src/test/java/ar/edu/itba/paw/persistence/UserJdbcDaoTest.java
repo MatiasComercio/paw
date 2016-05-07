@@ -136,4 +136,25 @@ public class UserJdbcDaoTest {
 
     }
 
+    @Test
+    public void changePassword() {
+        final Map<String, Object> userArgs = new HashMap<>();
+        User user;
+        Result result;
+
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
+        userArgs.put(USER__ROLE_COLUMN, ROLE_1);
+        userInsert.execute(userArgs);
+
+        /**
+         * Change password with a valid DNI and
+         */
+        result = userJdbcDao.changePassword(DNI_1, PASSWORD_1, PASSWORD_2);
+        assertEquals(Result.OK, result);
+    }
+
 }
