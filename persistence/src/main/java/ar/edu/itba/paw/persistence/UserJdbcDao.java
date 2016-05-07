@@ -55,6 +55,7 @@ public class UserJdbcDao implements UserDao {
 	private static final String ROLE_AUTHORITIES__AUTHORITY_COLUMN = "authority";
 
 	private static final String AND = "AND";
+	private static final String DEFAULT = "DEFAULT";
 	private static final String EVERYTHING = "*";
 	private static final String EQUALS = "=";
 	private static final String GIVEN_PARAMETER = "?";
