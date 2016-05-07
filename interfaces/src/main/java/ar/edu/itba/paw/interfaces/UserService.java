@@ -55,6 +55,14 @@ public interface UserService {
 	Result changePassword(int dni, String prevPassword, String newPassword, String repeatNewPassword);
 
 	/**
+	 * Reset a user's password to it's default value;
+	 * @param dni the user's dni
+	 * @return OK if the password was reset;
+	 * 		+++xdocument
+     */
+	Result resetPassword(Integer dni);
+
+	/**
 	 * Update the user
 	 * @param dni the user's dni
 	 * @param user the new user's details
