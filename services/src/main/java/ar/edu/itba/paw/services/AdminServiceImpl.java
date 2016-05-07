@@ -62,4 +62,9 @@ public class AdminServiceImpl implements AdminService {
         }
         return userService.update(dni, admin);
     }
+
+    @Override
+    public Result resetPassword(final Integer dni) {
+        return userService.resetPassword(dni);
+    }
 }
