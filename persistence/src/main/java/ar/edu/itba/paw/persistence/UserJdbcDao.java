@@ -63,6 +63,7 @@ public class UserJdbcDao implements UserDao {
 	private static final String GET_BY_DNI;
 	private static final String GET_ROLE;
 	private static final String UPDATE_PASSWORD;
+	private static final String RESET_PASSWORD;
 	private static final String GET_EMAILS;
 	private static final String DELETE_USER;
 	private static final String GET_ROLE_AUTHORITIES;
@@ -95,6 +96,12 @@ public class UserJdbcDao implements UserDao {
 						set(USER__PWD_COLUMN, GIVEN_PARAMETER) +
 						where(tableCol(USERS_TABLE, USER__DNI_COLUMN), EQUALS, GIVEN_PARAMETER
 						,AND, tableCol(USERS_TABLE, USER__PWD_COLUMN), EQUALS, GIVEN_PARAMETER);
+
+		RESET_PASSWORD =
+				update(USERS_TABLE) +
+						set(USER__PWD_COLUMN, DEFAULT) +
+						where(tableCol(USERS_TABLE, USER__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);
+
 
 		UPDATE_USER =
 				update(USERS_TABLE) +
