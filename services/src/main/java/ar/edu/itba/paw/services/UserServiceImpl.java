@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
 //	}
 
 	@Override
-	public Result changePassword(int dni, String prevPassword, String newPassword, String repeatNewPassword) {
+	public Result changePassword(final int dni, final String prevPassword, final String newPassword, final String repeatNewPassword) {
 		if (!newPassword.equals(repeatNewPassword)) {
 			return Result.PASSWORDS_DO_NOT_MATCH;
 		}
