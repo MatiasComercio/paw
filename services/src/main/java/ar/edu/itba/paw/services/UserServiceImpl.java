@@ -15,9 +15,6 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDao userDao;
 
-	@Autowired /* +++xremove: this should not be here: smells like an action that we should be doing at our UserDao */
-	private AddressService addressService;
-
 	@Override
 	public List<Role> getRole(final int dni) {
 		return userDao.getRole(dni);
@@ -77,12 +74,6 @@ public class UserServiceImpl implements UserService {
 	public Result update(final Integer dni, final User user) {
 		if(dni <= 0) {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
-		}
-
-		if(addressService.hasAddress(dni)) {
-			addressService.updateAddress(dni, user.getAddress());
-		} else {
-			addressService.createAddress(dni, user.getAddress());
 		}
 		return userDao.update(dni, user);
 	}
