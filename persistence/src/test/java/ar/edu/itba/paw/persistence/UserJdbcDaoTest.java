@@ -46,11 +46,14 @@ public class UserJdbcDaoTest {
 
     private static final int DNI_1 = 12345678;
     private static final String FIRST_NAME_1 = "MaTías NIColas";
+    private static final String FIRST_NAME_1_EXPECTED = "Matías Nicolas";
     private static final String LAST_NAME_1 = "Comercio vazquez";
+    private static final String LAST_NAME_1_EXPECTED = "Comercio Vazquez";
     private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
     private static final String PASSWORD_1 = "pass1";
     private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
     private static final User.Genre GENRE_1 = User.Genre.M;
+    private static final String GENRE_1_EXPECTED = "Male";
 
     private static final int DNI_2 = 87654321;
     private static final String FIRST_NAME_2 = "BreNda LiHuéN ";
@@ -95,7 +98,7 @@ public class UserJdbcDaoTest {
     @Test
     public void update() {
         final Map<String, Object> userArgs = new HashMap<>();
-        User user;
+        User user, userUpdated;
         Result result;
 
         userArgs.put(USER__DNI_COLUMN, DNI_1);
@@ -125,6 +128,14 @@ public class UserJdbcDaoTest {
          */
         result = userJdbcDao.update(DNI_1, user);
         assertEquals(Result.OK, result);
+
+        Admin.Builder adminBuilder = new Admin.Builder(DNI_1);
+        userUpdated = userJdbcDao.getByDni(DNI_1, adminBuilder);
+        assertEquals(FIRST_NAME_2, userUpdated.getFirstName());
+        assertEquals(LAST_NAME_2, userUpdated.getLastName());
+        assertEquals(EMAIL_1, userUpdated.getEmail());
+        assertEquals(BIRTHDAY_1, userUpdated.getBirthday());
+        assertEquals(GENRE_1, userUpdated.getGenre());
 
         /**
          * Update with not all the parameters filled
