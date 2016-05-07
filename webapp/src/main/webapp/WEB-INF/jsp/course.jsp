@@ -27,12 +27,13 @@
                     </h1>
                 </div>
             </div>
+            <!-- /Page Heading -->
+
+            <!-- Alerts -->
+            <jsp:include page="base/alerts.jsp" />
+            <!-- /Alerts -->
+
             <!-- Content -->
-            <div class="row">
-                <div class="col-xs-12">
-                    <jsp:include page="base/alerts.jsp" />
-                </div>
-            </div>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="well">
@@ -129,8 +130,10 @@
     <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
-    <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteCourseForm.js"%></script>
+<%--<sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
+    <script type="text/javascript" charset="UTF-8">
+        <%@include file="../js/template/deleteCourseForm.js"%>
+    </script>
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_ADD_CORRELATIVE')">
     <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/CorrelativeForm.js"%></script>
@@ -143,6 +146,21 @@
         <sec:authorize access="hasAuthority('ROLE_ADD_CORRELATIVE')">
         loadCorrelativeForm("deleteCorrelativeButton");
         </sec:authorize>
+    });
+</script>--%>
+<%--@elvariable id="includeScripts" type="java.util.List"--%>
+<c:forTokens items="${includeScripts}" var="script" delims="`">
+    <script type="text/javascript" charset="UTF-8">
+        ${script}
+    </script>
+</c:forTokens>
+
+<script>
+    $(document).ready(function() {
+        <%--@elvariable id="loadScripts" type="java.util.List"--%>
+        <c:forTokens items="${loadScripts}" var="loadScript" delims="`">
+        ${loadScript}
+        </c:forTokens>
     });
 </script>
 

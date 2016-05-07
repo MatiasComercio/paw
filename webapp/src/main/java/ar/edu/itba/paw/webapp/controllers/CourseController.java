@@ -108,6 +108,7 @@ public class CourseController {
 	public ModelAndView editCourse(
 			@PathVariable final Integer courseId,
 			@ModelAttribute("courseForm") final CourseForm courseForm,
+			@ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm,
 			final RedirectAttributes redirectAttributes) {
 		final ModelAndView mav = new ModelAndView("addCourse");
 
@@ -137,7 +138,9 @@ public class CourseController {
 								  final BindingResult errors,
 								  RedirectAttributes redirectAttributes){
 		if (errors.hasErrors()){
-			return editCourse(courseId, courseForm, redirectAttributes);
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseForm", errors);
+			redirectAttributes.addFlashAttribute("courseForm", courseForm);
+			return new ModelAndView("redirect:/courses/" + courseId + "/edit");
 		}
 
 		Course course = courseForm.build();
@@ -146,7 +149,7 @@ public class CourseController {
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return editCourse(courseId, courseForm, redirectAttributes);
+			return new ModelAndView("redirect:/courses/" + courseId + "/edit");
 		}
 
 		redirectAttributes.addFlashAttribute("alert", "success");

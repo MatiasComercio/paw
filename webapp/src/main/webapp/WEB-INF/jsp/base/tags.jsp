@@ -9,6 +9,7 @@ because taglibs are not recognised using the syntax <jsp:include page="base/tags
 Info. about this:
 * http://stackoverflow.com/questions/4318891/jstl-taglibs-not-recognized-when-declared-in-common-header
 * https://objectpartners.com/2011/04/14/jsp-to-include-or-jspinclude/
+* http://stackoverflow.com/questions/14580120/whats-the-difference-between-including-files-with-jsp-include-directive-jsp-in
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
