@@ -65,6 +65,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Result resetPassword(final Integer dni) {
+        if(dni <= 0) {
+            return Result.ERROR_DNI_OUT_OF_BOUNDS;
+        }
         return userService.resetPassword(dni);
     }
 }
