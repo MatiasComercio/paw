@@ -122,7 +122,7 @@
                 <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteCourseForm.js"%></script>
             </c:when>
             <c:when test="${subsection_add_correlative}">
-                <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/addCorrelativeForm.js"%></script>
+                <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/CorrelativeForm.js"%></script>
             </c:when>
         </c:choose>
     </c:when>

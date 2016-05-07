@@ -1,25 +1,11 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%--See: http://docs.spring.io/spring-security/site/docs/4.1.0.RELEASE/reference/htmlsingle/#taglibs-authorize--%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ include file="tags.jsp" %>
 
 <%-- Spring Security: Choose variables --%>
-<%--@elvariable id="section" type="ar.edu.itba.paw.webapp.controllers"--%>
-<c:choose>
-    <c:when test="${section=='admins'}">
-        <c:set var="adminsActive" value="active" />
-    </c:when>
-    <c:when test="${section=='students'}">
-        <c:set var="studentsActive" value="active" />
-    </c:when>
-    <c:when test="${section=='courses'}">
-        <c:set var="coursesActive" value="active" />
-    </c:when>
-    <%--<c:when test="${section=='info'}">
-        <c:set var="infoActive" value="active" />
-    </c:when>--%>
-</c:choose>
+<jsp:include page="sections.jsp" />
+
+<%--@elvariable id="adminsActive" type="java.lang.String"--%>
+<%--@elvariable id="studentsActive" type="java.lang.String"--%>
+<%--@elvariable id="coursesActive" type="java.lang.String"--%>
 <c:set var="actionMenuList">
     <sec:authorize url="/admins">
         <li class="${adminsActive}">
@@ -77,7 +63,7 @@
 <div class="site-overlay visible-xs-block"></div>
 
 <!-- Navigation -->
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-inverse navbar-fixed-top">
 
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">

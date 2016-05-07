@@ -148,7 +148,7 @@ ul.alert-dropdown {
     .side-nav>li>button.btn-danger:hover,
     .side-nav>li>button.btn-danger:focus {
         outline: none;
-        background-color: #d9534f !important;
+        background-color: #c9302c !important;
     }
 }
 
@@ -184,7 +184,7 @@ ul.alert-dropdown {
     .side-nav>li>button.btn-danger:hover,
     .side-nav>li>button.btn-danger:focus {
         outline: none;
-        background-color: #d9534f !important;
+        background-color: #c9302c !important;
     }
 }
 
@@ -214,7 +214,7 @@ ul.side-nav>li>*:hover {
 }
 
 ul.side-nav>li>p.current_actions_header {
-    margin-top: 5%;
+    /*margin-top: 5%;*/
     margin-bottom: 0;
     text-align: center;
 }

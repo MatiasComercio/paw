@@ -12,72 +12,9 @@
 </head>
 <body>
 <div id="wrapper">
-    <%-- +++xtodo: should include a "section setter" for each file--%>
-    <c:choose>
-        <c:when test="${section=='info'}">
-            <c:set var="infoActive" value="active" />
-        </c:when>
-    </c:choose>
-    <%-- Actions definition --%>
-    <sec:authorize access="hasAuthority('ROLE_VIEW_COURSE')">
-        <c:set var="viewCourse">
-            <li class="${infoActive}">
-                <a href="<c:url value="/courses/${course.id}/info"/>" class="pushy-link">
-                    <i class="fa fa-info-circle" aria-hidden="true"></i> <spring:message code="information"/>
-                </a>
-            </li>
-        </c:set>
-    </sec:authorize>
-    <sec:authorize access="hasAuthority('ROLE_EDIT_COURSE')">
-        <c:set var="editCourse">
-            <li>
-                <a href="<c:url value="/courses/${course.id}/edit"/>" class="pushy-link">
-                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-                </a>
-            </li>
-        </c:set>
-    </sec:authorize>
-    <sec:authorize access="hasAuthority('ROLE_VIEW_STUDENTS')">
-        <c:set var="viewStudents">
-            <li>
-                <a href="<c:url value="/courses/${course.id}/students" />" type="button" class="btn btn-info" role="button">
-                    <i class="fa fa-users" aria-hidden="true"></i> <spring:message code="students"/>
-                </a>
-            </li>
-        </c:set>
-    </sec:authorize>
-    <sec:authorize access="hasAuthority('ROLE_ADD_CORRELATIVE')">
-        <c:set var="addCorrelative">
-            <li>
-                <a href="<c:url value="/courses/${course.id}/add_correlative" />" type="button" class="btn btn-info" role="button">
-                    <i class="fa fa-fw fa-list-alt"></i> <spring:message code="add_correlatives"/>
-                </a>
-            </li>
-        </c:set>
-    </sec:authorize>
-    <sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
-        <jsp:include page="template/deleteCourseForm.jsp" />
-        <c:set var="deleteCourse">
-            <li>
-                <button name="deleteCourseButton" class="menu-btn btn-danger" type="button"
-                        data-course_id="${ course.id }" data-course_name="${ course.name }"
-                        data-toggle="modal" data-target="#deleteCourseFormConfirmationModal">
-                    <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
-                </button>
-            </li>
-        </c:set>
-    </sec:authorize>
-    <c:set var="currentActionsHeader" scope="request">
-        <c:out value="${course.name}" />
-    </c:set>
-    <c:set var="currentActions" scope="request">
-        ${viewCourse}, ${editCourse}, ${viewStudents}, ${addCorrelative}, ${deleteCourse}
-    </c:set>
-    <%-- /actions definition --%>
-
+    <jsp:include page="base/sections.jsp" />
+    <jsp:include page="template/courseActionsPanel.jsp" />
     <jsp:include page="base/nav.jsp" />
-    <jsp:include page="template/CorrelativeForm.jsp" />
-
 
     <div id="page-wrapper">
 
@@ -156,10 +93,10 @@
                         <table class="table table-hover <%--table-bordered--%> <%--table-condensed--%>">
                             <thead>
                             <tr>
-                                <th><spring:message code="id"/></th>
-                                <th><spring:message code="course"/></th>
-                                <th><spring:message code="credits"/></th>
-                                <th><spring:message code="actions"/></th>
+                                <th class="col-xs-1"><spring:message code="id"/></th>
+                                <th class="col-xs-5"><spring:message code="course"/></th>
+                                <th class="col-xs-2"><spring:message code="credits"/></th>
+                                <th class="col-xs-4"><spring:message code="actions"/></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -172,6 +109,12 @@
                                         <a class="btn btn-default btn-sm" href="<c:url value="/courses/${correlative.id}/info" />" role="button">
                                             <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
                                         </a>
+                                        <button name="deleteCorrelativeButton" class="btn btn-danger btn-xs" type="button"
+                                                data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                                data-correlative_id="${correlative.id}" data-correlative_name="${correlative.name}"
+                                                data-toggle="modal" data-target="#correlativeFormConfirmationModal">
+                                            <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
+                                        </button>
                                     <td>
                                 </tr>
                             </c:forEach>
@@ -191,7 +134,7 @@
     <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteCourseForm.js"%></script>
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_ADD_CORRELATIVE')">
-    <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/addCorrelativeForm.js"%></script>
+    <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/CorrelativeForm.js"%></script>
 </sec:authorize>
 <script>
     $( document ).ready(function() {
