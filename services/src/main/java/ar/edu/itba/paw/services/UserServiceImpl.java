@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Result update(Integer dni, User user) {
+	public Result update(final Integer dni, final User user) {
 		if(dni <= 0) {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
 		}
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Result delete(Integer dni) {
+	public Result delete(final Integer dni) {
 		if(dni <= 0) {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
 		}
