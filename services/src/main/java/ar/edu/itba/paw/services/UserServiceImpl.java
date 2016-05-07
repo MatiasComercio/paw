@@ -66,6 +66,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public Result resetPassword(final Integer dni) {
+		if(dni <= 0) {
+			return Result.ERROR_DNI_OUT_OF_BOUNDS;
+		}
+		return userDao.resetPassword(dni);
+	}
+
+	@Override
 	public Result update(Integer dni, User user) {
 		if(dni <= 0) {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
