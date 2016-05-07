@@ -1,4 +1,15 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ include file="tags.jsp" %>
+
+<div class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 text-center">
+                <p><strong><spring:message code="developedByFooter" /></strong></p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 <%-- Pushy CSS --%>
 <%-- Speciall thanks to Chris Yee. Twitter user: @cmyee.--%>

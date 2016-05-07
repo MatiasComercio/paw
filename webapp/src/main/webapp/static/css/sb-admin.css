@@ -23,8 +23,11 @@ body {
 
 #page-wrapper {
     width: 100%;
-    padding: 0;
+    padding: 0 0 5%;
     background-color: #fff;
+    margin-top: 1px;
+    border-left: 1px solid black;
+    min-height: 100%;
 }
 
 .huge {
@@ -309,4 +312,18 @@ button.navbar-toggle.menu-btn.pull-left {
     margin-left: 0;
     margin-right: 0;
     border: transparent;
+}
+
+.footer {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.right-effect{
+    text-align: right;
+}
+
+.col_vertical_margin {
+    margin-bottom: 5%;
+    margin-top: 5%;
 }

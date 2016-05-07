@@ -128,10 +128,9 @@
 
     </div>
     <!-- /#page-wrapper -->
-
+    <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<jsp:include page="base/footer.jsp" />
 <script>
     $(document).ready(function(){
 

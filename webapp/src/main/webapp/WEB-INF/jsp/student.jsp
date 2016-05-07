@@ -9,7 +9,6 @@
     </title>
     <jsp:include page="base/head.jsp" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link href="<c:url value="/static/css/course-detail.css" />" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="wrapper">
@@ -195,8 +194,8 @@
             <!-- Content -->
         </div>
     </div>
+    <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<jsp:include page="base/footer.jsp" />
 </body>
 </html>

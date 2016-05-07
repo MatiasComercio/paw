@@ -119,10 +119,9 @@
 
     </div>
     <!-- /#page-wrapper -->
-
+    <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<jsp:include page="base/footer.jsp" />
 <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/gradeForm.js"%></script>
 
 <script>

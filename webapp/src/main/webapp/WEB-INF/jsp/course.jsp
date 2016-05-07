@@ -8,7 +8,6 @@
         <spring:message code="webAbbreviation"/> | ${course.name}
     </title>
     <jsp:include page="base/head.jsp" />
-    <link href="<c:url value="/static/css/course-detail.css" />" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="wrapper">
@@ -127,9 +126,9 @@
             <!-- Content -->
         </div>
     </div>
+    <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<jsp:include page="base/footer.jsp" />
 <sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
     <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteCourseForm.js"%></script>
 </sec:authorize>

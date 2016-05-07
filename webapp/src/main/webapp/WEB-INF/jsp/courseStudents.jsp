@@ -30,9 +30,9 @@
             <!-- Content -->
         </div>
     </div>
+    <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<jsp:include page="base/footer.jsp" />
 <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchStudents.js"%></script>
 <script>
     $( document ).ready(function() {

@@ -88,8 +88,8 @@
             </div>
         </div>
     </div>
+    <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<jsp:include page="base/footer.jsp" />
 </body>
 </html>
