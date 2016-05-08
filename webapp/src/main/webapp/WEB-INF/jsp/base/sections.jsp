@@ -87,6 +87,12 @@ That's why we are usig <%@include ...%>--%>
 
 
                 </c:when>
+
+                <c:when test="${section2 eq 'grades'}">
+                    <c:set var="gradesActive" value="active" scope="request"/>
+
+
+                </c:when>
             </c:choose>
         </c:if>
     </c:when>

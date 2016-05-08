@@ -141,6 +141,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		passedCredits = studentService.getPassedCredits(docket);
 		percentage = (!totalCredits.equals(0))? (passedCredits * 100)/totalCredits: 0;
 
+		mav.addObject("section2", "grades");
 		mav.addObject("semesters", studentService.getTranscript(docket));
 		mav.addObject("total_credits", totalCredits);
 		mav.addObject("passed_credits", passedCredits);
