@@ -12,6 +12,7 @@
 
 <div id="wrapper">
 
+    <jsp:include page="base/sections.jsp" />
     <jsp:include page="base/nav.jsp" />
     <jsp:include page="template/gradeForm.jsp" />
 
@@ -23,41 +24,39 @@
                     <h1 class="page-header">
                         <spring:message code="grades"/>
                     </h1>
-                    <jsp:include page="base/alerts.jsp" />
                 </div>
             </div>
 
-            <%--<div class="col-md-1">--%>
-            <%--<a href="/students/${student.docket}/grades/add" id="addGrade" type="button" class="btn btn-default">Agregar Nota</a>--%><%-- implemented in /students/{docket}/courses --%>
-            <%--</div>--%>
-            <!-- Transcript details -->
+            <jsp:include page="base/alerts.jsp" />
+
             <div class="row">
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-10">
                     <div class="well">
                         <div class="row">
-
-                            <div class="row">
-                                <div class="col-xs-6 right-effect">
-                                    <strong>Créditos aprobados</strong>
-                                </div>
-                                <div class="col-xs-6">
-                                    ${passed_credits}/${total_credits}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-6 right-effect">
-                                    <strong>Porcentaje de carrera completado</strong>
-                                </div>
-                                <div class="col-xs-6">
-                                    ${percentage}%
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-9">
+                                        <strong><spring:message code="passedCredits" /></strong>
+                                    </div>
+                                    <div class="col-xs-3 right-effect">
+                                        ${passed_credits}/${total_credits}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-xs-8">
-                                    <div class="progress">
-                                        <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" style="width: ${percentage}%">
-                                            <span class="sr-only">${percentage}% Completado</span>
-                                        </div>
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-9">
+                                        <strong><spring:message code="carrearPercentage" /></strong>
+                                    </div>
+                                    <div class="col-xs-3 right-effect">
+                                        ${percentage}%
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100" style="width: ${percentage}%">
+                                        <span class="sr-only">${percentage}% Completado</span>
                                     </div>
                                 </div>
                             </div>
@@ -68,7 +67,7 @@
             <!-- /Transcript details -->
             <!-- content -->
             <c:forEach items="${semesters}" var="semester" varStatus="loop">
-                <h2>Cuatrimeste ${loop.index+1}</h2>
+                <h2><spring:message code="semester" /> ${loop.index+1}</h2>
                 <div class="table-responsive">
                     <table class="table table-hover <%--table-bordered--%> <%--table-condensed--%>">
                         <thead>
@@ -89,9 +88,27 @@
                                     <span class="col-xs-2"> ${ grade.courseId }</span>
                                     <span class="col-xs-10"> ${ grade.courseName }</span>
                                 </td>
-                                    <%--<td>${ grade.courseName }</td>--%>
-                                <td><c:if test="${grade.taking}">Cursando</c:if>${ grade.grade }</td>
-                                <td><c:if test="${grade.modified == null}">-</c:if>${ grade.modified }</td>
+                                    <%-- +++xdoing --%>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${grade.taking}">
+                                            <spring:message code="coursing" />
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${ grade.grade }
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${grade.modified eq null}">
+                                            -
+                                        </c:when>
+                                        <c:otherwise>
+                                            ${ grade.modified }
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
                                 <td>
                                     <a class="btn btn-default btn-xs" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">
                                         <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/> <spring:message code="course"/>
@@ -119,10 +136,9 @@
 
     </div>
     <!-- /#page-wrapper -->
-
+    <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<jsp:include page="base/footer.jsp" />
 <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/gradeForm.js"%></script>
 
 <script>

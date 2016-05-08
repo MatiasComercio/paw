@@ -23,9 +23,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,6 +40,9 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	@Autowired
 	private StudentService studentService;
 
+	@Autowired
+	private HttpServletRequest request;
+
 	@ModelAttribute("section")
 	public String sectionManager(){
 		return STUDENTS_SECTION;
@@ -49,6 +51,11 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	@ModelAttribute("user")
 	public UserSessionDetails user(final Authentication authentication) {
 		return (UserSessionDetails) authentication.getPrincipal();
+	}
+
+	@ModelAttribute("deleteStudentForm")
+	public StudentFilterForm deleteStudentForm() {
+		return new StudentFilterForm();
 	}
 
 	@RequestMapping(value = "/students", method = RequestMethod.GET)
@@ -102,6 +109,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 		mav = new ModelAndView("student");
 		mav.addObject("student", student);
+		mav.addObject("section2", "info");
 		return mav;
 	}
 
@@ -125,6 +133,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 
 		mav.addObject("student", student);
+		mav.addObject("section2", "grades");
 		mav.addObject("subsection_grades", true);
 		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/edit");
 
@@ -164,6 +173,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 		final ModelAndView mav = new ModelAndView("courses");
 		mav.addObject("student", student);
+		mav.addObject("section2", "courses");
 		mav.addObject("courseFilterFormAction", "/students/" + docket + "/courses/courseFilterForm"); /* only different line from /inscription */
 		mav.addObject("inscriptionFormAction", "/students/" + docket + "/courses/unenroll");
 		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/add");
@@ -287,7 +297,8 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
 	                               RedirectAttributes redirectAttributes){
-		ModelAndView mav = new ModelAndView("addStudent");
+		ModelAndView mav = new ModelAndView("addUser");
+		mav.addObject("section2", "addStudent");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 		return mav;
 	}
@@ -346,6 +357,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 					messageSource.getMessage("editGrade_fail",
 							new Object[] {},
 							Locale.getDefault()));
+
 
 			return new ModelAndView("redirect:/students/" + docket + "/grades");
 		}
@@ -439,7 +451,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 			@ModelAttribute("studentForm") final StudentForm studentForm,
 			final RedirectAttributes redirectAttributes) {
 
-		final ModelAndView mav = new ModelAndView("editStudent");
+		final ModelAndView mav = new ModelAndView("addUser");
 
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 		Student student = studentService.getByDocket(docket);
@@ -455,7 +467,8 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		studentForm.loadFromStudent(student);
 
 		mav.addObject("docket", docket);
-
+		mav.addObject("student", student);
+		mav.addObject("section2", "edit");
 		return mav;
 	}
 
@@ -483,6 +496,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 				null,
 				Locale.getDefault()));
 
-		return new ModelAndView("redirect:/students");
+		final String referrer = request.getHeader("referer");
+		return new ModelAndView("redirect:" + referrer);
 	}
 }

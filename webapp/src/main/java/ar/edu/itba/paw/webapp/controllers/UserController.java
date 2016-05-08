@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.PasswordForm;
 import ar.edu.itba.paw.webapp.forms.UserForm;
 import ar.edu.itba.paw.webapp.forms.validators.PasswordValidator;
@@ -37,6 +38,11 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+	@ModelAttribute("user")
+	public UserSessionDetails user(final Authentication authentication) {
+		return (UserSessionDetails) authentication.getPrincipal();
+	}
+
 	@RequestMapping(value = "/user/changePassword")
 	public ModelAndView changePassword(
 			@ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
@@ -44,6 +50,7 @@ public class UserController {
 		final ModelAndView mav = new ModelAndView("changePassword");
 		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth == null) {
+			LOGGER.warn("Someone tried to change a password and auth was null [GET]");
 			return new ModelAndView("redirect:/errors/401");
 		}
 
@@ -51,6 +58,7 @@ public class UserController {
 		/* userDetails.getUsername() == user's dni; used to load on the PasswordForm */
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 		mav.addObject("dni", userDetails.getUsername());
+		mav.addObject("section2", "changePassword");
 
 		return mav;
 	}
@@ -64,6 +72,22 @@ public class UserController {
 
 		if (errors.hasErrors()){
 			return changePassword(passwordForm, redirectAttributes);
+		}
+
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null) {
+			LOGGER.warn("Someone tried to change a password and auth was null [POST]");
+			return new ModelAndView("redirect:/errors/401");
+		}
+		UserSessionDetails user = (UserSessionDetails) auth.getPrincipal();
+
+		/* Check that the DNI is still valid and was not modified */
+		if (!String.valueOf(passwordForm.getDni()).equals(user.getUsername())) {
+			LOGGER.warn("Someone tried to change a password from another user.");
+			LOGGER.warn("Logged user's dni: {}", user.getUsername());
+			LOGGER.warn("Victim's dni: {}", passwordForm.getDni());
+
+			return new ModelAndView("redirect:/errors/401");
 		}
 
 		final Result result = userService.changePassword(
@@ -82,6 +106,7 @@ public class UserController {
 					Locale.getDefault()));
 		}
 
+		/* +++xchange */
 		return new ModelAndView("redirect:/user/changePassword");
 	}
 

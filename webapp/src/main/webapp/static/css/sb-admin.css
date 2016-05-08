@@ -23,8 +23,11 @@ body {
 
 #page-wrapper {
     width: 100%;
-    padding: 0;
+    padding: 0 0 5%;
     background-color: #fff;
+    margin-top: 1px;
+    border-left: 1px solid black;
+    min-height: 100%;
 }
 
 .huge {
@@ -148,7 +151,7 @@ ul.alert-dropdown {
     .side-nav>li>button.btn-danger:hover,
     .side-nav>li>button.btn-danger:focus {
         outline: none;
-        background-color: #d9534f !important;
+        background-color: #c9302c !important;
     }
 }
 
@@ -184,7 +187,7 @@ ul.alert-dropdown {
     .side-nav>li>button.btn-danger:hover,
     .side-nav>li>button.btn-danger:focus {
         outline: none;
-        background-color: #d9534f !important;
+        background-color: #c9302c !important;
     }
 }
 
@@ -214,7 +217,7 @@ ul.side-nav>li>*:hover {
 }
 
 ul.side-nav>li>p.current_actions_header {
-    margin-top: 5%;
+    /*margin-top: 5%;*/
     margin-bottom: 0;
     text-align: center;
 }
@@ -309,4 +312,49 @@ button.navbar-toggle.menu-btn.pull-left {
     margin-left: 0;
     margin-right: 0;
     border: transparent;
+}
+
+.footer {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.right-effect{
+    text-align: right;
+}
+
+.col_vertical_margin {
+    margin-bottom: 5%;
+    margin-top: 5%;
+}
+
+.requiredFields {
+    margin-bottom: 15px;
+}
+
+button.btn.pageFormButton,
+button.btn.tableButton,
+a.btn.tableButton {
+    display: block;
+    width: 100%;
+    white-space: normal;
+}
+
+.btn-block {
+    /*display: block;
+    width: 100%;*/
+    white-space: normal;
+}
+
+.table>tbody>tr>td,
+.table>tbody>tr>th,
+.table>tfoot>tr>td,
+.table>tfoot>tr>th,
+.table>thead>tr>td,
+.table>thead>tr>th {
+    vertical-align: middle;
+}
+
+.well {
+    overflow-x: auto;
 }

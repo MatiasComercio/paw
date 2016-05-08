@@ -1,6 +1,8 @@
 function loadGradeForm(nameAttr) {
     /* Grade Form Action Sequence */
-    $("[name='" + nameAttr + "']").on("click", function() {
+    var gradeFormButton = $("[name='" + nameAttr + "']");
+
+    gradeFormButton.on("click", function() {
         var courseId = $(this).data("course_id");
         var courseName = $(this).data("course_name");
         var modified = $(this).data("modified");
@@ -21,6 +23,11 @@ function loadGradeForm(nameAttr) {
     $("#gradeFormConfirmAction").on("click", function() {
         $('#gradeFormConfirmationModal').modal('hide');
         $("#grade_form").submit();
+    });
+
+    /* Remove focus on the modal trigger button */
+    $('#gradeFormConfirmationModal').on('show.bs.modal', function(e){
+        gradeFormButton.one('focus', function(e){$(this).blur();});
     });
     /* /Grade Form Action Sequence */
 }

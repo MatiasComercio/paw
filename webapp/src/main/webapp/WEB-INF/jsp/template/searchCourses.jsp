@@ -1,9 +1,8 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ include file="../base/tags.jsp" %>
+
 <!-- search -->
 <%--Course Filter Form--%>
+<c:url var="courseFilterFormAction" value="${courseFilterFormAction}"/>
 <form:form id="course_filter_form" modelAttribute="courseFilterForm" action="${courseFilterFormAction}" method="get" enctype="application/x-www-form-urlencoded">
 
     <div class="row well">
@@ -77,63 +76,77 @@
                 <td colspan="4" class="text-danger text-center"><spring:message code="noCoursesFound"/></td>
             </tr>
         </c:if>
-        <c:forEach items="${courses}" var="course">
+        <c:forEach items="${courses}" var="eachCourse">
             <tr>
-                <td>${ course.id }</td>
-                <td>${ course.name }</td>
-                <td>${ course.credits }</td>
-                <td>${ course.semester }</td>
+                <td>${ eachCourse.id }</td>
+                <td>${ eachCourse.name }</td>
+                <td>${ eachCourse.credits }</td>
+                <td>${ eachCourse.semester }</td>
                 <td>
                     <c:choose>
-                        <c:when test="${section=='students'}">
+                        <c:when test="${section eq 'students'}">
                             <c:choose>
-                                <c:when test="${subsection_enroll}">
-                                    <button name="inscription" class="btn btn-info btn-xs" type="button"
-                                            data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                            data-toggle="modal" data-target="#enrollFormConfirmationModal">
-                                        <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="enroll"/>
-                                    </button>
+                                <c:when test="${section2 eq 'inscription'}">
+                                    <sec:authorize access="hasAuthority('ROLE_ADD_INSCRIPTION')">
+                                        <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
+                                            <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                                        </a>
+                                        <button name="inscription" class="btn btn-info" type="button"
+                                                data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
+                                                data-toggle="modal" data-target="#enrollFormConfirmationModal">
+                                            <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="enroll"/>
+                                        </button>
+                                    </sec:authorize>
                                 </c:when>
-                                <c:when test="${subsection_courses}">
-                                    <button name="gradeButton" class="btn btn-info btn-xs" type="button"
-                                            data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                            data-toggle="modal" data-target="#gradeFormConfirmationModal">
-                                        <span class="fa fa-graduation-cap" aria-hidden="true"></span> <spring:message code="rate"/>
-                                    </button>
-                                    <button name="unenroll" class="btn btn-danger btn-xs" type="button"
-                                            data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                            data-toggle="modal" data-target="#enrollFormConfirmationModal">
-                                        <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="unenroll"/>
-                                    </button>
+                                <c:when test="${section2 eq 'courses'}">
+                                        <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
+                                            <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                                        </a>
+                                        <sec:authorize access="hasAuthority('ROLE_ADD_GRADE')">
+                                            <button name="gradeButton" class="btn btn-info" type="button"
+                                                    data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
+                                                    data-toggle="modal" data-target="#gradeFormConfirmationModal">
+                                                <span class="fa fa-graduation-cap" aria-hidden="true"></span> <spring:message code="rate"/>
+                                            </button>
+                                        </sec:authorize>
+                                        <sec:authorize access="hasAuthority('ROLE_DELETE_INSCRIPTION')">
+                                            <button name="unenroll" class="btn btn-danger" type="button"
+                                                    data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
+                                                    data-toggle="modal" data-target="#enrollFormConfirmationModal">
+                                                <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="unenroll"/>
+                                            </button>
+                                        </sec:authorize>
                                 </c:when>
+                                <c:otherwise>
+                                    <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
+                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                                    </a>
+                                </c:otherwise>
                             </c:choose>
                         </c:when>
-                        <c:when test="${section=='courses'}">
+                        <c:when test="${section eq 'courses'}">
                             <c:choose>
-                                <c:when test="${subsection_get_courses}">
-                                    <a class="btn btn-info btn-xs" href="<c:url value="/courses/${course.id}/edit"/>">
-                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                                <c:when test="${section2 eq 'addCorrelative'}">
+                                    <sec:authorize access="hasAuthority('ROLE_ADD_CORRELATIVE')">
+                                        <button name="correlativeButton" class="btn btn-info" type="button"
+                                                data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                                data-correlative_id="${eachCourse.id}" data-correlative_name="${eachCourse.name}"
+                                                data-toggle="modal" data-target="#correlativeFormConfirmationModal">
+                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="add_correlative"/>
+                                        </button>
+                                    </sec:authorize>
+                                    <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
+                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
                                     </a>
-                                    <button name="deleteCourseButton" class="btn btn-danger btn-xs" type="button"
-                                            data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                            data-toggle="modal" data-target="#deleteCourseFormConfirmationModal">
-                                        <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
-                                    </button>
                                 </c:when>
-                                <c:when test="${subsection_add_correlative}">
-                                    <button name="correlativeButton" class="btn btn-info btn-xs" type="button"
-                                            data-course_id="${ course_details.id }" data-course_name="${ course_details.name }"
-                                            data-correlative_id="${course.id}" data-correlative_name="${course.name}"
-                                            data-toggle="modal" data-target="#correlativeFormConfirmationModal">
-                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="add_correlative"/>
-                                    </button>
-                                </c:when>
+                                <c:otherwise>
+                                    <a class="btn btn-default tableButton" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
+                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                                    </a>
+                                </c:otherwise>
                             </c:choose>
                         </c:when>
                     </c:choose>
-                    <a class="btn btn-default btn-xs" href="<c:url value="/courses/${course.id}/info" />" role="button">
-                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
-                    </a>
                 </td>
             </tr>
         </c:forEach>
