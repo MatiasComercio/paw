@@ -1,7 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ include file="base/tags.jsp" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,16 +42,6 @@
             <div class="row">
                 <div class="col-xs-12">
                     <jsp:include page="base/alerts.jsp" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-md-2 text-center">
-                    <p class="lead"><spring:message code="actions"/>:</p>
-                </div>
-                <div class="col-xs-12 col-md-2 text-center">
-                    <a class="btn btn-info" href="<c:url value="/students/add_student"/>" role="button">
-                        <i class="fa fa-plus-circle" aria-hidden="true"></i> <spring:message code="addStudent"/>
-                    </a>
                 </div>
             </div>
             <jsp:include page="template/searchStudents.jsp" />

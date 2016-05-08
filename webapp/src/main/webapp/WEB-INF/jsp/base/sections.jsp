@@ -24,6 +24,21 @@ That's why we are usig <%@include ...%>--%>
 
     <c:when test="${section=='students'}">
         <c:set var="studentsActive" value="active" scope="request"/>
+
+        <c:choose>
+            <c:when test="${empty section2}">
+                <jsp:include page="../template/studentsActionsPanel.jsp" />
+
+            </c:when>
+
+            <c:when test="${section2 eq 'addStudent'}">
+                <c:set var="addStudentActive" value="active" scope="request"/>
+
+                <jsp:include page="../template/studentsActionsPanel.jsp" />
+
+            </c:when>
+        </c:choose>
+
     </c:when>
 
 
@@ -55,7 +70,7 @@ That's why we are usig <%@include ...%>--%>
                 </c:set>
             </c:when>
 
-            <c:when test="${not empty section2}">
+            <c:otherwise>
                 <jsp:include page="../template/courseActionsPanel.jsp" />
 
                 <jsp:include page="../template/deleteCourseForm.jsp" />
@@ -65,7 +80,7 @@ That's why we are usig <%@include ...%>--%>
                 <c:set var="loadScripts">
                     ${loadScripts} ` loadDeleteCourseForm("deleteCourseButton");
                 </c:set>
-            </c:when>
+            </c:otherwise>
         </c:choose>
 
         <c:choose>

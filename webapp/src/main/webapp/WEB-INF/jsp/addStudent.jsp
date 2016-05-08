@@ -9,9 +9,6 @@
         <spring:message code="webAbbreviation"/> | <spring:message code="addStudent"/>
     </title>
     <jsp:include page="base/head.jsp" />
-    <style>
-        span {color:red;}
-    </style>
 </head>
 <body>
 <div id="wrapper">

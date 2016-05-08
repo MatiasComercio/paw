@@ -124,6 +124,11 @@
                                         <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
                                     </a>
                                 </c:when>
+                                <c:otherwise>
+                                    <a class="btn btn-default tableButton" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
+                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                                    </a>
+                                </c:otherwise>
                             </c:choose>
                         </c:when>
                     </c:choose>
