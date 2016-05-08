@@ -6,6 +6,7 @@ public enum Result {
     COURSE_EXISTS_GRADE("Existen alumnos que poseen notas de este curso."),
     COURSE_EXISTS_INSCRIPTION("Existen alumnos que están inscriptos en este curso."),
     COURSE_EXISTS_ID("Ya existe un curso con este ID."),
+    COURSE_ALREADY_PASSED("El alumno ya ha aprobado este curso"),
 
     USER_NOT_EXISTS("El usuario especificado no existe"),
 
