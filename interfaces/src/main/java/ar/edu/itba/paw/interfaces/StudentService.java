@@ -22,7 +22,7 @@ public interface StudentService {
 	Student getByDocket(final int docket);
 
 	/**
-	 * Gets the student with the given docket containing all the grades of the courses they took.
+	 * Gets the student with the given docket containing all the grades of the courses it took.
 	 * If no student exists with that docket, null is returned.
 	 * @param docket The student's docket
 	 * @return The student with the given docket, if exists; null otherwise.
@@ -132,4 +132,24 @@ public interface StudentService {
      * @return True if the student can take de course, False if not.
      */
 	boolean checkCorrelatives(final Integer docket, final Integer courseId);
+
+	/**
+	 * Get the representation of a student's transcript
+	 * @param docket
+	 * @return A list containing lists in which all the grades of a semester are placed
+     */
+	List<List<Grade>> getTranscript(final Integer docket);
+
+	/**
+	 * Get the total credits of the plan.
+	 * @return Integer indicating the total credits of the plan.
+	 */
+	Integer getTotalPlanCredits();
+
+	/**
+	 * Get the total amount of passed credits given a student.
+	 * @param docket The student's docket.
+	 * @return Integer indicating the amount of credits passed.
+     */
+	Integer getPassedCredits(final Integer docket);
 }

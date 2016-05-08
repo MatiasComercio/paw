@@ -22,7 +22,8 @@ public enum Result {
 	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia"),
 
     CORRELATIVE_CORRELATIVITY_EXISTS("La correlatividad ya existe."),
-    CORRELATIVE_CORRELATIVITY_LOOP("La correlatividad generaría un ciclo en el arbol de correlatividades.");
+    CORRELATIVE_CORRELATIVITY_LOOP("La correlatividad generaría un ciclo en el arbol de correlatividades."),
+    CORRELATIVE_SEMESTER_INCOMPATIBILITY("El cuatrimestre de la materia correlativa que se intenta agregar es incompatible.");
 
 
     private final String message;

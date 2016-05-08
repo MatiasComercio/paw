@@ -59,6 +59,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Integer getTotalPlanCredits() {
+        return courseDao.getTotalPlanCredits();
+    }
+
+    @Override
     public Result deleteCourse(Integer courseId) {
 
         if(courseId<0){
@@ -98,6 +103,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public Integer getTotalSemesters() {
+        return courseDao.getTotalSemesters();
+    }
+
+    @Override
     public Result addCorrelative(final Integer id, final Integer correlativeId) {
 
         //Check courses exists
@@ -108,6 +118,14 @@ public class CourseServiceImpl implements CourseService {
         //Check correlativity loop
         if (courseDao.checkCorrelativityLoop(id, correlativeId)){
             return Result.CORRELATIVE_CORRELATIVITY_LOOP;
+        }
+
+        //Check semester
+        Course course = getById(id);
+        Course correlativeCourse = getById(correlativeId);
+
+        if (course.getSemester() <= correlativeCourse.getSemester()){
+            return Result.CORRELATIVE_SEMESTER_INCOMPATIBILITY;
         }
 
         return courseDao.addCorrelativity(id, correlativeId);

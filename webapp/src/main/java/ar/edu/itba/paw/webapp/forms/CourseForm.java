@@ -21,10 +21,14 @@ public class CourseForm {
     @Min(0)
     private Integer credits;
 
+    @NotNull
+    @Min(1)
+    private Integer semester;
+
     public CourseForm(){}
 
     public Course build(){
-        return new Course.Builder(id).name(name).credits(credits).build();
+        return new Course.Builder(id).name(name).credits(credits).semester(semester).build();
     }
 
     public Integer getId() {
@@ -51,9 +55,18 @@ public class CourseForm {
         this.credits = credits;
     }
 
+    public Integer getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Integer semester) {
+        this.semester = semester;
+    }
+
     public void loadFromCourse(final Course course){
         this.id = course.getId();
         this.name = course.getName();
         this.credits = course.getCredits();
+        this.semester = course.getSemester();
     }
 }

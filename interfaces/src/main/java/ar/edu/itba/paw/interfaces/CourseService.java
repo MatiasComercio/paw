@@ -110,6 +110,12 @@ public interface CourseService {
     Result deleteCourseCorrelatives(Integer courseId);
 
     /**
+     * Get the number of semesters.
+     * @return Integer indicating the number of semesters
+     */
+    Integer getTotalSemesters();
+
+    /**
      *
      * @param courseId The id of the course.
      * @param courseFilter The course's filter. If null, no filter is applied.
@@ -123,5 +129,11 @@ public interface CourseService {
      * @return A list of the courses that are available to be added as correlatives for the given course
      */
     List<Course> getAvailableAddCorrelatives(Integer courseId, CourseFilter courseFilter);
+
+    /**
+     * Get the total credits of the plan.
+     * @return Integer indicating the total credits of the plan.
+     */
+    Integer getTotalPlanCredits();
 
 }

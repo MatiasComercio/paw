@@ -122,11 +122,23 @@ public interface CourseDao {
     Result deleteCorrelative(Integer courseId, Integer correlativeId);
 
     /**
+     * Get the number of semesters.
+     * @return Integer indicating the number of semesters
+     */
+    Integer getTotalSemesters();
+
+    /**
      *
      * @param courseId The course Id
-     * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
+     * @return List of correlatives for the given course (i.d. The courses that are required to enroll a student in the
      * given course)
      */
     List<Course> getCorrelativeCourses(Integer courseId);
+
+    /**
+     * Get the total credits of the plan.
+     * @return Integer indicating the total credits of the plan.
+     */
+    Integer getTotalPlanCredits();
 
 }

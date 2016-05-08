@@ -28,6 +28,7 @@ public class CourseJdbcDao implements CourseDao {
     private static final String ID_COLUMN = "id";
     private static final String NAME_COLUMN = "name";
     private static final String CREDITS_COLUMN = "credits";
+    private static final String SEMESTER_COLUMN = "semester";
 
     private static final String DOCKET_COLUMN = "docket";
     private static final String DNI_COLUMN = "dni";
@@ -62,6 +63,7 @@ public class CourseJdbcDao implements CourseDao {
             new Course.Builder(resultSet.getInt(ID_COLUMN))
                         .name(resultSet.getString(NAME_COLUMN))
                         .credits(resultSet.getInt(CREDITS_COLUMN))
+                        .semester(resultSet.getInt(SEMESTER_COLUMN))
                         .build();
 
     private final RowMapper<Student> studentRowMapper = (resultSet, rowNum) ->
@@ -85,7 +87,7 @@ public class CourseJdbcDao implements CourseDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.courseInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(TABLE_NAME)
-                .usingColumns(ID_COLUMN, NAME_COLUMN, CREDITS_COLUMN);
+                .usingColumns(ID_COLUMN, NAME_COLUMN, CREDITS_COLUMN, SEMESTER_COLUMN);
         this.correlativeInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName(CORRELATIVE_TABLE_NAME)
                 .usingColumns(CORRELATIVE_COURSE_ID, CORRELATIVE_CORRELATIVE_ID);
@@ -99,6 +101,8 @@ public class CourseJdbcDao implements CourseDao {
         args.put(ID_COLUMN, course.getId());
         args.put(NAME_COLUMN, course.getName());
         args.put(CREDITS_COLUMN, course.getCredits());
+        args.put(SEMESTER_COLUMN, course.getSemester());
+
         try{
             courseInsert.execute(args);
         }
@@ -116,7 +120,7 @@ public class CourseJdbcDao implements CourseDao {
     @Override
     public Result update(Integer id, Course course) {
         try {
-            jdbcTemplate.update("UPDATE course SET id = ?, name = ?, credits = ? WHERE id = ?;", course.getId(), course.getName(), course.getCredits(), id);
+            jdbcTemplate.update("UPDATE course SET id = ?, name = ?, credits = ?, semester = ? WHERE id = ?;", course.getId(), course.getName(), course.getCredits(), course.getSemester(), id);
         } catch (DuplicateKeyException e){
             return Result.COURSE_EXISTS_ID;
         } catch (final DataIntegrityViolationException e) {
@@ -221,18 +225,25 @@ public class CourseJdbcDao implements CourseDao {
     public boolean checkCorrelativityLoop(Integer id, Integer correlativeId) {
         //TODO: Change table columns name
         String query = "WITH RECURSIVE corr (cid, corrid) AS " +
-                "(SELECT course_id, correlative_id FROM correlative " +
-                "UNION ALL " +
-                "SELECT corr.cid, correlative.correlative_id " +
-                "FROM corr, correlative " +
-                "WHERE corr.corrid = correlative.course_id) " +
-                "SELECT cid, corrid FROM corr;";
+                        "(SELECT course_id, correlative_id FROM correlative " +
+                        "UNION ALL " +
+                        "SELECT corr.cid, correlative.correlative_id " +
+                        "FROM corr, correlative " +
+                        "WHERE corr.corrid = correlative.course_id) " +
+                        "SELECT cid, corrid FROM corr;";
 
         List<Correlativity> list = jdbcTemplate.query(query, (rs, rowNum) -> {
             return new Correlativity(rs.getInt("cid"), rs.getInt("corrid"));
         });
 
         return list.contains(new Correlativity(correlativeId, id));
+    }
+
+    @Override
+    public Integer getTotalPlanCredits() {
+        String query = "SELECT SUM(" + CREDITS_COLUMN + ") as " + CREDITS_COLUMN + " FROM " + TABLE_NAME + ";";
+        RowMapper<Integer> rm = (rs, rowNumber) -> rs.getInt(CREDITS_COLUMN);
+        return jdbcTemplate.query(query, rm).get(0);
     }
 
     @Override
@@ -295,7 +306,13 @@ public class CourseJdbcDao implements CourseDao {
         return false;
     }
 
-
+    @Override
+    public Integer getTotalSemesters() {
+        String query = "SELECT MAX(" + SEMESTER_COLUMN + ") as " + SEMESTER_COLUMN + " FROM " + TABLE_NAME + ";";
+        RowMapper<Integer> rm = (rs, rowNum) -> rs.getInt(SEMESTER_COLUMN);
+        List<Integer> list = jdbcTemplate.query(query, rm);
+        return list.isEmpty() ? 0 : list.get(0);
+    }
 
     private static class QueryFilter {
         private static final String WHERE = " WHERE ";

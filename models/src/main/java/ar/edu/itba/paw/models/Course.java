@@ -9,12 +9,14 @@ public class Course {
     private int id;
     private String name;
     private int credits;
+    private int semester;
     private List<Student> students;
 
     private Course(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;
         this.credits = builder.credits;
+        this.semester = builder.semester;
     }
 
     public int getId() {
@@ -49,6 +51,14 @@ public class Course {
         this.students = students;
     }
 
+    public void setSemester(int semester){
+        this.semester = semester;
+    }
+
+    public int getSemester(){
+        return this.semester;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
@@ -69,6 +79,7 @@ public class Course {
         private int id;
         private String name;
         private int credits;
+        private int semester;
 
         public Builder(int id) {
             this.id = id;
@@ -86,6 +97,11 @@ public class Course {
 
         public Builder credits(int credits) {
             this.credits = credits;
+            return this;
+        }
+
+        public Builder semester(int semester) {
+            this.semester = semester;
             return this;
         }
 

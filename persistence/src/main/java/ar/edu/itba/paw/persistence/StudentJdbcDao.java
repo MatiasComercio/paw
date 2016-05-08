@@ -72,6 +72,7 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String COURSE__ID_COLUMN = "id";
 	private static final String COURSE__NAME_COLUMN = "name";
 	private static final String COURSE__CREDITS_COLUMN = "credits";
+    private static final String COURSE__SEMESTER_COLUMN = "semester";
 
 	private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
 	private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
@@ -100,6 +101,14 @@ public class StudentJdbcDao implements StudentDao {
 						GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." +  COURSE__ID_COLUMN +
 				" WHERE " + GRADE__DOCKET_COLUMN + " = ? " +
 				";";
+
+
+    private static final String GET_GRADES_SEMESTER =
+            "SELECT * " +
+                    "FROM " + GRADE_TABLE + " JOIN " + COURSE_TABLE + " ON " +
+                    GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." +  COURSE__ID_COLUMN +
+                    " WHERE " + GRADE__DOCKET_COLUMN + " = ? AND " + COURSE__SEMESTER_COLUMN + " = ?" +
+                    ";";
 
 	private static final String GET_COURSES =
 				"SELECT * " +
@@ -202,6 +211,7 @@ public class StudentJdbcDao implements StudentDao {
 			new Course.Builder(resultSet.getInt(COURSE__ID_COLUMN))
 					.name(resultSet.getString(COURSE__NAME_COLUMN))
 					.credits(resultSet.getInt(COURSE__CREDITS_COLUMN))
+                    .semester(resultSet.getInt(COURSE__SEMESTER_COLUMN))
 					.build();
 
 	private final RowMapper<Student.Builder> studentBasicRowMapper = this::getStudentBasicInfo;
@@ -284,6 +294,23 @@ public class StudentJdbcDao implements StudentDao {
 
 		return studentBuilder.build();
 	}
+
+    @Override
+	public Student getGrades(final Integer docket, final Integer semester) {
+        final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_BY_DOCKET, studentBasicRowMapper, docket);
+
+        if (studentBuilders.isEmpty())
+            return null;
+
+        final Student.Builder studentBuilder = studentBuilders.get(0);
+
+        final List<Grade> grades = jdbcTemplate.query(GET_GRADES_SEMESTER, gradesRowMapper, docket, semester);
+
+        studentBuilder.addGrades(grades);
+
+        return studentBuilder.build();
+
+    }
 
 	@Override
 	public List<Course> getStudentCourses(int docket) {
@@ -436,18 +463,16 @@ public class StudentJdbcDao implements StudentDao {
 
         final String genre = student.getGenre().equals("Female")? "F" : "M";
 
-        final String userUpdate = "UPDATE users SET " + USER__DNI_COLUMN + " = ?, " + USER__FIRST_NAME_COLUMN + " = ?, "
+        final String userUpdate = "UPDATE users SET " + USER__FIRST_NAME_COLUMN + " = ?, "
                 + USER__LAST_NAME_COLUMN + " = ?, " + USER__GENRE_COLUMN + " = ?, " + USER__BIRTHDAY_COLUMN + " = ?, "
                 + USER__EMAIL_COLUMN + " = ? WHERE " + USER__DNI_COLUMN + " = ?";
-
-        //final String studentUpdate = "UPDATE student SET " + STUDENT__DOCKET_COLUMN + " = ? WHERE " + STUDENT__DNI_COLUMN + " = ?;";
 
 
         //Update user table
         try {
             Date birthday = student.getBirthday() != null ? Date.valueOf(student.getBirthday()) : null;
 
-            jdbcTemplate.update(userUpdate, student.getDni(), student.getFirstName(), student.getLastName(), genre,
+            jdbcTemplate.update(userUpdate, student.getFirstName(), student.getLastName(), genre,
                     birthday, createEmail(student.getDni(), student.getFirstName(),
                             student.getLastName()), dni);
         } catch (DuplicateKeyException e) {

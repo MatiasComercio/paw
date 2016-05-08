@@ -67,6 +67,7 @@
             <th><spring:message code="id"/></th>
             <th><spring:message code="name"/></th>
             <th><spring:message code="credits"/></th>
+            <th><spring:message code="semester"/></th>
             <th><spring:message code="actions"/></th>
         </tr>
         </thead>
@@ -81,6 +82,7 @@
                 <td>${ course.id }</td>
                 <td>${ course.name }</td>
                 <td>${ course.credits }</td>
+                <td>${ course.semester }</td>
                 <td>
                     <c:choose>
                         <c:when test="${section=='students'}">
