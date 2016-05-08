@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.shared.StudentFilter;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
@@ -184,6 +185,18 @@ public class StudentJdbcDaoTest {
 
 	@Autowired
 	private StudentJdbcDao studentJdbcDao;
+
+	@Parameter // first data value (0) is default
+	public /* NOT private */ int dni;
+
+	@Parameter(value = 1)
+	public /* NOT private */ Student.Builder studentBuilder;
+
+	@Parameter(value = 2)
+	public /* NOT private */ Student studentAnswer;
+
+	@Parameter(value = 3)
+	public /* NOT private */ Student expectedStudent;
 
 	private JdbcTemplate jdbcTemplate;
 	private SimpleJdbcInsert userInsert;
