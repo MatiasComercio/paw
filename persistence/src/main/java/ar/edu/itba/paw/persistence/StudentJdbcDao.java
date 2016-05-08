@@ -159,6 +159,11 @@ public class StudentJdbcDao implements StudentDao {
 					" WHERE " + GRADE__DOCKET_COLUMN + " = ? " + " AND " + GRADE__GRADE_COLUMN + " >= " + APPROVING_GRADE +
 					";";
 
+	private static final String COUNT_PASSED_COURSE = "SELECT COUNT(*) FROM " + GRADE_TABLE
+			+ " WHERE " + STUDENT__DOCKET_COLUMN + " = ? "
+			+ " AND " + GRADE__COURSE_ID_COLUMN + " = ? "
+			+ " AND " + GRADE__GRADE_COLUMN + " >= " + APPROVING_GRADE;
+
 
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
@@ -314,6 +319,14 @@ public class StudentJdbcDao implements StudentDao {
 		return studentBuilder.build();
 	}
 
+	private boolean hasPassedCourse(final int docket, final int courseId) {
+		Object[] queryParameters = new Object[]{docket, courseId};
+
+		final int gradePassed = jdbcTemplate.queryForObject(COUNT_PASSED_COURSE, queryParameters, Integer.class);
+
+		return gradePassed == 1;
+	}
+
     @Override
 	public Student getGrades(final Integer docket, final Integer semester) {
         final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_BY_DOCKET, studentBasicRowMapper, docket);
@@ -395,9 +408,11 @@ public class StudentJdbcDao implements StudentDao {
 //		if(inscriptionsAffected == 0) {
 //			return Result.INSCRIPTION_NOT_EXISTS;
 //		}
+		if(hasPassedCourse(grade.getStudentDocket(), grade.getCourseId())) {
+			return Result.COURSE_ALREADY_PASSED;
+		}
 
 		final Map<String, Object> gradeArgs = new HashMap<>();
-
 		gradeArgs.put(GRADE__DOCKET_COLUMN, grade.getStudentDocket());
 		gradeArgs.put(GRADE__COURSE_ID_COLUMN, grade.getCourseId());
 		gradeArgs.put(GRADE__GRADE_COLUMN, grade.getGrade());
