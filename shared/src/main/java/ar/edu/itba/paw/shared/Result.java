@@ -25,10 +25,11 @@ public enum Result {
 	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia"),
 
     CORRELATIVE_CORRELATIVITY_EXISTS("La correlatividad ya existe."),
+    CORRELATIVE_SAME_COURSE("No es posible hacer a un curso correlativo a si mismo"),
     CORRELATIVE_CORRELATIVITY_LOOP("La correlatividad generaría un ciclo en el árbol de correlatividades."),
     PASSWORDS_DO_NOT_MATCH("La contraseña y su repetición no coinciden"),
     ADMIN_EXISTS_DNI("Ya existe un administrador con este DNI"),
-    ADMIN_ENABLED_INSCRIPTIONS("Las inscripciones ya se encuentran habilitadas"),
+    ADMIN_ALREADY_ENABLED_INSCRIPTIONS("Las inscripciones ya se encuentran habilitadas"),
     USER_EXISTS_DNI("Ya existe un usuario con este DNI");
 
 

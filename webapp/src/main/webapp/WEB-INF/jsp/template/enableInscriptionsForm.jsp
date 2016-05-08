@@ -5,7 +5,7 @@
 <%-- Confirmation Modal --%>
 
 <!-- Modal -->
-<div class="modal fade" id="confirmActionModal" tabindex="-1" role="dialog" aria-labelledby="confirmActionModal">
+<div class="modal fade" id="enableInscriptionsConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="enableInscriptionsConfirmationModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -16,13 +16,13 @@
             </div>
             <div class="modal-body">
                 <%-- Confirmation Form --%>
-                <form:form class="form-horizontal" id="confirmActionForm" action="${confirm_action_url}" method="post" enctype="application/x-www-form-urlencoded">
+                <form:form class="form-horizontal" id="enableInscriptionsForm" action="${confirm_action_url}" method="post" enctype="application/x-www-form-urlencoded">
 
                 </form:form>
                 <%-- /Confirmation Form--%>
 
                 <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="cancel"/></button>
-                <button id="confirmActionButton" type="button" class="btn btn-info"><spring:message code="confirm"/></button>
+                <button id="enableInscriptionsConfirmAction" type="button" class="btn btn-info"><spring:message code="confirm"/></button>
 
             </div>
         </div>

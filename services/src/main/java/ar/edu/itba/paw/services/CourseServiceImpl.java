@@ -110,6 +110,10 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Result addCorrelative(final Integer id, final Integer correlativeId) {
 
+        if(id.equals(correlativeId)){
+            return Result.CORRELATIVE_SAME_COURSE;
+        }
+
         //Check courses exists
         if (!courseDao.courseExists(id) || !courseDao.courseExists(correlativeId)){
             return Result.COURSE_NOT_EXISTS;

@@ -15,7 +15,7 @@
 <div id="wrapper">
 
     <jsp:include page="base/nav.jsp" />
-    <jsp:include page="template/confirmActionModal.jsp" />
+    <jsp:include page="template/enableInscriptionsForm.jsp" />
 
     <div id="page-wrapper">
 
@@ -49,13 +49,13 @@
                     <c:choose>
                         <c:when test="${isInscriptionEnabled}">
                             <button name="disableInscriptionsButton" class="btn btn-info" type="button"
-                                    data-toggle="modal" data-target="#confirmActionModal">
+                                    data-toggle="modal" data-target="#enableInscriptionsConfirmationModal">
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="disable_inscriptions"/>
                             </button>
                         </c:when>
                         <c:when test="${isInscriptionEnabled eq false}">
                             <button name="enableInscriptionsButton" class="btn btn-info" type="button"
-                                    data-toggle="modal" data-target="#confirmActionModal">
+                                    data-toggle="modal" data-target="#enableInscriptionsConfirmationModal">
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="enable_inscriptions"/>
                             </button>
                         </c:when>
@@ -76,11 +76,11 @@
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
 <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchAdmins.js"%></script>
-<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/confirmAction.js"%></script>
+<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/enableInscriptionsForm.js"%></script>
 <script>
     $( document ).ready(function() {
         loadAdminSearch();
-        setConfirmAction();
+        loadEnableInscriptionsForm();
     });
 </script>
 </body>

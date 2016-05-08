@@ -222,7 +222,7 @@ public class AdminJdbcDao implements AdminDao {
 		try {
 			rowsAffected = roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
 		} catch (DuplicateKeyException e) {
-			return Result.ADMIN_ENABLED_INSCRIPTIONS;
+			return Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS;
 		} catch (DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
 		}
@@ -240,7 +240,7 @@ public class AdminJdbcDao implements AdminDao {
 		try {
 			rowsAffected = roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
 		} catch (DuplicateKeyException e) {
-			return Result.ADMIN_ENABLED_INSCRIPTIONS;
+			return Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS;
 		} catch (DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
 		}
