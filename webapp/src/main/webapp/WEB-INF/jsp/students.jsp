@@ -14,7 +14,7 @@
 
     <jsp:include page="base/nav.jsp" />
 
-    <c:if test="${subsection_students}">
+    <c:if test="${subsection_students}"><%--+++xremove--%>
         <jsp:include page="template/deleteStudentForm.jsp" />
     </c:if>
 
