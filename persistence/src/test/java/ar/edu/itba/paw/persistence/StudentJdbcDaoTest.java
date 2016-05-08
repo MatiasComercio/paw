@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
@@ -177,6 +178,9 @@ public class StudentJdbcDaoTest {
 
 	@Autowired
 	private DataSource dataSource;
+
+	@Autowired
+	private UserDao userDao;
 
 	@Autowired
 	private StudentJdbcDao studentJdbcDao;
@@ -1020,6 +1024,6 @@ public class StudentJdbcDaoTest {
 
 	@Test
 	public void testGetByDni() {
-//		when(userDao.getByDni(dni)).then();
+		when(userDao.getByDni(dni)).then();
 	}
 }
