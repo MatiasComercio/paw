@@ -207,7 +207,7 @@ public class UserJdbcDao implements UserDao {
 		userArgs.put(USER__GENRE_COLUMN, user.getGenre().name());
 		userArgs.put(USER__BIRTHDAY_COLUMN, user.getBirthday());
 		userArgs.put(USER__EMAIL_COLUMN, createEmail(user.getDni(), user.getFirstName(),
-				user.getLastName()));
+				user.getLastName(), role));
 		if (role == null) {
 			return null;
 		}
@@ -319,8 +319,16 @@ public class UserJdbcDao implements UserDao {
 		addressInsert.execute(addressArgs);
 	}
 
-	private String createEmail(final int dni, final String firstName, final String lastName) {
-		final String defaultEmail = "admin" + dni + EMAIL_DOMAIN;
+	private String createEmail(final int dni, final String firstName, final String lastName, final Role role) {
+		final StringBuilder defaultEmailBuilder = new StringBuilder();
+		final String defaultEmail;
+		final char rolePrefix = role.originalString().charAt(0);
+
+		defaultEmailBuilder.append(rolePrefix);
+		defaultEmailBuilder.append(dni);
+		defaultEmailBuilder.append(EMAIL_DOMAIN);
+
+		defaultEmail = defaultEmailBuilder.toString();
 
 		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
 			return defaultEmail;
