@@ -124,6 +124,14 @@ public class CourseServiceImpl implements CourseService {
             return Result.CORRELATIVE_CORRELATIVITY_LOOP;
         }
 
+        //Check semester
+        Course course = getById(id);
+        Course correlativeCourse = getById(correlativeId);
+
+        if (course.getSemester() <= correlativeCourse.getSemester()){
+            return Result.CORRELATIVE_SEMESTER_INCOMPATIBILITY;
+        }
+
         return courseDao.addCorrelativity(id, correlativeId);
     }
 

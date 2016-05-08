@@ -124,6 +124,15 @@ public class CourseJdbcDaoTest {
     private static final String COURSE_NAME_6 = "Algebra";
     private static final int COURSE_CREDITS_6 = 9;
 
+    private static final int COURSE_ID_7 = 1010;
+    private static final String COURSE_NAME_7 = "Fisica III";
+    private static final int COURSE_CREDITS_7 = 6;
+    private static final int COURSE_SEMESTER_7 = 3;
+
+    private static final int COURSE_ID_8 = 1011;
+    private static final String COURSE_NAME_8 = "Fisica IV";
+    private static final int COURSE_CREDITS_8 = 6;
+    private static final int COURSE_SEMESTER_8 = 4;
 
     private static final int COURSE_ID_1_INVALID = -1;
     private static final int COURSE_CREDITS_1_INVALID = -3;
@@ -328,6 +337,123 @@ public class CourseJdbcDaoTest {
     }
 
     @Test
+    public void update(){
+        /* OK update */
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(COURSE__ID_COLUMN, COURSE_ID_7);
+        map.put(COURSE__NAME_COLUMN, COURSE_NAME_7);
+        map.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_7);
+        map.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_7);
+        courseInsert.execute(map);
+
+        Course course = new Course.Builder(COURSE_ID_8).name(COURSE_NAME_8).credits(COURSE_CREDITS_8).semester(COURSE_SEMESTER_8).build();
+        Result result = courseJdbcDao.update(COURSE_ID_7, course);
+        assertEquals(result, Result.OK);
+
+        Course newCourse = courseJdbcDao.getById(COURSE_ID_8);
+        assertEquals(course, newCourse);
+
+        /* Existing id */
+        map = new HashMap<>();
+        map.put(COURSE__ID_COLUMN, COURSE_ID_7);
+        map.put(COURSE__NAME_COLUMN, COURSE_NAME_7);
+        map.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_7);
+        map.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_7);
+        courseInsert.execute(map);
+
+        course = new Course.Builder(COURSE_ID_7).name(COURSE_NAME_7).credits(COURSE_CREDITS_7).semester(COURSE_SEMESTER_7).build();
+
+        result = courseJdbcDao.update(COURSE_ID_8, course);
+        assertEquals(result, Result.COURSE_EXISTS_ID);
+
+    }
+
+    @Test
+    public void checkCorrelativityLoop(){
+
+        //Insert courses;
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(COURSE__ID_COLUMN, COURSE_ID_7);
+        map.put(COURSE__NAME_COLUMN, COURSE_NAME_7);
+        map.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_7);
+        map.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_7);
+        courseInsert.execute(map);
+
+        map.put(COURSE__ID_COLUMN, COURSE_ID_8);
+        map.put(COURSE__NAME_COLUMN, COURSE_NAME_8);
+        map.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_8);
+        map.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_8);
+        courseInsert.execute(map);
+
+
+
+        //Add correlativity line
+        map = new HashMap<>();
+        map.put(CORRELATIVE__COURSE_ID_COLUMN, COURSE_ID_8);
+        map.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_7);
+        correlativeInsert.execute(map);
+
+        Boolean result = courseJdbcDao.checkCorrelativityLoop(COURSE_ID_7, COURSE_ID_1);
+        assertFalse(result);
+
+        map.put(CORRELATIVE__COURSE_ID_COLUMN, COURSE_ID_7);
+        map.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_1);
+        correlativeInsert.execute(map);
+
+        result = courseJdbcDao.checkCorrelativityLoop(COURSE_ID_1, COURSE_ID_7);
+        assertTrue(result);
+
+        result = courseJdbcDao.checkCorrelativityLoop(COURSE_ID_7, COURSE_ID_8);
+        assertTrue(result);
+
+        result = courseJdbcDao.checkCorrelativityLoop(COURSE_ID_1, COURSE_ID_8);
+        assertTrue(result);
+    }
+
+    @Test
+    public void addCorrelativity(){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(COURSE__ID_COLUMN, COURSE_ID_7);
+        map.put(COURSE__NAME_COLUMN, COURSE_NAME_7);
+        map.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_7);
+        map.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_7);
+        courseInsert.execute(map);
+
+        map.put(COURSE__ID_COLUMN, COURSE_ID_8);
+        map.put(COURSE__NAME_COLUMN, COURSE_NAME_8);
+        map.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_8);
+        map.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_8);
+        courseInsert.execute(map);
+
+        Result result = courseJdbcDao.addCorrelativity(COURSE_ID_7, COURSE_ID_8);
+        assertEquals(result, Result.OK);
+
+        result = courseJdbcDao.addCorrelativity(COURSE_ID_7, COURSE_ID_8);
+        assertEquals(result, Result.CORRELATIVE_CORRELATIVITY_EXISTS);
+
+    }
+
+    @Test
+    public void courseExists(){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(COURSE__ID_COLUMN, COURSE_ID_7);
+        map.put(COURSE__NAME_COLUMN, COURSE_NAME_7);
+        map.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_7);
+        map.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_7);
+        courseInsert.execute(map);
+
+        Boolean result = courseJdbcDao.courseExists(COURSE_ID_1);
+        assertTrue(result);
+
+        result = courseJdbcDao.courseExists(COURSE_ID_7);
+        assertTrue(result);
+
+        result = courseJdbcDao.courseExists(COURSE_ID_8);
+        assertFalse(result);
+
+    }
+
+    @Test
     public void getCorrelatives(){
         final Map<String, Object> correlativeArgs = new HashMap<>();
         final Map<String, Object> correlativeArgs2 = new HashMap<>();
@@ -446,7 +572,5 @@ public class CourseJdbcDaoTest {
         assertTrue( (list.get(0).equals(course1) || list.get(0).equals(course2) ));
         assertTrue( (list.get(1).equals(course1) || list.get(1).equals(course2) ));
     }
-
-
 
 }
