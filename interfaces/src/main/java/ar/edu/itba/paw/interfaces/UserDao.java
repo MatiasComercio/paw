@@ -45,7 +45,7 @@ public interface UserDao {
 	 * @param dni The user's dni
 	 * @return OK if the user was deleted.
 	 */
-	Result delete(final Integer dni);
+	Result delete(int dni);
 
 	/**
 	 * Change the password of a given user
@@ -63,7 +63,17 @@ public interface UserDao {
 	 * @param dni the user's dni
 	 * @param user the new user's details
 	 * @return OK if the user's data was changed correctly
-	 * 		+++xdocument
+	 * 		INVALID_INPUT_PARAMETERS if a parameter was not correct;
+	 * 		ERROR_UNKNOWN in other case;
 	 */
-	Result update(Integer dni, User user);
+	Result update(int dni, User user);
+
+	/**
+	 * Reset a user's password to it's default value;
+	 * @param dni the user's dni
+	 * @return OK if the password was reset;
+	 *		INVALID_INPUT_PARAMETERS if the provided dni doesn't match to a user;
+	 *		else ERROR_UNKNOWN in other case;
+	 */
+	Result resetPassword(int dni);
 }

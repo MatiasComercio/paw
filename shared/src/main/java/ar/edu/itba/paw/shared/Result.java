@@ -6,6 +6,7 @@ public enum Result {
     COURSE_EXISTS_GRADE("Existen alumnos que poseen notas de este curso."),
     COURSE_EXISTS_INSCRIPTION("Existen alumnos que están inscriptos en este curso."),
     COURSE_EXISTS_ID("Ya existe un curso con este ID."),
+    COURSE_ALREADY_PASSED("El alumno ya ha aprobado este curso"),
 
     USER_NOT_EXISTS("El usuario especificado no existe"),
 
@@ -28,7 +29,8 @@ public enum Result {
     CORRELATIVE_CORRELATIVITY_LOOP("La correlatividad generaría un ciclo en el árbol de correlatividades."),
     PASSWORDS_DO_NOT_MATCH("La contraseña y su repetición no coinciden"),
     ADMIN_EXISTS_DNI("Ya existe un administrador con este DNI"),
-    USER_EXISTS_DNI("Ya existe un usuario con este DNI");
+    USER_EXISTS_DNI("Ya existe un usuario con este DNI"),
+    DNI_NOT_EXISTS("El usuario con el DNI correspondiente no existe");
 
 
 
