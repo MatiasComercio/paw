@@ -33,10 +33,11 @@ That's why we are usig <%@include ...%>--%>
 
 
     <c:when test="${section=='courses'}">
+
         <c:set var="coursesActive" value="active" scope="request"/>
         <jsp:include page="../template/deleteCourseForm.jsp" />
         <c:set var="includeScripts" >
-             ${includeScripts} ` <%@include file='/WEB-INF/js/template/deleteCourseForm.js'%>
+            ${includeScripts} ` <%@include file='/WEB-INF/js/template/deleteCourseForm.js'%>
         </c:set>
         <c:set var="loadScripts">
             ${loadScripts} ` loadDeleteCourseForm("deleteCourseButton");
@@ -66,8 +67,16 @@ That's why we are usig <%@include ...%>--%>
             </c:when>
 
             <c:when test="${section2=='students'}">
-                <c:set var="studentsActive" value="active" scope="request"/>
+                <c:set var="courseStudentsActive" value="active" scope="request"/>
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="../../js/template/searchStudents.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} ` loadStudentSearch();;
+                </c:set>
             </c:when>
+
+
             <c:when test="${section2=='addCorrelative'}">
                 <c:set var="addCorrelativeActive" value="active" scope="request"/>
                 <jsp:include page="../template/CorrelativeForm.jsp" />

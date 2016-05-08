@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
@@ -51,6 +52,11 @@ public class CourseController {
 		return (UserSessionDetails) authentication.getPrincipal();
 	}
 
+	@ModelAttribute("deleteCourseForm")
+	public CourseFilterForm courseFilterForm() {
+		return new CourseFilterForm();
+	}
+
 	@RequestMapping(value = "/courses", method = RequestMethod.GET)
 	public ModelAndView getCourses(final Model model) {
 
@@ -71,38 +77,38 @@ public class CourseController {
 			return new ModelAndView("forward:/errors/404.html");
 		}
 
-        final ModelAndView mav = new ModelAndView("courses");
-        mav.addObject("courses", courses);
-        mav.addObject("subsection_get_courses", true);
-        mav.addObject("courseFilterFormAction", "/courses/courseFilterForm");
-        return mav;
-    }
+		final ModelAndView mav = new ModelAndView("courses");
+		mav.addObject("courses", courses);
+		mav.addObject("subsection_get_courses", true);
+		mav.addObject("courseFilterFormAction", "/courses/courseFilterForm");
+		return mav;
+	}
 
 	@RequestMapping(value = "/courses/courseFilterForm", method = RequestMethod.GET)
 	public ModelAndView studentFilterForm(             @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-													   final BindingResult errors,
-													   final RedirectAttributes redirectAttributes) {
+	                                                   final BindingResult errors,
+	                                                   final RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
 		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
 		return new ModelAndView("redirect:/courses");
 	}
 
-    @RequestMapping("/courses/{id}/info")
-    public ModelAndView getCourse(@PathVariable final Integer id, Model model,
-                                  @ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm) {
-        final ModelAndView mav = new ModelAndView("course");
+	@RequestMapping("/courses/{id}/info")
+	public ModelAndView getCourse(@PathVariable final Integer id, Model model,
+	                              @ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm) {
+		final ModelAndView mav = new ModelAndView("course");
 
-        if (!model.containsAttribute("correlativeForm")) {
-            model.addAttribute("correlativeForm", new CorrelativeForm());
-        }
+		if (!model.containsAttribute("correlativeForm")) {
+			model.addAttribute("correlativeForm", new CorrelativeForm());
+		}
 
-        mav.addObject("course", courseService.getById(id));
-	    mav.addObject("section2", "info"); /* +++xcheck: if it's ok, do the same for all the URLs */
-        mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
-        mav.addObject("subsection_delete_correlative", true);
-        mav.addObject("correlatives", courseService.getCorrelativesByFilter(id, null));
-        return mav;
-    }
+		mav.addObject("course", courseService.getById(id));
+		mav.addObject("section2", "info"); /* +++xcheck: if it's ok, do the same for all the URLs */
+		mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
+		mav.addObject("subsection_delete_correlative", true);
+		mav.addObject("correlatives", courseService.getCorrelativesByFilter(id, null));
+		return mav;
+	}
 
 	@RequestMapping("/courses/{courseId}/edit")
 	public ModelAndView editCourse(
@@ -134,9 +140,9 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/{courseId}/edit", method = RequestMethod.POST)
 	public ModelAndView editCourse(@PathVariable final Integer courseId,
-								  @Valid @ModelAttribute("courseForm") CourseForm courseForm,
-								  final BindingResult errors,
-								  RedirectAttributes redirectAttributes){
+	                               @Valid @ModelAttribute("courseForm") CourseForm courseForm,
+	                               final BindingResult errors,
+	                               RedirectAttributes redirectAttributes){
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseForm", errors);
 			redirectAttributes.addFlashAttribute("courseForm", courseForm);
@@ -170,7 +176,8 @@ public class CourseController {
 	}*/
 
 	@RequestMapping(value = "/courses/{id}/students", method = RequestMethod.GET)
-	public ModelAndView getCourseStudents(@PathVariable("id") final Integer id, final Model model) {
+	public ModelAndView getCourseStudents(@PathVariable("id") final Integer id,
+	                                      final Model model, final RedirectAttributes redirectAttributes) {
 
 		if (!model.containsAttribute("studentFilterForm")) {
 			model.addAttribute("studentFilterForm", new StudentFilterForm());
@@ -190,7 +197,10 @@ public class CourseController {
 		}
 		final List<Student> students = courseService.getCourseStudents(id, studentFilter);
 
+
 		final ModelAndView mav = new ModelAndView("courseStudents");
+		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
+		mav.addObject("section2", "students");
 		mav.addObject("course", course);
 		mav.addObject("students", students);
 		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students/studentFilterForm");
@@ -201,8 +211,8 @@ public class CourseController {
 	public ModelAndView courseStudentsStudentFilterForm(
 			@PathVariable("id") final int id,
 			@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
-													   final BindingResult errors,
-													   final RedirectAttributes redirectAttributes) {
+			final BindingResult errors,
+			final RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.studentFilterForm", errors);
 		redirectAttributes.addFlashAttribute("studentFilterForm", studentFilterForm);
 		return new ModelAndView("redirect:/courses/" + id + "/students");
@@ -210,7 +220,7 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/add_course", method = RequestMethod.GET)
 	public ModelAndView addCourse(@ModelAttribute("courseForm") final CourseForm courseForm,
-								  RedirectAttributes redirectAttributes){
+	                              RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("addCourse");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 		mav.addObject("task", TASK_FORM_ADD);
@@ -220,7 +230,7 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
 	public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
-							final BindingResult errors, RedirectAttributes redirectAttributes){
+	                              final BindingResult errors, RedirectAttributes redirectAttributes){
 		if(errors.hasErrors()){
 			return addCourse(courseForm, null);
 		}
@@ -241,7 +251,9 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/courses/{id}/delete", method = RequestMethod.POST)
-	public ModelAndView deleteCourse(@PathVariable final Integer id, RedirectAttributes redirectAttributes) {
+	public ModelAndView deleteCourse(@PathVariable final Integer id,
+	                                 RedirectAttributes redirectAttributes,
+	                                 HttpServletRequest request) {
 		final Result result = courseService.deleteCourse(id);
 //        ModelAndView mav = new ModelAndView("redirect:/courses");
 //        ModelAndView mav = new ModelAndView("coursesSearch");
@@ -254,107 +266,107 @@ public class CourseController {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 		}
+		final String referrer = request.getHeader("referer");
+		return new ModelAndView("redirect:" + referrer);
+	}
 
-        return new ModelAndView("redirect:/courses/{id}/info");
-    }
+	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)
+	public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model) {
 
-    @RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)
-    public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model) {
+		if (!model.containsAttribute("courseFilterForm")) {
+			model.addAttribute("courseFilterForm", new CourseFilterForm());
+		}
+		if (!model.containsAttribute("correlativeForm")) {
+			model.addAttribute("correlativeForm", new CorrelativeForm());
+		}
 
-        if (!model.containsAttribute("courseFilterForm")) {
-            model.addAttribute("courseFilterForm", new CourseFilterForm());
-        }
-        if (!model.containsAttribute("correlativeForm")) {
-            model.addAttribute("correlativeForm", new CorrelativeForm());
-        }
+		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
+		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
+				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
 
-        final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
-        final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
-                id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
+		//Check the course exists (in case the url is modified)
+		final Course course = courseService.getById(course_id);
+		if (course == null) {
+			return new ModelAndView("forward:/errors/404.html");
+		}
 
-        //Check the course exists (in case the url is modified)
-        final Course course = courseService.getById(course_id);
-        if (course == null) {
-            return new ModelAndView("forward:/errors/404.html");
-        }
+		final ModelAndView mav = new ModelAndView("courses");
+		mav.addObject("course_details", course);
+		mav.addObject("courseFilterFormAction", "/courses/" + course_id + "/add_correlative/courseFilterForm");
+		mav.addObject("correlativeFormAction", "/courses/" + course_id + "/add_correlative");
+		mav.addObject("subsection_add_correlative", true);
+		mav.addObject("courses", courseService.getAvailableAddCorrelatives(course_id, courseFilter));
+		return mav;
+	}
 
-        final ModelAndView mav = new ModelAndView("courses");
-        mav.addObject("course_details", course);
-        mav.addObject("courseFilterFormAction", "/courses/" + course_id + "/add_correlative/courseFilterForm");
-        mav.addObject("correlativeFormAction", "/courses/" + course_id + "/add_correlative");
-        mav.addObject("subsection_add_correlative", true);
-        mav.addObject("courses", courseService.getAvailableAddCorrelatives(course_id, courseFilter));
-        return mav;
-    }
+	@RequestMapping(value = "/courses/{course_id}/add_correlative/courseFilterForm", method = RequestMethod.GET)
+	public ModelAndView studentInscriptionCourseFilter(@PathVariable final int course_id,
+	                                                   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+	                                                   final BindingResult errors,
+	                                                   final RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
+		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
+		return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
+	}
 
-    @RequestMapping(value = "/courses/{course_id}/add_correlative/courseFilterForm", method = RequestMethod.GET)
-    public ModelAndView studentInscriptionCourseFilter(@PathVariable final int course_id,
-                                                       @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-                                                       final BindingResult errors,
-                                                       final RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
-        redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
-        return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
-    }
+	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.POST)
+	public ModelAndView addCorrelative(@PathVariable final Integer course_id,
+	                                   @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
+	                                   final BindingResult errors, final RedirectAttributes redirectAttributes){
+		if (errors.hasErrors()){
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
+			redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
+			return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
+		}
 
-    @RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.POST)
-    public ModelAndView addCorrelative(@PathVariable final Integer course_id,
-                                           @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
-                                           final BindingResult errors, final RedirectAttributes redirectAttributes){
-        if (errors.hasErrors()){
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
-            redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
-            return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
-        }
+		Result result = courseService.addCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
+		if (result == null) {
+			result = Result.ERROR_UNKNOWN;
+		}
+		if (!result.equals(Result.OK)) {
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
 
-        Result result = courseService.addCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
-        if (result == null) {
-            result = Result.ERROR_UNKNOWN;
-        }
-        if (!result.equals(Result.OK)) {
-            redirectAttributes.addFlashAttribute("alert", "danger");
-            redirectAttributes.addFlashAttribute("message", result.getMessage());
+		} else {
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message",
+					messageSource.getMessage("correlative_add_success",
+							new Object[] {correlativeForm.getCourseName(), correlativeForm.getCorrelativeName()},
+							Locale.getDefault()));
+		}
 
-        } else {
-            redirectAttributes.addFlashAttribute("alert", "success");
-            redirectAttributes.addFlashAttribute("message",
-                    messageSource.getMessage("correlative_add_success",
-                            new Object[] {correlativeForm.getCourseName(), correlativeForm.getCorrelativeName()},
-                            Locale.getDefault()));
-        }
+		return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
+	}
 
-        return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
-    }
+	@RequestMapping(value = "/courses/{course_id}/delete_correlative", method = RequestMethod.POST)
+	public ModelAndView deleteCorrelative(@PathVariable final Integer course_id,
+	                                      @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
+	                                      final BindingResult errors, final RedirectAttributes redirectAttributes) {
 
-    @RequestMapping(value = "/courses/{course_id}/delete_correlative", method = RequestMethod.POST)
-    public ModelAndView deleteCorrelative(@PathVariable final Integer course_id,
-                                       @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
-                                       final BindingResult errors, final RedirectAttributes redirectAttributes) {
+		if (errors.hasErrors()){
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
+			redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
+			return new ModelAndView("redirect:/courses/" + course_id + "/info");
+		}
 
-        if (errors.hasErrors()){
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
-            redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
-            return new ModelAndView("redirect:/courses/" + course_id + "/info");
-        }
+		Result result = courseService.deleteCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
+		if (result == null) {
+			result = Result.ERROR_UNKNOWN;
+		}
+		if (!result.equals(Result.OK)) {
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
 
-        Result result = courseService.deleteCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
-        if (result == null) {
-            result = Result.ERROR_UNKNOWN;
-        }
-        if (!result.equals(Result.OK)) {
-            redirectAttributes.addFlashAttribute("alert", "danger");
-            redirectAttributes.addFlashAttribute("message", result.getMessage());
+		} else {
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message",
+					messageSource.getMessage("correlative_delete_success",
+							new Object[] {correlativeForm.getCourseName(), correlativeForm.getCorrelativeName()},
+							Locale.getDefault()));
+		}
 
-        } else {
-            redirectAttributes.addFlashAttribute("alert", "success");
-            redirectAttributes.addFlashAttribute("message",
-                    messageSource.getMessage("correlative_delete_success",
-                            new Object[] {correlativeForm.getCourseName(), correlativeForm.getCorrelativeName()},
-                            Locale.getDefault()));
-        }
+		return new ModelAndView("redirect:/courses/" + course_id + "/info");
 
-        return new ModelAndView("redirect:/courses/" + course_id + "/info");
-
-    }
+	}
 
 }

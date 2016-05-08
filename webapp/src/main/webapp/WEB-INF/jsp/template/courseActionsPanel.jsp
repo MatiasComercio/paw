@@ -4,7 +4,7 @@
 <%--@elvariable id="course" type="ar.edu.itba.paw.models.Course"--%>
 <%--@elvariable id="infoActive" type="java.lang.String"--%>
 <%--@elvariable id="editActive" type="java.lang.String"--%>
-<%--@elvariable id="studentsActive" type="java.lang.String"--%>
+<%--@elvariable id="courseStudentsActive" type="java.lang.String"--%>
 <%--@elvariable id="addCorrelativeActive" type="java.lang.String"--%>
 <sec:authorize access="hasAuthority('ROLE_VIEW_COURSE')">
     <c:set var="viewCourse">
@@ -26,7 +26,7 @@
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_VIEW_STUDENTS')">
     <c:set var="viewStudents">
-        <li class="${studentsActive}">
+        <li class="${courseStudentsActive}">
             <a href="<c:url value="/courses/${course.id}/students" />" type="button" class="btn btn-info" role="button">
                 <i class="fa fa-users" aria-hidden="true"></i> <spring:message code="students"/>
             </a>

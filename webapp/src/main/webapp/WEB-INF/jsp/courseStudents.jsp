@@ -1,3 +1,4 @@
+<%--@elvariable id="course" type="ar.edu.itba.paw.models.Course"--%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page language="java" pageEncoding="UTF-8"%>
@@ -11,6 +12,8 @@
 </head>
 <body>
 <div id="wrapper">
+    <jsp:include page="base/sections.jsp" />
+    <jsp:include page="template/courseActionsPanel.jsp" />
     <jsp:include page="base/nav.jsp" />
 
     <div id="page-wrapper">
@@ -25,6 +28,9 @@
                     </h1>
                 </div>
             </div>
+
+            <jsp:include page="base/alerts.jsp" />
+
             <!-- Content -->
             <jsp:include page="template/searchStudents.jsp" />
             <!-- Content -->
@@ -33,12 +39,6 @@
     <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchStudents.js"%></script>
-<script>
-    $( document ).ready(function() {
-        loadStudentSearch();
-    });
-</script>
-
+<jsp:include page="base/scripts.jsp" />
 </body>
 </html>
