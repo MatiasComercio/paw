@@ -14,7 +14,7 @@
     <c:set var="viewStudent">
         <li class="${infoActive}">
             <a href="<c:url value="/students/${student.docket}/info"/>" class="pushy-link">
-                <i class="fa fa-info-circle" aria-hidden="true"></i> <spring:message code="information"/>
+                <i class="fa fa-info-circle" aria-hidden="true"></i> <spring:message code="profile"/>
             </a>
         </li>
     </c:set>
@@ -41,18 +41,19 @@
         </c:otherwise>
     </c:choose>
 </sec:authorize>
-<sec:authorize access="hasAuthority('ROLE_CHANGE_PASSWORD')">
-    <%-- Only the user can change his/her password --%>
-    <c:if test="${student.docket eq user.id}">
-        <c:set var="changePassword">
-            <li class="${changePasswordActive}">
-                <a href="<c:url value="/user/changePassword" />" class="pushy-link">
-                    <i class="fa fa-key" aria-hidden="true"></i> <spring:message code="changePassword"/>
-                </a>
-            </li>
-        </c:set>
-    </c:if>
-</sec:authorize>
+<%-- Should not be here --%>
+<%--<sec:authorize access="hasAuthority('ROLE_CHANGE_PASSWORD')">--%>
+    <%--&lt;%&ndash; Only the user can change his/her password &ndash;%&gt;--%>
+    <%--<c:if test="${student.docket eq user.id}">--%>
+        <%--<c:set var="changePassword">--%>
+            <%--<li class="${changePasswordActive}">--%>
+                <%--<a href="<c:url value="/user/changePassword" />" class="pushy-link">--%>
+                    <%--<i class="fa fa-key" aria-hidden="true"></i> <spring:message code="changePassword"/>--%>
+                <%--</a>--%>
+            <%--</li>--%>
+        <%--</c:set>--%>
+    <%--</c:if>--%>
+<%--</sec:authorize>--%>
 <sec:authorize access="hasAuthority('ROLE_RESET_PASSWORD')">
     <%-- All admins and the user can change his/her password --%>
     <%-- +++xtodo --%>

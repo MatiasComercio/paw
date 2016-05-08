@@ -38,6 +38,11 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+	@ModelAttribute("user")
+	public UserSessionDetails user(final Authentication authentication) {
+		return (UserSessionDetails) authentication.getPrincipal();
+	}
+
 	@RequestMapping(value = "/user/changePassword")
 	public ModelAndView changePassword(
 			@ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
@@ -45,6 +50,7 @@ public class UserController {
 		final ModelAndView mav = new ModelAndView("changePassword");
 		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth == null) {
+			LOGGER.warn("Someone tried to change a password and auth was null [GET]");
 			return new ModelAndView("redirect:/errors/401");
 		}
 
@@ -70,12 +76,17 @@ public class UserController {
 
 		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth == null) {
+			LOGGER.warn("Someone tried to change a password and auth was null [POST]");
 			return new ModelAndView("redirect:/errors/401");
 		}
 		UserSessionDetails user = (UserSessionDetails) auth.getPrincipal();
 
 		/* Check that the DNI is still valid and was not modified */
-		if (String.valueOf(passwordForm.getDni()).equals(user.getUsername())) {
+		if (!String.valueOf(passwordForm.getDni()).equals(user.getUsername())) {
+			LOGGER.warn("Someone tried to change a password from another user.");
+			LOGGER.warn("Logged user's dni: {}", user.getUsername());
+			LOGGER.warn("Victim's dni: {}", passwordForm.getDni());
+
 			return new ModelAndView("redirect:/errors/401");
 		}
 

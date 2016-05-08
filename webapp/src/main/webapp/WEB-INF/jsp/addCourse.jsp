@@ -97,14 +97,14 @@
                         <form:input type="text" class="form-control" path="semester"/>
                         <form:errors path="semester" cssClass="text-danger bg-danger" element="div"/>
                     </div>
-                    <div class="col-sm-2 hidden-xs"></div>
-                    <div class="col-xs-6 col-sm-4 text-center">
-                        <button id="cancelButton" class="btn btn-default center-block pageFormButton" role="button">
+                    <div class="col-sm-4 hidden-xs"></div>
+                    <div class="col-xs-6 col-sm-2 text-center">
+                        <button id="cancelButton" class="btn btn-default center-block" role="button">
                             <spring:message code="cancel"/>
                         </button>
                     </div>
-                    <div class="col-xs-6 col-sm-4 text-center">
-                        <button type="submit" class="btn btn-info center-block pageFormButton">
+                    <div class="col-xs-6 col-sm-2 text-center">
+                        <button type="submit" class="btn btn-info center-block">
                                 ${formButton}
                         </button>
                     </div>
