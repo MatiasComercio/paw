@@ -364,6 +364,49 @@ public class CourseJdbcDaoTest {
     }
 
     @Test
+    public void checkCorrelativityLoop(){
+
+        //Insert 3 couses;
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(COURSE__ID_COLUMN, COURSE_ID_7);
+        map.put(COURSE__NAME_COLUMN, COURSE_NAME_7);
+        map.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_7);
+        map.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_7);
+        courseInsert.execute(map);
+
+        map = new HashMap<>();
+        map.put(COURSE__ID_COLUMN, COURSE_ID_8);
+        map.put(COURSE__NAME_COLUMN, COURSE_NAME_8);
+        map.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_8);
+        map.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_8);
+        courseInsert.execute(map);
+
+       
+
+        //Add correlativity line
+        map = new HashMap<>();
+        map.put(CORRELATIVE__COURSE_ID_COLUMN, COURSE_ID_8);
+        map.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_7);
+        correlativeInsert.execute(map);
+
+        Boolean result = courseJdbcDao.checkCorrelativityLoop(COURSE_ID_7, COURSE_ID_1);
+        assertFalse(result);
+
+        map.put(CORRELATIVE__COURSE_ID_COLUMN, COURSE_ID_7);
+        map.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_1);
+        correlativeInsert.execute(map);
+
+        result = courseJdbcDao.checkCorrelativityLoop(COURSE_ID_1, COURSE_ID_7);
+        assertTrue(result);
+
+        result = courseJdbcDao.checkCorrelativityLoop(COURSE_ID_7, COURSE_ID_8);
+        assertTrue(result);
+
+        result = courseJdbcDao.checkCorrelativityLoop(COURSE_ID_1, COURSE_ID_8);
+        assertTrue(result);
+    }
+
+    @Test
     public void getCorrelatives(){
         final Map<String, Object> correlativeArgs = new HashMap<>();
         final Map<String, Object> correlativeArgs2 = new HashMap<>();
