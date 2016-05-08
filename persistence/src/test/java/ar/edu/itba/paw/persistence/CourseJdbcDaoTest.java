@@ -429,6 +429,26 @@ public class CourseJdbcDaoTest {
     }
 
     @Test
+    public void courseExists(){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put(COURSE__ID_COLUMN, COURSE_ID_7);
+        map.put(COURSE__NAME_COLUMN, COURSE_NAME_7);
+        map.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_7);
+        map.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_7);
+        courseInsert.execute(map);
+
+        Boolean result = courseJdbcDao.courseExists(COURSE_ID_1);
+        assertTrue(result);
+
+        result = courseJdbcDao.courseExists(COURSE_ID_7);
+        assertTrue(result);
+
+        result = courseJdbcDao.courseExists(COURSE_ID_8);
+        assertFalse(result);
+
+    }
+
+    @Test
     public void getCorrelatives(){
         final Map<String, Object> correlativeArgs = new HashMap<>();
         final Map<String, Object> correlativeArgs2 = new HashMap<>();
