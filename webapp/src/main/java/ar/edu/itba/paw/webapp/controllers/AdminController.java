@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
@@ -49,6 +50,8 @@ public class AdminController {
 	@Autowired
 	private AdminService adminService;
 
+	@Autowired
+	private HttpServletRequest request;
 
 	@ModelAttribute("section")
 	public String sectionManager(){
@@ -121,8 +124,9 @@ public class AdminController {
 			@ModelAttribute("adminForm") final AdminForm adminForm,
 			final RedirectAttributes redirectAttributes) {
 
-		ModelAndView mav = new ModelAndView("addAdmin");
+		ModelAndView mav = new ModelAndView("addUser");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
+		mav.addObject("section2", "addAdmin");
 
 		/*+++ximprove */
 		loadEnableDisableInscription(mav);
@@ -164,7 +168,9 @@ public class AdminController {
 					null,
 					Locale.getDefault()));
 		}
-		return new ModelAndView("redirect:/admins/");
+
+		final String referrer = request.getHeader("referer");
+		return new ModelAndView("redirect:" + referrer);
 	}
 
 	@RequestMapping(value= "/admins/enable_inscriptions", method=RequestMethod.POST)
@@ -180,7 +186,9 @@ public class AdminController {
 					null,
 					Locale.getDefault()));
 		}
-		return new ModelAndView("redirect:/admins/");
+
+		final String referrer = request.getHeader("referer");
+		return new ModelAndView("redirect:" + referrer);
 	}
 
 }

@@ -37,6 +37,36 @@ That's why we are usig <%@include ...%>--%>
                     loadEnableInscriptionsForm();
                 </c:set>
             </c:when>
+            <c:when test="${section2 eq 'addAdmin'}">
+                <c:set var="addAdminActive" value="active" scope="request"/>
+
+                <jsp:include page="../template/adminsActionsPanel.jsp" />
+                <jsp:include page="../template/enableInscriptionsForm.jsp" />
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/searchAdmins.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadAdminSearch();
+                </c:set>
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/enableInscriptionsForm.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadEnableInscriptionsForm();
+                </c:set>
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file='/WEB-INF/js/cancelButton.js'%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadCancelButton("cancelButton");
+                </c:set>
+            </c:when>
         </c:choose>
     </c:when>
 

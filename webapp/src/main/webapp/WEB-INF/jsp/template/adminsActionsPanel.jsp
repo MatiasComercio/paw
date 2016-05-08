@@ -38,7 +38,7 @@
     <c:when test="${isInscriptionEnabled}">
         <c:set var="disableInscription">
             <li>
-                <button name="disableInscriptionsButton" class="menu-btn" type="button"
+                <button name="inscriptionButton" class="menu-btn" type="button"
                         data-toggle="modal" data-target="#enableInscriptionsConfirmationModal">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="disable_inscriptions"/>
                 </button>
@@ -48,7 +48,7 @@
     <c:when test="${!isInscriptionEnabled}">
         <c:set var="enableInscription">
             <li>
-                <button name="enableInscriptionsButton" class="menu-btn" type="button"
+                <button name="inscriptionButton" class="menu-btn" type="button"
                         data-toggle="modal" data-target="#enableInscriptionsConfirmationModal">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="enable_inscriptions"/>
                 </button>
