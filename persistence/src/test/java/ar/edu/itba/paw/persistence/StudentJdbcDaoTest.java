@@ -29,6 +29,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.runners.Parameterized.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
@@ -1013,6 +1020,6 @@ public class StudentJdbcDaoTest {
 
 	@Test
 	public void testGetByDni() {
-
+//		when(userDao.getByDni(dni)).then();
 	}
 }
