@@ -55,6 +55,7 @@ public class StudentJdbcDaoTest {
 	private static final String USER__GENRE_COLUMN = "genre";
 	private static final String USER__BIRTHDAY_COLUMN = "birthday";
 	private static final String USER__EMAIL_COLUMN = "email";
+	private static final String USER__ROLE_COLUMN = "role";
 
 	private static final String ADDRESS__DNI_COLUMN = "dni";
 	private static final String ADDRESS__COUNTRY_COLUMN = "country";
@@ -98,7 +99,9 @@ public class StudentJdbcDaoTest {
 	private static final User.Genre GENRE_1_EXPECTED = User.Genre.M;
 	private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
 	private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
+	private static final String ROLE_1 = "STUDENT";
 	private int docket1; /* Auto-generated field */
+
 
 	private static final int DNI_2 = 87654321;
 	private static final String FIRST_NAME_2 = "BreNda LiHuéN ";
@@ -106,7 +109,9 @@ public class StudentJdbcDaoTest {
 	private static final String LAST_NAME_2 = "MaYan";
 	private static final String LAST_NAME_2_EXPECTED = "Mayan";
 	private static final String EMAIL_2 = "blihuen@bait.edu.ar";
+	private static final String ROLE_2 = "ADMIN";
 	private int docket2; /* Auto-generated field */
+
 
     private static final int DNI_3 = 321456789;
 
@@ -208,6 +213,7 @@ public class StudentJdbcDaoTest {
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
         studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -224,6 +230,7 @@ public class StudentJdbcDaoTest {
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
         studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -245,6 +252,7 @@ public class StudentJdbcDaoTest {
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
         studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -290,6 +298,7 @@ public class StudentJdbcDaoTest {
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
         hasAddress = studentJdbcDao.hasAddress(DNI_1);
@@ -326,6 +335,7 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs);
 
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
@@ -386,6 +396,7 @@ public class StudentJdbcDaoTest {
 		userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs1.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs1);
 
 		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -411,11 +422,13 @@ public class StudentJdbcDaoTest {
 		userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs1.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs1);
 		userArgs2.put(USER__DNI_COLUMN, DNI_2);
 		userArgs2.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
 		userArgs2.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
 		userArgs2.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
+		userArgs2.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs2);
 
 		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -473,6 +486,7 @@ public class StudentJdbcDaoTest {
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1);
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1);
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_1);
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
         studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -498,6 +512,7 @@ public class StudentJdbcDaoTest {
 		userArgs1.put(USER__GENRE_COLUMN, GENRE_1);
 		userArgs1.put(USER__BIRTHDAY_COLUMN, Date.valueOf(BIRTHDAY_1));
 		userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs1.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs1);
 
 		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -520,6 +535,7 @@ public class StudentJdbcDaoTest {
 		userArgs2.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2_EXPECTED.toLowerCase());
 		userArgs2.put(USER__LAST_NAME_COLUMN, LAST_NAME_2_EXPECTED.toLowerCase());
 		userArgs2.put(USER__EMAIL_COLUMN, EMAIL_2);
+		userArgs2.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs2);
 
 		studentArgs2.put(STUDENT__DNI_COLUMN, DNI_2);
@@ -579,6 +595,7 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs);
 
 		studentArgs.put(USER__DNI_COLUMN, DNI_1);
@@ -663,6 +680,7 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs);
 
 		studentArgs.put(USER__DNI_COLUMN, DNI_1);
@@ -744,6 +762,7 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs);
 
 		studentArgs.put(USER__DNI_COLUMN, DNI_1);
@@ -829,6 +848,7 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs);
 
 		studentArgs.put(USER__DNI_COLUMN, DNI_1);
