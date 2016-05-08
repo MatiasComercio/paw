@@ -429,45 +429,23 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result create(Student student) {
+		userDao.create(student, Role.STUDENT);
 
-		final Map<String, Object> userArgs = new HashMap<>();
 		final Map<String, Object> studentArgs = new HashMap<>();
-		final Map<String, Object> addressArgs = new HashMap<>();
 
-		/* Store User Data */
-		userArgs.put(USER__DNI_COLUMN, student.getDni());
-		userArgs.put(USER__FIRST_NAME_COLUMN, student.getFirstName());
-		userArgs.put(USER__LAST_NAME_COLUMN, student.getLastName());
-//		+++xdebug
-		userArgs.put(USER__GENRE_COLUMN, student.getGenre().name());
-		userArgs.put(USER__BIRTHDAY_COLUMN, student.getBirthday());
-		userArgs.put(USER__EMAIL_COLUMN, createEmail(student.getDni(), student.getFirstName(),
-				student.getLastName()));
-		userArgs.put(USER__ROLE_COLUMN, Role.STUDENT.originalString().toUpperCase());
-		try {
-			userInsert.execute(userArgs);
-		}catch(DuplicateKeyException e){
-			return Result.STUDENT_EXISTS_DNI;
-		} catch (DataAccessException e) {
-				return Result.ERROR_UNKNOWN;
-		}
+		final int rowsAffected;
 
 		/* Store Student Data */
 		studentArgs.put(STUDENT__DNI_COLUMN, student.getDni());
 		try {
-			studentInsert.execute(studentArgs);
+			rowsAffected = studentInsert.execute(studentArgs);
 		}catch(DuplicateKeyException e){
 			return Result.STUDENT_EXISTS_DOCKET;
 		} catch (DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
 		}
 
-		/* Store Address Data */
-		if(student.getDni() > 0 && student.getAddress() != null) {
-			createAddress(student.getDni(), student);
-		}
-
-		return Result.OK;
+		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 	}
 
 	@Override
