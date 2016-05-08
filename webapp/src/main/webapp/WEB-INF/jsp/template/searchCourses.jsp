@@ -1,7 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ include file="../base/tags.jsp" %>
+
 <!-- search -->
 <%--Course Filter Form--%>
 <form:form id="course_filter_form" modelAttribute="courseFilterForm" action="${courseFilterFormAction}" method="get" enctype="application/x-www-form-urlencoded">
@@ -114,26 +112,8 @@
                         </c:when>
                         <c:when test="${section=='courses'}">
                             <c:choose>
-                                <c:when test="${subsection_get_courses}">
-                                    <a class="btn btn-info btn-xs" href="<c:url value="/courses/${eachCourse.id}/edit"/>">
-                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-                                    </a>
-                                    <button name="deleteCourseButton" class="btn btn-danger btn-xs" type="button"
-                                            data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
-                                            data-toggle="modal" data-target="#deleteCourseFormConfirmationModal">
-                                        <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
-                                    </button>
-                                </c:when>
-                                <%--<c:when test="${subsection_add_correlative}">--%>
-                                    <%--<button name="correlativeButton" class="btn btn-info btn-xs" type="button"--%>
-                                            <%--data-course_id="${ course_details.id }" data-course_name="${ course_details.name }"--%>
-                                            <%--data-correlative_id="${course.id}" data-correlative_name="${course.name}"--%>
-                                            <%--data-toggle="modal" data-target="#correlativeFormConfirmationModal">--%>
-                                        <%--<i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="add_correlative"/>--%>
-                                    <%--</button>--%>
-                                <%--</c:when>--%>
                                 <c:when test="${section2 eq 'addCorrelative'}">
-                                    ${searchCoursesActions}
+                                    <%--${searchCoursesActions}--%>
                                     <button name="correlativeButton" class="btn btn-info btn-xs" type="button"
                                             data-course_id="${ course.id }" data-course_name="${ course.name }"
                                             data-correlative_id="${eachCourse.id}" data-correlative_name="${eachCourse.name}"
