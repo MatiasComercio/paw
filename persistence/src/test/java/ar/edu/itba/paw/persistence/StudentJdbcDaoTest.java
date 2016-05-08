@@ -1010,4 +1010,9 @@ public class StudentJdbcDaoTest {
 
 		return matchers;
 	}
+
+	@Test
+	public void testGetByDni() {
+
+	}
 }
