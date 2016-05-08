@@ -90,6 +90,13 @@ That's why we are usig <%@include ...%>--%>
 
                 <c:when test="${section2 eq 'grades'}">
                     <c:set var="gradesActive" value="active" scope="request"/>
+                    <c:set var="includeScripts" >
+                        ${includeScripts} ` <%@include file="/WEB-INF/js/template/gradeForm.js"%>
+                    </c:set>
+                    <c:set var="loadScripts">
+                        ${loadScripts} `
+                        loadCancelButton("gradeButton");
+                    </c:set>
 
 
                 </c:when>
