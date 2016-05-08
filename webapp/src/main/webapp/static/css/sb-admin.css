@@ -346,3 +346,7 @@ a.btn.tableButton {
 .table>thead>tr>th {
     vertical-align: middle;
 }
+
+.well {
+    overflow-x: auto;
+}

@@ -74,23 +74,50 @@
     </c:set>
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_VIEW_GRADES')">
-    <c:set var="viewGrades">
+
+    <c:set var="tmpViewGrades">
         <li class="${viewGradesActive}">
             <a href="<c:url value="/students/${student.docket}/grades" />" class="pushy-link">
                 <i class="fa fa-graduation-cap"></i> <spring:message code="grades"/>
             </a>
         </li>
     </c:set>
+
+    <%-- if (student.docket == logged.id || logged.hasAuthority(admin)) --> can view grades --%>
+    <c:choose>
+        <c:when test="${student.docket eq user.id}">
+            <c:set var="viewGrades" value="${tmpViewGrades}" />
+        </c:when>
+        <c:otherwise>
+            <c:set var="viewGrades" value="" />
+            <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+                <c:set var="viewGrades" value="${tmpViewGrades}" />
+            </sec:authorize>
+        </c:otherwise>
+    </c:choose>
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_VIEW_INSCRIPTION')">
     <sec:authorize access="hasAuthority('ROLE_ADD_INSCRIPTION')">
-        <c:set var="viewInscription">
+        <c:set var="tmpViewInscription">
             <li class="${viewInscriptionActive}">
                 <a href="<c:url value="/students/${student.docket}/inscription" />" class="pushy-link">
                     <i class="fa fa-list-alt"></i> <spring:message code="inscriptions"/>
                 </a>
             </li>
         </c:set>
+
+        <%-- if (student.docket == logged.id || logged.hasAuthority(admin)) --> can edit --%>
+        <c:choose>
+            <c:when test="${student.docket eq user.id}">
+                <c:set var="viewInscription" value="${tmpViewInscription}" />
+            </c:when>
+            <c:otherwise>
+                <c:set var="viewInscription" value="" />
+                <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+                    <c:set var="viewInscription" value="${tmpViewInscription}" />
+                </sec:authorize>
+            </c:otherwise>
+        </c:choose>
     </sec:authorize>
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_DELETE_STUDENT')">

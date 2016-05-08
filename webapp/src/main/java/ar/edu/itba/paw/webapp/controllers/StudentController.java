@@ -131,6 +131,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 
 		mav.addObject("student", student);
+		mav.addObject("section2", "grades");
 		mav.addObject("subsection_grades", true);
 		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/edit");
 
@@ -170,6 +171,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 		final ModelAndView mav = new ModelAndView("courses");
 		mav.addObject("student", student);
+		mav.addObject("section2", "courses");
 		mav.addObject("courseFilterFormAction", "/students/" + docket + "/courses/courseFilterForm"); /* only different line from /inscription */
 		mav.addObject("inscriptionFormAction", "/students/" + docket + "/courses/unenroll");
 		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/add");
@@ -462,7 +464,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		studentForm.loadFromStudent(student);
 
 		mav.addObject("docket", docket);
-
+		mav.addObject("section2", "edit");
 		return mav;
 	}
 

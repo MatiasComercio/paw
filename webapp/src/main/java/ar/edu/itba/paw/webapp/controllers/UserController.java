@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.PasswordForm;
 import ar.edu.itba.paw.webapp.forms.UserForm;
 import ar.edu.itba.paw.webapp.forms.validators.PasswordValidator;
@@ -51,6 +52,7 @@ public class UserController {
 		/* userDetails.getUsername() == user's dni; used to load on the PasswordForm */
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 		mav.addObject("dni", userDetails.getUsername());
+		mav.addObject("section2", "changePassword");
 
 		return mav;
 	}
@@ -64,6 +66,17 @@ public class UserController {
 
 		if (errors.hasErrors()){
 			return changePassword(passwordForm, redirectAttributes);
+		}
+
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null) {
+			return new ModelAndView("redirect:/errors/401");
+		}
+		UserSessionDetails user = (UserSessionDetails) auth.getPrincipal();
+
+		/* Check that the DNI is still valid and was not modified */
+		if (String.valueOf(passwordForm.getDni()).equals(user.getUsername())) {
+			return new ModelAndView("redirect:/errors/401");
 		}
 
 		final Result result = userService.changePassword(
@@ -82,6 +95,7 @@ public class UserController {
 					Locale.getDefault()));
 		}
 
+		/* +++xchange */
 		return new ModelAndView("redirect:/user/changePassword");
 	}
 
