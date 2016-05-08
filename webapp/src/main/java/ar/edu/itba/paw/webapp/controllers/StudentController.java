@@ -51,6 +51,11 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		return (UserSessionDetails) authentication.getPrincipal();
 	}
 
+	@ModelAttribute("deleteStudentForm")
+	public StudentFilterForm deleteStudentForm() {
+		return new StudentFilterForm();
+	}
+
 	@RequestMapping(value = "/students", method = RequestMethod.GET)
 	public ModelAndView getStudents(@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
 	                                final BindingResult errors,
@@ -102,6 +107,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 		mav = new ModelAndView("student");
 		mav.addObject("student", student);
+		mav.addObject("section2", "info");
 		return mav;
 	}
 
@@ -287,7 +293,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
 	                               RedirectAttributes redirectAttributes){
-		ModelAndView mav = new ModelAndView("addStudent");
+		ModelAndView mav = new ModelAndView("addUser");
 		mav.addObject("section2", "addStudent");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 		return mav;
