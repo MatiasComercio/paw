@@ -110,11 +110,13 @@
                                             </button>
                                         </sec:authorize>
                                         <sec:authorize access="hasAuthority('ROLE_DELETE_INSCRIPTION')">
-                                            <button name="unenroll" class="btn btn-danger" type="button"
-                                                    data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
-                                                    data-toggle="modal" data-target="#enrollFormConfirmationModal">
-                                                <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="unenroll"/>
-                                            </button>
+                                            <c:if test="${user.id eq student.docket}">
+                                                <button name="unenroll" class="btn btn-danger" type="button"
+                                                        data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
+                                                        data-toggle="modal" data-target="#enrollFormConfirmationModal">
+                                                    <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="unenroll"/>
+                                                </button>
+                                            </c:if>
                                         </sec:authorize>
                                 </c:when>
                                 <c:otherwise>
