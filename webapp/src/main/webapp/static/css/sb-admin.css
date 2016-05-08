@@ -327,3 +327,7 @@ button.navbar-toggle.menu-btn.pull-left {
     margin-bottom: 5%;
     margin-top: 5%;
 }
+
+.requiredFields {
+    margin-bottom: 15px;
+}
