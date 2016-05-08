@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -40,6 +41,9 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 	@Autowired
 	private StudentService studentService;
+
+	@Autowired
+	private HttpServletRequest request;
 
 	@ModelAttribute("section")
 	public String sectionManager(){
@@ -356,6 +360,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 							new Object[] {},
 							Locale.getDefault()));
 
+
 			return new ModelAndView("redirect:/students/" + docket + "/grades");
 		}
 
@@ -448,7 +453,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 			@ModelAttribute("studentForm") final StudentForm studentForm,
 			final RedirectAttributes redirectAttributes) {
 
-		final ModelAndView mav = new ModelAndView("editStudent");
+		final ModelAndView mav = new ModelAndView("addUser");
 
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 		Student student = studentService.getByDocket(docket);
@@ -464,6 +469,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		studentForm.loadFromStudent(student);
 
 		mav.addObject("docket", docket);
+		mav.addObject("student", student);
 		mav.addObject("section2", "edit");
 		return mav;
 	}
@@ -492,6 +498,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 				null,
 				Locale.getDefault()));
 
-		return new ModelAndView("redirect:/students");
+		final String referrer = request.getHeader("referer");
+		return new ModelAndView("redirect:" + referrer);
 	}
 }

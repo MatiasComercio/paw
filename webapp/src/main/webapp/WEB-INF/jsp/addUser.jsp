@@ -30,7 +30,7 @@
                 <spring:message code="students"/> <small> - <spring:message code="addStudent"/></small>
             </c:set>
 
-            <c:set var="dniEnabled" value="" />
+            <c:set var="dniDisabled" value="false" />
 
             <c:url var="studentFormAction" value="/students/add_student" />
             <spring:message var="formButton" code="addStudent" />
@@ -41,7 +41,7 @@
                 ${student.fullName} <small> - <spring:message code="edit"/></small>
             </c:set>
 
-            <c:set var="dniEnabled" value="readonly" />
+            <c:set var="dniDisabled" value="true" />
 
             <c:url var="studentFormAction" value="/students/${student.docket}/edit" />
             <spring:message var="formButton" code="saveChanges" />
@@ -79,7 +79,7 @@
                             <span></span><spring:message code="dni"/>
                             (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
                         </form:label>
-                        <form:input type="text" class="form-control" id="dni" path="dni" readonly="${dniEnabled}"/>
+                        <form:input type="text" class="form-control" id="dni" path="dni" readonly="${dniDisabled}"/>
                         <form:errors path="dni" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group col-xs-12">

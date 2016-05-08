@@ -62,6 +62,18 @@ That's why we are usig <%@include ...%>--%>
                 <c:when test="${section2 eq 'info'}">
                     <c:set var="infoActive" value="active" scope="request"/>
                 </c:when>
+
+                <c:when test="${section2 eq 'edit'}">
+                    <c:set var="editActive" value="active" scope="request"/>
+
+                    <c:set var="includeScripts" >
+                        ${includeScripts} ` <%@include file='/WEB-INF/js/cancelButton.js'%>
+                    </c:set>
+                    <c:set var="loadScripts">
+                        ${loadScripts} `
+                        loadCancelButton("cancelButton");
+                    </c:set>
+                </c:when>
             </c:choose>
         </c:if>
     </c:when>
