@@ -40,6 +40,21 @@ That's why we are usig <%@include ...%>--%>
                 <jsp:include page="../template/coursesActionsPanel.jsp" />
 
             </c:when>
+
+            <c:when test="${section2 eq 'addCourse'}">
+                <c:set var="addCourseActive" value="active" scope="request"/>
+
+                <jsp:include page="../template/coursesActionsPanel.jsp" />
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file='/WEB-INF/js/cancelButton.js'%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadCancelButton("cancelButton");
+                </c:set>
+            </c:when>
+
             <c:when test="${not empty section2}">
                 <jsp:include page="../template/courseActionsPanel.jsp" />
 

@@ -104,7 +104,7 @@
                 <td>
                     <c:choose>
                         <c:when test="${subsection_students}">
-                            <a class="btn btn-info btn-xs" href="/students/${student.docket}/edit" role="button">
+                            <a class="btn btn-info tableButton" href="/students/${student.docket}/edit" role="button">
                                 <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
                             </a>
                             <button name="deleteStudentButton" class="btn btn-danger btn-xs" type="button"
@@ -123,7 +123,7 @@
                             </button>
                         </c:when>
                     </c:choose>
-                    <a class="btn btn-default btn-xs" href="<c:url value="/students/${student.docket}/info" />" role="button">
+                    <a class="btn btn-default tableButton" href="<c:url value="/students/${student.docket}/info" />" role="button">
                         <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
                     </a>
                 </td>

@@ -27,19 +27,19 @@
     <jsp:include page="base/nav.jsp" />
 
     <%-- Task decision --%>
-    <%--@elvariable id="task" type="java.lang.String"--%>
+    <%--@elvariable id="section2" type="java.lang.String"--%>
     <%--@elvariable id="course" type="ar.edu.itba.paw.models.Course"--%>
     <c:choose>
-        <c:when test="${task eq 'add'}" >
+        <c:when test="${section2 eq 'addCourse'}" >
             <c:set var="title">
-                <spring:message code="courses"/><small> - <spring:message code="add"/></small>
+                <spring:message code="courses"/><small> - <spring:message code="addCourse"/></small>
             </c:set>
             <c:set var="formAction">
                 <c:url value="/courses/add_course" />
             </c:set>
-            <spring:message var="formButton" code="addCourse"/>
+            <spring:message var="formButton" code="add"/>
         </c:when>
-        <c:when test="${task eq 'edit'}" >
+        <c:when test="${section2 eq 'edit'}" >
             <c:set var="title">
                 ${course.name}<small> - <spring:message code="edit"/></small>
             </c:set>
@@ -78,36 +78,36 @@
 
                     <div class="form-group col-xs-12">
                         <form:label path="id"><spring:message code="id"/>
-                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>):</form:label>
+                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)</form:label>
                         <form:input path="id" type="text" class="form-control" />
                         <form:errors path="id" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group col-xs-12">
                         <form:label path="name"><spring:message code="name"/>
-                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>):</form:label>
+                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)</form:label>
                         <form:input type="text" class="form-control" path="name"/>
                         <form:errors path="name" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group col-xs-12">
                         <form:label path="credits"><spring:message code="credits"/>
-                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>):</form:label>
+                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)</form:label>
                         <form:input type="text" class="form-control" path="credits"/>
                         <form:errors path="credits" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group col-xs-12">
                         <form:label path="semester"><spring:message code="semester"/>
-                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>):</form:label>
+                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)</form:label>
                         <form:input type="text" class="form-control" path="semester"/>
                         <form:errors path="semester" cssClass="text-danger bg-danger" element="div"/>
                     </div>
-                    <div class="col-sm-4 hidden-xs"></div>
-                    <div class="col-xs-6 col-sm-2 text-center">
-                        <a id="cancelButton" class="btn btn-default center-block" role="button">
+                    <div class="col-sm-2 hidden-xs"></div>
+                    <div class="col-xs-6 col-sm-4 text-center">
+                        <button id="cancelButton" class="btn btn-default center-block pageFormButton" role="button">
                             <spring:message code="cancel"/>
-                        </a>
+                        </button>
                     </div>
-                    <div class="col-xs-6 col-sm-2 text-center">
-                        <button type="submit" class="btn btn-info center-block">
+                    <div class="col-xs-6 col-sm-4 text-center">
+                        <button type="submit" class="btn btn-info center-block pageFormButton">
                                 ${formButton}
                         </button>
                     </div>

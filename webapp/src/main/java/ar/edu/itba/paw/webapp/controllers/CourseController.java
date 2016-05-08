@@ -40,6 +40,9 @@ public class CourseController {
 	private MessageSource messageSource;
 
 	@Autowired
+	private HttpServletRequest request;
+
+	@Autowired
 	private CourseService courseService;
 
 	@ModelAttribute("section")
@@ -163,7 +166,8 @@ public class CourseController {
 				null,
 				Locale.getDefault()));
 
-		return new ModelAndView("redirect:/courses");
+		final String referrer = request.getHeader("referer");
+		return new ModelAndView("redirect:" + referrer);
 	}
 
 
@@ -223,7 +227,8 @@ public class CourseController {
 	                              RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("addCourse");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
-		mav.addObject("task", TASK_FORM_ADD);
+//		mav.addObject("task", TASK_FORM_ADD);
+		mav.addObject("section2", "addCourse");
 
 		return mav;
 	}
@@ -252,22 +257,24 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/{id}/delete", method = RequestMethod.POST)
 	public ModelAndView deleteCourse(@PathVariable final Integer id,
-	                                 RedirectAttributes redirectAttributes,
-	                                 HttpServletRequest request) {
+	                                 RedirectAttributes redirectAttributes) {
 		final Result result = courseService.deleteCourse(id);
 //        ModelAndView mav = new ModelAndView("redirect:/courses");
 //        ModelAndView mav = new ModelAndView("coursesSearch");
+		final String urlRedirect;
 		if(result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteCourse_success",
 					null,
 					Locale.getDefault()));
+			urlRedirect = "/courses";
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			urlRedirect = request.getHeader("referer");
 		}
-		final String referrer = request.getHeader("referer");
-		return new ModelAndView("redirect:" + referrer);
+
+		return new ModelAndView("redirect:" + urlRedirect);
 	}
 
 	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)

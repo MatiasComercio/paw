@@ -331,3 +331,9 @@ button.navbar-toggle.menu-btn.pull-left {
 .requiredFields {
     margin-bottom: 15px;
 }
+
+button.btn.pageFormButton,
+button.btn.tableButton,
+a.btn.tableButton {
+    width: 100%;
+}

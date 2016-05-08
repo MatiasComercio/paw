@@ -83,11 +83,11 @@
                 <td>${ eachCourse.credits }</td>
                 <td>${ eachCourse.semester }</td>
                 <td>
-                    <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
-                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
-                    </a>
                     <c:choose>
                         <c:when test="${section=='students'}">
+                            <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
+                                <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                            </a>
                             <c:choose>
                                 <c:when test="${subsection_enroll}">
                                     <button name="inscription" class="btn btn-info btn-xs" type="button"
@@ -114,12 +114,15 @@
                             <c:choose>
                                 <c:when test="${section2 eq 'addCorrelative'}">
                                     <%--${searchCoursesActions}--%>
-                                    <button name="correlativeButton" class="btn btn-info btn-xs" type="button"
+                                    <button name="correlativeButton" class="btn btn-info" type="button"
                                             data-course_id="${ course.id }" data-course_name="${ course.name }"
                                             data-correlative_id="${eachCourse.id}" data-correlative_name="${eachCourse.name}"
                                             data-toggle="modal" data-target="#correlativeFormConfirmationModal">
                                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="add_correlative"/>
                                     </button>
+                                    <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
+                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                                    </a>
                                 </c:when>
                             </c:choose>
                         </c:when>
