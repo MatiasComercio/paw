@@ -117,6 +117,7 @@ public class CourseServiceImplTest {
         return Arrays.asList(new Object[][] {
                 { COURSE_1_ID_VALID, null, courseAnswer, studentServiceGetByFilter1, expectedStudents1},
                 { COURSE_1_ID_VALID, studentFilter, courseAnswer, studentServiceGetByFilter2, expectedStudents2},
+                { COURSE_1_ID_INVALID, studentFilter, null, null, null },
                 { COURSE_1_ID_INVALID, null, null, null, null }
         });
     }
