@@ -335,7 +335,15 @@ button.navbar-toggle.menu-btn.pull-left {
 button.btn.pageFormButton,
 button.btn.tableButton,
 a.btn.tableButton {
+    display: block;
     width: 100%;
+    white-space: normal;
+}
+
+.btn-block {
+    /*display: block;
+    width: 100%;*/
+    white-space: normal;
 }
 
 .table>tbody>tr>td,
