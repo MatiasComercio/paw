@@ -1,6 +1,8 @@
 function loadCorrelativeForm(nameAttr) {
     /* Inscription Form Action Sequence */
-    $("[name='" + nameAttr + "']").on("click", function() {
+    var correlativeFormButton = $("[name='" + nameAttr + "']");
+    
+    correlativeFormButton.on("click", function() {
         var courseId = $(this).data("course_id");
         var courseName = $(this).data("course_name");
         var correlativeId = $(this).data("correlative_id");
@@ -10,12 +12,16 @@ function loadCorrelativeForm(nameAttr) {
         correlativeForm.find("input[name='courseName']").val(courseName);
         correlativeForm.find("input[name='correlativeId']").val(correlativeId);
         correlativeForm.find("input[name='correlativeName']").val(correlativeName);
-
     });
 
     $("#correlativeFormConfirmAction").on("click", function() {
-        $('#correlatveFormConfirmationModal').modal('hide');
+        $('#correlativeFormConfirmationModal').modal('hide');
         $("#correlative_form").submit();
+    });
+
+    /* Remove focus on the modal trigger button */
+    $('#correlativeFormConfirmationModal').on('show.bs.modal', function(e){
+        correlativeFormButton.one('focus', function(e){$(this).blur();});
     });
     /* /Inscription Form Action Sequence */
 }

@@ -1,28 +1,70 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ include file="base/tags.jsp" %>
+
+<%--@elvariable id="section" type="java.lang.String"--%>
+<%--@elvariable id="section2" type="java.lang.String"--%>
+<%--@elvariable id="student" type="ar.edu.itba.paw.models.users.Student"--%>
+<%--@elvariable id="course" type="ar.edu.itba.paw.models.Course"--%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>
+        <%-- +++xchange when students is implemented --%>
         <c:choose>
-            <c:when test="${section=='students'}">
-                <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="courses"/>
+            <c:when test="${section eq 'students'}"> <%--section2 == studentCourses--%>
+                <c:choose>
+                    <c:when test="${section2 eq 'courses'}">
+                        <c:set var="title">
+                            <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="courses"/>
+                        </c:set>
+                        <c:set var="pageHead">
+                            ${student.fullName} <small> - <spring:message code="inscriptions"/></small>
+                        </c:set>
+                    </c:when>
+                    <c:when test="${section2 eq 'grades'}">
+                        <c:set var="title">
+                            <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="grades"/>
+                        </c:set>
+                        <c:set var="pageHead">
+                            ${student.fullName} <small> - <spring:message code="grades"/></small>
+                        </c:set>
+                    </c:when>
+                </c:choose>
             </c:when>
-            <c:when test="${section=='courses'}">
-                <spring:message code="webAbbreviation"/> | <spring:message code="courses"/>
+            <c:when test="${section eq 'courses'}">
+                <c:choose>
+                    <c:when test="${section2 eq 'addCorrelative'}">
+                        <c:set var="title">
+                            <spring:message code="webAbbreviation"/> | ${course.name} | <spring:message code="add_correlative"/>
+                        </c:set>
+                        <c:set var="pageHead">
+                            ${course.name} <small> - <spring:message code="add_correlative"/></small>
+                        </c:set>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="title">
+                            <spring:message code="webAbbreviation"/> | <spring:message code="courses"/>
+                        </c:set>
+                        <c:set var="pageHead">
+                            <spring:message code="courses"/>
+                        </c:set>
+                    </c:otherwise>
+                </c:choose>
             </c:when>
-            <c:otherwise><spring:message code="webAbbreviation"/></c:otherwise>
+            <c:otherwise>
+                <c:set var="title">
+                    <spring:message code="webAbbreviation"/>
+                </c:set>
+            </c:otherwise>
         </c:choose>
+        ${title}
     </title>
     <jsp:include page="base/head.jsp" />
 </head>
 <body>
 
 <div id="wrapper">
-
+    <jsp:include page="base/sections.jsp" />
     <jsp:include page="base/nav.jsp" />
 
     <c:choose>
@@ -31,16 +73,6 @@
             <c:if test="${subsection_courses}">
                 <jsp:include page="template/gradeForm.jsp" />
             </c:if>
-        </c:when>
-        <c:when test="${section=='courses'}">
-            <c:choose>
-                <c:when test="${subsection_get_courses}">
-                    <jsp:include page="template/deleteCourseForm.jsp" />
-                </c:when>
-                <c:when test="${subsection_add_correlative}">
-                    <jsp:include page="template/CorrelativeForm.jsp" />
-                </c:when>
-            </c:choose>
         </c:when>
     </c:choose>
 
@@ -52,48 +84,13 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h1 class="page-header">
-                        <c:choose>
-                            <c:when test="${section=='students'}">
-                                <c:choose>
-                                    <c:when test="${subsection_enroll}">
-                                        <spring:message code="inscriptions"/> <small>- <spring:message code="availableCourses"/></small>
-                                    </c:when>
-                                    <c:when test="${subsection_courses}">
-                                        <spring:message code="courses"/>
-                                    </c:when>
-                                </c:choose>
-                            </c:when>
-                            <c:when test="${section=='courses'}">
-                                <spring:message code="courses"/>
-                            </c:when>
-                            <c:otherwise><spring:message code="webAbbreviation"/></c:otherwise>
-                        </c:choose>
+                        ${pageHead}
                     </h1>
                 </div>
             </div>
 
             <!-- content -->
-            <div class="row">
-                <div class="col-xs-12">
-                    <jsp:include page="base/alerts.jsp" />
-                </div>
-            </div>
-            <c:choose>
-                <c:when test="${section=='courses'}">
-                    <c:if test="${subsection_get_courses}">
-                        <div class="row">
-                            <div class="col-xs-12 col-md-2 text-center">
-                                <p class="lead"><spring:message code="actions"/>:</p>
-                            </div>
-                            <div class="col-xs-12 col-md-2 text-center">
-                                <a class="btn btn-info" href="/courses/add_course" role="button">
-                                    <i class="fa fa-plus-circle" aria-hidden="true"></i> <spring:message code="addCourse"/>
-                                </a>
-                            </div>
-                        </div>
-                    </c:if>
-                </c:when>
-            </c:choose>
+            <jsp:include page="base/alerts.jsp" />
             <jsp:include page="template/searchCourses.jsp" />
 
             <!-- /content -->
@@ -103,10 +100,9 @@
 
     </div>
     <!-- /#page-wrapper -->
-
+    <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<jsp:include page="base/footer.jsp" />
 <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchCourses.js"%></script>
 
 <c:choose>
@@ -116,46 +112,28 @@
             <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/gradeForm.js"%></script>
         </c:if>
     </c:when>
-    <c:when test="${section=='courses'}">
-        <c:choose>
-            <c:when test="${subsection_get_courses}">
-                <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteCourseForm.js"%></script>
-            </c:when>
-            <c:when test="${subsection_add_correlative}">
-                <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/addCorrelativeForm.js"%></script>
-            </c:when>
-        </c:choose>
-    </c:when>
 </c:choose>
 
 <script>
     $( document ).ready(function() {
-        loadSearch();
+        loadSearchCourses();
 
         <c:choose>
-            <c:when test="${section=='students'}">
-                <c:choose>
-                    <c:when test="${subsection_enroll}">
-                        loadEnrollForm("inscription");
-                    </c:when>
-                    <c:when test="${subsection_courses}">
-                        loadEnrollForm("unenroll");
-                        loadGradeForm("gradeButton")
-                    </c:when>
-                </c:choose>
-            </c:when>
-            <c:when test="${section=='courses'}">
-                <c:choose>
-                    <c:when test="${subsection_get_courses}">
-                        loadDeleteCourseForm("deleteCourseButton");
-                    </c:when>
-                    <c:when test="${subsection_add_correlative}">
-                        loadCorrelativeForm("correlativeButton");
-                    </c:when>
-                </c:choose>
-            </c:when>
+        <c:when test="${section=='students'}">
+        <c:choose>
+        <c:when test="${subsection_enroll}">
+        loadEnrollForm("inscription");
+        </c:when>
+        <c:when test="${subsection_courses}">
+        loadEnrollForm("unenroll");
+        loadGradeForm("gradeButton")
+        </c:when>
+        </c:choose>
+        </c:when>
         </c:choose>
     });
 </script>
+
+<jsp:include page="base/scripts.jsp" />
 </body>
 </html>

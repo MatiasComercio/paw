@@ -159,6 +159,11 @@ public class StudentJdbcDao implements StudentDao {
 					" WHERE " + GRADE__DOCKET_COLUMN + " = ? " + " AND " + GRADE__GRADE_COLUMN + " >= " + APPROVING_GRADE +
 					";";
 
+	private static final String COUNT_PASSED_COURSE = "SELECT COUNT(*) FROM " + GRADE_TABLE
+			+ " WHERE " + STUDENT__DOCKET_COLUMN + " = ? "
+			+ " AND " + GRADE__COURSE_ID_COLUMN + " = ? "
+			+ " AND " + GRADE__GRADE_COLUMN + " >= " + APPROVING_GRADE;
+
 
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
@@ -314,6 +319,14 @@ public class StudentJdbcDao implements StudentDao {
 		return studentBuilder.build();
 	}
 
+	private boolean hasPassedCourse(final int docket, final int courseId) {
+		Object[] queryParameters = new Object[]{docket, courseId};
+
+		final int gradePassed = jdbcTemplate.queryForObject(COUNT_PASSED_COURSE, queryParameters, Integer.class);
+
+		return gradePassed == 1;
+	}
+
     @Override
 	public Student getGrades(final Integer docket, final Integer semester) {
         final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_BY_DOCKET, studentBasicRowMapper, docket);
@@ -395,9 +408,11 @@ public class StudentJdbcDao implements StudentDao {
 //		if(inscriptionsAffected == 0) {
 //			return Result.INSCRIPTION_NOT_EXISTS;
 //		}
+		if(hasPassedCourse(grade.getStudentDocket(), grade.getCourseId())) {
+			return Result.COURSE_ALREADY_PASSED;
+		}
 
 		final Map<String, Object> gradeArgs = new HashMap<>();
-
 		gradeArgs.put(GRADE__DOCKET_COLUMN, grade.getStudentDocket());
 		gradeArgs.put(GRADE__COURSE_ID_COLUMN, grade.getCourseId());
 		gradeArgs.put(GRADE__GRADE_COLUMN, grade.getGrade());
@@ -429,45 +444,23 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result create(Student student) {
+		userDao.create(student, Role.STUDENT);
 
-		final Map<String, Object> userArgs = new HashMap<>();
 		final Map<String, Object> studentArgs = new HashMap<>();
-		final Map<String, Object> addressArgs = new HashMap<>();
 
-		/* Store User Data */
-		userArgs.put(USER__DNI_COLUMN, student.getDni());
-		userArgs.put(USER__FIRST_NAME_COLUMN, student.getFirstName());
-		userArgs.put(USER__LAST_NAME_COLUMN, student.getLastName());
-//		+++xdebug
-		userArgs.put(USER__GENRE_COLUMN, student.getGenre().name());
-		userArgs.put(USER__BIRTHDAY_COLUMN, student.getBirthday());
-		userArgs.put(USER__EMAIL_COLUMN, createEmail(student.getDni(), student.getFirstName(),
-				student.getLastName()));
-		userArgs.put(USER__ROLE_COLUMN, Role.STUDENT.originalString().toUpperCase());
-		try {
-			userInsert.execute(userArgs);
-		}catch(DuplicateKeyException e){
-			return Result.STUDENT_EXISTS_DNI;
-		} catch (DataAccessException e) {
-				return Result.ERROR_UNKNOWN;
-		}
+		final int rowsAffected;
 
 		/* Store Student Data */
 		studentArgs.put(STUDENT__DNI_COLUMN, student.getDni());
 		try {
-			studentInsert.execute(studentArgs);
+			rowsAffected = studentInsert.execute(studentArgs);
 		}catch(DuplicateKeyException e){
 			return Result.STUDENT_EXISTS_DOCKET;
 		} catch (DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
 		}
 
-		/* Store Address Data */
-		if(student.getDni() > 0 && student.getAddress() != null) {
-			createAddress(student.getDni(), student);
-		}
-
-		return Result.OK;
+		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 	}
 
 	@Override

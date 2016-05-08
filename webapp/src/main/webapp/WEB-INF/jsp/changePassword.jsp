@@ -1,7 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ include file="base/tags.jsp" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,6 +12,7 @@
 
 <div id="wrapper">
 
+	<jsp:include page="base/sections.jsp" />
 	<jsp:include page="base/nav.jsp" />
 
 	<div id="page-wrapper">
@@ -29,12 +28,9 @@
 				</div>
 			</div>
 
+			<jsp:include page="base/alerts.jsp" />
+
 			<!-- content -->
-			<div class="row">
-				<div class="col-xs-12">
-					<jsp:include page="base/alerts.jsp" />
-				</div>
-			</div>
 			<div class="row">
 				<c:url value="/user/changePassword" var="changePasswordProcessingUrl"/>
 				<form:form modelAttribute="changePasswordForm" action="${changePasswordProcessingUrl}"
@@ -51,21 +47,21 @@
 					<div class="col-xs-12 form-group">
 						<form:label path="currentPassword"><spring:message code="currentPassword" /></form:label>
 						<form:input type="password" path="currentPassword" class="form-control" autocomplete="new-password"/>
-						<form:errors path="currentPassword" cssStyle="color: red;" element="div"/>
+						<form:errors path="currentPassword" cssClass="text-danger bg-danger" element="div"/>
 					</div>
 					<div class="col-xs-12 form-group">
 						<form:label path="newPassword"><spring:message code="newPassword" /></form:label>
 						<form:input type="password" path="newPassword" class="form-control"/>
-						<form:errors path="newPassword" cssStyle="color: red;" element="div"/>
+						<form:errors path="newPassword" cssClass="text-danger bg-danger" element="div"/>
 					</div>
 					<div class="col-xs-12 form-group">
 						<form:label path="repeatNewPassword"><spring:message code="repeatNewPassword" /></form:label>
 						<form:input type="password" path="repeatNewPassword" class="form-control"/>
-						<form:errors path="repeatNewPassword" cssStyle="color: red;" element="div"/>
+						<form:errors path="repeatNewPassword" cssClass="text-danger bg-danger" element="div"/>
 					</div>
 					<div class="col-sm-4 hidden-xs"></div>
 					<div class="col-xs-6 col-sm-2 text-center">
-						<button id="cancelChangePassword" class="btn btn-default center-block">
+						<button id="cancelButton" class="btn btn-default center-block">
 							<spring:message code="cancel"/>
 						</button>
 					</div>
@@ -84,16 +80,15 @@
 
 	</div>
 	<!-- /#page-wrapper -->
-
+	<jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<jsp:include page="base/footer.jsp" />
+<script charset="UTF-8">
+	<%@include file='/WEB-INF/js/cancelButton.js'%>
+</script>
 <script>
 	$(document).ready(function() {
-		$("#cancelChangePassword").on("click", function() {
-			parent.history.back();
-			return false;
-		});
+		loadCancelButton("cancelButton");
 	});
 </script>
 </body>

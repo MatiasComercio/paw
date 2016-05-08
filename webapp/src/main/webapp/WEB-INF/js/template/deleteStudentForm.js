@@ -1,6 +1,8 @@
 function loadDeleteStudentForm(nameAttr) {
+    var deleteStudentButton = $("[name='" + nameAttr + "']");
+
     /* Delete Student Form Action Sequence */
-    $("[name='" + nameAttr + "']").on("click", function() {
+    deleteStudentButton.on("click", function() {
         var docket = $(this).data("student_docket");
         var firstName = $(this).data("student_first_name");
         var lastName = $(this).data("student_last_name");
@@ -14,6 +16,11 @@ function loadDeleteStudentForm(nameAttr) {
     $("#deleteStudentFormConfirmAction").on("click", function() {
         $('#deleteStudentFormConfirmationModal').modal('hide');
         $("#delete_student_form").submit();
+    });
+
+    /* Remove focus on the modal trigger button */
+    $('#deleteStudentFormConfirmationModal').on('show.bs.modal', function(e){
+        deleteStudentButton.one('focus', function(e){$(this).blur();});
     });
     /* /Delete Student Form Action Sequence */
 }

@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.AddressDao;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Authority;
@@ -55,6 +56,7 @@ public class UserJdbcDao implements UserDao {
 	private static final String ROLE_AUTHORITIES__AUTHORITY_COLUMN = "authority";
 
 	private static final String AND = "AND";
+	private static final String DEFAULT = "DEFAULT";
 	private static final String EVERYTHING = "*";
 	private static final String EQUALS = "=";
 	private static final String GIVEN_PARAMETER = "?";
@@ -63,6 +65,7 @@ public class UserJdbcDao implements UserDao {
 	private static final String GET_BY_DNI;
 	private static final String GET_ROLE;
 	private static final String UPDATE_PASSWORD;
+	private static final String RESET_PASSWORD;
 	private static final String GET_EMAILS;
 	private static final String DELETE_USER;
 	private static final String GET_ROLE_AUTHORITIES;
@@ -96,6 +99,12 @@ public class UserJdbcDao implements UserDao {
 						where(tableCol(USERS_TABLE, USER__DNI_COLUMN), EQUALS, GIVEN_PARAMETER
 						,AND, tableCol(USERS_TABLE, USER__PWD_COLUMN), EQUALS, GIVEN_PARAMETER);
 
+		RESET_PASSWORD =
+				update(USERS_TABLE) +
+						set(USER__PWD_COLUMN, DEFAULT) +
+						where(tableCol(USERS_TABLE, USER__DNI_COLUMN), EQUALS, GIVEN_PARAMETER);
+
+
 		UPDATE_USER =
 				update(USERS_TABLE) +
 						set(USER__FIRST_NAME_COLUMN, GIVEN_PARAMETER
@@ -114,6 +123,9 @@ public class UserJdbcDao implements UserDao {
 	}
 
 	private final RowMapper<String> emailRowMapper = (resultSet, rowNumber) -> resultSet.getString(USER__EMAIL_COLUMN);
+
+	@Autowired
+	private AddressDao addressDao;
 
 	private final JdbcTemplate jdbcTemplate;
 
@@ -185,7 +197,7 @@ public class UserJdbcDao implements UserDao {
 	}
 
 	@Override
-	public Result create(User user, final Role role) {
+	public Result create(final User user, final Role role) {
 		final Map<String, Object> userArgs = new HashMap<>();
 
 		userArgs.put(USER__DNI_COLUMN, user.getDni());
@@ -195,7 +207,7 @@ public class UserJdbcDao implements UserDao {
 		userArgs.put(USER__GENRE_COLUMN, user.getGenre().name());
 		userArgs.put(USER__BIRTHDAY_COLUMN, user.getBirthday());
 		userArgs.put(USER__EMAIL_COLUMN, createEmail(user.getDni(), user.getFirstName(),
-				user.getLastName()));
+				user.getLastName(), role));
 		if (role == null) {
 			return null;
 		}
@@ -213,7 +225,7 @@ public class UserJdbcDao implements UserDao {
 	}
 
 	@Override
-	public Result delete(final Integer dni) {
+	public Result delete(final int dni) {
 		int rowsAffected;
 
 		try {
@@ -238,19 +250,28 @@ public class UserJdbcDao implements UserDao {
 	}
 
 	@Override
-	public Result update(Integer dni, User user) {
+	public Result update(final int dni, final User user) {
 		int rowsAffected;
+		Date birthday = null;
+		final String genre = user.getGenre().name();
+
+		if(addressDao.hasAddress(dni)) {
+			addressDao.updateAddress(dni, user.getAddress());
+		} else {
+			addressDao.createAddress(dni, user.getAddress());
+		}
+
+		if(user.getBirthday() != null) {
+			birthday = Date.valueOf(user.getBirthday());
+		}
 
 		try {
-			/**
-			 * +++xnotfinished (update address)
-			 */
 			rowsAffected = jdbcTemplate.update(UPDATE_USER,
 					user.getFirstName(),
 					user.getLastName(),
 					user.getEmail(),
-					user.getBirthday(),
-					user.getGenre(),
+					birthday,
+					genre,
 					dni);
 		} catch (final DataIntegrityViolationException e) {
 			return Result.INVALID_INPUT_PARAMETERS;
@@ -259,6 +280,18 @@ public class UserJdbcDao implements UserDao {
 		}
 
 		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+	}
+
+	@Override
+	public Result resetPassword(final int dni) {
+		final int rowsAffected;
+
+		try {
+			rowsAffected = jdbcTemplate.update(RESET_PASSWORD, dni);
+		} catch (DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
+		}
+		return rowsAffected == 1 ? Result.OK : Result.INVALID_INPUT_PARAMETERS;
 	}
 
 
@@ -286,8 +319,16 @@ public class UserJdbcDao implements UserDao {
 		addressInsert.execute(addressArgs);
 	}
 
-	private String createEmail(final int dni, final String firstName, final String lastName) {
-		final String defaultEmail = "admin" + dni + EMAIL_DOMAIN;
+	private String createEmail(final int dni, final String firstName, final String lastName, final Role role) {
+		final StringBuilder defaultEmailBuilder = new StringBuilder();
+		final String defaultEmail;
+		final char rolePrefix = role.originalString().charAt(0);
+
+		defaultEmailBuilder.append(rolePrefix);
+		defaultEmailBuilder.append(dni);
+		defaultEmailBuilder.append(EMAIL_DOMAIN);
+
+		defaultEmail = defaultEmailBuilder.toString();
 
 		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
 			return defaultEmail;

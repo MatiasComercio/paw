@@ -21,8 +21,8 @@
             </div>
             <div class="col-xs-4"></div>
             <div class="col-xs-4 text-center">
-                <a class="btn btn-info btn-lg" href="/login" role="button">
-                    <spring:message code="goLoginButton"/>
+                <a class="btn btn-info btn-lg" href="<c:url value="/"/>" role="button">
+                    <spring:message code="goHomeButton"/>
                 </a>
             </div>
         </div>

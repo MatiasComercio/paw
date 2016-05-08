@@ -1,7 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ include file="base/tags.jsp" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,16 +44,6 @@
                     <jsp:include page="base/alerts.jsp" />
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-12 col-md-2 text-center">
-                    <p class="lead"><spring:message code="actions"/>:</p>
-                </div>
-                <div class="col-xs-12 col-md-2 text-center">
-                    <a class="btn btn-info" href="<c:url value="/students/add_student"/>" role="button">
-                        <i class="fa fa-plus-circle" aria-hidden="true"></i> <spring:message code="addStudent"/>
-                    </a>
-                </div>
-            </div>
             <jsp:include page="template/searchStudents.jsp" />
 
             <!-- /content -->
@@ -65,23 +53,23 @@
 
     </div>
     <!-- /#page-wrapper -->
-
+    <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<jsp:include page="base/footer.jsp" />
-<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchStudents.js"%></script>
-<c:if test="${subsection_students}">
+<jsp:include page="base/scripts.jsp" />
+<%--<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchStudents.js"%></script>--%>
+<%--<c:if test="${subsection_students}">
     <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteStudentForm.js"%></script>
-</c:if>
-<script>
+</c:if>--%>
+<%--<script>
     $( document ).ready(function() {
-        loadStudentSearch();
-        <c:choose>
+        loadSearchStudents();
+/*        <c:choose>
         <c:when test="${subsection_students}">
         loadDeleteStudentForm("deleteStudentButton");
         </c:when>
-        </c:choose>
+        </c:choose>*/
     });
-</script>
+</script>--%>
 </body>
 </html>

@@ -5,6 +5,8 @@ import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.shared.Result;
 import org.apache.commons.lang3.text.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -94,10 +96,13 @@ public class AddressJdbcDao implements AddressDao {
         addressArgs.put(ADDRESS__TELEPHONE_COLUMN, address.getTelephone());
         addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, address.getZipCode());
 
-        /**
-         * +++xcheck not checking if the address was correctly inserted
-         */
-        addressInsert.execute(addressArgs);
+        try {
+            addressInsert.execute(addressArgs);
+        } catch (DataIntegrityViolationException e) {
+            return Result.DNI_NOT_EXISTS;
+        } catch (DataAccessException e) {
+            return Result.ERROR_UNKNOWN;
+        }
 
         return Result.OK;
     }

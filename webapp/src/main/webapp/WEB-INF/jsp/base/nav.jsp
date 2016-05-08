@@ -1,42 +1,31 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
-<%--See: http://docs.spring.io/spring-security/site/docs/4.1.0.RELEASE/reference/htmlsingle/#taglibs-authorize--%>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ include file="tags.jsp" %>
 
 <%-- Spring Security: Choose variables --%>
-<%--@elvariable id="section" type="ar.edu.itba.paw.webapp.controllers"--%>
-<c:choose>
-    <c:when test="${section=='admins'}">
-        <c:set var="adminsActive" value="active" />
-    </c:when>
-    <c:when test="${section=='students'}">
-        <c:set var="studentsActive" value="active" />
-    </c:when>
-    <c:when test="${section=='courses'}">
-        <c:set var="coursesActive" value="active" />
-    </c:when>
-    <%--<c:when test="${section=='info'}">
-        <c:set var="infoActive" value="active" />
-    </c:when>--%>
-</c:choose>
+<jsp:include page="sections.jsp" />
+
+<%--@elvariable id="adminsActive" type="java.lang.String"--%>
+<%--@elvariable id="studentsActive" type="java.lang.String"--%>
+<%--@elvariable id="coursesActive" type="java.lang.String"--%>
 <c:set var="actionMenuList">
-    <sec:authorize url="/admins">
+    <sec:authorize access="hasAuthority('ROLE_VIEW_ADMINS')">
         <li class="${adminsActive}">
             <a href="<c:url value="/admins" />" class="pushy-link"><i class="fa fa-lock" aria-hidden="true"></i> <spring:message code="admins"/></a>
         </li>
     </sec:authorize>
-    <li class="${studentsActive}">
-        <a href="<c:url value="/students" />" class="pushy-link"><i class="fa fa-fw fa-users"></i> <spring:message code="students"/></a>
-    </li>
-    <li class="${coursesActive}">
-        <a href="<c:url value="/courses" />" class="pushy-link"><i class="fa fa-university" aria-hidden="true"></i> <spring:message code="courses"/></a>
-    </li>
+    <sec:authorize access="hasAuthority('ROLE_VIEW_STUDENTS')">
+        <li class="${studentsActive}">
+            <a href="<c:url value="/students" />" class="pushy-link"><i class="fa fa-fw fa-users"></i> <spring:message code="students"/></a>
+        </li>
+    </sec:authorize>
+    <sec:authorize access="hasAuthority('ROLE_VIEW_COURSES')">
+        <li class="${coursesActive}">
+            <a href="<c:url value="/courses" />" class="pushy-link"><i class="fa fa-university" aria-hidden="true"></i> <spring:message code="courses"/></a>
+        </li>
+    </sec:authorize>
     <%--Both variables MUST be defined as:
     <c:set var="<varName>" scope="request"> -> scope="request is very important. --%>
     <li class="navbar_own_divider"></li>
-    <li>
-            <%--@elvariable id="currentActionsHeader" type="java.lang.String"--%>
+    <li><%--@elvariable id="currentActionsHeader" type="java.lang.String"--%>
         <p class="current_actions_header">${currentActionsHeader}</p>
     </li>
     <%--@elvariable id="currentActions" type="java.util.List"--%>
@@ -77,7 +66,7 @@
 <div class="site-overlay visible-xs-block"></div>
 
 <!-- Navigation -->
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-inverse navbar-fixed-top">
 
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
