@@ -83,6 +83,21 @@ public class AdminController {
 
 		mav.addObject("admins", admins);
 		mav.addObject("adminFilterFormAction", "/admins");
+		if(adminService.isInscriptionEnabled()){
+			mav.addObject("confirm_action_url", "/admins/disable_inscriptions");
+			mav.addObject("confirm_action_message", messageSource.getMessage("confirm_disable_inscriptions",
+					null,
+					Locale.getDefault()));
+			mav.addObject("isInscriptionEnabled", true);
+		}
+		else{
+			mav.addObject("confirm_action_url", "/admins/enable_inscriptions");
+			mav.addObject("confirm_action_message", messageSource.getMessage("confirm_enable_inscriptions",
+					null,
+					Locale.getDefault()));
+
+			mav.addObject("isInscriptionEnabled", false);
+		}
 		return mav;
 	}
 
@@ -118,4 +133,37 @@ public class AdminController {
 				Locale.getDefault()));
 		return new ModelAndView("redirect:/admins/");
 	}
+
+	@RequestMapping(value= "/admins/disable_inscriptions", method=RequestMethod.POST)
+	public ModelAndView disableInscriptions(RedirectAttributes redirectAttributes){
+		Result result = adminService.disableInscriptions();
+		if(!result.equals(Result.OK)){
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+		}
+		else{
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("disable_inscriptions_success",
+					null,
+					Locale.getDefault()));
+		}
+		return new ModelAndView("redirect:/admins/");
+	}
+
+	@RequestMapping(value= "/admins/enable_inscriptions", method=RequestMethod.POST)
+	public ModelAndView enableInscriptions(RedirectAttributes redirectAttributes){
+		Result result = adminService.enableInscriptions();
+		if(!result.equals(Result.OK)){
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+		}
+		else{
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("enable_inscriptions_success",
+					null,
+					Locale.getDefault()));
+		}
+		return new ModelAndView("redirect:/admins/");
+	}
+
 }

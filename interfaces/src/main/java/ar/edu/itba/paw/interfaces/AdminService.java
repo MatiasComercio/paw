@@ -58,6 +58,23 @@ public interface AdminService {
     Result update(Integer dni, Admin admin);
 
     /**
+     * Disables inscription authority for Students
+     * @return The Result code of the operation
+     */
+    Result disableInscriptions();
+
+    /**
+     * Enables inscription authority for Students
+     * @return The Result code of the operation
+     */
+    Result enableInscriptions();
+
+    /**
+     * @return A boolean indicating whether the inscriptions are enabled
+     */
+    boolean isInscriptionEnabled();
+
+    /**
      * Reset a user's password to it's default value;
      * @param dni the user's dni
      * @return OK if the password was reset;

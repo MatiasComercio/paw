@@ -72,6 +72,38 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public Result disableInscriptions() {
+        Result result = adminDao.disableAddInscriptions();
+        if(!result.equals(Result.OK)){
+            return result;
+        }
+        return adminDao.disableDeleteInscriptions();
+    }
+
+    @Override
+    public Result enableInscriptions() {
+        Result enableAddResult = adminDao.enableAddInscriptions();
+        Result enableDeleteResult = adminDao.enableDeleteInscriptions();
+
+        if(enableAddResult.equals(Result.ERROR_UNKNOWN) || enableDeleteResult.equals(Result.ERROR_UNKNOWN)){
+            return Result.ERROR_UNKNOWN;
+        }
+
+        if(enableAddResult.equals(Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS) &&
+                enableDeleteResult.equals(Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS)){
+            return Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS;
+        }
+
+        return Result.OK;
+    }
+
+    @Override
+    public boolean isInscriptionEnabled() {
+        return adminDao.isInscriptionEnabled();
+
+    }
+
+    @Override
     public Result resetPassword(final Integer dni) {
         if(dni <= 0) {
             return Result.ERROR_DNI_OUT_OF_BOUNDS;

@@ -47,4 +47,34 @@ public interface AdminDao {
      * 		ERROR_UNKNOWN else;
      */
     Result deleteAdmin(Integer dni);
+
+    /**
+     * Disables the Student's authority to add inscriptions
+     * @return The Result code of the operation
+     */
+    Result disableAddInscriptions();
+
+    /**
+     * Disables the Student's authority to delete inscriptions
+     * @return The Result code of the operation
+     */
+    Result disableDeleteInscriptions();
+
+    /**
+     * Enables the Student's authority to add inscriptions
+     * @return The Result code of the operation
+     */
+    Result enableAddInscriptions();
+
+    /**
+     * Enables the Student's authority to delete inscriptions
+     * @return The Result code of the operation
+     */
+    Result enableDeleteInscriptions();
+
+    /**
+     * @return A boolean indicating whether the inscriptions are enabled
+     */
+    boolean isInscriptionEnabled();
+
 }
