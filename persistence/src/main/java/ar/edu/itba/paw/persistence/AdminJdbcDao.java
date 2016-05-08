@@ -47,6 +47,7 @@ public class AdminJdbcDao implements AdminDao {
 	private static final String DELETE_ADMIN;
 	private static final String DISABLE_ADD_INSCRIPTION;
 	private static final String DISABLE_DELETE_INSCRIPTION;
+	private static final String DISABLE_INSCRIPTION;
 
 	static {
 		GET_BY_DNI =
@@ -69,6 +70,11 @@ public class AdminJdbcDao implements AdminDao {
 		DISABLE_DELETE_INSCRIPTION =
 				deleteFrom(ROLE_AUTHORITIES_TABLE) + " " + where(ROLE_AUTHORITIES__ROLE_COLUMN, EQUALS, "'STUDENT'") + AND +
 						" " + ROLE_AUTHORITIES__AUTHORITY_COLUMN + EQUALS + "'DELETE_INSCRIPTION'";
+
+		DISABLE_INSCRIPTION =
+				deleteFrom(ROLE_AUTHORITIES_TABLE) +
+						where(ROLE_AUTHORITIES__ROLE_COLUMN, EQUALS, GIVEN_PARAMETER,
+								AND, ROLE_AUTHORITIES__AUTHORITY_COLUMN, EQUALS, GIVEN_PARAMETER);
 	}
 
 	private final JdbcTemplate jdbcTemplate;
@@ -192,9 +198,33 @@ public class AdminJdbcDao implements AdminDao {
 	public Result disableAddInscriptions() {
 		int rowsAffected;
 
+		final Map<String, Object> roleAuthoritiesArgs = new HashMap<>();
 		try {
 			rowsAffected = jdbcTemplate.update(DISABLE_ADD_INSCRIPTION);
 		} catch (DataAccessException dae) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		if (rowsAffected != 1) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		try {
+			rowsAffected = jdbcTemplate.update(DISABLE_INSCRIPTION, "ADMIN", "DISABLE_INSCRIPTION");
+		} catch (DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		if (rowsAffected != 1) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__ROLE_COLUMN, "ADMIN");
+		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__AUTHORITY_COLUMN, "ENABLE_INSCRIPTION");
+
+		try {
+			rowsAffected = roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
+		} catch (DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
 		}
 		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
@@ -214,7 +244,7 @@ public class AdminJdbcDao implements AdminDao {
 
 	@Override
 	public Result enableAddInscriptions() {
-		final int rowsAffected;
+		int rowsAffected;
 		final Map<String, Object> roleAuthoritiesArgs = new HashMap<>();
 
 		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__ROLE_COLUMN, "STUDENT");
@@ -224,6 +254,29 @@ public class AdminJdbcDao implements AdminDao {
 			rowsAffected = roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
 		} catch (DuplicateKeyException e) {
 			return Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS;
+		} catch (DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		if (rowsAffected != 1) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		try {
+			rowsAffected = jdbcTemplate.update(DISABLE_INSCRIPTION, "ADMIN", "ENABLE_INSCRIPTION");
+		} catch (DataAccessException e) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		if (rowsAffected != 1) {
+			return Result.ERROR_UNKNOWN;
+		}
+
+		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__ROLE_COLUMN, "ADMIN");
+		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__AUTHORITY_COLUMN, "DISABLE_INSCRIPTION");
+
+		try {
+			rowsAffected = roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
 		} catch (DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
 		}

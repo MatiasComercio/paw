@@ -73,7 +73,7 @@
         <tbody>
         <c:if test="${empty courses}">
             <tr class="bg-warning">
-                <td colspan="4" class="text-danger text-center"><spring:message code="noCoursesFound"/></td>
+                <td colspan="5" class="text-danger text-center"><spring:message code="noCoursesFound"/></td>
             </tr>
         </c:if>
         <c:forEach items="${courses}" var="eachCourse">

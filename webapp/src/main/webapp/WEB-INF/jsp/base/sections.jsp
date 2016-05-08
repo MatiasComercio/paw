@@ -15,6 +15,29 @@ That's why we are usig <%@include ...%>--%>
 
     <c:when test="${section=='admins'}">
         <c:set var="adminsActive" value="active" scope="request"/>
+
+        <c:choose>
+            <c:when test="${empty section2}">
+                <jsp:include page="../template/adminsActionsPanel.jsp" />
+                <jsp:include page="../template/enableInscriptionsForm.jsp" />
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/searchAdmins.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadAdminSearch();
+                </c:set>
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/enableInscriptionsForm.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadEnableInscriptionsForm();
+                </c:set>
+            </c:when>
+        </c:choose>
     </c:when>
 
 
