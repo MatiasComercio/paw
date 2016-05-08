@@ -33,15 +33,18 @@ That's why we are usig <%@include ...%>--%>
 
 
     <c:when test="${section=='courses'}">
-
         <c:set var="coursesActive" value="active" scope="request"/>
-        <jsp:include page="../template/deleteCourseForm.jsp" />
-        <c:set var="includeScripts" >
-            ${includeScripts} ` <%@include file='/WEB-INF/js/template/deleteCourseForm.js'%>
-        </c:set>
-        <c:set var="loadScripts">
-            ${loadScripts} ` loadDeleteCourseForm("deleteCourseButton");
-        </c:set>
+
+
+        <c:if test="${section2 != null}"><%--+++xcheck--%>
+            <jsp:include page="../template/deleteCourseForm.jsp" />
+            <c:set var="includeScripts" >
+                ${includeScripts} ` <%@include file='/WEB-INF/js/template/deleteCourseForm.js'%>
+            </c:set>
+            <c:set var="loadScripts">
+                ${loadScripts} ` loadDeleteCourseForm("deleteCourseButton");
+            </c:set>
+        </c:if>
 
         <c:choose>
             <c:when test="${section2=='info'}">
@@ -68,17 +71,19 @@ That's why we are usig <%@include ...%>--%>
 
             <c:when test="${section2=='students'}">
                 <c:set var="courseStudentsActive" value="active" scope="request"/>
+
                 <c:set var="includeScripts" >
                     ${includeScripts} ` <%@include file="../../js/template/searchStudents.js"%>
                 </c:set>
                 <c:set var="loadScripts">
-                    ${loadScripts} ` loadStudentSearch();;
+                    ${loadScripts} ` loadStudentSearch();
                 </c:set>
             </c:when>
 
 
             <c:when test="${section2=='addCorrelative'}">
                 <c:set var="addCorrelativeActive" value="active" scope="request"/>
+
                 <jsp:include page="../template/CorrelativeForm.jsp" />
                 <c:set var="includeScripts" >
                     ${includeScripts} ` <%@include file='/WEB-INF/js/template/CorrelativeForm.js'%>
@@ -86,24 +91,12 @@ That's why we are usig <%@include ...%>--%>
                 <c:set var="loadScripts">
                     ${loadScripts} ` loadCorrelativeForm("correlativeButton");
                 </c:set>
+
             </c:when>
         </c:choose>
     </c:when>
 </c:choose>
+
+<%-- Prepare variables to be loaded from other JSPs --%>
 <c:set var="includeScripts" value="${includeScripts}" scope="request" />
 <c:set var="loadScripts" value="${loadScripts}" scope="request" />
-<%--<c:set var="includeScripts">
-    &lt;%&ndash;${coursesScripts}&ndash;%&gt;
-    Hola
-</c:set>
-<c:set var="includeScripts">
-    ${includeScripts},
-    Como, Estas
-    &lt;%&ndash;${coursesInfoScripts},&ndash;%&gt;
-    &lt;%&ndash;${coursesEditScripts},&ndash;%&gt;
-    &lt;%&ndash;${coursesStudent},&ndash;%&gt;
-    &lt;%&ndash;${coursesAddCorrelativeScript}&ndash;%&gt;
-</c:set>
-<c:forEach items="${includeScripts}" var="script">
-    ${script}
-</c:forEach>--%>

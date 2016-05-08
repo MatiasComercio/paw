@@ -12,7 +12,6 @@ function loadCorrelativeForm(nameAttr) {
         correlativeForm.find("input[name='courseName']").val(courseName);
         correlativeForm.find("input[name='correlativeId']").val(correlativeId);
         correlativeForm.find("input[name='correlativeName']").val(correlativeName);
-
     });
 
     $("#correlativeFormConfirmAction").on("click", function() {

@@ -57,7 +57,7 @@
 
 <script>
     $( document ).ready(function() {
-        loadSearch();
+        loadSearchCourses();
         loadGradeForm()
     });
 </script>

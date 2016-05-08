@@ -37,7 +37,7 @@
     <c:set var="addCorrelative">
         <li class="${addCorrelativeActive}">
             <a href="<c:url value="/courses/${course.id}/add_correlative" />" type="button" class="btn btn-info" role="button">
-                <i class="fa fa-fw fa-list-alt"></i> <spring:message code="add_correlatives"/>
+                <i class="fa fa-fw fa-list-alt"></i> <spring:message code="add_correlative"/>
             </a>
         </li>
     </c:set>

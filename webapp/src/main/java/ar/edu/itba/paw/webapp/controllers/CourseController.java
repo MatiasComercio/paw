@@ -291,7 +291,8 @@ public class CourseController {
 		}
 
 		final ModelAndView mav = new ModelAndView("courses");
-		mav.addObject("course_details", course);
+		mav.addObject("course", course);
+		mav.addObject("section2", "addCorrelative");
 		mav.addObject("courseFilterFormAction", "/courses/" + course_id + "/add_correlative/courseFilterForm");
 		mav.addObject("correlativeFormAction", "/courses/" + course_id + "/add_correlative");
 		mav.addObject("subsection_add_correlative", true);

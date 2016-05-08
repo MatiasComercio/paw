@@ -3,10 +3,12 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page language="java" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>
+        <%-- +++xchange when students is implemented --%>
         <c:choose>
             <c:when test="${section=='students'}">
                 <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="courses"/>
@@ -22,7 +24,8 @@
 <body>
 
 <div id="wrapper">
-
+    <jsp:include page="base/sections.jsp" />
+    <jsp:include page="template/courseActionsPanel.jsp" />
     <jsp:include page="base/nav.jsp" />
 
     <c:choose>
@@ -37,9 +40,9 @@
                 <c:when test="${subsection_get_courses}">
                     <jsp:include page="template/deleteCourseForm.jsp" />
                 </c:when>
-                <c:when test="${subsection_add_correlative}">
+                <%--<c:when test="${subsection_add_correlative}">
                     <jsp:include page="template/CorrelativeForm.jsp" />
-                </c:when>
+                </c:when>--%>
             </c:choose>
         </c:when>
     </c:choose>
@@ -64,9 +67,18 @@
                                 </c:choose>
                             </c:when>
                             <c:when test="${section=='courses'}">
-                                <spring:message code="courses"/>
+                                <c:choose>
+                                    <c:when test="${section2 eq 'addCorrelative'}">
+                                        ${course.name} <small>- <spring:message code="add_correlative"/></small>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <spring:message code="courses"/>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:when>
-                            <c:otherwise><spring:message code="webAbbreviation"/></c:otherwise>
+                            <c:otherwise>
+                                <spring:message code="webAbbreviation"/>
+                            </c:otherwise>
                         </c:choose>
                     </h1>
                 </div>
@@ -120,16 +132,16 @@
             <c:when test="${subsection_get_courses}">
                 <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteCourseForm.js"%></script>
             </c:when>
-            <c:when test="${subsection_add_correlative}">
-                <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/CorrelativeForm.js"%></script>
-            </c:when>
+            <%--<c:when test="${subsection_add_correlative}">--%>
+                <%--<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/CorrelativeForm.js"%></script>--%>
+            <%--</c:when>--%>
         </c:choose>
     </c:when>
 </c:choose>
 
 <script>
     $( document ).ready(function() {
-        loadSearch();
+        loadSearchCourses();
 
         <c:choose>
             <c:when test="${section=='students'}">
@@ -148,13 +160,15 @@
                     <c:when test="${subsection_get_courses}">
                         loadDeleteCourseForm("deleteCourseButton");
                     </c:when>
-                    <c:when test="${subsection_add_correlative}">
-                        loadCorrelativeForm("correlativeButton");
-                    </c:when>
+                    <%--<c:when test="${subsection_add_correlative}">--%>
+                        <%--loadCorrelativeForm("correlativeButton");--%>
+                    <%--</c:when>--%>
                 </c:choose>
             </c:when>
         </c:choose>
     });
 </script>
+
+<jsp:include page="base/scripts.jsp" />
 </body>
 </html>
