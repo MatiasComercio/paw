@@ -12,6 +12,7 @@ import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -99,6 +100,11 @@ public class StudentJdbcDaoTest {
 	private static final int DOCKET_INVALID_LIMIT = 0;
 	private static final int DOCKET_INVALID = -7357;
 
+	private static final int DNI_VALID = 7357;
+	private static final int DNI_VALID_LIMIT = 1;
+	private static final int DNI_INVALID_LIMIT = 0;
+	private static final int DNI_INVALID = -7357;
+
 	private static final int DNI_1 = 12345678;
 	private static final String FIRST_NAME_1 = "MaTías NIColas";
 	private static final String FIRST_NAME_1_EXPECTED = "Matías Nicolas";
@@ -185,6 +191,71 @@ public class StudentJdbcDaoTest {
 
 	@Autowired
 	private StudentJdbcDao studentJdbcDao;
+
+	@Parameters
+	public static Collection<Object[]> data() {
+
+		final Student.Builder studentBuilder1 = new Student.Builder(DOCKET_VALID, DNI_1);
+		final Student.Builder studentBuilder2 = new Student.Builder(DOCKET_VALID_LIMIT, DNI_2);
+
+        /* Note that getStudentCourses calls getByFilter with null value too */
+		Answer<Student> studentAnswer = (invocation) -> {
+			final List<Student.Builder> students = new LinkedList<>();
+			students.add(studentBuilder1);
+			students.add(studentBuilder2);
+
+			Object[] objects = invocation.getArguments();
+			int id = (int) objects[0];
+			final Student student = new Student.Builder().build();
+			students.;
+
+			return student;
+		};
+
+
+		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder().docket(DOCKET_VALID).build();
+		Answer<List<Student>> studentServiceGetByFilter1 = (invocation) -> {
+			final List<Student> students = new LinkedList<>();
+			students.add(student1);
+			students.add(student2);
+
+			return students;
+		};
+
+		Answer<List<Student>> studentServiceGetByFilter2 = (invocation) -> {
+			final List<Student> students = new LinkedList<>();
+			students.add(student1);
+
+			return students;
+		};
+
+
+		List<Student> expectedStudents1 = new LinkedList<>();
+		expectedStudents1.add(student1);
+		expectedStudents1.add(student2);
+
+		List<Student> expectedStudents2 = new LinkedList<>();
+		expectedStudents2.add(student1);
+
+		return Arrays.asList(new Object[][] {
+				{ DNI_1, studentBuilder1, user1, expectedStudent1 },
+				{ DNI_2, studentFilter, user2, studentServiceGetByFilter2, expectedStudents2},
+				{ DNI_3, studentFilter, null, null, null }
+		});
+	}
+
+	@Test
+	public void testGetByDni() {
+		/**
+		 * +++xcheck if we can avoid casting studentAnswer
+		 */
+		if(studentAnswer != null) {
+			when(userDao.getByDni(dni, studentBuilder)).then((Answer<?>) studentAnswer);
+		}
+
+		Student student = studentJdbcDao.getByDni(dni);
+		assertThat(student, is(expectedStudent));
+	}
 
 	@Parameter // first data value (0) is default
 	public /* NOT private */ int dni;
@@ -1033,10 +1104,5 @@ public class StudentJdbcDaoTest {
 		matchers.add(is(defaultEmail));
 
 		return matchers;
-	}
-
-	@Test
-	public void testGetByDni() {
-		when(userDao.getByDni(dni)).then();
 	}
 }
