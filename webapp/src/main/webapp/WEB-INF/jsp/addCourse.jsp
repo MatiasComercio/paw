@@ -1,18 +1,16 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-<%@ page language="java" pageEncoding="UTF-8"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ include file="base/tags.jsp"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>
         <spring:message code="webAbbreviation"/> |
         <c:choose>
-            <c:when test="${task == 'add' }">
+            <c:when test="${section2 eq 'addCourse' }">
                 <spring:message code="addCourse"/>
             </c:when>
-            <c:when test="${task == 'edit' }">
-                <spring:message code="editCourse"/>
+            <c:when test="${section2 eq 'edit' }">
+                ${course.name} | <spring:message code="edit"/>
             </c:when>
         </c:choose>
     </title>
@@ -23,7 +21,6 @@
 <div id="wrapper">
 
     <jsp:include page="base/sections.jsp" />
-    <jsp:include page="template/courseActionsPanel.jsp" />
     <jsp:include page="base/nav.jsp" />
 
     <%-- Task decision --%>
@@ -32,7 +29,7 @@
     <c:choose>
         <c:when test="${section2 eq 'addCourse'}" >
             <c:set var="title">
-                <spring:message code="courses"/><small> - <spring:message code="addCourse"/></small>
+                <spring:message code="courses"/> <small> - <spring:message code="addCourse"/></small>
             </c:set>
             <c:set var="formAction">
                 <c:url value="/courses/add_course" />
@@ -41,7 +38,7 @@
         </c:when>
         <c:when test="${section2 eq 'edit'}" >
             <c:set var="title">
-                ${course.name}<small> - <spring:message code="edit"/></small>
+                ${course.name} <small> - <spring:message code="edit"/></small>
             </c:set>
             <c:set var="formAction">
                 <c:url value="/courses/${course.id}/edit" />

@@ -6,11 +6,18 @@
     <title>
         <%-- +++xchange when students is implemented --%>
         <c:choose>
-            <c:when test="${section=='students'}">
+            <c:when test="${section eq 'students'}">
                 <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="courses"/>
             </c:when>
-            <c:when test="${section=='courses'}">
-                <spring:message code="webAbbreviation"/> | <spring:message code="courses"/>
+            <c:when test="${section eq 'courses'}">
+                <c:choose>
+                    <c:when test="${section2 eq 'addCorrelative'}">
+                        <spring:message code="webAbbreviation"/> | ${course.name} | <spring:message code="add_correlative"/>
+                    </c:when>
+                    <c:otherwise>
+                        <spring:message code="webAbbreviation"/> | <spring:message code="courses"/>
+                    </c:otherwise>
+                </c:choose>
             </c:when>
             <c:otherwise><spring:message code="webAbbreviation"/></c:otherwise>
         </c:choose>

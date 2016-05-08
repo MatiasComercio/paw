@@ -5,7 +5,7 @@
 <html lang="en">
 <head>
     <title>
-        <spring:message code="webAbbreviation"/> | ${course.name}
+        <spring:message code="webAbbreviation"/> | ${course.name} | <spring:message code="information" />
     </title>
     <jsp:include page="base/head.jsp" />
 </head>

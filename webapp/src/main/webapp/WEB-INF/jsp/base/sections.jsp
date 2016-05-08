@@ -36,6 +36,13 @@ That's why we are usig <%@include ...%>--%>
 
                 <jsp:include page="../template/studentsActionsPanel.jsp" />
 
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file='/WEB-INF/js/cancelButton.js'%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadCancelButton("cancelButton");
+                </c:set>
             </c:when>
         </c:choose>
 

@@ -288,6 +288,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
 	                               RedirectAttributes redirectAttributes){
 		ModelAndView mav = new ModelAndView("addStudent");
+		mav.addObject("section2", "addStudent");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 		return mav;
 	}
