@@ -15,6 +15,7 @@
 <div id="wrapper">
 
     <jsp:include page="base/nav.jsp" />
+    <jsp:include page="template/confirmActionModal.jsp" />
 
     <div id="page-wrapper">
 
@@ -44,10 +45,21 @@
                         <i class="fa fa-plus-circle" aria-hidden="true"></i> <spring:message code="addAdmin"/>
                     </a>
                 </div>
-                <div class="col-xs-12 col-md-2 text-center">
-                    <a class="btn btn-info" href="<c:url value="/admins/disable_inscriptions"/>" role="button">
-                        <i class="fa fa-plus-circle" aria-hidden="true"></i> <spring:message code="disable_inscriptions"/>
-                    </a>
+                <div class="col-xs-12 col-md-3 text-center">
+                    <c:choose>
+                        <c:when test="${isInscriptionEnabled}">
+                            <button name="disableInscriptionsButton" class="btn btn-info" type="button"
+                                    data-toggle="modal" data-target="#confirmActionModal">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="disable_inscriptions"/>
+                            </button>
+                        </c:when>
+                        <c:when test="${isInscriptionEnabled eq false}">
+                            <button name="enableInscriptionsButton" class="btn btn-info" type="button"
+                                    data-toggle="modal" data-target="#confirmActionModal">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="enable_inscriptions"/>
+                            </button>
+                        </c:when>
+                    </c:choose>
                 </div>
             </div>
             <jsp:include page="template/searchAdmins.jsp" />
@@ -64,9 +76,11 @@
 <!-- Scripts -->
 <jsp:include page="base/footer.jsp" />
 <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchAdmins.js"%></script>
+<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/confirmAction.js"%></script>
 <script>
     $( document ).ready(function() {
         loadAdminSearch();
+        setConfirmAction();
     });
 </script>
 </body>

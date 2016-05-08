@@ -49,11 +49,32 @@ public interface AdminDao {
     Result deleteAdmin(Integer dni);
 
     /**
-     * Disables inscription authority for Students
+     * Disables the Student's authority to add inscriptions
      * @return The Result code of the operation
      */
     Result disableAddInscriptions();
 
-    //Result disableDeleteInscriptions();
+    /**
+     * Disables the Student's authority to delete inscriptions
+     * @return The Result code of the operation
+     */
+    Result disableDeleteInscriptions();
+
+    /**
+     * Enables the Student's authority to add inscriptions
+     * @return The Result code of the operation
+     */
+    Result enableAddInscriptions();
+
+    /**
+     * Enables the Student's authority to delete inscriptions
+     * @return The Result code of the operation
+     */
+    Result enableDeleteInscriptions();
+
+    /**
+     * @return A boolean indicating whether the inscriptions are enabled
+     */
+    boolean isInscriptionEnabled();
 
 }

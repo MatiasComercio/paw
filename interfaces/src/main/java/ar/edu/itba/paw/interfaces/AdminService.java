@@ -63,5 +63,16 @@ public interface AdminService {
      */
     Result disableInscriptions();
 
+    /**
+     * Enables inscription authority for Students
+     * @return The Result code of the operation
+     */
+    Result enableInscriptions();
+
+    /**
+     * @return A boolean indicating whether the inscriptions are enabled
+     */
+    boolean isInscriptionEnabled();
+
 
 }

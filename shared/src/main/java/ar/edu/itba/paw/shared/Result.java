@@ -28,8 +28,8 @@ public enum Result {
     CORRELATIVE_CORRELATIVITY_LOOP("La correlatividad generaría un ciclo en el árbol de correlatividades."),
     PASSWORDS_DO_NOT_MATCH("La contraseña y su repetición no coinciden"),
     ADMIN_EXISTS_DNI("Ya existe un administrador con este DNI"),
+    ADMIN_ENABLED_INSCRIPTIONS("Las inscripciones ya se encuentran habilitadas"),
     USER_EXISTS_DNI("Ya existe un usuario con este DNI");
-
 
 
     private final String message;

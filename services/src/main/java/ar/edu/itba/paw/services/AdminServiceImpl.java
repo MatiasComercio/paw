@@ -66,8 +66,24 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Result disableInscriptions() {
         Result result = adminDao.disableAddInscriptions();
-        return result;
-        //if !ok return err
-        //return adminDao.disableDeleteInscriptions();
+        if(!result.equals(Result.OK)){
+            return result;
+        }
+        return adminDao.disableDeleteInscriptions();
+    }
+
+    @Override
+    public Result enableInscriptions() {
+        Result result = adminDao.enableAddInscriptions();
+        if(!result.equals(Result.OK)){
+            return result;
+        }
+        return adminDao.enableDeleteInscriptions();
+    }
+
+    @Override
+    public boolean isInscriptionEnabled() {
+        return adminDao.isInscriptionEnabled();
+
     }
 }
