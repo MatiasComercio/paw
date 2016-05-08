@@ -2,6 +2,7 @@
 
 <!-- search -->
 <%--Course Filter Form--%>
+<c:url var="courseFilterFormAction" value="${courseFilterFormAction}"/>
 <form:form id="course_filter_form" modelAttribute="courseFilterForm" action="${courseFilterFormAction}" method="get" enctype="application/x-www-form-urlencoded">
 
     <div class="row well">
@@ -76,7 +77,6 @@
             </tr>
         </c:if>
         <c:forEach items="${courses}" var="eachCourse">
-            <c:set var="eachCourse" value="${eachCourse}" scope="request" />
             <tr>
                 <td>${ eachCourse.id }</td>
                 <td>${ eachCourse.name }</td>
@@ -84,19 +84,21 @@
                 <td>${ eachCourse.semester }</td>
                 <td>
                     <c:choose>
-                        <c:when test="${section=='students'}">
+                        <c:when test="${section eq 'students'}">
                             <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
                                 <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
                             </a>
                             <c:choose>
-                                <c:when test="${subsection_enroll}">
-                                    <button name="inscription" class="btn btn-info btn-xs" type="button"
-                                            data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
-                                            data-toggle="modal" data-target="#enrollFormConfirmationModal">
-                                        <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="enroll"/>
-                                    </button>
+                                <c:when test="${section2 eq 'inscription'}">
+                                    <sec:authorize access="hasAuthority('ROLE_ADD_INSCRIPTION')">
+                                        <button name="inscription" class="btn btn-info btn-xs" type="button"
+                                                data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
+                                                data-toggle="modal" data-target="#enrollFormConfirmationModal">
+                                            <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="enroll"/>
+                                        </button>
+                                    </sec:authorize>
                                 </c:when>
-                                <c:when test="${subsection_courses}">
+                                <c:when test="${section2 eq 'courses'}">
                                     <button name="gradeButton" class="btn btn-info btn-xs" type="button"
                                             data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
                                             data-toggle="modal" data-target="#gradeFormConfirmationModal">
@@ -110,16 +112,17 @@
                                 </c:when>
                             </c:choose>
                         </c:when>
-                        <c:when test="${section=='courses'}">
+                        <c:when test="${section eq 'courses'}">
                             <c:choose>
                                 <c:when test="${section2 eq 'addCorrelative'}">
-                                    <%--${searchCoursesActions}--%>
-                                    <button name="correlativeButton" class="btn btn-info" type="button"
-                                            data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                            data-correlative_id="${eachCourse.id}" data-correlative_name="${eachCourse.name}"
-                                            data-toggle="modal" data-target="#correlativeFormConfirmationModal">
-                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="add_correlative"/>
-                                    </button>
+                                    <sec:authorize access="hasAuthority('ROLE_ADD_CORRELATIVE')">
+                                        <button name="correlativeButton" class="btn btn-info" type="button"
+                                                data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                                data-correlative_id="${eachCourse.id}" data-correlative_name="${eachCourse.name}"
+                                                data-toggle="modal" data-target="#correlativeFormConfirmationModal">
+                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="add_correlative"/>
+                                        </button>
+                                    </sec:authorize>
                                     <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
                                         <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
                                     </a>

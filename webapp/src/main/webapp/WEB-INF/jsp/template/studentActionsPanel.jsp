@@ -7,9 +7,9 @@
 <%--@elvariable id="editActive" type="java.lang.String"--%>
 <%--@elvariable id="changePasswordActive" type="java.lang.String"--%>
 <%--@elvariable id="resetPasswordActive" type="java.lang.String"--%>
-<%--@elvariable id="viewCoursesActive" type="java.lang.String"--%>
-<%--@elvariable id="viewGradesActive" type="java.lang.String"--%>
-<%--@elvariable id="viewInscriptionActive" type="java.lang.String"--%>
+<%--@elvariable id="coursesStudentActive" type="java.lang.String"--%>
+<%--@elvariable id="gradesActive" type="java.lang.String"--%>
+<%--@elvariable id="inscriptionActive" type="java.lang.String"--%>
 <sec:authorize access="hasAuthority('ROLE_VIEW_STUDENT')">
     <c:set var="viewStudent">
         <li class="${infoActive}">
@@ -67,7 +67,7 @@
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_VIEW_COURSES')">
     <c:set var="viewCourses">
-        <li class="${viewCoursesActive}">
+        <li class="${coursesStudentActive}">
             <a href="<c:url value="/students/${student.docket}/courses" />" class="pushy-link">
                 <i class="fa fa-university"></i> <spring:message code="courses"/>
             </a>
@@ -77,7 +77,7 @@
 <sec:authorize access="hasAuthority('ROLE_VIEW_GRADES')">
 
     <c:set var="tmpViewGrades">
-        <li class="${viewGradesActive}">
+        <li class="${gradesActive}">
             <a href="<c:url value="/students/${student.docket}/grades" />" class="pushy-link">
                 <i class="fa fa-graduation-cap"></i> <spring:message code="grades"/>
             </a>
@@ -100,7 +100,7 @@
 <sec:authorize access="hasAuthority('ROLE_VIEW_INSCRIPTION')">
     <sec:authorize access="hasAuthority('ROLE_ADD_INSCRIPTION')">
         <c:set var="tmpViewInscription">
-            <li class="${viewInscriptionActive}">
+            <li class="${inscriptionActive}">
                 <a href="<c:url value="/students/${student.docket}/inscription" />" class="pushy-link">
                     <i class="fa fa-list-alt"></i> <spring:message code="inscriptions"/>
                 </a>
@@ -138,7 +138,7 @@
     <c:out value="${student.fullName}" />
 </c:set>
 <c:set var="currentActions" scope="request">
-    ${viewStudent}, ${editStudent}, ${changePassword}, ${resetPassword}, ${viewCourses},
+    ${viewStudent}, ${editStudent}, <%--${changePassword},--%> ${resetPassword}, ${viewCourses},
     ${viewGrades}, ${viewInscription}, ${deleteStudent}
 </c:set>
 <!-- /Student Action Panel definition -->

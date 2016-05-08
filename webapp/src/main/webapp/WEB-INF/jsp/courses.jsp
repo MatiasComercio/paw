@@ -1,26 +1,63 @@
 <%@ include file="base/tags.jsp" %>
 
+<%--@elvariable id="section" type="java.lang.String"--%>
+<%--@elvariable id="section2" type="java.lang.String"--%>
+<%--@elvariable id="student" type="ar.edu.itba.paw.models.users.Student"--%>
+<%--@elvariable id="course" type="ar.edu.itba.paw.models.Course"--%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>
         <%-- +++xchange when students is implemented --%>
         <c:choose>
-            <c:when test="${section eq 'students'}">
-                <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="courses"/>
+            <c:when test="${section eq 'students'}"> <%--section2 == studentCourses--%>
+                <c:choose>
+                    <c:when test="${section2 eq 'courses'}">
+                        <c:set var="title">
+                            <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="courses"/>
+                        </c:set>
+                        <c:set var="pageHead">
+                            ${student.fullName} <small> - <spring:message code="inscriptions"/></small>
+                        </c:set>
+                    </c:when>
+                    <c:when test="${section2 eq 'grades'}">
+                        <c:set var="title">
+                            <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="grades"/>
+                        </c:set>
+                        <c:set var="pageHead">
+                            ${student.fullName} <small> - <spring:message code="grades"/></small>
+                        </c:set>
+                    </c:when>
+                </c:choose>
             </c:when>
             <c:when test="${section eq 'courses'}">
                 <c:choose>
                     <c:when test="${section2 eq 'addCorrelative'}">
-                        <spring:message code="webAbbreviation"/> | ${course.name} | <spring:message code="add_correlative"/>
+                        <c:set var="title">
+                            <spring:message code="webAbbreviation"/> | ${course.name} | <spring:message code="add_correlative"/>
+                        </c:set>
+                        <c:set var="pageHead">
+                            ${course.name} <small> - <spring:message code="add_correlative"/></small>
+                        </c:set>
                     </c:when>
                     <c:otherwise>
-                        <spring:message code="webAbbreviation"/> | <spring:message code="courses"/>
+                        <c:set var="title">
+                            <spring:message code="webAbbreviation"/> | <spring:message code="courses"/>
+                        </c:set>
+                        <c:set var="pageHead">
+                            <spring:message code="courses"/>
+                        </c:set>
                     </c:otherwise>
                 </c:choose>
             </c:when>
-            <c:otherwise><spring:message code="webAbbreviation"/></c:otherwise>
+            <c:otherwise>
+                <c:set var="title">
+                    <spring:message code="webAbbreviation"/>
+                </c:set>
+            </c:otherwise>
         </c:choose>
+        ${title}
     </title>
     <jsp:include page="base/head.jsp" />
 </head>
@@ -47,41 +84,14 @@
             <div class="row">
                 <div class="col-xs-12">
                     <h1 class="page-header">
-                        <c:choose>
-                            <c:when test="${section=='students'}">
-                                <c:choose>
-                                    <c:when test="${subsection_enroll}">
-                                        <spring:message code="inscriptions"/> <small>- <spring:message code="availableCourses"/></small>
-                                    </c:when>
-                                    <c:when test="${subsection_courses}">
-                                        <spring:message code="courses"/>
-                                    </c:when>
-                                </c:choose>
-                            </c:when>
-                            <c:when test="${section=='courses'}">
-                                <c:choose>
-                                    <c:when test="${section2 eq 'addCorrelative'}">
-                                        ${course.name} <small>- <spring:message code="add_correlative"/></small>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <spring:message code="courses"/>
-                                    </c:otherwise>
-                                </c:choose>
-                            </c:when>
-                            <c:otherwise>
-                                <spring:message code="webAbbreviation"/>
-                            </c:otherwise>
-                        </c:choose>
+                        ${pageHead}
                     </h1>
                 </div>
             </div>
 
             <!-- content -->
             <jsp:include page="base/alerts.jsp" />
-            <jsp:include page="template/searchCourses.jsp"/>
-            <%--            <jsp:include page="template/searchCourses.jsp">
-                            <jsp:param name="searchCoursesActions" value="${searchCoursesActions}"/>
-                        </jsp:include>--%>
+            <jsp:include page="template/searchCourses.jsp" />
 
             <!-- /content -->
 

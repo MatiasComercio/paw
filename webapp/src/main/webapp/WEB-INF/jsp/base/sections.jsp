@@ -29,6 +29,13 @@ That's why we are usig <%@include ...%>--%>
             <c:when test="${empty section2}">
                 <jsp:include page="../template/studentsActionsPanel.jsp" />
 
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/searchStudents.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadSearchStudents();
+                </c:set>
             </c:when>
 
             <c:when test="${section2 eq 'addStudent'}">
@@ -73,6 +80,12 @@ That's why we are usig <%@include ...%>--%>
                         ${loadScripts} `
                         loadCancelButton("cancelButton");
                     </c:set>
+                </c:when>
+
+                <c:when test="${section2 eq 'courses'}">
+                    <c:set var="coursesStudentActive" value="active" scope="request"/>
+
+
                 </c:when>
             </c:choose>
         </c:if>
@@ -167,14 +180,6 @@ That's why we are usig <%@include ...%>--%>
                         ${loadScripts} ` loadCorrelativeForm("correlativeButton");
                     </c:set>
 
-                    <%--                <c:set var="searchCoursesActions" scope="request">
-                                        <button name="correlativeButton" class="btn btn-info btn-xs" type="button"
-                                                data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                                data-correlative_id="${eachCourse.id}" data-correlative_name="${eachCourse.name}"
-                                                data-toggle="modal" data-target="#correlativeFormConfirmationModal">
-                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="add_correlative"/>
-                                        </button>
-                                    </c:set>--%>
                 </c:when>
             </c:choose>
         </c:if>

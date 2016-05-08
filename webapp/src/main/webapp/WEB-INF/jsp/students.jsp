@@ -56,19 +56,20 @@
     <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchStudents.js"%></script>
-<c:if test="${subsection_students}">
+<jsp:include page="base/scripts.jsp" />
+<%--<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchStudents.js"%></script>--%>
+<%--<c:if test="${subsection_students}">
     <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteStudentForm.js"%></script>
-</c:if>
-<script>
+</c:if>--%>
+<%--<script>
     $( document ).ready(function() {
-        loadStudentSearch();
-        <c:choose>
+        loadSearchStudents();
+/*        <c:choose>
         <c:when test="${subsection_students}">
         loadDeleteStudentForm("deleteStudentButton");
         </c:when>
-        </c:choose>
+        </c:choose>*/
     });
-</script>
+</script>--%>
 </body>
 </html>
