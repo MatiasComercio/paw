@@ -30,6 +30,7 @@ import java.util.Locale;
 public class UserController {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+	private static final String UNAUTHORIZED = "redirect:/errors/403";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -73,7 +74,12 @@ public class UserController {
 	public ModelAndView resetPassword(
 		@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm passwordForm,
 		final BindingResult errors,
-		final RedirectAttributes redirectAttributes) {
+		final RedirectAttributes redirectAttributes,
+		@ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("RESET_PASSWORD")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 			if (errors.hasErrors()){
 				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.resetPasswordForm", errors);
@@ -164,7 +170,13 @@ public class UserController {
 
 	@RequestMapping(value = "/user/delete_user", method = RequestMethod.POST)
 	public ModelAndView deleteUser(@Valid @ModelAttribute("userForm") UserForm userForm,
-	                               final BindingResult errors, final RedirectAttributes redirectAttributes) {
+	                               final BindingResult errors, final RedirectAttributes redirectAttributes,
+	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("DELETE_USER")
+				&& !loggedUser.hasAuthority("ADMIN")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		if (errors.hasErrors()){
 			//return deleteUser(userForm, null); //TODO: see where it returns
 		}

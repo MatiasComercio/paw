@@ -33,10 +33,9 @@ import java.util.Map;
 public class CourseController {
 	private static final String COURSES_SECTION = "courses";
 
-	/* +++xtodo TODO: why not final? */
 	private static final String TASK_FORM_ADD = "add";
 	private static final String TASK_FORM_EDIT = "edit";
-	private static final String UNAUTHORIZED = "redirect:/errors/401";
+	private static final String UNAUTHORIZED = "redirect:/errors/403";
 
 	@Autowired
 	private MessageSource messageSource;

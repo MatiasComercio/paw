@@ -33,7 +33,7 @@ public class StudentController {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(StudentController.class);
 	private static final String STUDENTS_SECTION = "students";
-	private static final String UNAUTHORIZED = "redirect:/errors/401";
+	private static final String UNAUTHORIZED = "redirect:/errors/403";
 
 	@Autowired
 	private MessageSource messageSource;
