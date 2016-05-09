@@ -10,6 +10,7 @@ import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,11 +23,13 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     UserService userService;
 
+    @Transactional
     @Override
     public List<Admin> getAllAdmins() {
         return adminDao.getAllAdmins();
     }
 
+    @Transactional
     @Override /*+++xtodo: @Gonza improve: you are not validating if the userService creates the admin */
     public Result create(Admin admin) {
 //        userService.create(admin);
@@ -37,16 +40,19 @@ public class AdminServiceImpl implements AdminService {
         return result;
     }
 
+    @Transactional
     @Override
     public Admin getByDni(int dni) {
         return adminDao.getByDni(dni);
     }
 
+    @Transactional
     @Override
     public List<Admin> getByFilter(AdminFilter adminFilter) {
         return adminDao.getByFilter(adminFilter);
     }
 
+    @Transactional
     @Override
     public Result deleteAdmin(Integer dni) {
         if(dni <= 0) {
@@ -64,6 +70,7 @@ public class AdminServiceImpl implements AdminService {
         return userService.update(dni, admin);
     }
 
+    @Transactional
     @Override
     public Result disableInscriptions() {
         Result result = adminDao.disableAddInscriptions();
@@ -73,6 +80,7 @@ public class AdminServiceImpl implements AdminService {
         return adminDao.disableDeleteInscriptions();
     }
 
+    @Transactional
     @Override
     public Result enableInscriptions() {
         Result enableAddResult = adminDao.enableAddInscriptions();
@@ -90,6 +98,7 @@ public class AdminServiceImpl implements AdminService {
         return Result.OK;
     }
 
+    @Transactional
     @Override
     public boolean isInscriptionEnabled() {
         return adminDao.isInscriptionEnabled();

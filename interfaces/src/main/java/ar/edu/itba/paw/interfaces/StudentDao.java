@@ -157,7 +157,6 @@ public interface StudentDao {
      */
     void updateAddress(final Integer dni, final Student student);
 
-	/* +++xtest */
 	/**
 	 * Gets the student's main data that matches the given dni.
 	 * If no student exists with that dni, null is returned.

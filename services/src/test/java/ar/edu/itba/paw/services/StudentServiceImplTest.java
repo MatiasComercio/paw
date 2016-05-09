@@ -19,6 +19,11 @@ public class StudentServiceImplTest {
 	private static final int DOCKET_INVALID_LIMIT = 0;
 	private static final int DOCKET_INVALID = -7357;
 
+	private static final int DNI_VALID = 12345678;
+	private static final int DNI_VALID_LIMIT = 1;
+	private static final int DNI_INVALID_LIMIT = 0;
+	private static final int DNI_INVALID = -1;
+
 	private static final int COURSE_ID_VALID = 7357;
 	private static final int COURSE_ID_VALID_LIMIT = 1;
 	private static final int COURSE_ID_INVALID_LIMIT = 0;
@@ -57,6 +62,21 @@ public class StudentServiceImplTest {
 		/* Checks that studentDao.getByDocket() is no called (0 times) when input is invalid */
 		studentService.getByDocket(DOCKET_INVALID);
 		verify(studentDao, times(0)).getByDocket(DOCKET_INVALID);
+	}
+
+	@Test
+	public void testGetByDni() {
+		studentService.getByDni(DNI_VALID);
+		verify(studentDao, times(1)).getByDni(DNI_VALID);
+
+		studentService.getByDni(DNI_VALID_LIMIT);
+		verify(studentDao, times(1)).getByDni(DNI_VALID_LIMIT);
+
+		studentService.getByDni(DNI_INVALID_LIMIT);
+		verify(studentDao, times(0)).getByDni(DNI_INVALID_LIMIT);
+
+		studentService.getByDni(DNI_INVALID);
+		verify(studentDao, times(0)).getByDni(DNI_INVALID);
 	}
 
 	@Test

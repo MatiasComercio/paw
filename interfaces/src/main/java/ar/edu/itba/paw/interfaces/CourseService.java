@@ -59,7 +59,6 @@ public interface CourseService {
      */
     Result deleteCourse(Integer id);
 
-//    +++xtest
     /**
      * Gets the desired course by the identifier with the inscribed students,
      * filtering them using the given studentFilter

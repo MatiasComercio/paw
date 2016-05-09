@@ -36,6 +36,8 @@ public class CourseJdbcDaoTest {
     private static final String GRADE_TABLE = "grade";
     private static final String INSCRIPTION_TABLE = "inscription";
     private static final String CORRELATIVE_TABLE = "correlative";
+    private static final String ROLE_TABLE = "role";
+
 
     /* Columns */
     private static final String COURSE__ID_COLUMN = "id";
@@ -64,6 +66,8 @@ public class CourseJdbcDaoTest {
 
     private static final String CORRELATIVE__COURSE_ID_COLUMN = "course_id";
     private static final String CORRELATIVE__CORRELATIVE_ID_COLUMN = "correlative_id";
+
+    private static final String ROLE__ROLE_COLUMN = "role";
 
 
     /* Example Args */
@@ -96,7 +100,6 @@ public class CourseJdbcDaoTest {
     private static final String GENRE_1_EXPECTED = "Male";
     private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
     private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
-    private static final String ROLE_1 = "STUDENT";
     private int docket1; /* Auto-generated field */
 
     private static final int DNI_2 = 87654321;
@@ -105,8 +108,10 @@ public class CourseJdbcDaoTest {
     private static final String LAST_NAME_2 = "MaYan";
     private static final String LAST_NAME_2_EXPECTED = "Mayan";
     private static final String EMAIL_2 = "blihuen@bait.edu.ar";
-    private static final String ROLE_2 = "ADMIN";
     private int docket2; /* Auto-generated field */
+
+    private static final String ROLE_1 = "ADMIN";
+    private static final String ROLE_2 = "STUDENT";
 
     private static final BigDecimal GRADE_APPROVED = BigDecimal.valueOf(9);
 
@@ -151,6 +156,7 @@ public class CourseJdbcDaoTest {
     private SimpleJdbcInsert inscriptionInsert;
     private SimpleJdbcInsert gradeInsert;
     private SimpleJdbcInsert correlativeInsert;
+    private SimpleJdbcInsert roleInsert;
 
     /* Keys */
     private int id1;
@@ -166,6 +172,7 @@ public class CourseJdbcDaoTest {
         inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE).usingColumns(INSCRIPTION__COURSE_ID_COLUMN, INSCRIPTION__DOCKET_COLUMN);
         gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);;
         correlativeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(CORRELATIVE_TABLE).usingColumns(CORRELATIVE__COURSE_ID_COLUMN, CORRELATIVE__CORRELATIVE_ID_COLUMN);
+        roleInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ROLE_TABLE);
 
         /* Clean DB */
 
@@ -175,6 +182,15 @@ public class CourseJdbcDaoTest {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, COURSE_TABLE);
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, ROLE_TABLE);
+
+
+        final Map<String, Object> roleArgs = new HashMap<>();
+
+        roleArgs.put(ROLE__ROLE_COLUMN, ROLE_1);
+        roleInsert.execute(roleArgs);
+        roleArgs.put(ROLE__ROLE_COLUMN, ROLE_2);
+        roleInsert.execute(roleArgs);
 
         /* Insertion */
         final Map<String, Object> courseArgs1 = new HashMap<>();
@@ -227,7 +243,7 @@ public class CourseJdbcDaoTest {
         userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
         userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
         userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
-        userArgs1.put(USER__ROLE_COLUMN, ROLE_2.toLowerCase());
+        userArgs1.put(USER__ROLE_COLUMN, ROLE_1);
         userInsert.execute(userArgs1);
 
         studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -260,7 +276,7 @@ public class CourseJdbcDaoTest {
         userArgs2.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
         userArgs2.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
         userArgs2.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
-        userArgs2.put(USER__ROLE_COLUMN, ROLE_2.toLowerCase());
+        userArgs2.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs2);
 
         studentArgs2.put(STUDENT__DNI_COLUMN, DNI_2);
@@ -505,7 +521,7 @@ public class CourseJdbcDaoTest {
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
-        userArgs.put(USER__ROLE_COLUMN, ROLE_2.toLowerCase());
+        userArgs.put(USER__ROLE_COLUMN, ROLE_1);
 
         userInsert.execute(userArgs);
 
