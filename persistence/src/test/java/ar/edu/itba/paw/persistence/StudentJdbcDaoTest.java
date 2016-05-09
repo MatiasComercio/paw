@@ -278,6 +278,12 @@ public class StudentJdbcDaoTest {
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, ROLE_TABLE);
+
+		final Map<String, Object> roleArgs = new HashMap<>();
+		roleArgs.put(ROLE__ROLE_COLUMN, ROLE_1);
+		roleInsert.execute(roleArgs);
+		roleArgs.put(ROLE__ROLE_COLUMN, ROLE_2);
+		roleInsert.execute(roleArgs);
 	}
 
     @Test
@@ -353,6 +359,7 @@ public class StudentJdbcDaoTest {
 		assertEquals(FIRST_NAME_1_EXPECTED, student.getFirstName());
 		assertEquals(LAST_NAME_1_EXPECTED, student.getLastName());
 		assertEquals(EMAIL_1, student.getEmail());
+
 	}
 
     @Test
