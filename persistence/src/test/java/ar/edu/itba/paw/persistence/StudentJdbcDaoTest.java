@@ -1063,7 +1063,6 @@ public class StudentJdbcDaoTest {
 
 	@Test
 	public void createStudent() {
-
 		Address address = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
 				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED).build();
 		// OK insertion
