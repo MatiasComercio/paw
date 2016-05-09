@@ -12,10 +12,15 @@
     <jsp:include page="base/head.jsp" />
 </head>
 <body class="remove_out_spaces">
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-inverse navbar-fixed-top">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-        <a class="navbar-brand" href="<c:url value="/"/>"><strong><spring:message code="webAbbreviation"/></strong> - <spring:message code="webName"/></a>
+        <a class="navbar-brand" href="<c:url value="/" />">
+            <strong><spring:message code="webAbbreviation"/></strong>
+            <span class="hidden-xs">
+                - <spring:message code="webName"/>
+            </span>
+        </a>
     </div>
 </nav>
 <div>
