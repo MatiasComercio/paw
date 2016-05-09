@@ -15,7 +15,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-        <a class="navbar-brand" href="/"><strong><spring:message code="webAbbreviation"/></strong> - <spring:message code="webName"/></a>
+        <a class="navbar-brand" href="<c:url value="/"/>"><strong><spring:message code="webAbbreviation"/></strong> - <spring:message code="webName"/></a>
     </div>
 </nav>
 <div>
