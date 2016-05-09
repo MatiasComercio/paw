@@ -117,10 +117,16 @@ public class UserJdbcDaoTest {
         userArgs.put(USER__ROLE_COLUMN, ROLE_1);
         userInsert.execute(userArgs);
 
+        /**
+         * Get roles from an existent user and check that it is the same as the one to which we inserted with
+         */
         List<Role> roles = userJdbcDao.getRole(DNI_1);
         assertEquals(1, roles.size());
         assertEquals(Role.ADMIN, roles.get(0));
 
+        /**
+         * Get roles from a non existent user
+         */
         roles = userJdbcDao.getRole(DNI_2);
         assertEquals(0, roles.size());
     }
