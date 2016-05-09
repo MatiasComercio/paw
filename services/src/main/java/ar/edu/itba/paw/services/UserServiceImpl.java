@@ -10,13 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional
 @Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDao userDao;
 
+	@Transactional
 	@Override
 	public List<Role> getRole(final int dni) {
 		return userDao.getRole(dni);
@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
 //		return null;
 //	}
 
+	@Transactional
 	@Override
 	public Result changePassword(final int dni, final String prevPassword, final String newPassword, final String repeatNewPassword) {
 		if (!newPassword.equals(repeatNewPassword)) {
@@ -64,6 +65,7 @@ public class UserServiceImpl implements UserService {
 		return userDao.changePassword(dni, prevPassword, newPassword);
 	}
 
+	@Transactional
 	@Override
 	public Result resetPassword(final int dni) {
 		if(dni <= 0) {
@@ -72,6 +74,7 @@ public class UserServiceImpl implements UserService {
 		return userDao.resetPassword(dni);
 	}
 
+	@Transactional
 	@Override
 	public Result update(final int dni, final User user) {
 		if(dni <= 0) {
@@ -80,6 +83,7 @@ public class UserServiceImpl implements UserService {
 		return userDao.update(dni, user);
 	}
 
+	@Transactional
 	@Override
 	public Result delete(final int dni) {
 		if(dni <= 0) {

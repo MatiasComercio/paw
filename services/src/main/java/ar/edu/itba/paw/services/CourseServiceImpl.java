@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 
-@Transactional
 @Service
 public class CourseServiceImpl implements CourseService {
 
@@ -25,11 +24,13 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private StudentService studentService;
 
+    @Transactional
     @Override
     public Result create(Course course) {
         return courseDao.create(course);
     }
 
+    @Transactional
     @Override
     public Result update(Integer id, Course course){
         return courseDao.update(id, course);
@@ -40,6 +41,7 @@ public class CourseServiceImpl implements CourseService {
         return getByFilter(null);
     }
 
+    @Transactional
     @Override
     public Course getById(int id) {
         if(id >= 1) {
@@ -49,22 +51,25 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    @Transactional
     @Override
     public Course getCourseStudents(int id) {
         return courseDao.getCourseStudents(id);
     }
 
-
+    @Transactional
     @Override
     public List<Course> getByFilter(CourseFilter courseFilter) {
         return courseDao.getByFilter(courseFilter);
     }
 
+    @Transactional
     @Override
     public Integer getTotalPlanCredits() {
         return courseDao.getTotalPlanCredits();
     }
 
+    @Transactional
     @Override
     public Result deleteCourse(Integer courseId) {
 
@@ -86,6 +91,7 @@ public class CourseServiceImpl implements CourseService {
 
     }
 
+    @Transactional
     @Override
     public List<Student> getCourseStudents(final Integer id, final StudentFilter studentFilter) {
 
@@ -104,11 +110,13 @@ public class CourseServiceImpl implements CourseService {
         return students;
     }
 
+    @Transactional
     @Override
     public Integer getTotalSemesters() {
         return courseDao.getTotalSemesters();
     }
 
+    @Transactional
     @Override
     public Result addCorrelative(final Integer id, final Integer correlativeId) {
 
@@ -149,11 +157,13 @@ public class CourseServiceImpl implements CourseService {
 
     //TODO: IF NOT CALLED FROM CONTROLLER, DELETE IMPLEMENTATION AND DELETE FROM INTERFACE
 
+    @Transactional
     @Override
     public List<Integer> getCorrelatives(Integer courseId) {
         return courseDao.getCorrelatives(courseId);
     }
 
+    @Transactional
     @Override
     public List<Integer> getUpperCorrelatives(Integer courseId) {
         return courseDao.getUpperCorrelatives(courseId);
@@ -161,6 +171,7 @@ public class CourseServiceImpl implements CourseService {
 
     //////////////////////////////////////////////////
 
+    @Transactional
     @Override
     public Result deleteCorrelative(Integer courseId, Integer correlativeId) {
         return courseDao.deleteCorrelative(courseId, correlativeId);
@@ -195,6 +206,7 @@ public class CourseServiceImpl implements CourseService {
         return Result.OK;
     }
 
+    @Transactional
     @Override
     public List<Course> getCorrelativesByFilter(Integer courseId, CourseFilter courseFilter) {
 
