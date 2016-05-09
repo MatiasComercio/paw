@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.CourseService;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
@@ -35,6 +36,7 @@ public class CourseController {
 	/* +++xtodo TODO: why not final? */
 	private static final String TASK_FORM_ADD = "add";
 	private static final String TASK_FORM_EDIT = "edit";
+	private static final String UNAUTHORIZED = "redirect:/errors/401";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -118,7 +120,13 @@ public class CourseController {
 			@PathVariable final Integer courseId,
 			@ModelAttribute("courseForm") final CourseForm courseForm,
 			@ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm,
-			final RedirectAttributes redirectAttributes) {
+			final RedirectAttributes redirectAttributes,
+			@ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("EDIT_COURSE")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		final ModelAndView mav = new ModelAndView("addCourse");
 
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
@@ -145,7 +153,13 @@ public class CourseController {
 	public ModelAndView editCourse(@PathVariable final Integer courseId,
 	                               @Valid @ModelAttribute("courseForm") CourseForm courseForm,
 	                               final BindingResult errors,
-	                               RedirectAttributes redirectAttributes){
+	                               RedirectAttributes redirectAttributes,
+	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("EDIT_COURSE")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseForm", errors);
 			redirectAttributes.addFlashAttribute("courseForm", courseForm);
@@ -224,7 +238,12 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/add_course", method = RequestMethod.GET)
 	public ModelAndView addCourse(@ModelAttribute("courseForm") final CourseForm courseForm,
-	                              RedirectAttributes redirectAttributes){
+	                              RedirectAttributes redirectAttributes,
+	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_COURSE")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		ModelAndView mav = new ModelAndView("addCourse");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 //		mav.addObject("task", TASK_FORM_ADD);
@@ -235,9 +254,15 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
 	public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
-	                              final BindingResult errors, RedirectAttributes redirectAttributes){
+	                              final BindingResult errors, RedirectAttributes redirectAttributes,
+	                              UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_COURSE")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		if(errors.hasErrors()){
-			return addCourse(courseForm, null);
+			return addCourse(courseForm, null, loggedUser);
 		}
 		else{
 			final Course course = courseForm.build();
@@ -245,7 +270,7 @@ public class CourseController {
 			if(!result.equals(Result.OK)){
 				redirectAttributes.addFlashAttribute("alert", "danger");
 				redirectAttributes.addFlashAttribute("message", result.getMessage());
-				return addCourse(courseForm, redirectAttributes);
+				return addCourse(courseForm, redirectAttributes, loggedUser);
 			}
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addCourse_success",
@@ -257,7 +282,13 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/{id}/delete", method = RequestMethod.POST)
 	public ModelAndView deleteCourse(@PathVariable final Integer id,
-	                                 RedirectAttributes redirectAttributes) {
+	                                 RedirectAttributes redirectAttributes,
+	                                 @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("DELETE_COURSE")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		final Result result = courseService.deleteCourse(id);
 //        ModelAndView mav = new ModelAndView("redirect:/courses");
 //        ModelAndView mav = new ModelAndView("coursesSearch");
@@ -278,7 +309,12 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)
-	public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model) {
+	public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model,
+	                                   @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_CORRELATIVE")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		if (!model.containsAttribute("courseFilterForm")) {
 			model.addAttribute("courseFilterForm", new CourseFilterForm());
@@ -294,7 +330,7 @@ public class CourseController {
 		//Check the course exists (in case the url is modified)
 		final Course course = courseService.getById(course_id);
 		if (course == null) {
-			return new ModelAndView("forward:/errors/404.html");
+			return new ModelAndView("forward:/errors/404");
 		}
 
 		final ModelAndView mav = new ModelAndView("courses");
@@ -320,7 +356,13 @@ public class CourseController {
 	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.POST)
 	public ModelAndView addCorrelative(@PathVariable final Integer course_id,
 	                                   @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
-	                                   final BindingResult errors, final RedirectAttributes redirectAttributes){
+	                                   final BindingResult errors, final RedirectAttributes redirectAttributes,
+	                                   @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_CORRELATIVE")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
 			redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
@@ -349,7 +391,12 @@ public class CourseController {
 	@RequestMapping(value = "/courses/{course_id}/delete_correlative", method = RequestMethod.POST)
 	public ModelAndView deleteCorrelative(@PathVariable final Integer course_id,
 	                                      @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
-	                                      final BindingResult errors, final RedirectAttributes redirectAttributes) {
+	                                      final BindingResult errors, final RedirectAttributes redirectAttributes,
+	                                      @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("DELETE_CORRELATIVE")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
