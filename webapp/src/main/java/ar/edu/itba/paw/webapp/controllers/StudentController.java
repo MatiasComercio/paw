@@ -29,10 +29,11 @@ import java.util.List;
 import java.util.Locale;
 
 @Controller
-public class StudentController { /* +++xchange: see if it's necessary to call this StudentController */
+public class StudentController {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(StudentController.class);
 	private static final String STUDENTS_SECTION = "students";
+	private static final String UNAUTHORIZED = "redirect:/errors/401";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -120,7 +121,13 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 	@RequestMapping("/students/{docket}/grades")
 	public ModelAndView getStudentGrades(@PathVariable final int docket, Model model,
-	                                     RedirectAttributes redirectAttributes) {
+	                                     RedirectAttributes redirectAttributes,
+	                                     @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_GRADES")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		final Student student = studentService.getGrades(docket);
 		final ModelAndView mav;
 		final Integer totalCredits, passedCredits, percentage;
@@ -193,7 +200,13 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	public ModelAndView unenroll(@PathVariable final Integer docket,
 	                             @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
 	                             final BindingResult errors,
-	                             final RedirectAttributes redirectAttributes){
+	                             final RedirectAttributes redirectAttributes,
+	                             @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("DELETE_INSCRIPTION")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		if (errors.hasErrors()) {
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
 			redirectAttributes.addFlashAttribute("inscriptionForm", inscriptionForm);
@@ -220,7 +233,13 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	}
 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.GET)
-	public ModelAndView studentInscription(@PathVariable final int docket, final Model model) {
+	public ModelAndView studentInscription(@PathVariable final int docket, final Model model,
+	                                       @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_INSCRIPTION")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		if (!model.containsAttribute("courseFilterForm")) {
 			model.addAttribute("courseFilterForm", new CourseFilterForm());
@@ -254,7 +273,13 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	public ModelAndView studentInscription(@PathVariable final int docket,
 	                                       @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
 	                                       final BindingResult errors,
-	                                       final RedirectAttributes redirectAttributes) {
+	                                       final RedirectAttributes redirectAttributes,
+	                                       @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_INSCRIPTION")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
 			redirectAttributes.addFlashAttribute("inscriptionForm", inscriptionForm);
@@ -303,7 +328,12 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
-	                               RedirectAttributes redirectAttributes){
+	                               RedirectAttributes redirectAttributes,
+	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_STUDENT")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		ModelAndView mav = new ModelAndView("addUser");
 		mav.addObject("section2", "addStudent");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
@@ -312,9 +342,14 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
 	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
-	                               final BindingResult errors, RedirectAttributes redirectAttributes) {
+	                               final BindingResult errors, RedirectAttributes redirectAttributes,
+	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_STUDENT")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		if (errors.hasErrors()){
-			return addStudent(studentForm, null);
+			return addStudent(studentForm, null, loggedUser);
 		}
 		else{
 			Student student = studentForm.build();
@@ -322,7 +357,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 			if(!result.equals(Result.OK)){
 				redirectAttributes.addFlashAttribute("alert", "danger");
 				redirectAttributes.addFlashAttribute("message", result.getMessage());
-				return addStudent(studentForm, redirectAttributes);
+				return addStudent(studentForm, redirectAttributes, loggedUser);
 			}
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addStudent_success",
@@ -354,7 +389,13 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.POST)
 	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
-	                              @PathVariable Integer docket, RedirectAttributes redirectAttributes){
+	                              @PathVariable Integer docket, RedirectAttributes redirectAttributes,
+	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("EDIT_GRADE")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
@@ -390,7 +431,13 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	public ModelAndView addGrade(@PathVariable Integer docket,
 	                             @Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
 	                             final BindingResult errors,
-	                             RedirectAttributes redirectAttributes){
+	                             RedirectAttributes redirectAttributes,
+	                             @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_GRADE")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		if (errors.hasErrors()) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message",
@@ -441,7 +488,13 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	}
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
-	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes) {
+	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes,
+	                                  @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("DELETE_GRADE")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		final Result result = studentService.deleteStudent(docket);
 //		ModelAndView mav = new ModelAndView("studentsSearch");
 		redirectAttributes.addFlashAttribute("alert", "success");
@@ -456,7 +509,13 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	public ModelAndView editStudent(
 			@PathVariable final Integer docket,
 			@ModelAttribute("studentForm") final StudentForm studentForm,
-			final RedirectAttributes redirectAttributes) {
+			final RedirectAttributes redirectAttributes,
+			@ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("EDIT_STUDENT")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		final ModelAndView mav = new ModelAndView("addUser");
 
@@ -484,9 +543,15 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	public ModelAndView editStudent(@PathVariable final Integer docket,
 	                                @Valid @ModelAttribute("studentForm") StudentForm studentForm,
 	                                final BindingResult errors,
-	                                RedirectAttributes redirectAttributes){
+	                                RedirectAttributes redirectAttributes,
+	                                @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("EDIT_STUDENT")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		if (errors.hasErrors()){
-			return editStudent(docket, studentForm, redirectAttributes);
+			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
 		}
 
 		Student student = studentForm.build();
@@ -495,7 +560,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return editStudent(docket, studentForm, redirectAttributes);
+			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
 		}
 
 		redirectAttributes.addFlashAttribute("alert", "success");
