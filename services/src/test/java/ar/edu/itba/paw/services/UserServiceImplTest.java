@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Role;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -25,6 +26,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+@RunWith(Parameterized.class)
 public class UserServiceImplTest {
     private static final int DOCKET_VALID = 7357;
     private static final int DOCKET_VALID_LIMIT = 1;
@@ -44,9 +46,9 @@ public class UserServiceImplTest {
     @Mock
     private UserDao userDao;
 
-    private UserServiceImpl userService;
-
     /* // Mock objects */
+
+    private UserServiceImpl userService;
 
     /* Parameter */
 
