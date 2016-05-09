@@ -5,29 +5,30 @@
 <%-- Confirmation Modal --%>
 
 <!-- Modal -->
-<div class="modal fade" id="deleteStudentFormConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteStudentFormConfirmationModal">
+<div class="modal fade" id="resetPasswordFormConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="resetPasswordFormConfirmationModal">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">
-                    <spring:message code="delete"/>
+                    <spring:message code="resetPassword"/>
                 </h4>
             </div>
             <div class="modal-body">
-                <%-- Delete Student Form --%>
+                <%-- Reset Password Form --%>
                 <%--                    <form action="students/${student.docket}/delete" method="post">
                                         <button type="submit" value="students/${student.docket}/delete"><spring:message code="delete"/></button>
                                     </form>--%>
-                <form:form class="form-horizontal" id="delete_student_form" modelAttribute="deleteStudentForm" action="" method="post" enctype="application/x-www-form-urlencoded">
+                <c:url var="formAction" value="/user/resetPassword" />
+                <form:form class="form-horizontal" id="reset_password_form" modelAttribute="resetPasswordForm" action="${formAction}" method="post" enctype="application/x-www-form-urlencoded">
                     <div class="form-group">
-                        <form:label path="docket" class="col-xs-4 control-label"><spring:message code="docket"/></form:label>
+                        <form:label path="dni" class="col-xs-4 control-label"><spring:message code="dni"/></form:label>
                         <div class="col-xs-8">
-                            <form:input class="form-control" id="disabledInput" type="text" path="docket" readonly="true"/>
+                            <form:input class="form-control" id="disabledInput" type="text" path="dni" readonly="true"/>
                         </div>
                         <div class="col-xs-4"></div>
                         <div class="col-xs-8">
-                            <form:errors path="docket" cssClass="text-danger bg-danger" element="div"/>
+                            <form:errors path="dni" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -51,11 +52,11 @@
                         </div>
                     </div>
                 </form:form>
-                <%-- /Delete Student Form--%>
+                <%-- /Reset Password Form --%>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="cancel"/></button>
-                <button id="deleteStudentFormConfirmAction" type="button" class="btn btn-danger"><spring:message code="confirm"/></button>
+                <button id="resetPasswordFormConfirmAction" type="button" class="btn btn-danger"><spring:message code="confirm"/></button>
             </div>
         </div>
     </div>

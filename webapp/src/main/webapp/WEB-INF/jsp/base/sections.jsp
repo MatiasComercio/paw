@@ -15,6 +15,59 @@ That's why we are usig <%@include ...%>--%>
 
     <c:when test="${section=='admins'}">
         <c:set var="adminsActive" value="active" scope="request"/>
+
+        <c:choose>
+            <c:when test="${empty section2}">
+                <jsp:include page="../template/adminsActionsPanel.jsp" />
+                <jsp:include page="../template/enableInscriptionsForm.jsp" />
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/searchAdmins.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadAdminSearch();
+                </c:set>
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/enableInscriptionsForm.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadEnableInscriptionsForm();
+                </c:set>
+            </c:when>
+            <c:when test="${section2 eq 'addAdmin'}">
+                <c:set var="addAdminActive" value="active" scope="request"/>
+
+                <jsp:include page="../template/adminsActionsPanel.jsp" />
+                <jsp:include page="../template/enableInscriptionsForm.jsp" />
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/searchAdmins.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadAdminSearch();
+                </c:set>
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/enableInscriptionsForm.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadEnableInscriptionsForm();
+                </c:set>
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file='/WEB-INF/js/cancelButton.js'%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadCancelButton("cancelButton");
+                </c:set>
+            </c:when>
+        </c:choose>
     </c:when>
 
 
@@ -54,7 +107,17 @@ That's why we are usig <%@include ...%>--%>
 
             <c:otherwise>
                 <jsp:include page="../template/studentActionsPanel.jsp" />
+                <jsp:include page="../template/resetPasswordForm.jsp" />
                 <jsp:include page="../template/deleteStudentForm.jsp" />
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/resetPasswordForm.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadResetPasswordForm("resetPasswordButton");
+                </c:set>
+
                 <c:set var="includeScripts" >
                     ${includeScripts} ` <%@include file='/WEB-INF/js/template/deleteStudentForm.js'%>
                 </c:set>
@@ -84,6 +147,25 @@ That's why we are usig <%@include ...%>--%>
 
                 <c:when test="${section2 eq 'courses'}">
                     <c:set var="coursesStudentActive" value="active" scope="request"/>
+
+
+                </c:when>
+
+                <c:when test="${section2 eq 'grades'}">
+                    <c:set var="gradesActive" value="active" scope="request"/>
+                    <c:set var="includeScripts" >
+                        ${includeScripts} ` <%@include file="/WEB-INF/js/template/gradeForm.js"%>
+                    </c:set>
+                    <c:set var="loadScripts">
+                        ${loadScripts} `
+                        loadCancelButton("gradeButton");
+                    </c:set>
+
+
+                </c:when>
+
+                <c:when test="${section2 eq 'inscription'}">
+                    <c:set var="inscriptionActive" value="active" scope="request"/>
 
 
                 </c:when>

@@ -29,6 +29,14 @@
                             ${student.fullName} <small> - <spring:message code="grades"/></small>
                         </c:set>
                     </c:when>
+                    <c:when test="${section2 eq 'inscription'}">
+                        <c:set var="title">
+                            <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="inscriptions"/>
+                        </c:set>
+                        <c:set var="pageHead">
+                            ${student.fullName} <small> - <spring:message code="inscriptions"/></small>
+                        </c:set>
+                    </c:when>
                 </c:choose>
             </c:when>
             <c:when test="${section eq 'courses'}">

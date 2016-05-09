@@ -1,6 +1,8 @@
 <%@ include file="base/tags.jsp"%>
 
+<%--@elvariable id="section" type="java.lang.String"--%>
 <%--@elvariable id="section2" type="java.lang.String"--%>
+<%--@elvariable id="admin" type="ar.edu.itba.paw.models.Admin"--%>
 <%--@elvariable id="student" type="ar.edu.itba.paw.models.Student"--%>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,11 +10,25 @@
     <title>
         <spring:message code="webAbbreviation"/> |
         <c:choose>
-            <c:when test="${section2 eq 'addStudent' }">
-                <spring:message code="addStudent"/>
+            <c:when test="${section eq 'admins'}">
+                <c:choose>
+                    <c:when test="${section2 eq 'addAdmin' }">
+                        <spring:message code="addAdmin"/>
+                    </c:when>
+                    <c:when test="${section2 eq 'edit' }">
+                        ${admin.fullName} | <spring:message code="edit"/>
+                    </c:when>
+                </c:choose>
             </c:when>
-            <c:when test="${section2 eq 'edit' }">
-                ${student.fullName} | <spring:message code="edit"/>
+            <c:when test="${section eq 'students'}">
+                <c:choose>
+                    <c:when test="${section2 eq 'addStudent' }">
+                        <spring:message code="addStudent"/>
+                    </c:when>
+                    <c:when test="${section2 eq 'edit' }">
+                        ${student.fullName} | <spring:message code="edit"/>
+                    </c:when>
+                </c:choose>
             </c:when>
         </c:choose>
     </title>
@@ -24,29 +40,61 @@
     <jsp:include page="base/sections.jsp" />
     <jsp:include page="base/nav.jsp" />
 
+
     <c:choose>
-        <c:when test="${section2 eq 'addStudent'}" >
-            <c:set var="title">
-                <spring:message code="students"/> <small> - <spring:message code="addStudent"/></small>
-            </c:set>
+        <c:when test="${section eq 'admins'}">
+            <c:set var="formModelAttribute" value="adminForm" />
+            <c:choose>
+                <c:when test="${section2 eq 'addAdmin' }">
+                    <c:set var="title">
+                        <spring:message code="admins"/> <small> - <spring:message code="addAdmin"/></small>
+                    </c:set>
 
-            <c:set var="dniDisabled" value="false" />
+                    <c:set var="dniDisabled" value="false" />
 
-            <c:url var="studentFormAction" value="/students/add_student" />
-            <spring:message var="formButton" code="addStudent" />
+                    <c:url var="formAction" value="/admins/add_admin" />
+                    <spring:message var="formButton" code="addAdmin" />
+                </c:when>
+                <c:when test="${section2 eq 'edit' }">
+                    <c:set var="title">
+                        ${admin.fullName} <small> - <spring:message code="edit"/></small>
+                    </c:set>
+
+                    <c:set var="dniDisabled" value="true" />
+
+                    <c:url var="formAction" value="/admins/${admin.dni}/edit" />
+                    <spring:message var="formButton" code="saveChanges" />
+                </c:when>
+            </c:choose>
         </c:when>
+        <c:when test="${section eq 'students'}">
+            <c:set var="formModelAttribute" value="studentForm" />
+            <c:choose>
+                <c:when test="${section2 eq 'addStudent'}" >
+                    <c:set var="title">
+                        <spring:message code="students"/> <small> - <spring:message code="addStudent"/></small>
+                    </c:set>
 
-        <c:when test="${section2 eq 'edit'}" >
-            <c:set var="title">
-                ${student.fullName} <small> - <spring:message code="edit"/></small>
-            </c:set>
+                    <c:set var="dniDisabled" value="false" />
 
-            <c:set var="dniDisabled" value="true" />
+                    <c:url var="formAction" value="/students/add_student" />
+                    <spring:message var="formButton" code="addStudent" />
+                </c:when>
 
-            <c:url var="studentFormAction" value="/students/${student.docket}/edit" />
-            <spring:message var="formButton" code="saveChanges" />
+                <c:when test="${section2 eq 'edit'}" >
+                    <c:set var="title">
+                        ${student.fullName} <small> - <spring:message code="edit"/></small>
+                    </c:set>
+
+                    <c:set var="dniDisabled" value="true" />
+
+                    <c:url var="formAction" value="/students/${student.docket}/edit" />
+                    <spring:message var="formButton" code="saveChanges" />
+                </c:when>
+            </c:choose>
         </c:when>
     </c:choose>
+
 
     <div id="page-wrapper">
 
@@ -67,7 +115,7 @@
 
             <!-- Student's Form -->
             <div class="row">
-                <form:form modelAttribute="studentForm" method="post" action="${studentFormAction}">
+                <form:form modelAttribute="${formModelAttribute}" method="post" action="${formAction}">
                     <div class="col-xs-12 requiredFields">
                         <spring:message code="requiredFields"/>
                         (<span class="text-danger"><spring:message code="requiredIcon"/></span>)

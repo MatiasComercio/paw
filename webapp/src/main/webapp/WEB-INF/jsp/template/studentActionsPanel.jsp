@@ -41,29 +41,19 @@
         </c:otherwise>
     </c:choose>
 </sec:authorize>
-<%-- Should not be here --%>
-<%--<sec:authorize access="hasAuthority('ROLE_CHANGE_PASSWORD')">--%>
-    <%--&lt;%&ndash; Only the user can change his/her password &ndash;%&gt;--%>
-    <%--<c:if test="${student.docket eq user.id}">--%>
-        <%--<c:set var="changePassword">--%>
-            <%--<li class="${changePasswordActive}">--%>
-                <%--<a href="<c:url value="/user/changePassword" />" class="pushy-link">--%>
-                    <%--<i class="fa fa-key" aria-hidden="true"></i> <spring:message code="changePassword"/>--%>
-                <%--</a>--%>
-            <%--</li>--%>
-        <%--</c:set>--%>
-    <%--</c:if>--%>
-<%--</sec:authorize>--%>
 <sec:authorize access="hasAuthority('ROLE_RESET_PASSWORD')">
     <%-- All admins and the user can change his/her password --%>
-    <%-- +++xtodo --%>
-    <%--<c:set var="resetPassword">
-        <li class="${resetPasswordActive}">
-            <a href="<c:url value="/courses/${course.id}/students" />" type="button" class="btn btn-info" role="button">
-                <i class="fa fa-users" aria-hidden="true"></i> <spring:message code="students"/>
-            </a>
+    <c:set var="resetPassword">
+        <li>
+            <button name="resetPasswordButton" class="menu-btn btn-danger" type="button"
+                    data-user_dni="${student.dni}"
+                    data-user_first_name="${student.firstName}"
+                    data-user_last_name="${student.lastName}"
+                    data-toggle="modal" data-target="#resetPasswordFormConfirmationModal">
+                <i class="fa fa-repeat" aria-hidden="true"></i> <spring:message code="resetPassword"/>
+            </button>
         </li>
-    </c:set>--%>
+    </c:set>
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_VIEW_COURSES')">
     <c:set var="viewCourses">

@@ -1,6 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page language="java" pageEncoding="UTF-8"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@include file="base/tags.jsp" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +8,7 @@
     </title>
     <jsp:include page="base/head.jsp" />
 </head>
-
+<body>
 <div id="wrapper">
 
     <jsp:include page="base/sections.jsp" />
@@ -139,15 +138,7 @@
     <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/gradeForm.js"%></script>
-
-<script>
-    $( document ).ready(function() {
-        loadGradeForm("gradeButton")
-    });
-
-
-</script>
+<jsp:include page="base/scripts.jsp" />
 
 </body>
 </html>

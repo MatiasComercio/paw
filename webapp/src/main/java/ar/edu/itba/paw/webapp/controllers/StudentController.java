@@ -58,6 +58,11 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		return new StudentFilterForm();
 	}
 
+	@ModelAttribute("resetPasswordForm")
+	public ResetPasswordForm resetPasswordForm() {
+		return new ResetPasswordForm();
+	}
+
 	@RequestMapping(value = "/students", method = RequestMethod.GET)
 	public ModelAndView getStudents(@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
 	                                final BindingResult errors,
@@ -141,6 +146,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		passedCredits = studentService.getPassedCredits(docket);
 		percentage = (!totalCredits.equals(0))? (passedCredits * 100)/totalCredits: 0;
 
+		mav.addObject("section2", "grades");
 		mav.addObject("semesters", studentService.getTranscript(docket));
 		mav.addObject("total_credits", totalCredits);
 		mav.addObject("passed_credits", passedCredits);
@@ -235,6 +241,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 		final ModelAndView mav = new ModelAndView("courses");
 		mav.addObject("student", student);
+		mav.addObject("section2", "inscription");
 		mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
 		mav.addObject("inscriptionFormAction", "/students/" + docket + "/inscription");
 		mav.addObject("subsection_enroll", true);
