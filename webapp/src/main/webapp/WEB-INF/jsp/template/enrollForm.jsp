@@ -1,7 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ include file="../base/tags.jsp"%>
 <%-- Confirmation Modal --%>
 
 <!-- Modal -->
@@ -23,6 +20,7 @@
             </div>
             <div class="modal-body">
                 <%-- Inscription Form --%>
+                <c:url var="inscriptionFormAction" value="${inscriptionFormAction}" />
                 <form:form class="form-horizontal" id="inscription_form" modelAttribute="inscriptionForm" action="${inscriptionFormAction}" method="post" enctype="application/x-www-form-urlencoded">
                     <div class="form-group">
                         <form:label path="studentDocket" class="col-xs-4 control-label"><spring:message code="studentDocket"/></form:label>

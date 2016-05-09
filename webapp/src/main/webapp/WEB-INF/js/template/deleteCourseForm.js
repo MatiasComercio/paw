@@ -5,10 +5,11 @@ function loadDeleteCourseForm(nameAttr) {
     deleteCourseButton.on("click", function() {
         var courseId = $(this).data("course_id");
         var courseName = $(this).data("course_name");
+        var formAction = $(this).data("form_action");
         var deleteCourseForm = $("#delete_course_form");
         deleteCourseForm.find("input[name='id']").val(courseId);
         deleteCourseForm.find("input[name='name']").val(courseName);
-        deleteCourseForm.attr("action", "/courses/" + courseId + "/delete");
+        deleteCourseForm.attr("action", formAction);
     });
 
     $("#deleteCourseFormConfirmAction").on("click", function() {

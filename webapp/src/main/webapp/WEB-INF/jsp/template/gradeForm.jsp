@@ -16,6 +16,7 @@
             </div>
             <div class="modal-body">
                 <%-- Grade Form --%>
+                <c:url var="gradeFormAction" value="${gradeFormAction}" />
                 <form:form class="form-horizontal" id="grade_form" modelAttribute="gradeForm" action="${gradeFormAction}" method="post" enctype="application/x-www-form-urlencoded">
                     <div class="form-group">
                         <form:label path="docket" class="col-xs-4 control-label"><spring:message code="studentDocket"/></form:label>

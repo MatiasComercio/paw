@@ -3,6 +3,7 @@
 <!-- search -->
 <%--Student Filter Form--%>
 <%--@elvariable id="studentFilterFormAction" type="java.lang.String"--%>
+<c:url var="studentFilterFormAction" value="${studentFilterFormAction}" />
 <form:form id="student_filter_form" modelAttribute="studentFilterForm" action="${studentFilterFormAction}" method="get" enctype="application/x-www-form-urlencoded">
 
     <div class="row well">

@@ -47,6 +47,7 @@
         <li>
             <button name="deleteCourseButton" class="menu-btn btn-danger" type="button"
                     data-course_id="${ course.id }" data-course_name="${ course.name }"
+                    data-form_action="<c:url value="/courses/${course.id}/delete"/>"
                     data-toggle="modal" data-target="#deleteCourseFormConfirmationModal">
                 <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
             </button>

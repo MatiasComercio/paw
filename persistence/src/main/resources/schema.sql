@@ -89,8 +89,8 @@ CREATE TABLE IF NOT EXISTS correlative (
   correlative_id INTEGER NOT NULL ,
 
   PRIMARY KEY (course_id, correlative_id),
-  FOREIGN KEY (course_id) REFERENCES course ON UPDATE CASCADE,
-  FOREIGN KEY (correlative_id) REFERENCES course ON UPDATE CASCADE
+  FOREIGN KEY (course_id) REFERENCES course ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (correlative_id) REFERENCES course ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS authority (

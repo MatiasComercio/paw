@@ -118,6 +118,7 @@
                     data-student_docket="${student.docket}"
                     data-student_first_name="${student.firstName}"
                     data-student_last_name="${student.lastName}"
+                    data-form_action="<c:url value="/students/${student.docket}/delete" />"
                     data-toggle="modal" data-target="#deleteStudentFormConfirmationModal">
                 <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
             </button>
