@@ -350,6 +350,9 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs);
 
+		/**
+		 * Try to get a student that exists
+		 */
 		studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
 		docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
 
@@ -360,6 +363,11 @@ public class StudentJdbcDaoTest {
 		assertEquals(LAST_NAME_1_EXPECTED, student.getLastName());
 		assertEquals(EMAIL_1, student.getEmail());
 
+		/**
+		 * Try to get a student that doesn't exist
+		 */
+		student = studentJdbcDao.getByDni(DNI_2);
+		assertNull(student);
 	}
 
     @Test
