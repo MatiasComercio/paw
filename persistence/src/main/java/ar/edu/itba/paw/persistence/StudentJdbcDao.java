@@ -444,7 +444,11 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result create(Student student) {
-		userDao.create(student, Role.STUDENT);
+		final Result result = userDao.create(student, Role.STUDENT);
+
+		if(result != Result.OK) {
+			return result;
+		}
 
 		final Map<String, Object> studentArgs = new HashMap<>();
 
