@@ -1076,13 +1076,8 @@ public class StudentJdbcDaoTest {
 		assertEquals(Result.OK, result);
 
 		// Existing  DNI
-		student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M)
-				.address(address)
-				.genre(User.Genre.M)
-				.build();
-
 		result = studentJdbcDao.create(student);
-		assertEquals(Result.STUDENT_EXISTS_DNI, result);
+		assertEquals(Result.USER_EXISTS_DNI, result);
 
 	}
 /*
