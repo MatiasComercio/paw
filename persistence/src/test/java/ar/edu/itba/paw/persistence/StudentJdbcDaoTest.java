@@ -12,6 +12,7 @@ import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -55,6 +56,9 @@ public class StudentJdbcDaoTest {
 	private static final String GRADE_TABLE = "grade";
 	private static final String COURSE_TABLE = "course";
 	private static final String INSCRIPTION_TABLE = "inscription";
+	private static final String ROLE_TABLE = "role";
+
+	private static final String ROLE__ROLE_COLUMN = "role";
 
 	private static final String STUDENT__DOCKET_COLUMN = "docket";
 	private static final String STUDENT__DNI_COLUMN = "dni";
@@ -114,7 +118,8 @@ public class StudentJdbcDaoTest {
 	private static final User.Genre GENRE_1_EXPECTED = User.Genre.M;
 	private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
 	private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
-	private static final String ROLE_1 = "STUDENT";
+	private static final String ROLE_1 = "ADMIN";
+	private static final String ROLE_2 = "STUDENT";
 	private int docket1; /* Auto-generated field */
 
 
@@ -124,7 +129,6 @@ public class StudentJdbcDaoTest {
 	private static final String LAST_NAME_2 = "MaYan";
 	private static final String LAST_NAME_2_EXPECTED = "Mayan";
 	private static final String EMAIL_2 = "blihuen@bait.edu.ar";
-	private static final String ROLE_2 = "ADMIN";
 	private int docket2; /* Auto-generated field */
 
 
@@ -235,19 +239,6 @@ public class StudentJdbcDaoTest {
 		});
 	}
 
-	@Test
-	public void testGetByDni() {
-		/**
-		 * +++xcheck if we can avoid casting studentAnswer
-		 */
-		if(studentAnswer != null) {
-			when(userDao.getByDni(dni, studentBuilder)).then((Answer<?>) studentAnswer);
-		}
-		System.out.println(dni);
-		Student student = studentJdbcDao.getByDni(dni);
-		assertThat(student, is(expectedStudent));
-	}
-
 	@Parameter // first data value (0) is default
 	public /* NOT private */ int dni;
 
@@ -261,6 +252,7 @@ public class StudentJdbcDaoTest {
 	public /* NOT private */ Student expectedStudent;
 
 	private JdbcTemplate jdbcTemplate;
+	private SimpleJdbcInsert roleInsert;
 	private SimpleJdbcInsert userInsert;
 	private SimpleJdbcInsert studentInsert;
 	private SimpleJdbcInsert addressInsert;
@@ -277,6 +269,7 @@ public class StudentJdbcDaoTest {
 		courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
 		gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);
 		inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE).usingColumns(INSCRIPTION__COURSE_ID_COLUMN, INSCRIPTION__DOCKET_COLUMN);
+		roleInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ROLE_TABLE);
 		/* Order of deletation is important so as not to remove tables referenced by others */
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, INSCRIPTION_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, GRADE_TABLE);
@@ -284,6 +277,7 @@ public class StudentJdbcDaoTest {
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, ADDRESS_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
+		JdbcTestUtils.deleteFromTables(jdbcTemplate, ROLE_TABLE);
 	}
 
     @Test
@@ -327,6 +321,39 @@ public class StudentJdbcDaoTest {
         assertNotEquals(Result.OK, result);
         assertEquals(Result.STUDENT_EXISTS_DNI, result);
     }
+
+	@Test
+	public void testGetByDni() {
+//		/**
+//		 * +++xcheck if we can avoid casting studentAnswer
+//		 */
+//		if(studentAnswer != null) {
+//			when(userDao.getByDni(dni, studentBuilder)).then((Answer<?>) studentAnswer);
+//		}
+//		System.out.println(dni);
+//		Student student = studentJdbcDao.getByDni(dni);
+//		assertThat(student, is(expectedStudent));
+
+		final Map<String, Object> userArgs = new HashMap<>();
+		final Map<String, Object> studentArgs = new HashMap<>();
+
+		userArgs.put(USER__DNI_COLUMN, DNI_1);
+		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
+		userInsert.execute(userArgs);
+
+		studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+		docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+
+		Student student = studentJdbcDao.getByDni(DNI_1);
+		assertNotNull(student);
+		assertEquals(docket1, student.getDocket());
+		assertEquals(FIRST_NAME_1_EXPECTED, student.getFirstName());
+		assertEquals(LAST_NAME_1_EXPECTED, student.getLastName());
+		assertEquals(EMAIL_1, student.getEmail());
+	}
 
     @Test
     public void createAddress() {
