@@ -107,7 +107,17 @@ That's why we are usig <%@include ...%>--%>
 
             <c:otherwise>
                 <jsp:include page="../template/studentActionsPanel.jsp" />
+                <jsp:include page="../template/resetPasswordForm.jsp" />
                 <jsp:include page="../template/deleteStudentForm.jsp" />
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/resetPasswordForm.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadResetPasswordForm("resetPasswordButton");
+                </c:set>
+
                 <c:set var="includeScripts" >
                     ${includeScripts} ` <%@include file='/WEB-INF/js/template/deleteStudentForm.js'%>
                 </c:set>

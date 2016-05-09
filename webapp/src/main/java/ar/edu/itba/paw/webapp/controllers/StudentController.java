@@ -58,6 +58,11 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		return new StudentFilterForm();
 	}
 
+	@ModelAttribute("resetPasswordForm")
+	public ResetPasswordForm resetPasswordForm() {
+		return new ResetPasswordForm();
+	}
+
 	@RequestMapping(value = "/students", method = RequestMethod.GET)
 	public ModelAndView getStudents(@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
 	                                final BindingResult errors,
