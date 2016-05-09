@@ -1069,6 +1069,7 @@ public class StudentJdbcDaoTest {
 		// OK insertion
 
 		Student student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1)
+				.address(address)
 				.genre(User.Genre.M).build();//address(address).build();
 
 		Result result = studentJdbcDao.create(student);
@@ -1076,7 +1077,9 @@ public class StudentJdbcDaoTest {
 
 		// Existing  DNI
 		student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M)
-				.address(address).build();
+				.address(address)
+				.genre(User.Genre.M)
+				.build();
 
 		result = studentJdbcDao.create(student);
 		assertEquals(Result.STUDENT_EXISTS_DNI, result);
