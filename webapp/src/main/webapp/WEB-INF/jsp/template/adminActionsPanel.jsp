@@ -11,10 +11,22 @@
 <%--@elvariable id="gradesActive" type="java.lang.String"--%>
 <%--@elvariable id="inscriptionActive" type="java.lang.String"--%>
 <sec:authorize access="hasAuthority('ROLE_VIEW_ADMIN')">
+    <c:choose>
+        <c:when test="${admin.dni eq user.id}">
+            <c:set var="profileMessage">
+                <spring:message code="profile" />
+            </c:set>
+        </c:when>
+        <c:otherwise>
+            <c:set var="profileMessage">
+                <spring:message code="profile" />
+            </c:set>
+        </c:otherwise>
+    </c:choose>
     <c:set var="viewAdmin">
         <li class="${infoActive}">
             <a href="<c:url value="/admins/${admin.dni}/info"/>" class="pushy-link">
-                <i class="fa fa-info-circle" aria-hidden="true"></i> <spring:message code="profile"/>
+                <i class="fa fa-user" aria-hidden="true"></i> ${profileMessage}
             </a>
         </li>
     </c:set>

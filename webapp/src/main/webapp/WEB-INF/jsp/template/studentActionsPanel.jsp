@@ -11,10 +11,22 @@
 <%--@elvariable id="gradesActive" type="java.lang.String"--%>
 <%--@elvariable id="inscriptionActive" type="java.lang.String"--%>
 <sec:authorize access="hasAuthority('ROLE_VIEW_STUDENT')">
+    <c:choose>
+        <c:when test="${student.docket eq user.id}">
+            <c:set var="profileMessage">
+                <spring:message code="profile" />
+            </c:set>
+        </c:when>
+        <c:otherwise>
+            <c:set var="profileMessage">
+                <spring:message code="profile" />
+            </c:set>
+        </c:otherwise>
+    </c:choose>
     <c:set var="viewStudent">
         <li class="${infoActive}">
             <a href="<c:url value="/students/${student.docket}/info"/>" class="pushy-link">
-                <i class="fa fa-info-circle" aria-hidden="true"></i> <spring:message code="profile"/>
+                <i class="fa fa-user" aria-hidden="true"></i> ${profileMessage}
             </a>
         </li>
     </c:set>
@@ -59,7 +71,7 @@
     <c:set var="viewCourses">
         <li class="${coursesStudentActive}">
             <a href="<c:url value="/students/${student.docket}/courses" />" class="pushy-link">
-                <i class="fa fa-university"></i> <spring:message code="courses"/>
+                <i class="fa fa-university"></i> <spring:message code="currentCourses"/>
             </a>
         </li>
     </c:set>

@@ -113,7 +113,7 @@
                         </c:when>
                     </c:choose>
                     <a class="btn btn-default tableButton" href="<c:url value="/students/${student.docket}/info" />" role="button">
-                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                        <span class="fa fa-user" aria-hidden="true"></span> <spring:message code="profile"/>
                     </a>
                 </td>
             </tr>

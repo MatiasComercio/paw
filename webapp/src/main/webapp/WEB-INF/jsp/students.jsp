@@ -31,7 +31,7 @@
                                 <spring:message code="students"/>
                             </c:when>
                             <c:when test="${subsection_courses}">
-                                ${course.name} <small>- <spring:message code="students"/></small>
+                                ${course.name} <small> - <spring:message code="enrolledStudents"/></small>
                             </c:when>
                         </c:choose>
                     </h1>

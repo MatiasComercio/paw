@@ -38,36 +38,38 @@
                 <div class="col-xs-12">
                     <div class="well">
                         <div class="row">
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong><spring:message code="id"/></strong>
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-3 right-effect">
+                                        <strong><spring:message code="id"/></strong>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        ${course.id}
+                                    </div>
                                 </div>
-                                <div class="col-xs-9">
-                                    ${course.id}
+                                <div class="row">
+                                    <div class="col-xs-3 right-effect">
+                                        <strong><spring:message code="name"/></strong>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        ${course.name}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong><spring:message code="name"/></strong>
+                                <div class="row">
+                                    <div class="col-xs-3 right-effect">
+                                        <strong><spring:message code="credits"/></strong>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        ${course.credits}
+                                    </div>
                                 </div>
-                                <div class="col-xs-9">
-                                    ${course.name}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong><spring:message code="credits"/></strong>
-                                </div>
-                                <div class="col-xs-9">
-                                    ${course.credits}
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3 right-effect">
-                                    <strong><spring:message code="semester"/></strong>
-                                </div>
-                                <div class="col-xs-9">
-                                    ${course.semester}
+                                <div class="row">
+                                    <div class="col-xs-3 right-effect">
+                                        <strong><spring:message code="semester"/></strong>
+                                    </div>
+                                    <div class="col-xs-9">
+                                        ${course.semester}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -107,14 +109,14 @@
                                     <td>${ correlative.credits }</td>
                                     <td>
                                         <a class="btn btn-default" href="<c:url value="/courses/${correlative.id}/info" />" role="button">
-                                            <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                                            <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="information"/>
                                         </a>
                                         <sec:authorize access="hasAuthority('ROLE_DELETE_CORRELATIVE')">
                                         <button name="deleteCorrelativeButton" class="btn btn-danger" type="button"
                                                 data-course_id="${ course.id }" data-course_name="${ course.name }"
                                                 data-correlative_id="${correlative.id}" data-correlative_name="${correlative.name}"
                                                 data-toggle="modal" data-target="#correlativeFormConfirmationModal">
-                                            <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
+                                            <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete_correlative"/>
                                         </button>
                                         </sec:authorize>
                                     <td>

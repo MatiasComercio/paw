@@ -15,10 +15,10 @@
                 <c:choose>
                     <c:when test="${section2 eq 'courses'}">
                         <c:set var="title">
-                            <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="courses"/>
+                            <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="currentCourses"/>
                         </c:set>
                         <c:set var="pageHead">
-                            ${student.fullName} <small> - <spring:message code="inscriptions"/></small>
+                            ${student.fullName} <small> - <spring:message code="currentCourses"/></small>
                         </c:set>
                     </c:when>
                     <c:when test="${section2 eq 'grades'}">

@@ -24,7 +24,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        ${course.name} <small> - <spring:message code="students"/></small>
+                        ${course.name} <small> - <spring:message code="enrolledStudents"/></small>
                     </h1>
                 </div>
             </div>

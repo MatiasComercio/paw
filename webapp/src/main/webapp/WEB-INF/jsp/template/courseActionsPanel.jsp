@@ -28,7 +28,7 @@
     <c:set var="viewStudents">
         <li class="${courseStudentsActive}">
             <a href="<c:url value="/courses/${course.id}/students" />" type="button" class="btn btn-info" role="button">
-                <i class="fa fa-users" aria-hidden="true"></i> <spring:message code="students"/>
+                <i class="fa fa-users" aria-hidden="true"></i> <spring:message code="enrolledStudents"/>
             </a>
         </li>
     </c:set>
