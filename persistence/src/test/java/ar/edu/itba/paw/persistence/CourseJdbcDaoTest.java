@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import org.hamcrest.Matcher;
 import org.junit.Before;
@@ -114,6 +115,7 @@ public class CourseJdbcDaoTest {
     private static final String ROLE_2 = "STUDENT";
 
     private static final BigDecimal GRADE_APPROVED = BigDecimal.valueOf(9);
+    private static final BigDecimal GRADE_NOT_APPROVED = BigDecimal.valueOf(3);
 
 
 
@@ -317,6 +319,83 @@ public class CourseJdbcDaoTest {
         assertEquals(COURSE_ID_3, course.getId());
         assertEquals(COURSE__NAME_3, course.getName());
         assertEquals(COURSE_CREDITS_3, course.getCredits());
+    }
+
+    @Test
+    public void getStudentsThatPassedCourse() {
+        final Map<String, Object> userArgs = new HashMap<>();
+        final Map<String, Object> studentArgs = new HashMap<>();
+        final Map<String, Object> gradeArgs = new HashMap<>();
+
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userArgs.put(USER__ROLE_COLUMN, ROLE_1);
+        userInsert.execute(userArgs);
+
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+        docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+
+        Student expectedStudent = new Student.Builder(docket1, DNI_1)
+                .build();
+
+        gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
+        gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_3);
+        gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
+        gradeInsert.execute(gradeArgs);
+
+        /**
+         * Get the grades of a non existent course
+         */
+        Course course = courseJdbcDao.getStudentsThatPassedCourse(COURSE_ID_4);
+        assertNull(course);
+
+        /**
+         * Get the grades of an existent course without students
+         */
+        course = courseJdbcDao.getStudentsThatPassedCourse(COURSE_ID_1);
+        assertNotNull(course);
+        assertTrue(course.getStudents().isEmpty());
+
+        /**
+         * Get the grades of an existent course with students that have passed
+         */
+        course = courseJdbcDao.getStudentsThatPassedCourse(COURSE_ID_3);
+        assertNotNull(course);
+        assertEquals(1, course.getStudents().size());
+        assertEquals(1, course.getStudents().size());
+
+        Student student = course.getStudents().get(0);
+        assertEquals(expectedStudent.getDocket(), student.getDocket());
+
+        /**
+         * Get the grades of an existent course with students that have passed and students that haven't passed
+         */
+        userArgs.put(USER__DNI_COLUMN, DNI_2);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
+        userArgs.put(USER__ROLE_COLUMN, ROLE_2);
+        userInsert.execute(userArgs);
+
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_2);
+        docket2 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+
+        expectedStudent = new Student.Builder(docket1, DNI_1)
+                .build();
+
+        gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
+        gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_3);
+        gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_NOT_APPROVED);
+        gradeInsert.execute(gradeArgs);
+
+        course = courseJdbcDao.getStudentsThatPassedCourse(COURSE_ID_3);
+        assertEquals(1, course.getStudents().size());
+        assertEquals(1, course.getStudents().size());
+
+        student = course.getStudents().get(0);
+        assertEquals(expectedStudent.getDocket(), student.getDocket());
     }
 
 
@@ -588,5 +667,4 @@ public class CourseJdbcDaoTest {
         assertTrue( (list.get(0).equals(course1) || list.get(0).equals(course2) ));
         assertTrue( (list.get(1).equals(course1) || list.get(1).equals(course2) ));
     }
-
 }
