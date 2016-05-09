@@ -1,10 +1,14 @@
 package ar.edu.itba.paw.services;
 
+import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.UserDao;
+import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Role;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +22,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 public class UserServiceImplTest {
@@ -31,25 +36,63 @@ public class UserServiceImplTest {
     private static final int DNI_INVALID_LIMIT = 0;
     private static final int DNI_INVALID = -7357;
 
-    @Parameterized.Parameters
-    public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][] {
-                { /* PARAMS */ }
-        });
-    }
+    private static final String ROLE_1 = "ADMIN";
+    private static final String ROLE_2 = "STUDENT";
+
+    /* Mock objects */
 
     @Mock
     private UserDao userDao;
 
-    @Parameter(value = 1)
+    private UserServiceImpl userService;
+
+    /* // Mock objects */
+
+    /* Parameter */
+
+    @Parameter
     public int dni;
 
-    @Parameter(value = 2)
+    @Parameter(value = 1)
     public Answer<List<Role>> roles;
 
+    @Parameter(value = 2)
+    public List<Role> expectedRoles;
 
-    @Parameter(value = 3)
-    public Answer<List<Role>> expectedRoles;
+    /* // Parameter */
+
+    @Parameters
+    public static Collection<Object[]> data() {
+        Answer<List<Role>> roles1 = (invocation) -> {
+            final List<Role> roles = new LinkedList<>();
+            roles.add(Role.ADMIN);
+
+            return roles;
+        };
+
+        List<Role> expectedRoles1 = new LinkedList<>();
+        expectedRoles1.add(Role.ADMIN);
+
+        Answer<List<Role>> rolesInvalid = (invocation) -> {
+            final List<Role> roles = new LinkedList<>();
+
+            return roles;
+        };
+
+        List<Role> expectedRolesInvalid = new LinkedList<>();
+
+        return Arrays.asList(new Object[][] {
+                { DNI_VALID, roles1, expectedRoles1 },
+                { DNI_INVALID, rolesInvalid, expectedRolesInvalid }
+        });
+    }
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+        userService = new UserServiceImpl();
+        userService.setUserDao(userDao);
+    }
 
 
     @Test
@@ -57,8 +100,7 @@ public class UserServiceImplTest {
         if(roles != null) {
             when(userDao.getRole(dni)).then(roles);
         }
-
-        List<Role> roles = userDao.getRole(dni);
+        List<Role> roles = userService.getRole(dni);
         assertThat(roles, is(expectedRoles));
     }
 }
