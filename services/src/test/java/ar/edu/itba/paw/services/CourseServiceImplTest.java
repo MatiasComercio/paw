@@ -182,6 +182,19 @@ public class CourseServiceImplTest {
         assertThat(students, is(expectedStudents));
     }
 
+    @Test
+    public void testGetStudentsThatPassedCourse() {
+        if(courseAnswer != null) {
+            when(courseDao.getStudentsThatPassedCourse(courseId)).then(courseAnswer);
+        }
+        Course course;
+
+        course = courseService.getStudentsThatPassedCourse(courseId, studentFilter);
+        if(course != null) {
+            assertThat(course.getStudents(), is(expectedStudents));
+        }
+    }
+
     /* +++xtodo TODO: write remaining tests */
 
 }
