@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
@@ -18,6 +19,7 @@ import javax.sql.DataSource;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -101,6 +103,26 @@ public class UserJdbcDaoTest {
         roleInsert.execute(roleArgs);
         roleArgs.put(ROLE__ROLE_COLUMN, ROLE_2);
         roleInsert.execute(roleArgs);
+    }
+
+    @Test
+    public void getRole() {
+        final Map<String, Object> userArgs = new HashMap<>();
+
+        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+        userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+        userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+        userArgs.put(USER__PASSWORD_COLUMN, PASSWORD_1);
+        userArgs.put(USER__ROLE_COLUMN, ROLE_1);
+        userInsert.execute(userArgs);
+
+        List<Role> roles = userJdbcDao.getRole(DNI_1);
+        assertEquals(1, roles.size());
+        assertEquals(Role.ADMIN, roles.get(0));
+
+        roles = userJdbcDao.getRole(DNI_2);
+        assertEquals(0, roles.size());
     }
 
     @Test
