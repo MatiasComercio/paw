@@ -67,6 +67,43 @@ That's why we are usig <%@include ...%>--%>
                     loadCancelButton("cancelButton");
                 </c:set>
             </c:when>
+            <c:otherwise>
+                <jsp:include page="../template/adminActionsPanel.jsp" />
+                <jsp:include page="../template/resetPasswordForm.jsp" />
+                <%--<jsp:include page="../template/deleteAdminForm.jsp" /> +++xtodo --%>
+
+                <c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/resetPasswordForm.js"%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} `
+                    loadResetPasswordForm("resetPasswordButton");
+                </c:set>
+
+                <%--<c:set var="includeScripts" >
+                    ${includeScripts} ` <%@include file='/WEB-INF/js/template/deleteStudentForm.js'%>
+                </c:set>
+                <c:set var="loadScripts">
+                    ${loadScripts} ` loadDeleteStudentForm("deleteStudentButton");
+                </c:set> +++xtodo --%>
+                <c:choose>
+                    <c:when test="${section2 eq 'info'}">
+                        <c:set var="infoActive" value="active" scope="request"/>
+                    </c:when>
+                    <c:when test="${section2 eq 'edit'}">
+                        <c:set var="editActive" value="active" scope="request"/>
+
+                        <c:set var="includeScripts" >
+                            ${includeScripts} ` <%@include file='/WEB-INF/js/cancelButton.js'%>
+                        </c:set>
+                        <c:set var="loadScripts">
+                            ${loadScripts} `
+                            loadCancelButton("cancelButton");
+                        </c:set>
+                    </c:when>
+
+                </c:choose>
+            </c:otherwise>
         </c:choose>
     </c:when>
 

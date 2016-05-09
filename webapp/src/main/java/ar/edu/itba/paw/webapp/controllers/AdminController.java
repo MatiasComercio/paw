@@ -2,27 +2,23 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.models.users.Admin;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
-import ar.edu.itba.paw.webapp.auth.UserDetailsServiceImpl;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.AdminFilterForm;
 import ar.edu.itba.paw.webapp.forms.AdminForm;
+import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,10 +26,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * Controller of ${rootServerPath}/admins/** and ${rootServerPath}/admin/**
@@ -44,6 +38,7 @@ public class AdminController {
 	private final static Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
 	private static final String ADMINS_SECTION = "admins";
 	private static final String UNAUTHORIZED = "redirect:/errors/403";
+	private static final String NOT_FOUND = "404";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -62,6 +57,11 @@ public class AdminController {
 	@ModelAttribute("user")
 	public UserSessionDetails user(final Authentication authentication) {
 		return (UserSessionDetails) authentication.getPrincipal();
+	}
+
+	@ModelAttribute("resetPasswordForm")
+	public ResetPasswordForm resetPasswordForm() {
+		return new ResetPasswordForm();
 	}
 
 	@RequestMapping(value = "/admins", method = RequestMethod.GET)
@@ -211,6 +211,91 @@ public class AdminController {
 					null,
 					Locale.getDefault()));
 		}
+
+		final String referrer = request.getHeader("referer");
+		return new ModelAndView("redirect:" + referrer);
+	}
+
+
+	@RequestMapping("/admins/{dni}/info")
+	public ModelAndView viewAdmin (
+			@PathVariable("dni") final int dni,
+			@ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_ADMIN")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
+		final Admin admin = adminService.getByDni(dni);
+
+		if (admin == null) {
+			return new ModelAndView(NOT_FOUND);
+		}
+
+		final ModelAndView mav = new ModelAndView("admin");
+		mav.addObject("admin", admin);
+		mav.addObject("section", ADMINS_SECTION);
+		mav.addObject("section2", "info");
+
+		return mav;
+	}
+
+	@RequestMapping("/admins/{dni}/edit")
+	public ModelAndView editAdmin(
+			@PathVariable("dni") final int dni,
+			@ModelAttribute("adminForm") AdminForm adminForm,
+			final RedirectAttributes redirectAttributes,
+			@ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("EDIT_ADMIN")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
+		final Admin admin = adminService.getByDni(dni);
+
+		if (admin == null) {
+			return new ModelAndView(NOT_FOUND);
+		}
+
+		adminForm.loadFromAdmin(admin);
+
+		final ModelAndView mav = new ModelAndView("addUser");
+		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
+		mav.addObject("admin", admin);
+		mav.addObject("section", ADMINS_SECTION);
+		mav.addObject("section2", "edit");
+
+		return mav;
+	}
+
+	@RequestMapping(value = "/admins/{dni}/edit", method = RequestMethod.POST)
+	public ModelAndView editStudent(@PathVariable final int dni,
+	                                @Valid @ModelAttribute("adminForm") AdminForm adminForm,
+	                                final BindingResult errors,
+	                                RedirectAttributes redirectAttributes,
+	                                @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("EDIT_ADMIN")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
+		if (errors.hasErrors()){
+			return editAdmin(dni, adminForm, redirectAttributes, loggedUser);
+		}
+
+		final Admin admin = adminForm.build();
+		final Result result = adminService.update(dni, admin);
+
+		if(!result.equals(Result.OK)){
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			return editAdmin(dni, adminForm, redirectAttributes, loggedUser);
+		}
+
+		redirectAttributes.addFlashAttribute("alert", "success");
+		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editAdmin_success",
+				null,
+				Locale.getDefault()));
 
 		final String referrer = request.getHeader("referer");
 		return new ModelAndView("redirect:" + referrer);

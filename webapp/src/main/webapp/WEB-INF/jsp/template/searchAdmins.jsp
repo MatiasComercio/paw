@@ -106,9 +106,9 @@
                     <a class="btn btn-default" href="<c:url value="/admins/${admin.dni}/info" />" role="button">
                         <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
                     </a>
-                    <a class="btn btn-info" href="/admins/${admin.dni}/edit" role="button">
+<%--                    <a class="btn btn-info" href="/admins/${admin.dni}/edit" role="button">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-                    </a>
+                    </a>--%>
                 </td>
             </tr>
         </c:forEach>
