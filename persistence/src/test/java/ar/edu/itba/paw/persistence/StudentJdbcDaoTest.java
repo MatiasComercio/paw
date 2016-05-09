@@ -195,52 +195,43 @@ public class StudentJdbcDaoTest {
 	@Parameters
 	public static Collection<Object[]> data() {
 
-		final Student.Builder studentBuilder1 = new Student.Builder(DOCKET_VALID, DNI_1);
-		final Student.Builder studentBuilder2 = new Student.Builder(DOCKET_VALID_LIMIT, DNI_2);
+		final Student.Builder studentBuilder1 = new Student.Builder(DOCKET_1, DNI_1)
+				.firstName(FIRST_NAME_1)
+				.lastName(LAST_NAME_1)
+				.email(EMAIL_1);
+		final Student.Builder studentBuilder2 = new Student.Builder(DOCKET_2, DNI_2)
+				.firstName(FIRST_NAME_2)
+				.lastName(LAST_NAME_2)
+				.email(EMAIL_2);
 
-        /* Note that getStudentCourses calls getByFilter with null value too */
-		Answer<Student> studentAnswer = (invocation) -> {
-			final List<Student.Builder> students = new LinkedList<>();
-			students.add(studentBuilder1);
-			students.add(studentBuilder2);
+		final Student expectedStudent1 = new Student.Builder(DOCKET_1, DNI_1)
+				.firstName(FIRST_NAME_1_EXPECTED)
+				.lastName(LAST_NAME_1_EXPECTED)
+				.email(EMAIL_1)
+				.build();
 
-			Object[] objects = invocation.getArguments();
-			int id = (int) objects[0];
-			final Student student = new Student.Builder().build();
-			students.;
+		final Student expectedStudent2 = new Student.Builder(DOCKET_2, DNI_2)
+				.firstName(FIRST_NAME_2_EXPECTED)
+				.lastName(LAST_NAME_2_EXPECTED)
+				.email(EMAIL_2)
+				.build();
+
+		Answer<Student> studentAnswer1 = (invocation) -> {
+			final Student student = studentBuilder1.build();
 
 			return student;
 		};
 
+		Answer<Student> studentAnswer2 = (invocation) -> {
+			final Student student = studentBuilder2.build();
 
-		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder().docket(DOCKET_VALID).build();
-		Answer<List<Student>> studentServiceGetByFilter1 = (invocation) -> {
-			final List<Student> students = new LinkedList<>();
-			students.add(student1);
-			students.add(student2);
-
-			return students;
+			return student;
 		};
-
-		Answer<List<Student>> studentServiceGetByFilter2 = (invocation) -> {
-			final List<Student> students = new LinkedList<>();
-			students.add(student1);
-
-			return students;
-		};
-
-
-		List<Student> expectedStudents1 = new LinkedList<>();
-		expectedStudents1.add(student1);
-		expectedStudents1.add(student2);
-
-		List<Student> expectedStudents2 = new LinkedList<>();
-		expectedStudents2.add(student1);
 
 		return Arrays.asList(new Object[][] {
-				{ DNI_1, studentBuilder1, user1, expectedStudent1 },
-				{ DNI_2, studentFilter, user2, studentServiceGetByFilter2, expectedStudents2},
-				{ DNI_3, studentFilter, null, null, null }
+				{ DNI_1, studentBuilder1, studentAnswer1, expectedStudent1 },
+				{ DNI_2, studentBuilder2, studentAnswer2, expectedStudent2 },
+				{ DNI_3, null, null, null, null }
 		});
 	}
 
@@ -252,7 +243,7 @@ public class StudentJdbcDaoTest {
 		if(studentAnswer != null) {
 			when(userDao.getByDni(dni, studentBuilder)).then((Answer<?>) studentAnswer);
 		}
-
+		System.out.println(dni);
 		Student student = studentJdbcDao.getByDni(dni);
 		assertThat(student, is(expectedStudent));
 	}
