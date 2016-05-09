@@ -45,6 +45,9 @@ public class StudentJdbcDaoTest {
 	private static final String GRADE_TABLE = "grade";
 	private static final String COURSE_TABLE = "course";
 	private static final String INSCRIPTION_TABLE = "inscription";
+	private static final String ROLE_TABLE = "role";
+
+	private static final String ROLE__ROLE_COLUMN = "role";
 
 	private static final String STUDENT__DOCKET_COLUMN = "docket";
 	private static final String STUDENT__DNI_COLUMN = "dni";
@@ -175,6 +178,7 @@ public class StudentJdbcDaoTest {
 	private StudentJdbcDao studentJdbcDao;
 
 	private JdbcTemplate jdbcTemplate;
+	private SimpleJdbcInsert roleInsert;
 	private SimpleJdbcInsert userInsert;
 	private SimpleJdbcInsert studentInsert;
 	private SimpleJdbcInsert addressInsert;
@@ -191,6 +195,7 @@ public class StudentJdbcDaoTest {
 		courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
 		gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);
 		inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE).usingColumns(INSCRIPTION__COURSE_ID_COLUMN, INSCRIPTION__DOCKET_COLUMN);
+		roleInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ROLE_TABLE);
 		/* Order of deletation is important so as not to remove tables referenced by others */
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, INSCRIPTION_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, GRADE_TABLE);
@@ -198,6 +203,13 @@ public class StudentJdbcDaoTest {
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, ADDRESS_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
+		JdbcTestUtils.deleteFromTables(jdbcTemplate, ROLE_TABLE);
+
+		final Map<String, Object> roleArgs = new HashMap<>();
+		roleArgs.put(ROLE__ROLE_COLUMN, ROLE_1);
+		roleInsert.execute(roleArgs);
+		roleArgs.put(ROLE__ROLE_COLUMN, ROLE_2);
+		roleInsert.execute(roleArgs);
 	}
 
     @Test
@@ -284,6 +296,61 @@ public class StudentJdbcDaoTest {
         assertEquals(ADDRESS__TELEPHONE_EXPECTED, address.getTelephone());
         assertEquals(ADDRESS__ZIP_CODE_EXPECTED, address.getZipCode());
     }
+
+	@Test
+	public void updateAddress(){
+		final Map<String, Object> userArgs = new HashMap<>();
+		final Map<String, Object> studentArgs = new HashMap<>();
+		final Map<String, Object> addressArgs = new HashMap<>();
+
+		userArgs.put(USER__DNI_COLUMN, DNI_1);
+		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
+		userInsert.execute(userArgs);
+
+		studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+		docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+
+		addressArgs.put(ADDRESS__CITY_COLUMN, ADDRESS__CITY_VALUE);
+		addressArgs.put(ADDRESS__COUNTRY_COLUMN, ADDRESS__COUNTRY_VALUE);
+		addressArgs.put(ADDRESS__DNI_COLUMN, DNI_1);
+		addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, ADDRESS__NEIGHBORHOOD_VALUE);
+		addressArgs.put(ADDRESS__STREET_COLUMN, ADDRESS__STREET_VALUE);
+		addressArgs.put(ADDRESS__NUMBER_COLUMN, ADDRESS__NUMBER_VALUE);
+		addressArgs.put(ADDRESS__FLOOR_COLUMN, ADDRESS__FLOOR_VALUE);
+		addressArgs.put(ADDRESS__DOOR_COLUMN, ADDRESS__DOOR_VALUE);
+		addressArgs.put(ADDRESS__TELEPHONE_COLUMN, ADDRESS__TELEPHONE_VALUE);
+		addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, ADDRESS__ZIP_CODE_VALUE);
+		addressInsert.execute(addressArgs);
+
+		Address addr = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
+				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED)
+				.floor(ADDRESS__FLOOR_EXPECTED)
+				.door(ADDRESS__DOOR_EXPECTED)
+				.telephone(ADDRESS__TELEPHONE_EXPECTED)
+				.zipCode(ADDRESS__ZIP_CODE_EXPECTED)
+				.build();
+
+		Student student = new Student.Builder(docket1, DNI_1).address(addr).build();
+
+		studentJdbcDao.updateAddress(DNI_1, student);
+
+		Student student2 = studentJdbcDao.getByDocket(docket1);
+		Address address = student2.getAddress();
+
+		assertEquals(ADDRESS__CITY_EXPECTED, address.getCity());
+		assertEquals(ADDRESS__COUNTRY_EXPECTED, address.getCountry());
+		assertEquals(ADDRESS__NEIGHBORHOOD_EXPECTED, address.getNeighborhood());
+		assertEquals(ADDRESS__STREET_EXPECTED, address.getStreet());
+		assertEquals(ADDRESS__NUMBER_EXPECTED, address.getNumber());
+		assertEquals(ADDRESS__FLOOR_EXPECTED, address.getFloor());
+		assertEquals(ADDRESS__DOOR_EXPECTED, address.getDoor());
+		assertEquals(ADDRESS__TELEPHONE_EXPECTED, address.getTelephone());
+		assertEquals(ADDRESS__ZIP_CODE_EXPECTED, address.getZipCode());
+
+	}
 
     @Test
     public void hasAddress() {
