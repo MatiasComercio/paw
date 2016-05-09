@@ -311,21 +311,21 @@ public class StudentJdbcDaoTest {
 
         /**
          * add a second user and change dni to existing user's dni
+		 * Because the student can't change the dni then the result will be ok
          */
-        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__DNI_COLUMN, DNI_2);
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
 		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
-        studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_2);
         docket2 = studentInsert.executeAndReturnKey(studentArgs).intValue();
-        student = new Student.Builder(docket2, DNI_2).build();
+        student = new Student.Builder(docket2, DNI_1).build();
 
         result = studentJdbcDao.update(docket2, DNI_1, student);
-        assertNotEquals(Result.OK, result);
-        assertEquals(Result.STUDENT_EXISTS_DNI, result);
+        assertEquals(Result.OK, result);
     }
 
 	@Test
