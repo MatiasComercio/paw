@@ -34,6 +34,9 @@ public class AdminJdbcDaoTest {
     private static final String USER_TABLE = "users";
     private static final String ADDRESS_TABLE = "address";
     private static final String ROLE_TABLE = "role";
+    private static final String AUTHORITY_TABLE = "authority";
+    private static final String ROLE_AUTHORITIES_TABLE = "role_authorities";
+
 
     /* /TABLE NAMES */
 
@@ -61,6 +64,9 @@ public class AdminJdbcDaoTest {
     private static final String ADDRESS__ZIP_CODE_COLUMN = "zip_code";
 
     private static final String ROLE__ROLE_COLUMN = "role";
+    private static final String AUTHORITY__AUTHORITY_COLUMN = "authority";
+    private static final String ROLE_AUTHORITIES__ROLE_COLUMN = "role";
+    private static final String ROLE_AUTHORITIES__AUTHORITY_COLUMN = "authority";
 
     /* COLS NAMES */
 
@@ -89,6 +95,17 @@ public class AdminJdbcDaoTest {
     private static final String ROLE_1 = "ADMIN";
     private static final String ROLE_2 = "STUDENT";
 
+    private static final String AUTHORITY_1 = "ADD_INSCRIPTION";
+    private static final String AUTHORITY_2 = "DELETE_INSCRIPTION";
+
+    private static final String DISABLE_ADD_INSCRIPTION = "DELETE FROM " + ROLE_AUTHORITIES_TABLE + " WHERE " +
+    ROLE_AUTHORITIES__ROLE_COLUMN + " = " + "'STUDENT'" + " AND " + ROLE_AUTHORITIES__AUTHORITY_COLUMN
+    + " = " + "'ADD_INSCRIPTION'";
+
+    private static final String DISABLE_DELETE_INSCRIPTION = "DELETE FROM " + ROLE_AUTHORITIES_TABLE + " WHERE " +
+    ROLE_AUTHORITIES__ROLE_COLUMN + " = " + "'STUDENT'" + " AND " + ROLE_AUTHORITIES__AUTHORITY_COLUMN
+    + " = " + "'DELETE_INSCRIPTION'";
+
     @Autowired
     private DataSource dataSource;
 
@@ -100,20 +117,29 @@ public class AdminJdbcDaoTest {
     private SimpleJdbcInsert userInsert;
     private SimpleJdbcInsert adminInsert;
     private SimpleJdbcInsert roleInsert;
+    private SimpleJdbcInsert authorityInsert;
+    private SimpleJdbcInsert roleAuthoritiesInsert;
 
     @Before
     public void setUp() {
         jdbcTemplate = new JdbcTemplate(dataSource);
 
         roleInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ROLE_TABLE);
+        authorityInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(AUTHORITY_TABLE)
+            .usingColumns(AUTHORITY__AUTHORITY_COLUMN);
         userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
         adminInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADMIN_TABLE);
+        roleAuthoritiesInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ROLE_AUTHORITIES_TABLE).
+                usingColumns(ROLE_AUTHORITIES__ROLE_COLUMN, ROLE_AUTHORITIES__AUTHORITY_COLUMN);
+
 
         JdbcTestUtils.deleteFromTables(jdbcTemplate, ADMIN_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
         JdbcTestUtils.deleteFromTables(jdbcTemplate, ROLE_TABLE);
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, AUTHORITY_TABLE);
 
         final Map<String, Object> roleArgs = new HashMap<>();
+        final Map<String, Object> authorityArgs = new HashMap<>();
         final Map<String, Object> userArgs = new HashMap<>();
         final Map<String, Object> adminArgs = new HashMap<>();
 
@@ -121,6 +147,11 @@ public class AdminJdbcDaoTest {
         roleInsert.execute(roleArgs);
         roleArgs.put(ROLE__ROLE_COLUMN, ROLE_2);
         roleInsert.execute(roleArgs);
+
+        authorityArgs.put(AUTHORITY__AUTHORITY_COLUMN, AUTHORITY_1);
+        authorityInsert.execute(authorityArgs);
+        authorityArgs.put(AUTHORITY__AUTHORITY_COLUMN, AUTHORITY_2);
+        authorityInsert.execute(authorityArgs);
 
         /* Insertion of User */
         userArgs.put(USER__DNI_COLUMN, DNI_1);
@@ -323,5 +354,124 @@ public class AdminJdbcDaoTest {
 
         Admin adminDeleted = adminJdbcDao.getByDni(DNI_1);
         assertNull(adminDeleted);
+    }
+
+    @Test
+    public void testEnableAddInscription(){
+
+        //Make sure AddInscription authority is disabled for students
+        jdbcTemplate.update(DISABLE_ADD_INSCRIPTION);
+
+        adminJdbcDao.enableAddInscriptions();
+
+        //Check authority is enabled
+        Integer addInscriptionEnabled = jdbcTemplate.queryForObject("SELECT count (*) FROM " + ROLE_AUTHORITIES_TABLE + " WHERE " +
+                ROLE_AUTHORITIES__ROLE_COLUMN + " = 'STUDENT' AND " + ROLE_AUTHORITIES__AUTHORITY_COLUMN + " = "
+                + "'ADD_INSCRIPTION'", Integer.class);
+        assertEquals(addInscriptionEnabled, Integer.valueOf(1));
+        //assertEquals(addInscriptionEnabled, 1);
+
+    }
+
+    @Test
+    public void testDisableAddInscription(){
+
+        //Make sure AddInscription authority is enabled for students
+        final Map<String, Object> roleAuthoritiesArgs = new HashMap<>();
+        roleAuthoritiesArgs.put(ROLE_AUTHORITIES__ROLE_COLUMN, "STUDENT");
+        roleAuthoritiesArgs.put(ROLE_AUTHORITIES__AUTHORITY_COLUMN, "ADD_INSCRIPTION");
+        roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
+
+        adminJdbcDao.disableAddInscriptions();
+
+        //Check authority is disabled
+        Integer addInscriptionEnabled = jdbcTemplate.queryForObject("SELECT count (*) FROM " + ROLE_AUTHORITIES_TABLE + " WHERE " +
+                ROLE_AUTHORITIES__ROLE_COLUMN + " = 'STUDENT' AND " + ROLE_AUTHORITIES__AUTHORITY_COLUMN + " = "
+                + "'ADD_INSCRIPTION'", Integer.class);
+
+        assertEquals(addInscriptionEnabled, Integer.valueOf(0));
+
+    }
+
+    @Test
+    public void testEnableDeleteInscription(){
+
+        //Make sure DeleteInscription authority is disabled for students
+        jdbcTemplate.update(DISABLE_DELETE_INSCRIPTION);
+
+        adminJdbcDao.enableDeleteInscriptions();
+
+        //Check authority is enabled
+        Integer deleteInscriptionEnabled = jdbcTemplate.queryForObject("SELECT count (*) FROM " + ROLE_AUTHORITIES_TABLE + " WHERE " +
+                ROLE_AUTHORITIES__ROLE_COLUMN + " = 'STUDENT' AND " + ROLE_AUTHORITIES__AUTHORITY_COLUMN + " = "
+                + "'DELETE_INSCRIPTION'", Integer.class);
+
+        assertEquals(deleteInscriptionEnabled, Integer.valueOf(1));
+
+    }
+
+    @Test
+    public void testDisableDeleteInscription(){
+
+        //Make sure DeleteInscription authority is enabled for students
+        final Map<String, Object> roleAuthoritiesArgs = new HashMap<>();
+        roleAuthoritiesArgs.put(ROLE_AUTHORITIES__ROLE_COLUMN, "STUDENT");
+        roleAuthoritiesArgs.put(ROLE_AUTHORITIES__AUTHORITY_COLUMN, "DELETE_INSCRIPTION");
+        roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
+
+        adminJdbcDao.disableDeleteInscriptions();
+
+        //Check authority is disabled
+        Integer deleteInscriptionEnabled = jdbcTemplate.queryForObject("SELECT count (*) FROM " + ROLE_AUTHORITIES_TABLE + " WHERE " +
+                ROLE_AUTHORITIES__ROLE_COLUMN + " = 'STUDENT' AND " + ROLE_AUTHORITIES__AUTHORITY_COLUMN + " = "
+                + "'DELETE_INSCRIPTION'", Integer.class);
+
+        assertEquals(deleteInscriptionEnabled, Integer.valueOf(0));
+
+    }
+
+    @Test
+    public void testIsInscriptionEnabled(){
+	/* Test when both authorities are disabled */
+
+        //Disable Add and Delete Inscription Authorities
+        jdbcTemplate.update(DISABLE_ADD_INSCRIPTION);
+        jdbcTemplate.update(DISABLE_DELETE_INSCRIPTION);
+
+        assertEquals(adminJdbcDao.isInscriptionEnabled(), false);
+
+	/* Test when only AddInscription authority is enabled */
+
+        //Make sure AddInscription authority is enabled for students
+        final Map<String, Object> roleAuthoritiesArgs = new HashMap<>();
+        roleAuthoritiesArgs.put(ROLE_AUTHORITIES__ROLE_COLUMN, "STUDENT");
+        roleAuthoritiesArgs.put(ROLE_AUTHORITIES__AUTHORITY_COLUMN, "ADD_INSCRIPTION");
+        roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
+
+        assertEquals(adminJdbcDao.isInscriptionEnabled(), false);
+
+	/* Test when only DeleteInscription authority is enabled */
+
+        //Disable Add Inscription Authorities
+        jdbcTemplate.update(DISABLE_ADD_INSCRIPTION);
+
+        //Make sure AddInscription authority is enabled for students
+        final Map<String, Object> roleAuthoritiesArgs2 = new HashMap<>();
+        roleAuthoritiesArgs.put(ROLE_AUTHORITIES__ROLE_COLUMN, "STUDENT");
+        roleAuthoritiesArgs.put(ROLE_AUTHORITIES__AUTHORITY_COLUMN, "DELETE_INSCRIPTION");
+        roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
+
+        assertEquals(adminJdbcDao.isInscriptionEnabled(), false);
+
+	/* Test when both authorities are enabled */
+
+        //Make sure AddInscription authority is enabled for students
+        final Map<String, Object> roleAuthoritiesArgs3 = new HashMap<>();
+        roleAuthoritiesArgs.put(ROLE_AUTHORITIES__ROLE_COLUMN, "STUDENT");
+        roleAuthoritiesArgs.put(ROLE_AUTHORITIES__AUTHORITY_COLUMN, "ADD_INSCRIPTION");
+        roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
+
+        assertEquals(adminJdbcDao.isInscriptionEnabled(), true);
+
     }
 }
