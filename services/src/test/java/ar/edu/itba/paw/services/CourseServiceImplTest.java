@@ -187,6 +187,10 @@ public class CourseServiceImplTest {
         if(courseAnswer != null) {
             when(courseDao.getStudentsThatPassedCourse(courseId)).then(courseAnswer);
         }
+        if(studentServiceGetByFilter != null) {
+            when(studentService.getByFilter(studentFilter)).then(studentServiceGetByFilter);
+
+        }
         Course course;
 
         course = courseService.getStudentsThatPassedCourse(courseId, studentFilter);
