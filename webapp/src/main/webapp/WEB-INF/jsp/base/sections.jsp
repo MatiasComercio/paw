@@ -287,6 +287,16 @@ That's why we are usig <%@include ...%>--%>
                     </c:set>
                 </c:when>
 
+                <c:when test="${section2=='studentsPassed'}">
+                    <c:set var="courseStudentsApprovedActive" value="active" scope="request"/>
+
+                    <c:set var="includeScripts" >
+                        ${includeScripts} ` <%@include file="../../js/template/searchStudents.js"%>
+                    </c:set>
+                    <c:set var="loadScripts">
+                        ${loadScripts} ` loadStudentSearch();
+                    </c:set>
+                </c:when>
 
                 <c:when test="${section2=='addCorrelative'}">
                     <c:set var="addCorrelativeActive" value="active" scope="request"/>

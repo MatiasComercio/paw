@@ -135,4 +135,7 @@ public interface CourseService {
      */
     Integer getTotalPlanCredits();
 
+    /* +++xtest */
+    /* +++xdocument */
+	Course getStudentsThatPassedCourse(int id, StudentFilter studentFilter);
 }

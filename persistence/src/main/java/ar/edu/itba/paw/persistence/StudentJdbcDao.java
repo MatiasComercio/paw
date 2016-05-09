@@ -81,6 +81,8 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
 	private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
 
+	private static final BigDecimal VALUE_GRADE_PASS = BigDecimal.valueOf(4);
+
 	private static final String GET_BY_DOCKET =
 			"SELECT * " +
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
@@ -164,6 +166,14 @@ public class StudentJdbcDao implements StudentDao {
 			+ " AND " + GRADE__COURSE_ID_COLUMN + " = ? "
 			+ " AND " + GRADE__GRADE_COLUMN + " >= " + APPROVING_GRADE;
 
+	private static final String QUERY_GET_STUDENTS_PASSED = "SELECT * FROM "
+			+ USER_TABLE
+			+ ", " + STUDENT_TABLE
+			+ ", " + GRADE_TABLE
+			+ " WHERE " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN
+			+ " AND " + STUDENT_TABLE + "." + STUDENT__DOCKET_COLUMN + " = " + GRADE_TABLE + "." + GRADE__DOCKET_COLUMN
+			+ " AND " + GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = ? "
+			+ " AND " + GRADE_TABLE + "." + GRADE__GRADE_COLUMN + " >= " + VALUE_GRADE_PASS;
 
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
@@ -555,6 +565,11 @@ public class StudentJdbcDao implements StudentDao {
 		}
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
 		return userDao.getByDni(dni, studentBuilder);
+	}
+
+	@Override
+	public List<Student> getStudentsPassed(final int id) {
+		return jdbcTemplate.query(QUERY_GET_STUDENTS_PASSED, studentRowMapper, id);
 	}
 
 	private Integer getDocketByDni(final int dni) {

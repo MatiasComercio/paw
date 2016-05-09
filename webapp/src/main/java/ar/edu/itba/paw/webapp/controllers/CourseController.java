@@ -423,4 +423,48 @@ public class CourseController {
 
 	}
 
+	@RequestMapping(value = "/courses/{id}/students_passed", method = RequestMethod.GET)
+	public ModelAndView getCourseStudentsThatPassed(@PathVariable("id") final Integer id, final Model model,
+	                                                @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_STUDENTS_APPROVED")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
+		if (!model.containsAttribute("studentFilterForm")) {
+			model.addAttribute("studentFilterForm", new StudentFilterForm());
+		}
+
+		final StudentFilterForm studentFilterForm = (StudentFilterForm) model.asMap().get("studentFilterForm");
+		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+				.docket(studentFilterForm.getDocket())
+				.firstName(studentFilterForm.getFirstName())
+				.lastName(studentFilterForm.getLastName())
+				.build();
+
+		// +++ximprove with Spring Security
+		final Course course = courseService.getStudentsThatPassedCourse(id, studentFilter);
+		if (course == null) {
+			return new ModelAndView("forward:/errors/404");
+		}
+
+		final ModelAndView mav = new ModelAndView("courseStudents");
+		mav.addObject("course", course);
+		mav.addObject("students", course.getStudents());
+		mav.addObject("section2", "studentsPassed");
+		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students_passed/studentFilterForm");
+		return mav;
+	}
+
+	@RequestMapping(value = "/courses/{id}/students_passed/studentFilterForm", method = RequestMethod.GET)
+	public ModelAndView getCourseStudentsThatPassedFilterForm(
+			@PathVariable("id") final int id,
+			@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
+			final BindingResult errors,
+			final RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.studentFilterForm", errors);
+		redirectAttributes.addFlashAttribute("studentFilterForm", studentFilterForm);
+		return new ModelAndView("redirect:/courses/" + id + "/students_passed");
+	}
+
 }

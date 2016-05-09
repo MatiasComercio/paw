@@ -141,4 +141,7 @@ public interface CourseDao {
      */
     Integer getTotalPlanCredits();
 
+    /* +++ xtest */
+    /* +++ xdocument */
+    Course getStudentsThatPassedCourse(int id);
 }

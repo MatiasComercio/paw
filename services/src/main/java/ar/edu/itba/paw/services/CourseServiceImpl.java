@@ -239,4 +239,24 @@ public class CourseServiceImpl implements CourseService {
         courses.remove(getById(courseId));
         return courses;
     }
+
+    @Override
+    public Course getStudentsThatPassedCourse(final int id, final StudentFilter studentFilter) {
+        if (id <= 0) {
+            return null;
+        }
+
+        final Course course = courseDao.getStudentsThatPassedCourse(id);
+        if (course == null) {
+            return null;
+        }
+
+        final List<Student> students = course.getStudents();
+        if (students  != null) {
+            students.retainAll(studentService.getByFilter(studentFilter));
+        }
+        course.setStudents(students);
+
+        return course;
+    }
 }

@@ -164,4 +164,8 @@ public interface StudentDao {
 	 * @return The student with the given dni, if exists; null otherwise.
 	 */
 	Student getByDni(final int dni);
+
+	/* +++xtest */
+	/* +++xdocument */
+	List<Student> getStudentsPassed(int id);
 }
