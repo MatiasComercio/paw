@@ -126,7 +126,6 @@ public interface StudentService {
 	Collection<Course> getApprovedCourses(int docket);
 
 
-	/* +++xtest */
 	/**
 	 * Gets the student's main data that matches the given dni.
 	 * If no student exists with that dni, null is returned.
