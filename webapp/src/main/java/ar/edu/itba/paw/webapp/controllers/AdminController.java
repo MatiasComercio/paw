@@ -43,6 +43,7 @@ import java.util.Map;
 public class AdminController {
 	private final static Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
 	private static final String ADMINS_SECTION = "admins";
+	private static final String UNAUTHORIZED = "redirect:/errors/403";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -66,7 +67,12 @@ public class AdminController {
 	@RequestMapping(value = "/admins", method = RequestMethod.GET)
 	public ModelAndView admins(@Valid @ModelAttribute("adminFilterForm") final AdminFilterForm adminFilterForm,
 	                                final BindingResult errors,
-	                                final Model model) {
+	                                final Model model,
+	                           @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_ADMINS")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		final ModelAndView mav = new ModelAndView("admins");
 
@@ -122,7 +128,12 @@ public class AdminController {
 	@RequestMapping(value = "/admins/add_admin", method = RequestMethod.GET)
 	public ModelAndView adminsAddAdminG(
 			@ModelAttribute("adminForm") final AdminForm adminForm,
-			final RedirectAttributes redirectAttributes) {
+			final RedirectAttributes redirectAttributes,
+			@ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_ADMIN")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		ModelAndView mav = new ModelAndView("addUser");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
@@ -137,16 +148,21 @@ public class AdminController {
 	public ModelAndView adminsAddAdminP(
 			@Valid @ModelAttribute("adminForm") AdminForm adminForm,
 			final BindingResult errors,
-			final RedirectAttributes redirectAttributes) {
+			final RedirectAttributes redirectAttributes,
+			@ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_ADMIN")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		if (errors.hasErrors()){
-			return adminsAddAdminG(adminForm, null);
+			return adminsAddAdminG(adminForm, null, loggedUser);
 		}
 		Admin admin = adminForm.build();
 		Result result = adminService.create(admin);
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return adminsAddAdminG(adminForm, redirectAttributes);
+			return adminsAddAdminG(adminForm, redirectAttributes, loggedUser);
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addAdmin_success",
@@ -156,7 +172,12 @@ public class AdminController {
 	}
 
 	@RequestMapping(value= "/admins/disable_inscriptions", method=RequestMethod.POST)
-	public ModelAndView disableInscriptions(RedirectAttributes redirectAttributes){
+	public ModelAndView disableInscriptions(RedirectAttributes redirectAttributes,
+	                                        @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("DISABLE_INSCRIPTION")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		Result result = adminService.disableInscriptions();
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
@@ -174,7 +195,11 @@ public class AdminController {
 	}
 
 	@RequestMapping(value= "/admins/enable_inscriptions", method=RequestMethod.POST)
-	public ModelAndView enableInscriptions(RedirectAttributes redirectAttributes){
+	public ModelAndView enableInscriptions(RedirectAttributes redirectAttributes,
+	                                       @ModelAttribute("user") UserSessionDetails loggedUser) {
+		if (!loggedUser.hasAuthority("ENABLE_INSCRIPTION")) {
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		Result result = adminService.enableInscriptions();
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
