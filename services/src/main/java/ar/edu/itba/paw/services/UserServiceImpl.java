@@ -92,4 +92,8 @@ public class UserServiceImpl implements UserService {
 		return userDao.delete(dni);
 	}
 
+	/* Test purpose only */
+	/* default */ void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
+	}
 }
