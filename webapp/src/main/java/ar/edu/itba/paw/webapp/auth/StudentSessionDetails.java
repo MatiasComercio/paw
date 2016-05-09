@@ -42,6 +42,7 @@ public class StudentSessionDetails extends User implements UserSessionDetails {
 		return student.getGrades();
 	}
 
+	@Override
 	public int getDni() {
 		return student.getDni();
 	}

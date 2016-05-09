@@ -64,24 +64,24 @@ public class AdminForm {
                 birthday(birthday).address(address).build();
     }
 
-    public void loadFromStudent(Admin student){
-        this.dni = student.getDni();
-        this.firstName = student.getFirstName();
-        this.lastName = student.getLastName();
-//        String genre = User.Genre.getGenre(student.getGenre()); /* +++xdoing */
+    public void loadFromAdmin(Admin admin){
+        this.dni = admin.getDni();
+        this.firstName = admin.getFirstName();
+        this.lastName = admin.getLastName();
+//        String genre = User.Genre.getGenre(admin.getGenre()); /* +++xdoing */
 //        this.genre = genre == null ? null : genre.equals("M") ? User.Genre.M : genre.equals("F") ? User.Genre.F : null;
-        this.genre = student.getGenre();
-        this.birthday = student.getBirthday();
-        this.address = student.getAddress();
-        this.country = student.getAddress().getCountry();
-        this.city = student.getAddress().getCity();
-        this.neighborhood = student.getAddress().getNeighborhood();
-        this.street = student.getAddress().getStreet();
-        this.number = student.getAddress().getNumber();
-        this.floor = student.getAddress().getFloor();
-        this.door = student.getAddress().getDoor();
-        this.telephone = student.getAddress().getTelephone();
-        this.zipCode = student.getAddress().getZipCode();
+        this.genre = admin.getGenre();
+        this.birthday = admin.getBirthday();
+        this.address = admin.getAddress();
+        this.country = admin.getAddress().getCountry();
+        this.city = admin.getAddress().getCity();
+        this.neighborhood = admin.getAddress().getNeighborhood();
+        this.street = admin.getAddress().getStreet();
+        this.number = admin.getAddress().getNumber();
+        this.floor = admin.getAddress().getFloor();
+        this.door = admin.getAddress().getDoor();
+        this.telephone = admin.getAddress().getTelephone();
+        this.zipCode = admin.getAddress().getZipCode();
 
     }
 

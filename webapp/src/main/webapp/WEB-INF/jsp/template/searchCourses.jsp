@@ -73,7 +73,7 @@
         <tbody>
         <c:if test="${empty courses}">
             <tr class="bg-warning">
-                <td colspan="4" class="text-danger text-center"><spring:message code="noCoursesFound"/></td>
+                <td colspan="5" class="text-danger text-center"><spring:message code="noCoursesFound"/></td>
             </tr>
         </c:if>
         <c:forEach items="${courses}" var="eachCourse">
@@ -88,14 +88,14 @@
                             <c:choose>
                                 <c:when test="${section2 eq 'inscription'}">
                                     <sec:authorize access="hasAuthority('ROLE_ADD_INSCRIPTION')">
-                                        <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
-                                            <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
-                                        </a>
                                         <button name="inscription" class="btn btn-info" type="button"
                                                 data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
                                                 data-toggle="modal" data-target="#enrollFormConfirmationModal">
                                             <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="enroll"/>
                                         </button>
+                                        <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
+                                            <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                                        </a>
                                     </sec:authorize>
                                 </c:when>
                                 <c:when test="${section2 eq 'courses'}">
@@ -110,11 +110,13 @@
                                             </button>
                                         </sec:authorize>
                                         <sec:authorize access="hasAuthority('ROLE_DELETE_INSCRIPTION')">
-                                            <button name="unenroll" class="btn btn-danger" type="button"
-                                                    data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
-                                                    data-toggle="modal" data-target="#enrollFormConfirmationModal">
-                                                <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="unenroll"/>
-                                            </button>
+                                            <c:if test="${user.id eq student.docket}">
+                                                <button name="unenroll" class="btn btn-danger" type="button"
+                                                        data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
+                                                        data-toggle="modal" data-target="#enrollFormConfirmationModal">
+                                                    <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="unenroll"/>
+                                                </button>
+                                            </c:if>
                                         </sec:authorize>
                                 </c:when>
                                 <c:otherwise>

@@ -23,6 +23,7 @@
             </div>
             <div class="modal-body">
                 <%-- Correlative Form --%>
+                <c:url var="correlativeFormAction" value="${correlativeFormAction}" />
                 <form:form class="form-horizontal" id="correlative_form" modelAttribute="correlativeForm" action="${correlativeFormAction}" method="post" enctype="application/x-www-form-urlencoded">
                     <div class="form-group">
                         <form:label path="courseId" class="col-xs-4 control-label"><spring:message code="courseId"/></form:label>

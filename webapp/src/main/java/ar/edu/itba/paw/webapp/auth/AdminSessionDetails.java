@@ -28,6 +28,7 @@ public class AdminSessionDetails extends User implements UserSessionDetails {
         this.admin = builder.admin;
     }
 
+    @Override
     public int getDni() {
         return admin.getDni();
     }

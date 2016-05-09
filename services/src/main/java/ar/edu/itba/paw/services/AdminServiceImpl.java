@@ -66,14 +66,7 @@ public class AdminServiceImpl implements AdminService {
         if(dni <= 0) {
             return Result.ERROR_DNI_OUT_OF_BOUNDS;
         }
-        if(admin.getBirthday() == null ||
-                admin.getEmail() == null ||
-                admin.getFirstName() == null ||
-                admin.getLastName() == null ||
-                admin.getGenre() == null ||
-                admin.getEmail() == null) {
-            return Result.INVALID_INPUT_PARAMETERS;
-        }
+
         return userService.update(dni, admin);
     }
 

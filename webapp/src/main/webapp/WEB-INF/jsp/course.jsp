@@ -106,15 +106,17 @@
                                     <td>${ correlative.name }</td>
                                     <td>${ correlative.credits }</td>
                                     <td>
-                                        <a class="btn btn-default btn-sm" href="<c:url value="/courses/${correlative.id}/info" />" role="button">
+                                        <a class="btn btn-default" href="<c:url value="/courses/${correlative.id}/info" />" role="button">
                                             <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
                                         </a>
-                                        <button name="deleteCorrelativeButton" class="btn btn-danger btn-xs" type="button"
+                                        <sec:authorize access="hasAuthority('ROLE_DELETE_CORRELATIVE')">
+                                        <button name="deleteCorrelativeButton" class="btn btn-danger" type="button"
                                                 data-course_id="${ course.id }" data-course_name="${ course.name }"
                                                 data-correlative_id="${correlative.id}" data-correlative_name="${correlative.name}"
                                                 data-toggle="modal" data-target="#correlativeFormConfirmationModal">
                                             <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
                                         </button>
+                                        </sec:authorize>
                                     <td>
                                 </tr>
                             </c:forEach>

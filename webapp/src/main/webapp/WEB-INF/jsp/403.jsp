@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>
-        <spring:message code="webAbbreviation"/> | <spring:message code="pageNotFound_head"/>
+        <spring:message code="webAbbreviation"/> | <spring:message code="pageForbidden_title"/>
     </title>
     <jsp:include page="base/head.jsp" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">

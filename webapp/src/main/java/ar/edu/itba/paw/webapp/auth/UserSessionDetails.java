@@ -4,6 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UserSessionDetails extends UserDetails {
+	int getDni();
 	int getId();
 	String getPassword();
 	String getFirstName();

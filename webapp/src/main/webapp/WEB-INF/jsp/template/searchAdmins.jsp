@@ -4,15 +4,16 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <!-- search -->
 <%--Student Filter Form--%>
+<c:url var="adminFilterFormAction" value="${adminFilterFormAction}"/>
 <form:form id="admin_filter_form" modelAttribute="adminFilterForm" action="${adminFilterFormAction}" method="get" enctype="application/x-www-form-urlencoded">
 
     <div class="row well">
-        <div class="col-xs-12 col-md-2">
+        <div class="col-xs-12 col-md-2 text-center">
             <p class="lead"><spring:message code="searchBy"/>:</p>
         </div>
         <div class="col-xs-12 col-md-7">
             <div class="row">
-                <div class="col-xs-12 col-md-4">
+                <div class="col-xs-12">
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="input-group">
@@ -26,7 +27,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-md-4">
+                <div class="col-xs-12">
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="input-group">
@@ -40,7 +41,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-md-4">
+                <div class="col-xs-12">
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="input-group">
@@ -60,13 +61,13 @@
         <div class="col-xs-12 col-md-3">
             <div class="row">
                 <div class="col-xs-1 hidden-md hidden-lg"></div>
-                <div class="col-xs-5 col-md-6 text-center">
+                <div class="col-xs-5 col-md-12 col-lg-6 text-center">
                     <button id="search" class="btn btn-default" type="submit">
                         <span class="fa fa-search" aria-hidden="true"></span>
                         <spring:message code="search"/>
                     </button>
                 </div>
-                <div class="col-xs-5 col-md-6 text-center">
+                <div class="col-xs-5 col-md-12 col-lg-6 text-center">
                     <button id="resetSearch" class="btn btn-default" type="submit">
                         <span class="fa fa-repeat" aria-hidden="true"></span>
                         <spring:message code="reset"/>
@@ -102,12 +103,12 @@
                 <td>${ admin.firstName }</td>
                 <td>${ admin.lastName }</td>
                 <td>
-                    <a class="btn btn-default btn-xs" href="<c:url value="/admins/${admin.dni}/info" />" role="button">
+                    <a class="btn btn-default" href="<c:url value="/admins/${admin.dni}/info" />" role="button">
                         <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
                     </a>
-                    <a class="btn btn-info btn-xs" href="/admins/${admin.dni}/edit" role="button">
+<%--                    <a class="btn btn-info" href="/admins/${admin.dni}/edit" role="button">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-                    </a>
+                    </a>--%>
                 </td>
             </tr>
         </c:forEach>
