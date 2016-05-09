@@ -25,7 +25,6 @@ public interface UserDao {
 	 */
 	<V extends User, T extends User.Builder<V,T>> V getByDni(int dni, User.Builder<V, T> builder);
 
-	/* +++xtest *//* +++xchange: should return only one role */
 	/**
 	 * Gets all the roles the user with the given dni has associated.
 	 * @param dni The user's dni
