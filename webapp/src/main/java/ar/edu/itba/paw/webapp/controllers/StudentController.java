@@ -408,7 +408,7 @@ public class StudentController {
 
 		if (!loggedUser.hasAuthority("EDIT_GRADE")
 				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
-			LOGGER.warn("User {} tried to add student with DNI {} and doesn't have EDIT_GRADE authority [POST]", loggedUser.getDni());
+			LOGGER.warn("User {} tried to edit grades of student with DNI {} and doesn't have EDIT_GRADE authority [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
