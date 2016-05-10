@@ -79,6 +79,7 @@ public class UserController {
 		@ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("RESET_PASSWORD")) {
+			LOGGER.warn("User {} tried to delete user doesn't have authority RESET_PASSWORD [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
@@ -92,7 +93,7 @@ public class UserController {
 
 			final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			if (auth == null) {
-				LOGGER.warn("Someone tried to change a password and auth was null [POST]");
+				LOGGER.warn("User {} tried to change a password and auth was null [POST]", loggedUser.getDni());
 				return new ModelAndView("redirect:/errors/401");
 			}
 			UserSessionDetails user = (UserSessionDetails) auth.getPrincipal();
@@ -109,9 +110,11 @@ public class UserController {
 			final Result result = userService.resetPassword(passwordForm.getDni());
 
 			if (!result.equals(Result.OK)) {
+				LOGGER.warn("User {} could not reset password, Result = {}", loggedUser.getDni(), result);
 				redirectAttributes.addFlashAttribute("alert", "danger");
 				redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			} else {
+				LOGGER.info("User {} reset password successfully", loggedUser.getDni());
 				redirectAttributes.addFlashAttribute("alert", "success");
 				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
 						null,
@@ -161,13 +164,14 @@ public class UserController {
 		if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
-			LOGGER.info("User {} changed Password successfully", passwordForm.getDni());
+			LOGGER.warn("User {} could not change Password, Result = {}", passwordForm.getDni(), result);
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
 					null,
 					Locale.getDefault()));
-			LOGGER.warn("User {} could not change Password, Result = {}", passwordForm.getDni(), result);
+			LOGGER.info("User {} changed Password successfully", passwordForm.getDni());
+
 		}
 
 
@@ -182,7 +186,7 @@ public class UserController {
 		LOGGER.info("Deleting User {}", userForm.getDni());
 		if (!loggedUser.hasAuthority("DELETE_USER")
 				&& !loggedUser.hasAuthority("ADMIN")) {
-			LOGGER.warn("Someone tried to delete user and auth was null [POST]");
+			LOGGER.warn("User {} tried to delete user NOT ADMIN and doesn't have authority DELETE_USER [POST]", loggedUser);
 			return new ModelAndView(UNAUTHORIZED);
 		}
 		if (errors.hasErrors()){
