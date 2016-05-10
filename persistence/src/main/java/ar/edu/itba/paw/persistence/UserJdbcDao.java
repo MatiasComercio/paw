@@ -321,7 +321,7 @@ public class UserJdbcDao implements UserDao {
 	private String createEmail(final int dni, final String firstName, final String lastName, final Role role) {
 		final StringBuilder defaultEmailBuilder = new StringBuilder();
 		final String defaultEmail;
-		final char rolePrefix = role.originalString().charAt(0);
+		final char rolePrefix = role.originalString().toLowerCase().charAt(0);
 
 		defaultEmailBuilder.append(rolePrefix);
 		defaultEmailBuilder.append(dni);
