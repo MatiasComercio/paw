@@ -109,7 +109,6 @@ public class UserJdbcDao implements UserDao {
 				update(USERS_TABLE) +
 						set(USER__FIRST_NAME_COLUMN, GIVEN_PARAMETER
 						, 	USER__LAST_NAME_COLUMN, GIVEN_PARAMETER
-						,	USER__EMAIL_COLUMN,	GIVEN_PARAMETER
 						,	USER__BIRTHDAY_COLUMN, GIVEN_PARAMETER
 						,	USER__GENRE_COLUMN, GIVEN_PARAMETER
 						) +
@@ -269,11 +268,11 @@ public class UserJdbcDao implements UserDao {
 			rowsAffected = jdbcTemplate.update(UPDATE_USER,
 					user.getFirstName(),
 					user.getLastName(),
-					user.getEmail(),
 					birthday,
 					genre,
 					dni);
 		} catch (final DataIntegrityViolationException e) {
+			e.printStackTrace();
 			return Result.INVALID_INPUT_PARAMETERS;
 		} catch(final DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
