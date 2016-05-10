@@ -139,7 +139,7 @@ public class CourseController {
 		if (course == null){
 			LOGGER.warn("User {} tried to edit course {} that does not exist", loggedUser.getDni(), courseId);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", "La materia que se intenta editar no existe.");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editCourse_fail", null, Locale.getDefault()));
 			return new ModelAndView("redirect:/courses");
 		}
 
