@@ -57,7 +57,11 @@ public interface CourseDao {
     /**
      * Attempts to delete the course with the given id
      * @param id of the course to delete
-     * @return true if the course was deleted; false in other case
+     * @return OK if the course was deleted;
+     *         COURSE_EXISTS_INSCRIPTION if there are inscriptions in that course;
+     *         COURSE_EXISTS_GRADE if there grades tied to the course;
+     *         INVALID_INPUT_PARAMETERS if the ID is invalid;
+     *         ERROR_UNKNOWN else;
      */
     Result deleteCourse(Integer id);
 
