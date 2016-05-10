@@ -81,6 +81,8 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
 	private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
 
+	private static final BigDecimal VALUE_GRADE_PASS = BigDecimal.valueOf(4);
+
 	private static final String GET_BY_DOCKET =
 			"SELECT * " +
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
@@ -164,6 +166,14 @@ public class StudentJdbcDao implements StudentDao {
 			+ " AND " + GRADE__COURSE_ID_COLUMN + " = ? "
 			+ " AND " + GRADE__GRADE_COLUMN + " >= " + APPROVING_GRADE;
 
+	private static final String QUERY_GET_STUDENTS_PASSED = "SELECT * FROM "
+			+ USER_TABLE
+			+ ", " + STUDENT_TABLE
+			+ ", " + GRADE_TABLE
+			+ " WHERE " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN
+			+ " AND " + STUDENT_TABLE + "." + STUDENT__DOCKET_COLUMN + " = " + GRADE_TABLE + "." + GRADE__DOCKET_COLUMN
+			+ " AND " + GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = ? "
+			+ " AND " + GRADE_TABLE + "." + GRADE__GRADE_COLUMN + " >= " + VALUE_GRADE_PASS;
 
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
@@ -444,7 +454,11 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result create(Student student) {
-		userDao.create(student, Role.STUDENT);
+		final Result result = userDao.create(student, Role.STUDENT);
+
+		if(result != Result.OK) {
+			return result;
+		}
 
 		final Map<String, Object> studentArgs = new HashMap<>();
 
@@ -470,7 +484,7 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result update(final Integer docket, final Integer dni , final Student student) {
-
+		int rowsAffected;
 
 	    final String genre = student.getGenre().name();
         final String userUpdate = "UPDATE users SET " + USER__FIRST_NAME_COLUMN + " = ?, "
@@ -482,14 +496,14 @@ public class StudentJdbcDao implements StudentDao {
 		try {
 			Date birthday = student.getBirthday() != null ? Date.valueOf(student.getBirthday()) : null;
 
-            jdbcTemplate.update(userUpdate, student.getFirstName(), student.getLastName(), genre,
-                    birthday, createEmail(student.getDni(), student.getFirstName(),
+            rowsAffected = jdbcTemplate.update(userUpdate, student.getFirstName(), student.getLastName(), genre,
+                    birthday, 	createEmail(student.getDni(), student.getFirstName(),
                             student.getLastName()), dni);
         } catch (DuplicateKeyException e) {
             return Result.STUDENT_EXISTS_DNI;
         }
 
-		return Result.OK;
+		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 	}
 
 	@Override
@@ -551,6 +565,11 @@ public class StudentJdbcDao implements StudentDao {
 		}
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
 		return userDao.getByDni(dni, studentBuilder);
+	}
+
+	@Override
+	public List<Student> getStudentsPassed(final int id) {
+		return jdbcTemplate.query(QUERY_GET_STUDENTS_PASSED, studentRowMapper, id);
 	}
 
 	private Integer getDocketByDni(final int dni) {

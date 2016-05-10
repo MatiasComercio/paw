@@ -8,10 +8,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.Resource;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -31,6 +34,7 @@ import java.nio.charset.StandardCharsets;
 })
 @EnableWebMvc
 @Configuration
+@EnableTransactionManagement
 public class WebConfig extends WebMvcConfigurerAdapter {
 
 	// equivalents for <mvc:resources/> tags
@@ -64,6 +68,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		dataSource.setUrl("jdbc:postgresql://localhost:5432/paw");
 		dataSource.setUsername("paw");
 		dataSource.setPassword("paw01");
+/*		dataSource.setUrl("jdbc:postgresql://10.16.1.110:5432/grupo1");
+		dataSource.setUsername("grupo1");
+		dataSource.setPassword("OoLuej2w");*/
 
 		return dataSource;
 	}
@@ -89,5 +96,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
 		messageSource.setCacheSeconds(5); // +++xchange
 		return messageSource;
+	}
+
+	@Bean
+	public PlatformTransactionManager transactionManager(final DataSource ds) {
+		return new DataSourceTransactionManager(ds);
 	}
 }

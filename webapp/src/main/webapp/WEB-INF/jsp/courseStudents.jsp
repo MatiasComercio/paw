@@ -6,7 +6,25 @@
 <html lang="en">
 <head>
     <title>
-        <spring:message code="webAbbreviation"/> | ${course.name} | <spring:message code="students"/>
+        <c:choose>
+            <c:when test="${section2 eq 'courseStudents'}">
+                <c:set var="title">
+                    <spring:message code="webAbbreviation"/> | ${course.name} | <spring:message code="students"/>
+                </c:set>
+                <c:set var="pageHead">
+                    ${course.name} <small> - <spring:message code="enrolledStudents"/></small>
+                </c:set>
+            </c:when>
+            <c:when test="${section2 eq 'studentsPassed'}">
+                <c:set var="title">
+                    <spring:message code="webAbbreviation"/> | ${course.name} | <spring:message code="studentsApprovedHistory"/>
+                </c:set>
+                <c:set var="pageHead">
+                    ${course.name} <small> - <spring:message code="studentsApprovedHistory"/></small>
+                </c:set>
+            </c:when>
+        </c:choose>
+        ${title}
     </title>
     <jsp:include page="base/head.jsp" />
 </head>
@@ -24,7 +42,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">
-                        ${course.name} <small> - <spring:message code="students"/></small>
+                       ${pageHead}
                     </h1>
                 </div>
             </div>

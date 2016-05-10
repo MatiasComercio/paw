@@ -40,10 +40,11 @@
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_STUDENT')">
     <c:set var="studentMenu">
-        <li>
+        <li class="spaced"></li>
+        <li class="spaced">
             <a href="<c:url value="/students/${user.id}/courses" />"><i class="fa fa-fw fa-university"></i> <spring:message code="courses"/></a>
         </li>
-        <li>
+        <li class="spaced">
             <a href="<c:url value="/students/${user.id}/grades" />"><i class="fa fa-fw fa-graduation-cap"></i> <spring:message code="grades"/></a>
         </li>
         <li>
@@ -96,6 +97,10 @@
                     <strong class="caret"></strong>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                    <li class="dropdown-header visible-xs-inline">
+                        ${user.fullName}
+                    </li>
+                    <li class="divider visible-xs-block"></li>
                     <li>
                         <a href="<c:url value="${profileUrl}" />"><i class="fa fa-fw fa-user"></i> <spring:message code="profile"/></a>
                     </li>

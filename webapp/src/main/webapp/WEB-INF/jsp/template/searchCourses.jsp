@@ -85,6 +85,11 @@
                 <td>
                     <c:choose>
                         <c:when test="${section eq 'students'}">
+                            <c:set var="infoLink">
+                                <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
+                                    <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="information"/>
+                                </a>
+                            </c:set>
                             <c:choose>
                                 <c:when test="${section2 eq 'inscription'}">
                                     <sec:authorize access="hasAuthority('ROLE_ADD_INSCRIPTION')">
@@ -93,14 +98,12 @@
                                                 data-toggle="modal" data-target="#enrollFormConfirmationModal">
                                             <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="enroll"/>
                                         </button>
-                                        <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
-                                            <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
-                                        </a>
+                                        ${infoLink}
                                     </sec:authorize>
                                 </c:when>
                                 <c:when test="${section2 eq 'courses'}">
                                         <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
-                                            <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                                            <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="information"/>
                                         </a>
                                         <sec:authorize access="hasAuthority('ROLE_ADD_GRADE')">
                                             <button name="gradeButton" class="btn btn-info" type="button"
@@ -120,9 +123,7 @@
                                         </sec:authorize>
                                 </c:when>
                                 <c:otherwise>
-                                    <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
-                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
-                                    </a>
+                                    ${infoLink}
                                 </c:otherwise>
                             </c:choose>
                         </c:when>
@@ -138,12 +139,12 @@
                                         </button>
                                     </sec:authorize>
                                     <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
-                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="information"/>
                                     </a>
                                 </c:when>
                                 <c:otherwise>
                                     <a class="btn btn-default tableButton" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
-                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="information"/>
                                     </a>
                                 </c:otherwise>
                             </c:choose>

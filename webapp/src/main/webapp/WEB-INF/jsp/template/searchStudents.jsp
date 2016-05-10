@@ -3,6 +3,7 @@
 <!-- search -->
 <%--Student Filter Form--%>
 <%--@elvariable id="studentFilterFormAction" type="java.lang.String"--%>
+<c:url var="studentFilterFormAction" value="${studentFilterFormAction}" />
 <form:form id="student_filter_form" modelAttribute="studentFilterForm" action="${studentFilterFormAction}" method="get" enctype="application/x-www-form-urlencoded">
 
     <div class="row well">
@@ -112,7 +113,7 @@
                         </c:when>
                     </c:choose>
                     <a class="btn btn-default tableButton" href="<c:url value="/students/${student.docket}/info" />" role="button">
-                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                        <span class="fa fa-user" aria-hidden="true"></span> <spring:message code="profile"/>
                     </a>
                 </td>
             </tr>

@@ -6,11 +6,12 @@ function loadDeleteStudentForm(nameAttr) {
         var docket = $(this).data("student_docket");
         var firstName = $(this).data("student_first_name");
         var lastName = $(this).data("student_last_name");
+        var formAction = $(this).data("form_action");
         var deleteStudentForm = $("#delete_student_form");
         deleteStudentForm.find("input[name='docket']").val(docket);
         deleteStudentForm.find("input[name='firstName']").val(firstName);
         deleteStudentForm.find("input[name='lastName']").val(lastName);
-        deleteStudentForm.attr("action", "/students/" + docket + "/delete");
+        deleteStudentForm.attr("action", formAction);
     });
 
     $("#deleteStudentFormConfirmAction").on("click", function() {

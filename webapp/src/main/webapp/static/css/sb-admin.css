@@ -358,3 +358,7 @@ a.btn.tableButton {
 .well {
     overflow-x: auto;
 }
+
+li.spaced {
+    padding-bottom: 9px;
+}

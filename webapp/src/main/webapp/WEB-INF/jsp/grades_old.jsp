@@ -110,7 +110,7 @@
                                 </td>
                                 <td>
                                     <a class="btn btn-default btn-xs" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">
-                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/> <spring:message code="course"/>
+                                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="courseInformation"/>
                                     </a>
                                     <c:if test="${grade.modified != null }">
                                     <button name="gradeButton" class="btn btn-info btn-xs" type="button"

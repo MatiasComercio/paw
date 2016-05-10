@@ -5,7 +5,9 @@
 <%--@elvariable id="infoActive" type="java.lang.String"--%>
 <%--@elvariable id="editActive" type="java.lang.String"--%>
 <%--@elvariable id="courseStudentsActive" type="java.lang.String"--%>
+<%--@elvariable id="courseStudentsApprovedActive" type="java.lang.String"--%>
 <%--@elvariable id="addCorrelativeActive" type="java.lang.String"--%>
+
 <sec:authorize access="hasAuthority('ROLE_VIEW_COURSE')">
     <c:set var="viewCourse">
         <li class="${infoActive}">
@@ -28,7 +30,16 @@
     <c:set var="viewStudents">
         <li class="${courseStudentsActive}">
             <a href="<c:url value="/courses/${course.id}/students" />" type="button" class="btn btn-info" role="button">
-                <i class="fa fa-users" aria-hidden="true"></i> <spring:message code="students"/>
+                <i class="fa fa-users" aria-hidden="true"></i> <spring:message code="enrolledStudents"/>
+            </a>
+        </li>
+    </c:set>
+</sec:authorize>
+<sec:authorize access="hasAuthority('ROLE_VIEW_STUDENTS_APPROVED')">
+    <c:set var="viewStudentsApproved">
+        <li class="${courseStudentsApprovedActive}">
+            <a href="<c:url value="/courses/${course.id}/students_passed" />" type="button" class="btn btn-info" role="button">
+                <i class="fa fa-history" aria-hidden="true"></i> <spring:message code="studentsApprovedHistory"/>
             </a>
         </li>
     </c:set>
@@ -47,6 +58,7 @@
         <li>
             <button name="deleteCourseButton" class="menu-btn btn-danger" type="button"
                     data-course_id="${ course.id }" data-course_name="${ course.name }"
+                    data-form_action="<c:url value="/courses/${course.id}/delete"/>"
                     data-toggle="modal" data-target="#deleteCourseFormConfirmationModal">
                 <span class="fa fa-trash" aria-hidden="true"></span> <spring:message code="delete"/>
             </button>
@@ -57,6 +69,6 @@
     <c:out value="${course.name}" />
 </c:set>
 <c:set var="currentActions" scope="request">
-    ${viewCourse}, ${editCourse}, ${viewStudents}, ${addCorrelative}, ${deleteCourse}
+    ${viewCourse}, ${editCourse}, ${viewStudents}, ${viewStudentsApproved}, ${addCorrelative}, ${deleteCourse}
 </c:set>
 <!-- /Course Action Panel definition -->

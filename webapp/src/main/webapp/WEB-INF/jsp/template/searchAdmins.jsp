@@ -1,7 +1,5 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ include file="../base/tags.jsp" %>
+
 <!-- search -->
 <%--Student Filter Form--%>
 <c:url var="adminFilterFormAction" value="${adminFilterFormAction}"/>
@@ -103,12 +101,12 @@
                 <td>${ admin.firstName }</td>
                 <td>${ admin.lastName }</td>
                 <td>
-                    <a class="btn btn-default" href="<c:url value="/admins/${admin.dni}/info" />" role="button">
-                        <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="see"/>
+                    <a class="btn btn-default tableButton" href="<c:url value="/admins/${admin.dni}/info" />" role="button">
+                        <span class="fa fa-user" aria-hidden="true"></span> <spring:message code="profile"/>
                     </a>
-                    <a class="btn btn-info" href="/admins/${admin.dni}/edit" role="button">
+<%--                    <a class="btn btn-info" href="/admins/${admin.dni}/edit" role="button">
                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-                    </a>
+                    </a>--%>
                 </td>
             </tr>
         </c:forEach>

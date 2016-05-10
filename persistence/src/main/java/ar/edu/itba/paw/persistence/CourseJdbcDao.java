@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
+import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
@@ -54,6 +55,8 @@ public class CourseJdbcDao implements CourseDao {
     private static final String QUERY_COUNT_GRADES = "SELECT COUNT(*) FROM " + GRADES_TABLE_NAME
             + " WHERE " + GRADES_ID_COURSE + " = ?";
 
+    private static final String QUERY_GET_COURSE = "SELECT * FROM " + TABLE_NAME
+            + " WHERE " + ID_COLUMN + " = ? LIMIT 1 ";
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert courseInsert;
@@ -81,6 +84,8 @@ public class CourseJdbcDao implements CourseDao {
                     .credits(resultSet.getInt(CREDITS_COLUMN)).build();
 
 
+    @Autowired
+    private StudentDao studentDao;
 
     @Autowired
     public CourseJdbcDao(final DataSource dataSource) {
@@ -325,6 +330,19 @@ public class CourseJdbcDao implements CourseDao {
         RowMapper<Integer> rm = (rs, rowNum) -> rs.getInt(SEMESTER_COLUMN);
         List<Integer> list = jdbcTemplate.query(query, rm);
         return list.isEmpty() ? 0 : list.get(0);
+    }
+
+    @Override
+    public Course getStudentsThatPassedCourse(int id) {
+        List<Course> courseList = jdbcTemplate.query(QUERY_GET_COURSE, courseRowMapper, id);
+        Course course = courseList.isEmpty() ? null : courseList.get(0);
+
+        if(course != null) {
+            List<Student> students = studentDao.getStudentsPassed(id);
+            course.setStudents(students);
+        }
+
+        return course;
     }
 
     private static class QueryFilter {

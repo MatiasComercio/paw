@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>
-        <spring:message code="webAbbreviation"/> | <spring:message code="pageNotFound_head"/>
+        <spring:message code="webAbbreviation"/> | <spring:message code="pageForbidden_title"/>
     </title>
     <jsp:include page="base/head.jsp" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -21,7 +21,7 @@
             </div>
             <div class="col-xs-4"></div>
             <div class="col-xs-4 text-center">
-                <a class="btn btn-info btn-lg" href="/" role="button">
+                <a class="btn btn-info btn-lg" href="<c:url value="/"/>" role="button">
                     <spring:message code="goHomeButton"/>
                 </a>
             </div>

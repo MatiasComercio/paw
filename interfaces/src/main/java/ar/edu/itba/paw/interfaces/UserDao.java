@@ -25,7 +25,6 @@ public interface UserDao {
 	 */
 	<V extends User, T extends User.Builder<V,T>> V getByDni(int dni, User.Builder<V, T> builder);
 
-	/* +++xtest *//* +++xchange: should return only one role */
 	/**
 	 * Gets all the roles the user with the given dni has associated.
 	 * @param dni The user's dni
@@ -34,9 +33,11 @@ public interface UserDao {
 	List<Role> getRole(final int dni);
 
 	/**
-	 * +++xdocument
-	 * @param user
-	 * @return
+	 * Creates a new user with the given data
+	 * @param user the user's data
+	 * @return OK if the user was created;
+	 * 			USER_EXISTS_DNI if the user's dni already exists
+	 * 			ERROR_UNKNOWN else;
      */
 	Result create(User user, final Role role);
 

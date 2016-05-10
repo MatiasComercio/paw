@@ -10,6 +10,7 @@ import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,11 +24,13 @@ public class CourseServiceImpl implements CourseService {
     @Autowired
     private StudentService studentService;
 
+    @Transactional
     @Override
     public Result create(Course course) {
         return courseDao.create(course);
     }
 
+    @Transactional
     @Override
     public Result update(Integer id, Course course){
         return courseDao.update(id, course);
@@ -38,6 +41,7 @@ public class CourseServiceImpl implements CourseService {
         return getByFilter(null);
     }
 
+    @Transactional
     @Override
     public Course getById(int id) {
         if(id >= 1) {
@@ -47,22 +51,25 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
+    @Transactional
     @Override
     public Course getCourseStudents(int id) {
         return courseDao.getCourseStudents(id);
     }
 
-
+    @Transactional
     @Override
     public List<Course> getByFilter(CourseFilter courseFilter) {
         return courseDao.getByFilter(courseFilter);
     }
 
+    @Transactional
     @Override
     public Integer getTotalPlanCredits() {
         return courseDao.getTotalPlanCredits();
     }
 
+    @Transactional
     @Override
     public Result deleteCourse(Integer courseId) {
 
@@ -84,6 +91,7 @@ public class CourseServiceImpl implements CourseService {
 
     }
 
+    @Transactional
     @Override
     public List<Student> getCourseStudents(final Integer id, final StudentFilter studentFilter) {
 
@@ -102,11 +110,13 @@ public class CourseServiceImpl implements CourseService {
         return students;
     }
 
+    @Transactional
     @Override
     public Integer getTotalSemesters() {
         return courseDao.getTotalSemesters();
     }
 
+    @Transactional
     @Override
     public Result addCorrelative(final Integer id, final Integer correlativeId) {
 
@@ -147,11 +157,13 @@ public class CourseServiceImpl implements CourseService {
 
     //TODO: IF NOT CALLED FROM CONTROLLER, DELETE IMPLEMENTATION AND DELETE FROM INTERFACE
 
+    @Transactional
     @Override
     public List<Integer> getCorrelatives(Integer courseId) {
         return courseDao.getCorrelatives(courseId);
     }
 
+    @Transactional
     @Override
     public List<Integer> getUpperCorrelatives(Integer courseId) {
         return courseDao.getUpperCorrelatives(courseId);
@@ -159,6 +171,7 @@ public class CourseServiceImpl implements CourseService {
 
     //////////////////////////////////////////////////
 
+    @Transactional
     @Override
     public Result deleteCorrelative(Integer courseId, Integer correlativeId) {
         return courseDao.deleteCorrelative(courseId, correlativeId);
@@ -193,6 +206,7 @@ public class CourseServiceImpl implements CourseService {
         return Result.OK;
     }
 
+    @Transactional
     @Override
     public List<Course> getCorrelativesByFilter(Integer courseId, CourseFilter courseFilter) {
 
@@ -224,5 +238,25 @@ public class CourseServiceImpl implements CourseService {
         //Remove the course itself from the list
         courses.remove(getById(courseId));
         return courses;
+    }
+
+    @Override
+    public Course getStudentsThatPassedCourse(final int id, final StudentFilter studentFilter) {
+        if (id <= 0) {
+            return null;
+        }
+
+        final Course course = courseDao.getStudentsThatPassedCourse(id);
+        if (course == null) {
+            return null;
+        }
+
+        final List<Student> students = course.getStudents();
+        if (students  != null) {
+            students.retainAll(studentService.getByFilter(studentFilter));
+        }
+        course.setStudents(students);
+
+        return course;
     }
 }

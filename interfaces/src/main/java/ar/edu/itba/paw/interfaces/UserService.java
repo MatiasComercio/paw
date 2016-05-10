@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface UserService {
 
-	/* +++xtest *//* +++xchange: should return only one role */
 	/**
 	 * Gets all the roles the user with the given dni has associated.
 	 * @param dni The user's dni

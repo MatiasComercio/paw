@@ -1,15 +1,19 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.shared.StudentFilter;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -28,6 +32,13 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.runners.Parameterized.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -93,6 +104,11 @@ public class StudentJdbcDaoTest {
 	private static final int DOCKET_INVALID_LIMIT = 0;
 	private static final int DOCKET_INVALID = -7357;
 
+	private static final int DNI_VALID = 7357;
+	private static final int DNI_VALID_LIMIT = 1;
+	private static final int DNI_INVALID_LIMIT = 0;
+	private static final int DNI_INVALID = -7357;
+
 	private static final int DNI_1 = 12345678;
 	private static final String FIRST_NAME_1 = "MaTías NIColas";
 	private static final String FIRST_NAME_1_EXPECTED = "Matías Nicolas";
@@ -102,7 +118,8 @@ public class StudentJdbcDaoTest {
 	private static final User.Genre GENRE_1_EXPECTED = User.Genre.M;
 	private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
 	private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
-	private static final String ROLE_1 = "STUDENT";
+	private static final String ROLE_1 = "ADMIN";
+	private static final String ROLE_2 = "STUDENT";
 	private int docket1; /* Auto-generated field */
 
 
@@ -112,7 +129,6 @@ public class StudentJdbcDaoTest {
 	private static final String LAST_NAME_2 = "MaYan";
 	private static final String LAST_NAME_2_EXPECTED = "Mayan";
 	private static final String EMAIL_2 = "blihuen@bait.edu.ar";
-	private static final String ROLE_2 = "ADMIN";
 	private int docket2; /* Auto-generated field */
 
 
@@ -175,7 +191,65 @@ public class StudentJdbcDaoTest {
 	private DataSource dataSource;
 
 	@Autowired
+	private UserDao userDao;
+
+	@Autowired
 	private StudentJdbcDao studentJdbcDao;
+
+	@Parameters
+	public static Collection<Object[]> data() {
+
+		final Student.Builder studentBuilder1 = new Student.Builder(DOCKET_1, DNI_1)
+				.firstName(FIRST_NAME_1)
+				.lastName(LAST_NAME_1)
+				.email(EMAIL_1);
+		final Student.Builder studentBuilder2 = new Student.Builder(DOCKET_2, DNI_2)
+				.firstName(FIRST_NAME_2)
+				.lastName(LAST_NAME_2)
+				.email(EMAIL_2);
+
+		final Student expectedStudent1 = new Student.Builder(DOCKET_1, DNI_1)
+				.firstName(FIRST_NAME_1_EXPECTED)
+				.lastName(LAST_NAME_1_EXPECTED)
+				.email(EMAIL_1)
+				.build();
+
+		final Student expectedStudent2 = new Student.Builder(DOCKET_2, DNI_2)
+				.firstName(FIRST_NAME_2_EXPECTED)
+				.lastName(LAST_NAME_2_EXPECTED)
+				.email(EMAIL_2)
+				.build();
+
+		Answer<Student> studentAnswer1 = (invocation) -> {
+			final Student student = studentBuilder1.build();
+
+			return student;
+		};
+
+		Answer<Student> studentAnswer2 = (invocation) -> {
+			final Student student = studentBuilder2.build();
+
+			return student;
+		};
+
+		return Arrays.asList(new Object[][] {
+				{ DNI_1, studentBuilder1, studentAnswer1, expectedStudent1 },
+				{ DNI_2, studentBuilder2, studentAnswer2, expectedStudent2 },
+				{ DNI_3, null, null, null, null }
+		});
+	}
+
+	@Parameter // first data value (0) is default
+	public /* NOT private */ int dni;
+
+	@Parameter(value = 1)
+	public /* NOT private */ Student.Builder studentBuilder;
+
+	@Parameter(value = 2)
+	public /* NOT private */ Student studentAnswer;
+
+	@Parameter(value = 3)
+	public /* NOT private */ Student expectedStudent;
 
 	private JdbcTemplate jdbcTemplate;
 	private SimpleJdbcInsert roleInsert;
@@ -237,22 +311,64 @@ public class StudentJdbcDaoTest {
 
         /**
          * add a second user and change dni to existing user's dni
+		 * Because the student can't change the dni then the result will be ok
          */
-        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__DNI_COLUMN, DNI_2);
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
 		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
-        studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_2);
         docket2 = studentInsert.executeAndReturnKey(studentArgs).intValue();
-        student = new Student.Builder(docket2, DNI_2).build();
+        student = new Student.Builder(docket2, DNI_1).build();
 
         result = studentJdbcDao.update(docket2, DNI_1, student);
-        assertNotEquals(Result.OK, result);
-        assertEquals(Result.STUDENT_EXISTS_DNI, result);
+        assertEquals(Result.OK, result);
     }
+
+	@Test
+	public void testGetByDni() {
+//		/**
+//		 * +++xcheck if we can avoid casting studentAnswer
+//		 */
+//		if(studentAnswer != null) {
+//			when(userDao.getByDni(dni, studentBuilder)).then((Answer<?>) studentAnswer);
+//		}
+//		System.out.println(dni);
+//		Student student = studentJdbcDao.getByDni(dni);
+//		assertThat(student, is(expectedStudent));
+
+		final Map<String, Object> userArgs = new HashMap<>();
+		final Map<String, Object> studentArgs = new HashMap<>();
+
+		userArgs.put(USER__DNI_COLUMN, DNI_1);
+		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
+		userInsert.execute(userArgs);
+
+		/**
+		 * Try to get a student that exists
+		 */
+		studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+		docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+
+		Student student = studentJdbcDao.getByDni(DNI_1);
+		assertNotNull(student);
+		assertEquals(docket1, student.getDocket());
+		assertEquals(FIRST_NAME_1_EXPECTED, student.getFirstName());
+		assertEquals(LAST_NAME_1_EXPECTED, student.getLastName());
+		assertEquals(EMAIL_1, student.getEmail());
+
+		/**
+		 * Try to get a student that doesn't exist
+		 */
+		student = studentJdbcDao.getByDni(DNI_2);
+		assertNull(student);
+	}
 
     @Test
     public void createAddress() {
@@ -1002,23 +1118,20 @@ public class StudentJdbcDaoTest {
 
 	@Test
 	public void createStudent() {
-
 		Address address = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
 				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED).build();
 		// OK insertion
 
 		Student student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1)
+				.address(address)
 				.genre(User.Genre.M).build();//address(address).build();
 
 		Result result = studentJdbcDao.create(student);
 		assertEquals(Result.OK, result);
 
 		// Existing  DNI
-		student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M)
-				.address(address).build();
-
 		result = studentJdbcDao.create(student);
-		assertEquals(Result.STUDENT_EXISTS_DNI, result);
+		assertEquals(Result.USER_EXISTS_DNI, result);
 
 	}
 /*

@@ -29,10 +29,11 @@ import java.util.List;
 import java.util.Locale;
 
 @Controller
-public class StudentController { /* +++xchange: see if it's necessary to call this StudentController */
+public class StudentController {
 
 	private final static Logger LOGGER = LoggerFactory.getLogger(StudentController.class);
 	private static final String STUDENTS_SECTION = "students";
+	private static final String UNAUTHORIZED = "redirect:/errors/403";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -73,6 +74,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		if (errors.hasErrors()) {
 			/* Cancel current search */
 			studentFilterForm.empty();
+			LOGGER.warn("Could not get students due to {} [GET]", errors.getAllErrors());
 
 			mav.addObject("alert", "danger");
 			mav.addObject("message", messageSource.getMessage("search_fail",
@@ -120,7 +122,14 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 	@RequestMapping("/students/{docket}/grades")
 	public ModelAndView getStudentGrades(@PathVariable final int docket, Model model,
-	                                     RedirectAttributes redirectAttributes) {
+	                                     RedirectAttributes redirectAttributes,
+	                                     @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_GRADES")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			LOGGER.warn("User {} tried to get the grades of a student {} and doesn't have VIEW_GRADES authority [POST]", loggedUser.getDni(), docket);
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		final Student student = studentService.getGrades(docket);
 		final ModelAndView mav;
 		final Integer totalCredits, passedCredits, percentage;
@@ -193,8 +202,16 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	public ModelAndView unenroll(@PathVariable final Integer docket,
 	                             @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
 	                             final BindingResult errors,
-	                             final RedirectAttributes redirectAttributes){
+	                             final RedirectAttributes redirectAttributes,
+	                             @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("DELETE_INSCRIPTION")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			LOGGER.warn("User {} tried to unenroll a student {} from a course and doesn't have DELETE_INSCRIPTION authority [POST]", loggedUser.getDni(), docket);
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		if (errors.hasErrors()) {
+			LOGGER.warn("User {} could not unenroll docket {} due to {} [POST]", loggedUser.getDni(), docket, errors.getAllErrors());
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
 			redirectAttributes.addFlashAttribute("inscriptionForm", inscriptionForm);
 			return new ModelAndView("redirect:/students/" + docket + "/courses");
@@ -206,9 +223,11 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 			result = Result.ERROR_UNKNOWN;
 		}
 		if (!result.equals(Result.OK)) {
+			LOGGER.warn("User {} could not unenroll a student {}, Result = {}", loggedUser.getDni(), docket, result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 		} else {
+			LOGGER.info("User {} unenrolled student {} successfully", loggedUser.getDni(), docket);
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("unenroll_success",
 					new Object[] {inscriptionForm.getCourseId(), inscriptionForm.getCourseName()},
@@ -220,7 +239,14 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	}
 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.GET)
-	public ModelAndView studentInscription(@PathVariable final int docket, final Model model) {
+	public ModelAndView studentInscription(@PathVariable final int docket, final Model model,
+	                                       @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_INSCRIPTION")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			LOGGER.warn("User {} tried to add inscription for student {} and doesn't have ADD_INSCRIPTION authority [GET]", loggedUser.getDni(), docket);
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		if (!model.containsAttribute("courseFilterForm")) {
 			model.addAttribute("courseFilterForm", new CourseFilterForm());
@@ -254,7 +280,14 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	public ModelAndView studentInscription(@PathVariable final int docket,
 	                                       @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
 	                                       final BindingResult errors,
-	                                       final RedirectAttributes redirectAttributes) {
+	                                       final RedirectAttributes redirectAttributes,
+	                                       @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_INSCRIPTION")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			LOGGER.warn("User {} tried to add inscription for student {} and doesn't have ADD_INSCRIPTION authority [POST]", loggedUser.getDni(), docket);
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
 			redirectAttributes.addFlashAttribute("inscriptionForm", inscriptionForm);
@@ -266,10 +299,12 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 			result = Result.ERROR_UNKNOWN;
 		}
 		if (!result.equals(Result.OK)) {
+			LOGGER.warn("User {} could not add inscription for student {}, Result = {}", loggedUser.getDni(), docket, result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 
 		} else {
+			LOGGER.info("User {} added inscription of student {} successfully", loggedUser.getDni(), docket);
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message",
 					messageSource.getMessage("inscription_success",
@@ -303,7 +338,13 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
-	                               RedirectAttributes redirectAttributes){
+	                               RedirectAttributes redirectAttributes,
+	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_STUDENT")) {
+			LOGGER.warn("User {} tried to add student with DNI {} and doesn't have ADD_STUDENT authority [GET]", loggedUser.getDni(), studentForm.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		ModelAndView mav = new ModelAndView("addUser");
 		mav.addObject("section2", "addStudent");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
@@ -312,17 +353,25 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
 	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
-	                               final BindingResult errors, RedirectAttributes redirectAttributes) {
+	                               final BindingResult errors, RedirectAttributes redirectAttributes,
+	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_STUDENT")) {
+			LOGGER.warn("User {} tried to add student with DNI {} and doesn't have ADD_STUDENT authority [POST]", loggedUser.getDni(), studentForm.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		if (errors.hasErrors()){
-			return addStudent(studentForm, null);
+			LOGGER.warn("User {} could not add student due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
+			return addStudent(studentForm, null, loggedUser);
 		}
 		else{
 			Student student = studentForm.build();
 			Result result = studentService.create(student);
 			if(!result.equals(Result.OK)){
+				LOGGER.warn("User {} could not add student with DNI {}, Result = {}", loggedUser.getDni(), student.getDni(), result);
 				redirectAttributes.addFlashAttribute("alert", "danger");
 				redirectAttributes.addFlashAttribute("message", result.getMessage());
-				return addStudent(studentForm, redirectAttributes);
+				return addStudent(studentForm, redirectAttributes, loggedUser);
 			}
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addStudent_success",
@@ -354,7 +403,14 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.POST)
 	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
-	                              @PathVariable Integer docket, RedirectAttributes redirectAttributes){
+	                              @PathVariable Integer docket, RedirectAttributes redirectAttributes,
+	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("EDIT_GRADE")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			LOGGER.warn("User {} tried to edit grades of student with DNI {} and doesn't have EDIT_GRADE authority [POST]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		if (errors.hasErrors()){
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
@@ -373,6 +429,7 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 
 		Result result = studentService.editGrade(newGrade, gradeForm.getOldGrade());
 		if(!result.equals(Result.OK)){
+			LOGGER.warn("User {} could not edit grades, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 			return new ModelAndView("redirect:/students/" + docket + "/grades");
@@ -390,8 +447,16 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	public ModelAndView addGrade(@PathVariable Integer docket,
 	                             @Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
 	                             final BindingResult errors,
-	                             RedirectAttributes redirectAttributes){
+	                             RedirectAttributes redirectAttributes,
+	                             @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_GRADE")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			LOGGER.warn("User {} tried to add a grade and doesn't have ADD_GRADE authority [POST]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		if (errors.hasErrors()) {
+			LOGGER.warn("User {} could not add a grade due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message",
 					messageSource.getMessage("addGrade_fail",
@@ -409,13 +474,16 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 		Result result = studentService.addGrade(grade);
 
 		if (result == null) {
+			LOGGER.warn("User {} could not add a grade, Result is NULL", loggedUser.getDni());
 			result = Result.ERROR_UNKNOWN;
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 		} else if (!result.equals(Result.OK)) {
+			LOGGER.warn("User {} could not add a grade, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 		} else {
+			LOGGER.info("User {} added a grade successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addGrade_success",
 					new Object[] {},
@@ -441,7 +509,14 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	}
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
-	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes) {
+	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes,
+	                                  @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("DELETE_GRADE")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			LOGGER.warn("User {} tried to delete a student and doesn't have DELETE_GRADE authority [POST]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		final Result result = studentService.deleteStudent(docket);
 //		ModelAndView mav = new ModelAndView("studentsSearch");
 		redirectAttributes.addFlashAttribute("alert", "success");
@@ -456,7 +531,14 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	public ModelAndView editStudent(
 			@PathVariable final Integer docket,
 			@ModelAttribute("studentForm") final StudentForm studentForm,
-			final RedirectAttributes redirectAttributes) {
+			final RedirectAttributes redirectAttributes,
+			@ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("EDIT_STUDENT")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			LOGGER.warn("User {} tried to edit a student and doesn't have EDIT_STUDENT authority [GET]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		final ModelAndView mav = new ModelAndView("addUser");
 
@@ -484,18 +566,27 @@ public class StudentController { /* +++xchange: see if it's necessary to call th
 	public ModelAndView editStudent(@PathVariable final Integer docket,
 	                                @Valid @ModelAttribute("studentForm") StudentForm studentForm,
 	                                final BindingResult errors,
-	                                RedirectAttributes redirectAttributes){
+	                                RedirectAttributes redirectAttributes,
+	                                @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("EDIT_STUDENT")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			LOGGER.warn("User {} tried to edit a student and doesn't have EDIT_STUDENT authority [POST]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		if (errors.hasErrors()){
-			return editStudent(docket, studentForm, redirectAttributes);
+			LOGGER.warn("User {} could not edit student due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
+			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
 		}
 
 		Student student = studentForm.build();
 		Result result = studentService.update(docket, student);
 
 		if(!result.equals(Result.OK)){
+			LOGGER.warn("User {} could not edit student, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return editStudent(docket, studentForm, redirectAttributes);
+			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
 		}
 
 		redirectAttributes.addFlashAttribute("alert", "success");

@@ -21,14 +21,16 @@ public interface AdminService {
      *
      * @param admin The admin to be persisted in the database.
      * @return  OK if the admin could be created;
-     *          +++xcomplete remaining return types
+     *          ADMIN_EXISTS_DNI if there is an admin whose dni is equal to this new admin;
+     *          ERROR_UNKNOWN else;
      */
     Result create(Admin admin);
 
     /**
-     * +++xdocument
+     * Gets all the data associated with the user that has the
+     * given dni.
      * @param dni
-     * @return
+     * @return The admin that has the given dni; null if no admin was found.
      */
     Admin getByDni(int dni);
 

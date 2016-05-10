@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDao userDao;
 
+	@Transactional
 	@Override
 	public List<Role> getRole(final int dni) {
 		return userDao.getRole(dni);
@@ -51,6 +53,7 @@ public class UserServiceImpl implements UserService {
 //		return null;
 //	}
 
+	@Transactional
 	@Override
 	public Result changePassword(final int dni, final String prevPassword, final String newPassword, final String repeatNewPassword) {
 		if (!newPassword.equals(repeatNewPassword)) {
@@ -62,6 +65,7 @@ public class UserServiceImpl implements UserService {
 		return userDao.changePassword(dni, prevPassword, newPassword);
 	}
 
+	@Transactional
 	@Override
 	public Result resetPassword(final int dni) {
 		if(dni <= 0) {
@@ -70,6 +74,7 @@ public class UserServiceImpl implements UserService {
 		return userDao.resetPassword(dni);
 	}
 
+	@Transactional
 	@Override
 	public Result update(final int dni, final User user) {
 		if(dni <= 0) {
@@ -78,6 +83,7 @@ public class UserServiceImpl implements UserService {
 		return userDao.update(dni, user);
 	}
 
+	@Transactional
 	@Override
 	public Result delete(final int dni) {
 		if(dni <= 0) {
@@ -86,4 +92,8 @@ public class UserServiceImpl implements UserService {
 		return userDao.delete(dni);
 	}
 
+	/* Test purpose only */
+	/* default */ void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
+	}
 }

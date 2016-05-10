@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.CourseService;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
@@ -12,6 +13,8 @@ import ar.edu.itba.paw.webapp.forms.CourseFilterForm;
 import ar.edu.itba.paw.webapp.forms.CourseForm;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.webapp.forms.StudentFilterForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
@@ -30,11 +33,13 @@ import java.util.Map;
 
 @Controller
 public class CourseController {
+	private final static Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
+
 	private static final String COURSES_SECTION = "courses";
 
-	/* +++xtodo TODO: why not final? */
 	private static final String TASK_FORM_ADD = "add";
 	private static final String TASK_FORM_EDIT = "edit";
+	private static final String UNAUTHORIZED = "redirect:/errors/403";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -62,7 +67,6 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses", method = RequestMethod.GET)
 	public ModelAndView getCourses(final Model model) {
-
 		if (!model.containsAttribute("courseFilterForm")) {
 			model.addAttribute("courseFilterForm", new CourseFilterForm());
 		}
@@ -77,6 +81,7 @@ public class CourseController {
 		// +++ximprove with Spring Security
 		final List<Course> courses = courseService.getByFilter(courseFilter);
 		if (courses == null) {
+			LOGGER.warn("There were no courses to return"); /* It is logged because this situation is strange */
 			return new ModelAndView("forward:/errors/404.html");
 		}
 
@@ -118,15 +123,23 @@ public class CourseController {
 			@PathVariable final Integer courseId,
 			@ModelAttribute("courseForm") final CourseForm courseForm,
 			@ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm,
-			final RedirectAttributes redirectAttributes) {
+			final RedirectAttributes redirectAttributes,
+			@ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("EDIT_COURSE")) {
+			LOGGER.warn("User {} tried to edit a course and doesn't have EDIT_COURSE authority [GET]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		final ModelAndView mav = new ModelAndView("addCourse");
 
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 		Course course = courseService.getById(courseId);
 
 		if (course == null){
+			LOGGER.warn("User {} tried to edit course {} that does not exist", loggedUser.getDni(), courseId);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", "La materia que se intena editar no existe.");
+			redirectAttributes.addFlashAttribute("message", "La materia que se intenta editar no existe.");
 			return new ModelAndView("redirect:/courses");
 		}
 
@@ -145,8 +158,16 @@ public class CourseController {
 	public ModelAndView editCourse(@PathVariable final Integer courseId,
 	                               @Valid @ModelAttribute("courseForm") CourseForm courseForm,
 	                               final BindingResult errors,
-	                               RedirectAttributes redirectAttributes){
+	                               RedirectAttributes redirectAttributes,
+	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("EDIT_COURSE")) {
+			LOGGER.warn("User {} tried to edit a course and doesn't have EDIT_COURSE authority [POST]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		if (errors.hasErrors()){
+			LOGGER.warn("User {} could not edit course {} due to {} [POST]", loggedUser.getDni(), courseId, errors.getAllErrors());
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseForm", errors);
 			redirectAttributes.addFlashAttribute("courseForm", courseForm);
 			return new ModelAndView("redirect:/courses/" + courseId + "/edit");
@@ -156,9 +177,12 @@ public class CourseController {
 		Result result = courseService.update(courseId, course);
 
 		if(!result.equals(Result.OK)){
+			LOGGER.warn("User {} could not edit course, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 			return new ModelAndView("redirect:/courses/" + courseId + "/edit");
+		} else {
+			LOGGER.info("User {} edited course {} successfully", loggedUser.getDni(), courseId);
 		}
 
 		redirectAttributes.addFlashAttribute("alert", "success");
@@ -224,7 +248,13 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/add_course", method = RequestMethod.GET)
 	public ModelAndView addCourse(@ModelAttribute("courseForm") final CourseForm courseForm,
-	                              RedirectAttributes redirectAttributes){
+	                              RedirectAttributes redirectAttributes,
+	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_COURSE")) {
+			LOGGER.warn("User {} tried to add a course and doesn't have ADD_COURSE authority [GET]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		ModelAndView mav = new ModelAndView("addCourse");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 //		mav.addObject("task", TASK_FORM_ADD);
@@ -235,17 +265,28 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
 	public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
-	                              final BindingResult errors, RedirectAttributes redirectAttributes){
+	                              final BindingResult errors, RedirectAttributes redirectAttributes,
+	                              UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_COURSE")) {
+			LOGGER.warn("User {} tried to add a course and doesn't have ADD_COURSE authority [POST]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		if(errors.hasErrors()){
-			return addCourse(courseForm, null);
+			LOGGER.warn("User {} could not add course {} due to {} [POST]", loggedUser.getDni(), courseForm.getId(), errors.getAllErrors());
+			return addCourse(courseForm, null, loggedUser);
 		}
 		else{
 			final Course course = courseForm.build();
 			Result result = courseService.create(course);
 			if(!result.equals(Result.OK)){
+				LOGGER.warn("User {} could not add course, Result = {}", loggedUser.getDni(), result);
 				redirectAttributes.addFlashAttribute("alert", "danger");
 				redirectAttributes.addFlashAttribute("message", result.getMessage());
-				return addCourse(courseForm, redirectAttributes);
+				return addCourse(courseForm, redirectAttributes, loggedUser);
+			} else {
+				LOGGER.info("User {} added course {}", loggedUser.getDni(), courseForm.getId());
 			}
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addCourse_success",
@@ -257,18 +298,27 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/{id}/delete", method = RequestMethod.POST)
 	public ModelAndView deleteCourse(@PathVariable final Integer id,
-	                                 RedirectAttributes redirectAttributes) {
+	                                 RedirectAttributes redirectAttributes,
+	                                 @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("DELETE_COURSE")) {
+			LOGGER.warn("User {} tried to delete a course and doesn't have DELETE_COURSE authority [POST]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		final Result result = courseService.deleteCourse(id);
 //        ModelAndView mav = new ModelAndView("redirect:/courses");
 //        ModelAndView mav = new ModelAndView("coursesSearch");
 		final String urlRedirect;
 		if(result.equals(Result.OK)) {
+			LOGGER.info("User {} deleted a course successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteCourse_success",
 					null,
 					Locale.getDefault()));
 			urlRedirect = "/courses";
 		} else {
+			LOGGER.warn("User {} could not delete course, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 			urlRedirect = request.getHeader("referer");
@@ -278,7 +328,13 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)
-	public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model) {
+	public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model,
+	                                   @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_CORRELATIVE")) {
+			LOGGER.warn("User {} tried to add a correlative and doesn't have ADD_CORRELATIVE authority [POST]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		if (!model.containsAttribute("courseFilterForm")) {
 			model.addAttribute("courseFilterForm", new CourseFilterForm());
@@ -294,7 +350,7 @@ public class CourseController {
 		//Check the course exists (in case the url is modified)
 		final Course course = courseService.getById(course_id);
 		if (course == null) {
-			return new ModelAndView("forward:/errors/404.html");
+			return new ModelAndView("forward:/errors/404");
 		}
 
 		final ModelAndView mav = new ModelAndView("courses");
@@ -320,8 +376,16 @@ public class CourseController {
 	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.POST)
 	public ModelAndView addCorrelative(@PathVariable final Integer course_id,
 	                                   @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
-	                                   final BindingResult errors, final RedirectAttributes redirectAttributes){
+	                                   final BindingResult errors, final RedirectAttributes redirectAttributes,
+	                                   @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_CORRELATIVE")) {
+			LOGGER.warn("User {} tried to edit a course and doesn't have EDIT_COURSE authority [POST]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		if (errors.hasErrors()){
+			LOGGER.warn("User {} could not add correlative due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
 			redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
 			return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
@@ -332,10 +396,12 @@ public class CourseController {
 			result = Result.ERROR_UNKNOWN;
 		}
 		if (!result.equals(Result.OK)) {
+			LOGGER.warn("User {} could not add correlative, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 
 		} else {
+			LOGGER.info("User {} added correlative successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message",
 					messageSource.getMessage("correlative_add_success",
@@ -349,9 +415,16 @@ public class CourseController {
 	@RequestMapping(value = "/courses/{course_id}/delete_correlative", method = RequestMethod.POST)
 	public ModelAndView deleteCorrelative(@PathVariable final Integer course_id,
 	                                      @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
-	                                      final BindingResult errors, final RedirectAttributes redirectAttributes) {
+	                                      final BindingResult errors, final RedirectAttributes redirectAttributes,
+	                                      @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("DELETE_CORRELATIVE")) {
+			LOGGER.warn("User {} tried to delete correlative and doesn't have DELETE_CORRELATIVE authority [POST]", loggedUser);
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		if (errors.hasErrors()){
+			LOGGER.warn("User {} could not delete correlative due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
 			redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
 			return new ModelAndView("redirect:/courses/" + course_id + "/info");
@@ -362,10 +435,12 @@ public class CourseController {
 			result = Result.ERROR_UNKNOWN;
 		}
 		if (!result.equals(Result.OK)) {
+			LOGGER.warn("User {} could not delete correlative, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 
 		} else {
+			LOGGER.info("User {} deleted correlative successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message",
 					messageSource.getMessage("correlative_delete_success",
@@ -375,6 +450,51 @@ public class CourseController {
 
 		return new ModelAndView("redirect:/courses/" + course_id + "/info");
 
+	}
+
+	@RequestMapping(value = "/courses/{id}/students_passed", method = RequestMethod.GET)
+	public ModelAndView getCourseStudentsThatPassed(@PathVariable("id") final Integer id, final Model model,
+	                                                @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_STUDENTS_APPROVED")) {
+			LOGGER.warn("User {} tried to get the students that passed course {} and doesn't have VIEW_STUDENTS_APPROVED authority [POST]", loggedUser, id);
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
+		if (!model.containsAttribute("studentFilterForm")) {
+			model.addAttribute("studentFilterForm", new StudentFilterForm());
+		}
+
+		final StudentFilterForm studentFilterForm = (StudentFilterForm) model.asMap().get("studentFilterForm");
+		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+				.docket(studentFilterForm.getDocket())
+				.firstName(studentFilterForm.getFirstName())
+				.lastName(studentFilterForm.getLastName())
+				.build();
+
+		// +++ximprove with Spring Security
+		final Course course = courseService.getStudentsThatPassedCourse(id, studentFilter);
+		if (course == null) {
+			return new ModelAndView("forward:/errors/404");
+		}
+
+		final ModelAndView mav = new ModelAndView("courseStudents");
+		mav.addObject("course", course);
+		mav.addObject("students", course.getStudents());
+		mav.addObject("section2", "studentsPassed");
+		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students_passed/studentFilterForm");
+		return mav;
+	}
+
+	@RequestMapping(value = "/courses/{id}/students_passed/studentFilterForm", method = RequestMethod.GET)
+	public ModelAndView getCourseStudentsThatPassedFilterForm(
+			@PathVariable("id") final int id,
+			@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
+			final BindingResult errors,
+			final RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.studentFilterForm", errors);
+		redirectAttributes.addFlashAttribute("studentFilterForm", studentFilterForm);
+		return new ModelAndView("redirect:/courses/" + id + "/students_passed");
 	}
 
 }
