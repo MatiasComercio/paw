@@ -79,7 +79,7 @@ public class UserController {
 		@ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("RESET_PASSWORD")) {
-			LOGGER.warn("User {} tried to delete user doesn't have authority RESET_PASSWORD [POST]", loggedUser);
+			LOGGER.warn("User {} tried to delete user doesn't have authority RESET_PASSWORD [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
@@ -93,7 +93,7 @@ public class UserController {
 
 			final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 			if (auth == null) {
-				LOGGER.warn("Someone tried to change a password and auth was null [POST]");
+				LOGGER.warn("User {} tried to change a password and auth was null [POST]", loggedUser.getDni());
 				return new ModelAndView("redirect:/errors/401");
 			}
 			UserSessionDetails user = (UserSessionDetails) auth.getPrincipal();
@@ -110,9 +110,11 @@ public class UserController {
 			final Result result = userService.resetPassword(passwordForm.getDni());
 
 			if (!result.equals(Result.OK)) {
+				LOGGER.warn("User {} could not reset password, Result = {}", loggedUser.getDni(), result);
 				redirectAttributes.addFlashAttribute("alert", "danger");
 				redirectAttributes.addFlashAttribute("message", result.getMessage());
 			} else {
+				LOGGER.info("User {} reset password successfully", loggedUser.getDni());
 				redirectAttributes.addFlashAttribute("alert", "success");
 				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
 						null,
