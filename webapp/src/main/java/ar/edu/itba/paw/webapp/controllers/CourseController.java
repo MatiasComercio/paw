@@ -162,7 +162,7 @@ public class CourseController {
 	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("EDIT_COURSE")) {
-			LOGGER.warn("User {} tried to edit a course and doesn't have EDIT_COURSE authority [POST]", loggedUser);
+			LOGGER.warn("User {} tried to edit a course and doesn't have EDIT_COURSE authority [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
@@ -380,7 +380,7 @@ public class CourseController {
 	                                   @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("ADD_CORRELATIVE")) {
-			LOGGER.warn("User {} tried to edit a course and doesn't have EDIT_COURSE authority [POST]", loggedUser);
+			LOGGER.warn("User {} tried to edit a course and doesn't have EDIT_COURSE authority [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
