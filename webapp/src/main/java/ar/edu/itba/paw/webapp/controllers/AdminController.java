@@ -132,7 +132,7 @@ public class AdminController {
 			final RedirectAttributes redirectAttributes,
 			@ModelAttribute("user") UserSessionDetails loggedUser) {
 		if (!loggedUser.hasAuthority("ADD_ADMIN")) {
-			LOGGER.warn("The user {} is trying to add an admin and doesn't have authority ADD_ADMIN [GET]", loggedUser);
+			LOGGER.warn("The user {} is trying to add an admin and doesn't have authority ADD_ADMIN [GET]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
@@ -153,7 +153,7 @@ public class AdminController {
 			@ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("ADD_ADMIN")) {
-			LOGGER.warn("The user {} is trying to add an admin and doesn't have authority ADD_ADMIN [POST]", loggedUser);
+			LOGGER.warn("The user {} is trying to add an admin and doesn't have authority ADD_ADMIN [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 		if (errors.hasErrors()){
@@ -180,7 +180,7 @@ public class AdminController {
 	                                        @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("DISABLE_INSCRIPTION")) {
-			LOGGER.warn("The user {} is trying to disable inscription and and doesn't have authority DISABLE_INSCRIPTION [POST]", loggedUser);
+			LOGGER.warn("The user {} is trying to disable inscription and and doesn't have authority DISABLE_INSCRIPTION [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 		Result result = adminService.disableInscriptions();
@@ -205,7 +205,7 @@ public class AdminController {
 	public ModelAndView enableInscriptions(RedirectAttributes redirectAttributes,
 	                                       @ModelAttribute("user") UserSessionDetails loggedUser) {
 		if (!loggedUser.hasAuthority("ENABLE_INSCRIPTION")) {
-			LOGGER.warn("The user {} is trying to enable inscription and and doesn't have authority ENABLE_INSCRIPTION [POST]", loggedUser);
+			LOGGER.warn("The user {} is trying to enable inscription and and doesn't have authority ENABLE_INSCRIPTION [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 		Result result = adminService.enableInscriptions();
@@ -233,7 +233,7 @@ public class AdminController {
 			@ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("VIEW_ADMIN")) {
-			LOGGER.warn("The user {} is trying to view an admin's info and and doesn't have authority VIEW_ADMIN", loggedUser);
+			LOGGER.warn("The user {} is trying to view an admin's info and and doesn't have authority VIEW_ADMIN [GET]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
@@ -259,7 +259,7 @@ public class AdminController {
 			@ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("EDIT_ADMIN")) {
-			LOGGER.warn("The user {} is trying to edit an admin and and doesn't have authority EDIT_ADMIN [GET]", loggedUser);
+			LOGGER.warn("The user {} is trying to edit an admin and and doesn't have authority EDIT_ADMIN [GET]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
