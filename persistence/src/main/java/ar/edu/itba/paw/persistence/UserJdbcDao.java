@@ -330,27 +330,24 @@ public class UserJdbcDao implements UserDao {
 
 		defaultEmail = defaultEmailBuilder.toString();
 
-		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
-			return defaultEmail;
-		}
+//		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
+//			return defaultEmail;
+//		}
 
-		final String initChar = firstName.substring(0, 1).toLowerCase();
-
-		final String[] lastNames = lastName.toLowerCase().split(" ");
-		StringBuilder currentEmail;
-		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
-			currentEmail = new StringBuilder(initChar);
-			for (int j = 0 ; j <= i; j++) {
-				currentEmail.append(lastNames[j]);
-			}
-			currentEmail.append(EMAIL_DOMAIN);
-			if (!exists(currentEmail)) { // +++ximprove: should return existent email
-				return String.valueOf(currentEmail);
-			}
-		}
-
-		/* This is in case all email trials failed */
-		/* This, for sure, does not exists as includes the docket, which is unique */
+//		final String initChar = firstName.substring(0, 1).toLowerCase();
+//
+//		final String[] lastNames = lastName.toLowerCase().split(" ");
+//		StringBuilder currentEmail;
+//		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
+//			currentEmail = new StringBuilder(initChar);
+//			for (int j = 0 ; j <= i; j++) {
+//				currentEmail.append(lastNames[j]);
+//			}
+//			currentEmail.append(EMAIL_DOMAIN);
+//			if (!exists(currentEmail)) { // +++ximprove: should return existent email
+//				return String.valueOf(currentEmail);
+//			}
+//		}
 		return defaultEmail;
 	}
 
