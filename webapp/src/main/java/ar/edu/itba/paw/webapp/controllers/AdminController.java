@@ -69,8 +69,8 @@ public class AdminController {
 	                                final BindingResult errors,
 	                                final Model model,
 	                           @ModelAttribute("user") UserSessionDetails loggedUser) {
-
 		if (!loggedUser.hasAuthority("VIEW_ADMINS")) {
+			LOGGER.warn("User {} tried to list the admins and doesn't have VIEW_ADMINS authority [GET]", loggedUser);
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
@@ -78,6 +78,7 @@ public class AdminController {
 
 		if (errors.hasErrors()) {
 			/* Cancel current search */
+			LOGGER.warn("There were errors when User {} tried to list the admins {}", loggedUser, errors.getAllErrors());
 			adminFilterForm.empty();
 
 			mav.addObject("alert", "danger");
@@ -130,8 +131,8 @@ public class AdminController {
 			@ModelAttribute("adminForm") final AdminForm adminForm,
 			final RedirectAttributes redirectAttributes,
 			@ModelAttribute("user") UserSessionDetails loggedUser) {
-
 		if (!loggedUser.hasAuthority("ADD_ADMIN")) {
+			LOGGER.warn("The user {} is trying to add an admin and doesn't have authority ADD_ADMIN [GET]", loggedUser);
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
@@ -152,9 +153,11 @@ public class AdminController {
 			@ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("ADD_ADMIN")) {
+			LOGGER.warn("The user {} is trying to add an admin and doesn't have authority ADD_ADMIN [POST]", loggedUser);
 			return new ModelAndView(UNAUTHORIZED);
 		}
 		if (errors.hasErrors()){
+			LOGGER.warn("The user {} is trying to add an admin and there was an error = {}", loggedUser, errors.getAllErrors());
 			return adminsAddAdminG(adminForm, null, loggedUser);
 		}
 		Admin admin = adminForm.build();
@@ -162,6 +165,7 @@ public class AdminController {
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			LOGGER.warn("User {} could not add admin, Result = {}", adminForm.getDni(), result);
 			return adminsAddAdminG(adminForm, redirectAttributes, loggedUser);
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
@@ -176,14 +180,17 @@ public class AdminController {
 	                                        @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("DISABLE_INSCRIPTION")) {
+			LOGGER.warn("The user {} is trying to disable inscription and and doesn't have authority DISABLE_INSCRIPTION [POST]", loggedUser);
 			return new ModelAndView(UNAUTHORIZED);
 		}
 		Result result = adminService.disableInscriptions();
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			LOGGER.warn("User {} could not disable inscriptions, Result = {}", loggedUser.getDni(), result);
 		}
 		else{
+			LOGGER.info("User {} disabled inscriptions successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("disable_inscriptions_success",
 					null,
@@ -198,14 +205,17 @@ public class AdminController {
 	public ModelAndView enableInscriptions(RedirectAttributes redirectAttributes,
 	                                       @ModelAttribute("user") UserSessionDetails loggedUser) {
 		if (!loggedUser.hasAuthority("ENABLE_INSCRIPTION")) {
+			LOGGER.warn("The user {} is trying to enable inscription and and doesn't have authority ENABLE_INSCRIPTION [POST]", loggedUser);
 			return new ModelAndView(UNAUTHORIZED);
 		}
 		Result result = adminService.enableInscriptions();
 		if(!result.equals(Result.OK)){
+			LOGGER.warn("User {} could not enable inscriptions, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 		}
 		else{
+			LOGGER.info("User {} disabled inscriptions successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("enable_inscriptions_success",
 					null,
@@ -223,6 +233,7 @@ public class AdminController {
 			@ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("VIEW_ADMIN")) {
+			LOGGER.warn("The user {} is trying to view an admin's info and and doesn't have authority VIEW_ADMIN", loggedUser);
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
@@ -248,6 +259,7 @@ public class AdminController {
 			@ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("EDIT_ADMIN")) {
+			LOGGER.warn("The user {} is trying to edit an admin and and doesn't have authority EDIT_ADMIN [GET]", loggedUser);
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
@@ -276,10 +288,12 @@ public class AdminController {
 	                                @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("EDIT_ADMIN")) {
+			LOGGER.warn("The user {} is trying to edit an admin and and doesn't have authority EDIT_ADMIN [POST]", loggedUser);
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
 		if (errors.hasErrors()){
+			LOGGER.warn("There were errors when User {} tried to edit an admin {}", loggedUser, errors.getAllErrors());
 			return editAdmin(dni, adminForm, redirectAttributes, loggedUser);
 		}
 
@@ -289,7 +303,10 @@ public class AdminController {
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			LOGGER.warn("User {} could not edit admin, Result = {}", adminForm.getDni(), result);
 			return editAdmin(dni, adminForm, redirectAttributes, loggedUser);
+		} else {
+			LOGGER.info("User {} could edited admins, Result = {}", adminForm.getDni());
 		}
 
 		redirectAttributes.addFlashAttribute("alert", "success");
