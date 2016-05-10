@@ -291,6 +291,7 @@ public class StudentJdbcDaoTest {
         Result result;
         final Map<String, Object> userArgs = new HashMap<>();
         final Map<String, Object> studentArgs = new HashMap<>();
+        final Map<String, Object> addressArgs = new HashMap<>();
 
         /**
          * update the student's dni
@@ -302,9 +303,14 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
+		Address address = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
+				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED).build();
+
         studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
         docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
-        Student student = new Student.Builder(docket1, DNI_2).build();
+        Student student = new Student.Builder(docket1, DNI_2)
+				.address(address)
+				.build();
 
         result = studentJdbcDao.update(docket1, DNI_1, student);
         assertEquals(Result.OK, result);
@@ -322,7 +328,9 @@ public class StudentJdbcDaoTest {
 
         studentArgs.put(STUDENT__DNI_COLUMN, DNI_2);
         docket2 = studentInsert.executeAndReturnKey(studentArgs).intValue();
-        student = new Student.Builder(docket2, DNI_1).build();
+        student = new Student.Builder(docket2, DNI_1)
+				.address(address)
+				.build();
 
         result = studentJdbcDao.update(docket2, DNI_1, student);
         assertEquals(Result.OK, result);
