@@ -55,7 +55,12 @@ public interface CourseService {
     /**
      * Attempts to delete the course with the given id
      * @param id of the course to delete
-     * @return +++xdocument
+     * @return OK if the course was deleted;
+     *         ERROR_ID_OUT_OF_BOUNDS if the id is not within the required limits;
+     *         COURSE_EXISTS_INSCRIPTION if there are inscriptions in that course;
+     *         COURSE_EXISTS_GRADE if there grades tied to the course;
+     *         INVALID_INPUT_PARAMETERS if the ID is invalid;
+     *         ERROR_UNKNOWN else;
      */
     Result deleteCourse(Integer id);
 
