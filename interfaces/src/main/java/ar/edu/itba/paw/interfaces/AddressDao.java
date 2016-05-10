@@ -19,7 +19,8 @@ public interface AddressDao {
      * @param dni the user's dni
      * @param address the address' data
      * @return OK if the operation was successful;
-     *      +++xdocument
+     *          DNI_NOT_EXISTS if there is no address matched to the DNI;
+     *          ERROR_UNKNOWN else;
      */
     Result createAddress(Integer dni, Address address);
 
@@ -28,7 +29,7 @@ public interface AddressDao {
      * @param dni the user's dni
      * @param address the address' data
      * @return OK if the operation was successful;
-     *      +++xdocument
+     *      ERROR_UNKNOWN else;
      */
     Result updateAddress(Integer dni, Address address);
 }
