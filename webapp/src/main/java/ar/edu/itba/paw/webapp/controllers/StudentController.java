@@ -67,7 +67,13 @@ public class StudentController {
 	@RequestMapping(value = "/students", method = RequestMethod.GET)
 	public ModelAndView getStudents(@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
 	                                final BindingResult errors,
-	                                final Model model) {
+	                                final Model model,
+	                                @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_STUDENTS")) {
+			LOGGER.warn("User {} tried to view all students and doesn't have VIEW_STUDENTS authority [GET]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		final ModelAndView mav = new ModelAndView("students");
 
@@ -105,7 +111,14 @@ public class StudentController {
 	}
 
 	@RequestMapping("/students/{docket}/info")
-	public ModelAndView getStudent(@PathVariable final int docket) {
+	public ModelAndView getStudent(@PathVariable final int docket,
+	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_STUDENT")) {
+			LOGGER.warn("User {} tried to view student with docket {} and doesn't have VIEW_STUDENT authority [GET]", loggedUser.getDni(), docket);
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		final Student student =  studentService.getByDocket(docket);
 
 		final ModelAndView mav;
@@ -164,7 +177,14 @@ public class StudentController {
 	}
 
 	@RequestMapping(value = "/students/{docket}/courses", method = RequestMethod.GET)
-	public ModelAndView getStudentCourses(@PathVariable final int docket, final Model model) {
+	public ModelAndView getStudentCourses(@PathVariable final int docket, final Model model,
+	                                      @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_COURSES")) {
+			LOGGER.warn("User {} tried to view all the courses the student with docket {} is enrolled in " +
+					"and doesn't have VIEW_COURSES authority [GET]", loggedUser.getDni(), docket);
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		if (!model.containsAttribute("courseFilterForm")) {
 			model.addAttribute("courseFilterForm", new CourseFilterForm());
@@ -381,26 +401,6 @@ public class StudentController {
 		}
 	}
 
-//	@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.GET)
-//	public ModelAndView editGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
-//	                              @PathVariable Integer docket, @PathVariable Integer courseId, @PathVariable Timestamp modified,
-//								  @PathVariable BigDecimal grade, @PathVariable String courseName,
-//								  RedirectAttributes redirectAttributes){
-//		ModelAndView mav = new ModelAndView("editGrade");
-//		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
-//		gradeForm.setGrade(grade); //Set the old grade (to be displayed in the edit view)
-//		gradeForm.setDocket(docket);
-//		gradeForm.setCourseId(courseId);
-//		gradeForm.setModified(modified);
-//		gradeForm.setCourseName(courseName); //Avoid the @NotBlank validation
-//
-//		mav.addObject("docket", docket);
-//		mav.addObject("courseId", courseId);
-//		mav.addObject("courseName", courseName);
-//
-//		return mav;
-//	}
-
 	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.POST)
 	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
 	                              @PathVariable Integer docket, RedirectAttributes redirectAttributes,
@@ -491,21 +491,6 @@ public class StudentController {
 		}
 
 		return new ModelAndView("redirect:/students/" + docket + "/courses");
-
-		/********************/
-
-/*		*//*gradeForm.setDocket(docket);*//*
-		Grade grade = gradeForm.build();
-		Result result = studentService.addGrade(grade);
-		if(!result.equals(Result.OK)) {
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return addGrade(gradeForm, redirectAttributes);
-		}
-		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", "La nota se ha guardado correctamente.");
-		*//* +++xchange redirect *//*
-		return new ModelAndView("redirect:/students/" + docket + "/info");*/
 	}
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)

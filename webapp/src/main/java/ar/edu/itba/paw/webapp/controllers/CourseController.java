@@ -66,7 +66,14 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/courses", method = RequestMethod.GET)
-	public ModelAndView getCourses(final Model model) {
+	public ModelAndView getCourses(final Model model,
+	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_COURSES")) {
+			LOGGER.warn("User {} tried to view all courses and doesn't have VIEW_COURSES authority [GET]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		if (!model.containsAttribute("courseFilterForm")) {
 			model.addAttribute("courseFilterForm", new CourseFilterForm());
 		}
@@ -103,7 +110,14 @@ public class CourseController {
 
 	@RequestMapping("/courses/{id}/info")
 	public ModelAndView getCourse(@PathVariable final Integer id, Model model,
-	                              @ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm) {
+	                              @ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm,
+	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_COURSE")) {
+			LOGGER.warn("User {} tried to view the course {} and doesn't have VIEW_COURSE authority [GET]",
+					loggedUser.getDni(), id);
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		final ModelAndView mav = new ModelAndView("course");
 
 		if (!model.containsAttribute("correlativeForm")) {
@@ -205,7 +219,14 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/{id}/students", method = RequestMethod.GET)
 	public ModelAndView getCourseStudents(@PathVariable("id") final Integer id,
-	                                      final Model model, final RedirectAttributes redirectAttributes) {
+	                                      final Model model, final RedirectAttributes redirectAttributes,
+	                                      @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_STUDENTS")) {
+			LOGGER.warn("User {} tried to view all students that are enrolled at course {} " +
+					"and doesn't have VIEW_STUDENTS authority [GET]", loggedUser.getDni(), id);
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		if (!model.containsAttribute("studentFilterForm")) {
 			model.addAttribute("studentFilterForm", new StudentFilterForm());
@@ -307,8 +328,6 @@ public class CourseController {
 		}
 
 		final Result result = courseService.deleteCourse(id);
-//        ModelAndView mav = new ModelAndView("redirect:/courses");
-//        ModelAndView mav = new ModelAndView("coursesSearch");
 		final String urlRedirect;
 		if(result.equals(Result.OK)) {
 			LOGGER.info("User {} deleted a course successfully", loggedUser.getDni());
