@@ -42,7 +42,7 @@
     <c:set var="studentMenu">
         <li class="spaced"></li>
         <li class="spaced">
-            <a href="<c:url value="/students/${user.id}/courses" />"><i class="fa fa-fw fa-university"></i> <spring:message code="courses"/></a>
+            <a href="<c:url value="/students/${user.id}/courses" />"><i class="fa fa-fw fa-university"></i> <spring:message code="currentCourses"/></a>
         </li>
         <li class="spaced">
             <a href="<c:url value="/students/${user.id}/grades" />"><i class="fa fa-fw fa-graduation-cap"></i> <spring:message code="grades"/></a>

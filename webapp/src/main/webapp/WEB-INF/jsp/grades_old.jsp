@@ -1,3 +1,4 @@
+<%@ taglib prefix="s" uri="http://www.springframework.org/security/tags" %>
 <%@include file="base/tags.jsp" %>
 
 <!DOCTYPE html>
@@ -87,14 +88,21 @@
                                     <span class="col-xs-2"> ${ grade.courseId }</span>
                                     <span class="col-xs-10"> ${ grade.courseName }</span>
                                 </td>
-                                    <%-- +++xdoing --%>
                                 <td>
                                     <c:choose>
                                         <c:when test="${grade.taking}">
-                                            <spring:message code="coursing" />
+                                            <span class="text-info"><spring:message code="coursing" /></span>
                                         </c:when>
                                         <c:otherwise>
-                                            ${ grade.grade }
+                                            <c:choose>
+                                                <c:when test="${grade.grade >= 4}">
+                                                    <c:set var="gradeColorClass" value="text-success" />
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <c:set var="gradeColorClass" value="text-danger" />
+                                                </c:otherwise>
+                                            </c:choose>
+                                            <span class="${gradeColorClass}">${ grade.grade }</span>
                                         </c:otherwise>
                                     </c:choose>
                                 </td>
@@ -109,16 +117,18 @@
                                     </c:choose>
                                 </td>
                                 <td>
-                                    <a class="btn btn-default btn-xs" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">
+                                    <a class="btn btn-default" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">
                                         <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="courseInformation"/>
                                     </a>
                                     <c:if test="${grade.modified != null }">
-                                    <button name="gradeButton" class="btn btn-info btn-xs" type="button"
+                                    <s:authorize access="hasAuthority('ROLE_EDIT_GRADE')">
+                                    <button name="gradeButton" class="btn btn-info" type="button"
                                             data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
                                             data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
                                             data-target="#gradeFormConfirmationModal">
                                         <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
                                     </button>
+                                    </s:authorize>
                                     </c:if>
                                 <td>
                             </tr>
