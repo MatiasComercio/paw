@@ -485,6 +485,7 @@ public class StudentJdbcDao implements StudentDao {
 	@Override
 	public Result update(final Integer docket, final Integer dni , final Student student) {
 		int rowsAffected;
+		Result result;
 
 	    final String genre = student.getGenre().name();
         final String userUpdate = "UPDATE users SET " + USER__FIRST_NAME_COLUMN + " = ?, "
@@ -494,16 +495,17 @@ public class StudentJdbcDao implements StudentDao {
 
 		//Update user table
 		try {
-			Date birthday = student.getBirthday() != null ? Date.valueOf(student.getBirthday()) : null;
+//			Date birthday = student.getBirthday() != null ? Date.valueOf(student.getBirthday()) : null;
 
-            rowsAffected = jdbcTemplate.update(userUpdate, student.getFirstName(), student.getLastName(), genre,
-                    birthday, 	createEmail(student.getDni(), student.getFirstName(),
-                            student.getLastName()), dni);
+//            rowsAffected = jdbcTemplate.update(userUpdate, student.getFirstName(), student.getLastName(), genre,
+//                    birthday, 	createEmail(student.getDni(), student.getFirstName(),
+//                            student.getLastName()), dni);
+			result = userDao.update(dni, student);
         } catch (DuplicateKeyException e) {
             return Result.STUDENT_EXISTS_DNI;
         }
 
-		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
+		return result;
 	}
 
 	@Override
