@@ -79,6 +79,7 @@ public class UserController {
 		@ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("RESET_PASSWORD")) {
+			LOGGER.warn("User {} tried to delete user doesn't have authority RESET_PASSWORD [POST]", loggedUser);
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
@@ -182,7 +183,7 @@ public class UserController {
 		LOGGER.info("Deleting User {}", userForm.getDni());
 		if (!loggedUser.hasAuthority("DELETE_USER")
 				&& !loggedUser.hasAuthority("ADMIN")) {
-			LOGGER.warn("Someone tried to delete user and auth was null [POST]");
+			LOGGER.warn("User {} tried to delete user NOT ADMIN and doesn't have authority DELETE_USER [POST]", loggedUser);
 			return new ModelAndView(UNAUTHORIZED);
 		}
 		if (errors.hasErrors()){
