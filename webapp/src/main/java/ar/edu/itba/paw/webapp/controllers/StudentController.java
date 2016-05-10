@@ -497,9 +497,9 @@ public class StudentController {
 	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes,
 	                                  @ModelAttribute("user") UserSessionDetails loggedUser) {
 
-		if (!loggedUser.hasAuthority("DELETE_GRADE")
+		if (!loggedUser.hasAuthority("DELETE_STUDENT")
 				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
-			LOGGER.warn("User {} tried to delete a student and doesn't have DELETE_GRADE authority [POST]", loggedUser.getDni());
+			LOGGER.warn("User {} tried to delete a student and doesn't have DELETE_STUDENT authority [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 		final Result result = studentService.deleteStudent(docket);

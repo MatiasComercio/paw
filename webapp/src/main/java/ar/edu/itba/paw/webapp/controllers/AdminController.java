@@ -96,7 +96,7 @@ public class AdminController {
 		// +++ximprove with Spring Security
 		final List<Admin> admins = adminService.getByFilter(adminFilter);
 		if (admins == null) {
-			return new ModelAndView("forward:/errors/404.html");
+			return new ModelAndView(NOT_FOUND);
 		}
 
 		mav.addObject("admins", admins);
@@ -240,6 +240,7 @@ public class AdminController {
 		final Admin admin = adminService.getByDni(dni);
 
 		if (admin == null) {
+			LOGGER.warn("User {} tried to access admin {} that does not exist", loggedUser.getUsername());
 			return new ModelAndView(NOT_FOUND);
 		}
 
@@ -266,6 +267,7 @@ public class AdminController {
 		final Admin admin = adminService.getByDni(dni);
 
 		if (admin == null) {
+			LOGGER.warn("User {} tried to access admin {} that does not exist", loggedUser.getUsername());
 			return new ModelAndView(NOT_FOUND);
 		}
 
