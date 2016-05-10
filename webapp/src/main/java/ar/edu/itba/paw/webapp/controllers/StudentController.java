@@ -220,7 +220,7 @@ public class StudentController {
 		}
 		if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("unenroll_success",
@@ -292,7 +292,7 @@ public class StudentController {
 		}
 		if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
@@ -356,7 +356,7 @@ public class StudentController {
 			Result result = studentService.create(student);
 			if(!result.equals(Result.OK)){
 				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", result.getMessage());
+				redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 				return addStudent(studentForm, redirectAttributes, loggedUser);
 			}
 			redirectAttributes.addFlashAttribute("alert", "success");
@@ -415,7 +415,7 @@ public class StudentController {
 		Result result = studentService.editGrade(newGrade, gradeForm.getOldGrade());
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			return new ModelAndView("redirect:/students/" + docket + "/grades");
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
@@ -458,10 +458,10 @@ public class StudentController {
 		if (result == null) {
 			result = Result.ERROR_UNKNOWN;
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 		} else if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addGrade_success",
@@ -478,7 +478,7 @@ public class StudentController {
 		Result result = studentService.addGrade(grade);
 		if(!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			return addGrade(gradeForm, redirectAttributes);
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
@@ -559,7 +559,7 @@ public class StudentController {
 
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
 		}
 

@@ -170,7 +170,7 @@ public class CourseController {
 
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			return new ModelAndView("redirect:/courses/" + courseId + "/edit");
 		}
 
@@ -268,7 +268,7 @@ public class CourseController {
 			Result result = courseService.create(course);
 			if(!result.equals(Result.OK)){
 				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", result.getMessage());
+				redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 				return addCourse(courseForm, redirectAttributes, loggedUser);
 			}
 			redirectAttributes.addFlashAttribute("alert", "success");
@@ -300,7 +300,7 @@ public class CourseController {
 			urlRedirect = "/courses";
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			urlRedirect = request.getHeader("referer");
 		}
 
@@ -374,7 +374,7 @@ public class CourseController {
 		}
 		if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
@@ -409,7 +409,7 @@ public class CourseController {
 		}
 		if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
