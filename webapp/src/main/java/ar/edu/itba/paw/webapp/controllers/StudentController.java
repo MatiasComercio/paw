@@ -74,7 +74,7 @@ public class StudentController {
 		if (errors.hasErrors()) {
 			/* Cancel current search */
 			studentFilterForm.empty();
-			LOGGER.warn("Could not get students due to {} [POST]", errors.getAllErrors());
+			LOGGER.warn("Could not get students due to {} [GET]", errors.getAllErrors());
 
 			mav.addObject("alert", "danger");
 			mav.addObject("message", messageSource.getMessage("search_fail",
