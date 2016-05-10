@@ -162,13 +162,14 @@ public class UserController {
 		if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			LOGGER.info("User {} changed Password successfully", passwordForm.getDni());
+			LOGGER.warn("User {} could not change Password, Result = {}", passwordForm.getDni(), result);
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
 					null,
 					Locale.getDefault()));
-			LOGGER.warn("User {} could not change Password, Result = {}", passwordForm.getDni(), result);
+			LOGGER.info("User {} changed Password successfully", passwordForm.getDni());
+
 		}
 
 
