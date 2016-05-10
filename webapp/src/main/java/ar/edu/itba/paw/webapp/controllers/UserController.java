@@ -54,6 +54,7 @@ public class UserController {
 	public ModelAndView changePassword(
 			@ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
 			final RedirectAttributes redirectAttributes) {
+		LOGGER.info("User {} is about to change password", passwordForm.getDni());
 		final ModelAndView mav = new ModelAndView("changePassword");
 		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth == null) {
@@ -126,9 +127,12 @@ public class UserController {
 			@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
 			final BindingResult errors,
 			final RedirectAttributes redirectAttributes) {
+		LOGGER.info("User {} is about to change password", passwordForm.getDni());
 		passwordValidator.validate(passwordForm, errors);
 
 		if (errors.hasErrors()){
+			LOGGER.warn("User {} could not change password due to {} [POST]", passwordForm.getDni(), errors.getAllErrors());
+
 			return changePassword(passwordForm, redirectAttributes);
 		}
 
@@ -157,12 +161,15 @@ public class UserController {
 		if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			LOGGER.info("User {} changed Password successfully", passwordForm.getDni());
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
 					null,
 					Locale.getDefault()));
+			LOGGER.warn("User {} could not change Password, Result = {}", passwordForm.getDni(), result);
 		}
+
 
 		/* +++xchange */
 		return new ModelAndView("redirect:/user/changePassword");
@@ -172,9 +179,10 @@ public class UserController {
 	public ModelAndView deleteUser(@Valid @ModelAttribute("userForm") UserForm userForm,
 	                               final BindingResult errors, final RedirectAttributes redirectAttributes,
 	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
-
+		LOGGER.info("Deleting User {}", userForm.getDni());
 		if (!loggedUser.hasAuthority("DELETE_USER")
 				&& !loggedUser.hasAuthority("ADMIN")) {
+			LOGGER.warn("Someone tried to delete user and auth was null [POST]");
 			return new ModelAndView(UNAUTHORIZED);
 		}
 		if (errors.hasErrors()){
@@ -186,6 +194,9 @@ public class UserController {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 			//return deleteUser(userForm, redirectAttributes); //TODO: See where it returns
+			LOGGER.warn("User {} could not be deleted, Result = {}", userForm.getDni(), result);
+		} else {
+			LOGGER.info("User {} was deleted successfully", userForm.getDni());
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addStudent_success",
