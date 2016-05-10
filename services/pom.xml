@@ -6,10 +6,8 @@
         <version>1.1.0.RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>services</artifactId>
     <packaging>jar</packaging>
-
     <name>services</name>
     <url>http://maven.apache.org</url>
 

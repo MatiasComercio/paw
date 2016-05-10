@@ -22,7 +22,7 @@
         <dependency>
             <groupId>ar.edu.itba.paw</groupId>
             <artifactId>shared</artifactId>
-            <version>1.1.0.RELEASE</version>
+            <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
 </project>
