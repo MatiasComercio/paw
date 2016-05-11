@@ -37,6 +37,6 @@ public class InscriptionForm {
 	}
 
 	public void setCourseName(final String courseName) {
-		this.courseName = courseName;
+		this.courseName = courseName.trim();
 	}
 }

@@ -107,7 +107,7 @@ public class StudentForm {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstName = firstName.trim();
     }
 
     public String getLastName() {
@@ -115,7 +115,7 @@ public class StudentForm {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastName = lastName.trim();
     }
 
     public User.Genre getGenre() {
@@ -139,7 +139,7 @@ public class StudentForm {
     }
 
     public void setCountry(String country) {
-        this.country = country;
+        this.country = country.trim();
     }
 
     public String getCity() {
@@ -147,7 +147,7 @@ public class StudentForm {
     }
 
     public void setCity(String city) {
-        this.city = city;
+        this.city = city.trim();
     }
 
     public String getNeighborhood() {
@@ -155,7 +155,7 @@ public class StudentForm {
     }
 
     public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
+        this.neighborhood = neighborhood.trim();
     }
 
     public String getStreet() {
@@ -163,7 +163,7 @@ public class StudentForm {
     }
 
     public void setStreet(String street) {
-        this.street = street;
+        this.street = street.trim();
     }
 
     public Integer getNumber() {
@@ -187,7 +187,7 @@ public class StudentForm {
     }
 
     public void setDoor(String door) {
-        this.door = door;
+        this.door = door.trim();
     }
 
     public Long getTelephone() {
