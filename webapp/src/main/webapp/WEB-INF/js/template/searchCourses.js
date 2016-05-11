@@ -1,4 +1,4 @@
-function loadSearch() {
+function loadSearchCourses() {
     /* Search */
     $("#resetSearch").on("click", function() {
         var courseFilterForm = $("#course_filter_form");

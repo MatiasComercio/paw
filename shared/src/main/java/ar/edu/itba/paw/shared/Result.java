@@ -1,33 +1,38 @@
 package ar.edu.itba.paw.shared;
 
 public enum Result {
-    OK(""),
+    OK,
 
-    COURSE_EXISTS_GRADE("Existen alumnos que poseen notas de este curso."),
-    COURSE_EXISTS_INSCRIPTION("Existen alumnos que están inscriptos en este curso."),
-    COURSE_EXISTS_ID("Ya existe un curso con este ID."),
+    COURSE_EXISTS_GRADE,
+    COURSE_EXISTS_INSCRIPTION,
+    COURSE_EXISTS_ID,
+    COURSE_ALREADY_PASSED,
 
-    STUDENT_EXISTS_DOCKET("Ya existe un alumno con este legajo."),
-    STUDENT_EXISTS_DNI("Ya existe un alumno con este DNI."),
-    STUDENT_NOT_EXISTS("El alumno especificado no existe."),
-    GRADE_EXISTS("La nota ya existe"),  /* +++xremove when adding date to grade DB */
-    COURSE_NOT_EXISTS("La materia no existe"),
-    INSCRIPTION_NOT_EXISTS("El estudiante no está inscripto en esta materia"),
-    INVALID_INPUT_PARAMETERS("Alguno de los datos necesarios para realizar la acción es inválido"),
-    ERROR_UNKNOWN("Un error desconocido ha ocurrido"),
-    ERROR_ID_OUT_OF_BOUNDS("El ID está fuera de los límites permitidos"),
-    ERROR_DOCKET_OUT_OF_BOUNDS("El legajo está fuera de los límites permitidos"),
-	ALREADY_ENROLLED("El alumno ya está inscripto en esa materia."),
-	NOT_EXISTENT_ENROLL("El alumno no estaba inscripto en esa materia");
+    USER_NOT_EXISTS,
 
+    STUDENT_EXISTS_DOCKET,
+    STUDENT_EXISTS_DNI,
+    STUDENT_NOT_EXISTS,
+    GRADE_EXISTS,
+    COURSE_NOT_EXISTS,
+    INSCRIPTION_NOT_EXISTS,
+    INVALID_INPUT_PARAMETERS,
+    ERROR_UNKNOWN,
+    ERROR_ID_OUT_OF_BOUNDS,
+    ERROR_DNI_OUT_OF_BOUNDS,
+    ERROR_DOCKET_OUT_OF_BOUNDS,
+    ERROR_CORRELATIVE_NOT_APPROVED,
+	ALREADY_ENROLLED,
+	NOT_EXISTENT_ENROLL,
 
-    private final String message;
+    CORRELATIVE_CORRELATIVITY_EXISTS,
+    CORRELATIVE_CORRELATIVITY_LOOP,
+    CORRELATIVE_SEMESTER_INCOMPATIBILITY,
+    CORRELATIVE_SAME_COURSE,
+    PASSWORDS_DO_NOT_MATCH,
+    ADMIN_EXISTS_DNI,
+    ADMIN_ALREADY_ENABLED_INSCRIPTIONS,
+    USER_EXISTS_DNI,
+    DNI_NOT_EXISTS;
 
-    Result(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return this.message;
-    }
 }

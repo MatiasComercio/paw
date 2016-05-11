@@ -3,10 +3,11 @@ package ar.edu.itba.paw.models.users;
 
 
 import ar.edu.itba.paw.models.Address;
+import ar.edu.itba.paw.models.Authority;
+import ar.edu.itba.paw.models.Role;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class User {
 	private final int dni;
@@ -16,6 +17,9 @@ public abstract class User {
 	private final LocalDate birthday;
 	private final String email;
 	private final Address address;
+	private final String password;
+	private final Collection<Role> roles;
+	private final Collection<Authority> authorities;
 
 	protected User(final Builder builder) {
 		this.dni = builder.dni;
@@ -25,6 +29,9 @@ public abstract class User {
 		this.birthday = builder.birthday;
 		this.email = builder.email;
 		this.address = builder.address;
+		this.password = builder.password;
+		this.roles = builder.roles;
+		this.authorities = builder.authorities;
 	}
 
 	public int getDni() {
@@ -43,8 +50,8 @@ public abstract class User {
 		return getFirstName() + " " + getLastName();
 	}
 
-	public String getGenre() {
-		return genre == null ? "" : genre.toString();
+	public Genre getGenre() {
+		return genre;
 	}
 
 	public LocalDate getBirthday() {
@@ -62,6 +69,18 @@ public abstract class User {
 	 */
 	public Address getAddress() {
 		return address;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public Collection<Role> getRoles() {
+		return Collections.unmodifiableCollection(roles);
+	}
+
+	public Collection<Authority> getAuthorities() {
+		return Collections.unmodifiableCollection(authorities);
 	}
 
 	@Override
@@ -98,14 +117,19 @@ public abstract class User {
 
 		private String firstName = null;
 		private String lastName = null;
-		private Genre genre = null;
+		private Genre genre = Genre.N;
 		private LocalDate birthday = null;
 		private String email = null;
 		private Address address = null;
+		private String password = null;
+		private Collection<Role> roles;
+		private Collection<Authority> authorities;
 
 		public Builder(final int dni) {
 			this.dni = dni;
 			this.thisBuilder = thisBuilder();
+			this.roles = new HashSet<>();
+			this.authorities = new HashSet<>();
 		}
 
 		/* Each subclass should implement how a user should be build */
@@ -155,11 +179,47 @@ public abstract class User {
 			}
 			return thisBuilder;
 		}
+
+		public T password(final String password) {
+			if (password != null) {
+				this.password = password;
+			}
+			return thisBuilder;
+		}
+
+		public T role(final Role role) {
+			if (role != null) {
+				this.roles.add(role);
+			}
+			return thisBuilder;
+		}
+
+		public T roles(final Collection<? extends Role> roles) {
+			if (roles != null) {
+				this.roles.addAll(roles);
+			}
+			return thisBuilder;
+		}
+
+		public T authority(final Authority authority) {
+			if (authority != null) {
+				this.authorities.add(authority);
+			}
+			return thisBuilder;
+		}
+
+		public T authorities(final Collection<? extends Authority> authorities) {
+			if (authorities != null) {
+				this.authorities.addAll(authorities);
+			}
+			return thisBuilder;
+		}
 	}
 
 	public enum Genre {
 		M("Male"),
-		F("Female");
+		F("Female"),
+		N("");
 		/* Every time we add a value to the Enum, we have to add the map
 		a lowerCase representation of the toString of the Genre
 		 */
@@ -167,6 +227,7 @@ public abstract class User {
 		static {
 			map.put("male", M);
 			map.put("female", F);
+			map.put("", N);
 		}
 
 		private final String genre;
@@ -187,6 +248,10 @@ public abstract class User {
 
 		Genre(final String genre) {
 			this.genre = genre;
+		}
+
+		public String getString() {
+			return genre;
 		}
 
 		@Override

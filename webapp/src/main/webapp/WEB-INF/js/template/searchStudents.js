@@ -1,4 +1,4 @@
-function loadStudentSearch() {
+function loadSearchStudents() {
     /* Search */
     $("#resetSearch").on("click", function() {
         var studentFilterForm = $("#student_filter_form");

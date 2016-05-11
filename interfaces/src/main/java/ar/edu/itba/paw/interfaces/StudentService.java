@@ -3,6 +3,7 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -123,4 +124,42 @@ public interface StudentService {
 	 *          an empty collection will be returned if no course was approved
 	 */
 	Collection<Course> getApprovedCourses(int docket);
+
+
+	/**
+	 * Gets the student's main data that matches the given dni.
+	 * If no student exists with that dni, null is returned.
+	 * @param dni The student's dni
+	 * @return The student with the given dni, if exists; null otherwise.
+	 */
+	Student getByDni(final int dni);
+
+	/**
+	 * Check if the student corresponding to docket has approved all the necessary
+	 * courses to take the course corresponding to the courseId
+	 * @param docket The docket of the student
+	 * @param courseId The id of the course
+     * @return True if the student can take de course, False if not.
+     */
+	boolean checkCorrelatives(final Integer docket, final Integer courseId);
+
+	/**
+	 * Get the representation of a student's transcript
+	 * @param docket
+	 * @return A list containing lists in which all the grades of a semester are placed
+     */
+	List<List<Grade>> getTranscript(final Integer docket);
+
+	/**
+	 * Get the total credits of the plan.
+	 * @return Integer indicating the total credits of the plan.
+	 */
+	Integer getTotalPlanCredits();
+
+	/**
+	 * Get the total amount of passed credits given a student.
+	 * @param docket The student's docket.
+	 * @return Integer indicating the amount of credits passed.
+     */
+	Integer getPassedCredits(final Integer docket);
 }

@@ -1,46 +1,120 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page language="java" pageEncoding="UTF-8"%>
+<%@ include file="tags.jsp" %>
+
+<%-- Spring Security: Choose variables --%>
+<jsp:include page="sections.jsp" />
+
+<%--@elvariable id="adminsActive" type="java.lang.String"--%>
+<%--@elvariable id="studentsActive" type="java.lang.String"--%>
+<%--@elvariable id="coursesActive" type="java.lang.String"--%>
+<c:set var="actionMenuList">
+    <sec:authorize access="hasAuthority('ROLE_VIEW_ADMINS')">
+        <li class="${adminsActive}">
+            <a href="<c:url value="/admins" />" class="pushy-link"><i class="fa fa-lock" aria-hidden="true"></i> <spring:message code="admins"/></a>
+        </li>
+    </sec:authorize>
+    <sec:authorize access="hasAuthority('ROLE_VIEW_STUDENTS')">
+        <li class="${studentsActive}">
+            <a href="<c:url value="/students" />" class="pushy-link"><i class="fa fa-fw fa-users"></i> <spring:message code="students"/></a>
+        </li>
+    </sec:authorize>
+    <sec:authorize access="hasAuthority('ROLE_VIEW_COURSES')">
+        <li class="${coursesActive}">
+            <a href="<c:url value="/courses" />" class="pushy-link"><i class="fa fa-university" aria-hidden="true"></i> <spring:message code="courses"/></a>
+        </li>
+    </sec:authorize>
+    <%--Both variables MUST be defined as:
+    <c:set var="<varName>" scope="request"> -> scope="request is very important. --%>
+    <li class="navbar_own_divider"></li>
+    <li><%--@elvariable id="currentActionsHeader" type="java.lang.String"--%>
+        <p class="current_actions_header">${currentActionsHeader}</p>
+    </li>
+    <%--@elvariable id="currentActions" type="java.util.List"--%>
+    <c:forEach items="${currentActions}" var="action">
+        ${action}
+    </c:forEach>
+</c:set>
+
+<c:set var="profileUrl" value="/students/${user.id}/info" />
+<sec:authorize url="/admins">
+    <c:set var="profileUrl" value="/admins/${user.id}/info" />
+</sec:authorize>
+<sec:authorize access="hasAuthority('ROLE_STUDENT')">
+    <c:set var="studentMenu">
+        <li class="spaced"></li>
+        <li class="spaced">
+            <a href="<c:url value="/students/${user.id}/courses" />"><i class="fa fa-fw fa-university"></i> <spring:message code="currentCourses"/></a>
+        </li>
+        <li class="spaced">
+            <a href="<c:url value="/students/${user.id}/grades" />"><i class="fa fa-fw fa-graduation-cap"></i> <spring:message code="grades"/></a>
+        </li>
+        <sec:authorize access="hasAuthority('ROLE_ADD_INSCRIPTION')" >
+            <li>
+                <a href="<c:url value="/students/${user.id}/inscription" />"><i class="fa fa-fw fa-list-alt"></i> <spring:message code="inscriptions"/></a>
+            </li>
+        </sec:authorize>
+    </c:set>
+</sec:authorize>
+
+
+<!-- Pushy Menu: Only accessible on xs resolution -->
+<%-- Speciall thanks to Chris Yee. Twitter user: @cmyee.--%>
+<%-- See Github repo: https://github.com/christophery/pushy --%>
+<nav class="pushy pushy-left visible-xs-block">
+    <ul class="nav side-nav">
+        ${actionMenuList}
+    </ul>
+</nav>
+
+<!-- Site Overlay -->
+<div class="site-overlay visible-xs-block"></div>
+
 <!-- Navigation -->
-<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-inverse navbar-fixed-top">
+
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-            <span class="sr-only">Toggle navigation</span>
+        <!-- Menu Button -->
+        <button type="button" class="navbar-toggle menu-btn pull-left">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="/"><strong><spring:message code="webAbbreviation"/></strong> - <spring:message code="webName"/></a>
+        <a class="navbar-brand" href="<c:url value="/" />">
+            <strong><spring:message code="webAbbreviation"/></strong>
+            <span class="hidden-xs">
+                - <spring:message code="webName"/>
+            </span>
+        </a>
     </div>
-    <!-- Top Menu Items -->
-    <c:if test="${student != null}">
-        <ul class="nav navbar-right top-nav">
+
+    <!-- User's Menu -->
+    <%--@elvariable id="student" type="ar.edu.itba.paw.models.users.Student"--%>
+    <%--@elvariable id="user" type="ar.edu.itba.paw.webapp.auth.UserSessionDetails"--%>
+    <c:if test="${user != null}">
+        <ul class="nav navbar-right pull-right top-nav">
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> ${student.fullName}<strong class="caret"></strong></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li>
-                        <a href="/students/${student.docket}/info"><i class="fa fa-fw fa-user"></i> <spring:message code="profile"/></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-user"></i>
+                    <span class="hidden-xs">${user.fullName}</span>
+                    <strong class="caret"></strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                    <li class="dropdown-header visible-xs-inline">
+                        ${user.fullName}
                     </li>
+                    <li class="divider visible-xs-block"></li>
                     <li>
-                        <a href="/students/${student.docket}/courses"><i class="fa fa-fw fa-university"></i> <spring:message code="courses"/></a>
+                        <a href="<c:url value="${profileUrl}" />"><i class="fa fa-fw fa-user"></i> <spring:message code="profile"/></a>
                     </li>
+                        ${studentMenu}
+                    <li class="divider"></li>
                     <li>
-                        <a href="/students/${student.docket}/grades"><i class="fa fa-fw fa-graduation-cap"></i> <spring:message code="grades"/></a>
+                        <a href="<c:url value="/user/changePassword" />"><i class="fa fa-fw fa-gear"></i> <spring:message code="changePassword"/></a>
                     </li>
+                    <li class="divider"></li>
                     <li>
-                        <a href="/students/${student.docket}/inscription"><i class="fa fa-fw fa-list-alt"></i> <spring:message code="inscriptions"/></a>
+                        <a href="<c:url value="/logout" />"><i class="fa fa-fw fa-power-off"></i> <spring:message code="logout" /> </a>
                     </li>
-                        <%--                <li>
-                                            <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
-                                        </li>
-                                        <li>
-                                            <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
-                                        </li>
-                                        <li class="divider"></li>
-                                        <li>
-                                            <a href="#"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                                        </li>--%>
                 </ul>
             </li>
         </ul>
@@ -49,52 +123,7 @@
     <!-- navbar-collapse -->
     <div class="collapse navbar-collapse navbar-ex1-collapse">
         <ul class="nav navbar-nav side-nav">
-            <c:choose>
-            <c:when test="${section=='students'}">
-            <li class="active">
-                </c:when>
-            <c:otherwise><li></c:otherwise>
-            </c:choose>
-            <a href="<c:url value="/" />"><i class="fa fa-fw fa-dashboard"></i> <spring:message code="students"/></a>
-        </li>
-
-            <c:choose>
-            <c:when test="${section=='courses'}">
-            <li class="active">
-                </c:when>
-            <c:otherwise><li></c:otherwise>
-            </c:choose>
-            <a href="<c:url value="/courses" />"><i class="fa fa-fw fa-edit"></i> <spring:message code="courses"/></a>
-        </li>
-            <!--<li>
-                <a href="#"><i class="fa fa-fw fa-bar-chart-o"></i> Buscar Alumno</a>
-            </li>
-            <li>
-                <a href="#" />"><i class="fa fa-fw fa-desktop"></i> Buscar Materia</a>
-            </li>
-            <li>
-            <a href="#"><i class="fa fa-fw fa-wrench"></i> Settings</a>
-            </li>
-             <li>
-                <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tables</a>
-            </li>
-            <li>
-                <a href="javascript:;" data-toggle="collapse" data-target="#demo"><i class="fa fa-fw fa-arrows-v"></i> Dropdown <i class="fa fa-fw fa-caret-down"></i></a>
-                <ul id="demo" class="collapse">
-                    <li>
-                        <a href="#">Dropdown Item</a>
-                    </li>
-                    <li>
-                        <a href="#">Dropdown Item</a>
-                    </li>
-                </ul>
-            </li>
-            <li>
-                <a href="blank-page.html"><i class="fa fa-fw fa-file"></i> Blank Page</a>
-            </li>
-            <li>
-                <a href="index-rtl.html"><i class="fa fa-fw fa-dashboard"></i> RTL Dashboard</a>
-            </li>-->
+            ${actionMenuList}
         </ul>
     </div>
     <!-- /.navbar-collapse -->

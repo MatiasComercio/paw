@@ -7,6 +7,7 @@ import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.theories.Theory;
@@ -15,17 +16,26 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.matchers.Null;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.util.*;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.junit.runners.Parameterized.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
+/**
+ * Documentation
+ *
+ * https://www.javacodegeeks.com/2013/12/parameterized-junit-tests-with-junitparams.html
+ * https://github.com/junit-team/junit4/wiki/Parameterized-tests
+ */
+
 
 @RunWith(Parameterized.class)
 public class CourseServiceImplTest {
@@ -106,7 +116,9 @@ public class CourseServiceImplTest {
 
         return Arrays.asList(new Object[][] {
                 { COURSE_1_ID_VALID, null, courseAnswer, studentServiceGetByFilter1, expectedStudents1},
-                { COURSE_1_ID_VALID, studentFilter, courseAnswer, studentServiceGetByFilter2, expectedStudents2}
+                { COURSE_1_ID_VALID, studentFilter, courseAnswer, studentServiceGetByFilter2, expectedStudents2},
+                { COURSE_1_ID_INVALID, studentFilter, null, null, null },
+                { COURSE_1_ID_INVALID, null, null, null, null }
         });
     }
 
@@ -158,14 +170,60 @@ public class CourseServiceImplTest {
     @Test
     public void testGetCourseStudents() {
 
-        when(courseDao.getCourseStudents(courseId)).then(courseAnswer);
-        when(studentService.getByFilter(studentFilter)).then(studentServiceGetByFilter);
+        if(courseAnswer != null) {
+            when(courseDao.getCourseStudents(courseId)).then(courseAnswer);
+        }
+        if(studentServiceGetByFilter != null) {
+            when(studentService.getByFilter(studentFilter)).then(studentServiceGetByFilter);
+        }
 
-		/* Checks when input is valid */
         List<Student> students;
         students = courseService.getCourseStudents(courseId, studentFilter);
         assertThat(students, is(expectedStudents));
     }
 
+    @Test
+    public void testGetStudentsThatPassedCourse() {
+        if(courseAnswer != null) {
+            when(courseDao.getStudentsThatPassedCourse(courseId)).then(courseAnswer);
+        }
+        if(studentServiceGetByFilter != null) {
+            when(studentService.getByFilter(studentFilter)).then(studentServiceGetByFilter);
+
+        }
+        Course course;
+
+        course = courseService.getStudentsThatPassedCourse(courseId, studentFilter);
+        if(course != null) {
+            assertThat(course.getStudents(), is(expectedStudents));
+        }
+    }
+
+    @Test
+    public void addCorrelative(){
+
+        /* Correlative to the same course */
+        courseService.addCorrelative(COURSE_1_ID_VALID, COURSE_1_ID_VALID);
+        verify(courseDao, times(0)).courseExists(COURSE_1_ID_VALID);
+        verify(courseDao, times(0)).checkCorrelativityLoop(COURSE_1_ID_VALID, COURSE_1_ID_VALID);
+        verify(courseDao, times(0)).addCorrelativity(COURSE_1_ID_VALID, COURSE_1_ID_VALID);
+
+        /* Valid input */
+        when(courseDao.courseExists(COURSE_1_ID_VALID)).then((invocation) -> true);
+        when(courseDao.courseExists(COURSE_2_ID_VALID)).then((invocation) -> true);
+
+        when(courseDao.getById(COURSE_1_ID_VALID)).then((invocation) -> new Course.Builder(COURSE_1_ID_VALID).semester(2).build());
+        when(courseDao.getById(COURSE_2_ID_VALID)).then((invocation) -> new Course.Builder(COURSE_2_ID_VALID).semester(1).build());
+
+        when(courseDao.checkCorrelativityLoop(COURSE_1_ID_VALID, COURSE_2_ID_VALID)).then((invocation) -> false);
+
+        courseService.addCorrelative(COURSE_1_ID_VALID, COURSE_2_ID_VALID);
+        verify(courseDao, times(1)).courseExists(COURSE_1_ID_VALID);
+        verify(courseDao, times(1)).courseExists(COURSE_2_ID_VALID);
+        verify(courseDao, times(1)).checkCorrelativityLoop(COURSE_1_ID_VALID, COURSE_2_ID_VALID);
+        verify(courseDao, times(1)).addCorrelativity(COURSE_1_ID_VALID, COURSE_2_ID_VALID);
+    }
+
     /* +++xtodo TODO: write remaining tests */
+
 }

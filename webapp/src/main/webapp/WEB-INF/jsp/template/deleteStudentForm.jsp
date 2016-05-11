@@ -11,18 +11,14 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">
-                    <c:choose>
-                        <c:when test="${subsection_students}">
-                            <spring:message code="delete"/>
-                        </c:when>
-                    </c:choose>
+                    <spring:message code="delete"/>
                 </h4>
             </div>
             <div class="modal-body">
                 <%-- Delete Student Form --%>
-<%--                    <form action="students/${student.docket}/delete" method="post">
-                        <button type="submit" value="students/${student.docket}/delete"><spring:message code="delete"/></button>
-                    </form>--%>
+                <%--                    <form action="students/${student.docket}/delete" method="post">
+                                        <button type="submit" value="students/${student.docket}/delete"><spring:message code="delete"/></button>
+                                    </form>--%>
                 <form:form class="form-horizontal" id="delete_student_form" modelAttribute="deleteStudentForm" action="" method="post" enctype="application/x-www-form-urlencoded">
                     <div class="form-group">
                         <form:label path="docket" class="col-xs-4 control-label"><spring:message code="docket"/></form:label>
@@ -59,9 +55,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="cancel"/></button>
-                <c:if test="${subsection_students}">
-                    <button id="deleteStudentFormConfirmAction" type="button" class="btn btn-danger"><spring:message code="confirm"/></button>
-                </c:if>
+                <button id="deleteStudentFormConfirmAction" type="button" class="btn btn-danger"><spring:message code="confirm"/></button>
             </div>
         </div>
     </div>

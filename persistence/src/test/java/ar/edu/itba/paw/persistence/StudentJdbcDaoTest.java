@@ -1,17 +1,23 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.shared.StudentFilter;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
+import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,6 +33,13 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.runners.Parameterized.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -44,6 +57,9 @@ public class StudentJdbcDaoTest {
 	private static final String GRADE_TABLE = "grade";
 	private static final String COURSE_TABLE = "course";
 	private static final String INSCRIPTION_TABLE = "inscription";
+	private static final String ROLE_TABLE = "role";
+
+	private static final String ROLE__ROLE_COLUMN = "role";
 
 	private static final String STUDENT__DOCKET_COLUMN = "docket";
 	private static final String STUDENT__DNI_COLUMN = "dni";
@@ -54,6 +70,7 @@ public class StudentJdbcDaoTest {
 	private static final String USER__GENRE_COLUMN = "genre";
 	private static final String USER__BIRTHDAY_COLUMN = "birthday";
 	private static final String USER__EMAIL_COLUMN = "email";
+	private static final String USER__ROLE_COLUMN = "role";
 
 	private static final String ADDRESS__DNI_COLUMN = "dni";
 	private static final String ADDRESS__COUNTRY_COLUMN = "country";
@@ -74,6 +91,7 @@ public class StudentJdbcDaoTest {
 	private static final String COURSE__ID_COLUMN = "id";
 	private static final String COURSE__NAME_COLUMN = "name";
 	private static final String COURSE__CREDITS_COLUMN = "credits";
+	private static final String COURSE__SEMESTER_COLUMN = "semester";
 
 	private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
 	private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
@@ -87,24 +105,37 @@ public class StudentJdbcDaoTest {
 	private static final int DOCKET_INVALID_LIMIT = 0;
 	private static final int DOCKET_INVALID = -7357;
 
+	private static final int DNI_VALID = 7357;
+	private static final int DNI_VALID_LIMIT = 1;
+	private static final int DNI_INVALID_LIMIT = 0;
+	private static final int DNI_INVALID = -7357;
+
+
+	private static final String ROLE_1 = "ADMIN";
+	private static final String ROLE_2 = "STUDENT";
+
 	private static final int DNI_1 = 12345678;
 	private static final String FIRST_NAME_1 = "MaTías NIColas";
 	private static final String FIRST_NAME_1_EXPECTED = "Matías Nicolas";
 	private static final String LAST_NAME_1 = "Comercio vazquez";
 	private static final String LAST_NAME_1_EXPECTED = "Comercio Vazquez";
 	private static final String GENRE_1 = "M";
-	private static final String GENRE_1_EXPECTED = "Male";
+	private static final User.Genre GENRE_1_EXPECTED = User.Genre.M;
 	private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
-	private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
+//	private static final String EMAIL_1 = ROLE_2.toLowerCase().charAt(0) + DNI_1 + "@bait.edu.ar"; /* This does not work as expected */
+	private static final String EMAIL_1 = "s" + DNI_1 + "@bait.edu.ar";
 	private int docket1; /* Auto-generated field */
+
 
 	private static final int DNI_2 = 87654321;
 	private static final String FIRST_NAME_2 = "BreNda LiHuéN ";
 	private static final String FIRST_NAME_2_EXPECTED = "Brenda Lihuén";
 	private static final String LAST_NAME_2 = "MaYan";
 	private static final String LAST_NAME_2_EXPECTED = "Mayan";
-	private static final String EMAIL_2 = "blihuen@bait.edu.ar";
+//	private static final String EMAIL_2 = ROLE_2.toLowerCase().charAt(0) + DNI_2 + "@bait.edu.ar"; /* This does not work as expected */
+	private static final String EMAIL_2 = "s" + DNI_2 + "@bait.edu.ar";
 	private int docket2; /* Auto-generated field */
+
 
     private static final int DNI_3 = 321456789;
 
@@ -141,10 +172,12 @@ public class StudentJdbcDaoTest {
 	private static final int COURSE_ID_1 = 1;
 	private static final String COURSE_NAME_1 = "Course 1";
 	private static final int COURSE_CREDITS_1 = 1;
+	private static final int COURSE_SEMESTER_1 = 1;
 
 	private static final int COURSE_ID_2 = 2;
 	private static final String COURSE_NAME_2 = "Course 2";
 	private static final int COURSE_CREDITS_2 = 2;
+	private static final int COURSE_SEMESTER_2 = 1;
 
 	private static final int COURSE_ID_VALID = 7357;
 	private static final int COURSE_ID_VALID_LIMIT = 1;
@@ -155,6 +188,7 @@ public class StudentJdbcDaoTest {
 	private static final BigDecimal GRADE_APPROVED_LIMIT = BigDecimal.valueOf(4);
 	private static final BigDecimal GRADE_DISAPPROVED_LIMIT = BigDecimal.valueOf(3.99);
 	private static final BigDecimal GRADE_DISAPPROVED = BigDecimal.valueOf(2);
+	private static final BigDecimal GRADE_NEW = BigDecimal.valueOf(5.5);
 
 	/**************************************/
 
@@ -162,9 +196,68 @@ public class StudentJdbcDaoTest {
 	private DataSource dataSource;
 
 	@Autowired
+	private UserDao userDao;
+
+	@Autowired
 	private StudentJdbcDao studentJdbcDao;
 
+	@Parameters
+	public static Collection<Object[]> data() {
+
+		final Student.Builder studentBuilder1 = new Student.Builder(DOCKET_1, DNI_1)
+				.firstName(FIRST_NAME_1)
+				.lastName(LAST_NAME_1)
+				.email(EMAIL_1);
+		final Student.Builder studentBuilder2 = new Student.Builder(DOCKET_2, DNI_2)
+				.firstName(FIRST_NAME_2)
+				.lastName(LAST_NAME_2)
+				.email(EMAIL_2);
+
+		final Student expectedStudent1 = new Student.Builder(DOCKET_1, DNI_1)
+				.firstName(FIRST_NAME_1_EXPECTED)
+				.lastName(LAST_NAME_1_EXPECTED)
+				.email(EMAIL_1)
+				.build();
+
+		final Student expectedStudent2 = new Student.Builder(DOCKET_2, DNI_2)
+				.firstName(FIRST_NAME_2_EXPECTED)
+				.lastName(LAST_NAME_2_EXPECTED)
+				.email(EMAIL_2)
+				.build();
+
+		Answer<Student> studentAnswer1 = (invocation) -> {
+			final Student student = studentBuilder1.build();
+
+			return student;
+		};
+
+		Answer<Student> studentAnswer2 = (invocation) -> {
+			final Student student = studentBuilder2.build();
+
+			return student;
+		};
+
+		return Arrays.asList(new Object[][] {
+				{ DNI_1, studentBuilder1, studentAnswer1, expectedStudent1 },
+				{ DNI_2, studentBuilder2, studentAnswer2, expectedStudent2 },
+				{ DNI_3, null, null, null, null }
+		});
+	}
+
+	@Parameter // first data value (0) is default
+	public /* NOT private */ int dni;
+
+	@Parameter(value = 1)
+	public /* NOT private */ Student.Builder studentBuilder;
+
+	@Parameter(value = 2)
+	public /* NOT private */ Student studentAnswer;
+
+	@Parameter(value = 3)
+	public /* NOT private */ Student expectedStudent;
+
 	private JdbcTemplate jdbcTemplate;
+	private SimpleJdbcInsert roleInsert;
 	private SimpleJdbcInsert userInsert;
 	private SimpleJdbcInsert studentInsert;
 	private SimpleJdbcInsert addressInsert;
@@ -181,6 +274,7 @@ public class StudentJdbcDaoTest {
 		courseInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(COURSE_TABLE);
 		gradeInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(GRADE_TABLE).usingColumns(GRADE__DOCKET_COLUMN, GRADE__COURSE_ID_COLUMN, GRADE__GRADE_COLUMN);
 		inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE).usingColumns(INSCRIPTION__COURSE_ID_COLUMN, INSCRIPTION__DOCKET_COLUMN);
+		roleInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ROLE_TABLE);
 		/* Order of deletation is important so as not to remove tables referenced by others */
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, INSCRIPTION_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, GRADE_TABLE);
@@ -188,6 +282,13 @@ public class StudentJdbcDaoTest {
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, ADDRESS_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, STUDENT_TABLE);
 		JdbcTestUtils.deleteFromTables(jdbcTemplate, USER_TABLE);
+		JdbcTestUtils.deleteFromTables(jdbcTemplate, ROLE_TABLE);
+
+		final Map<String, Object> roleArgs = new HashMap<>();
+		roleArgs.put(ROLE__ROLE_COLUMN, ROLE_1);
+		roleInsert.execute(roleArgs);
+		roleArgs.put(ROLE__ROLE_COLUMN, ROLE_2);
+		roleInsert.execute(roleArgs);
 	}
 
     @Test
@@ -195,6 +296,7 @@ public class StudentJdbcDaoTest {
         Result result;
         final Map<String, Object> userArgs = new HashMap<>();
         final Map<String, Object> studentArgs = new HashMap<>();
+        final Map<String, Object> addressArgs = new HashMap<>();
 
         /**
          * update the student's dni
@@ -203,32 +305,83 @@ public class StudentJdbcDaoTest {
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
+
+		Address address = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
+				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED).build();
 
         studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
         docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
-        Student student = new Student.Builder(docket1, DNI_2).build();
+        Student student = new Student.Builder(docket1, DNI_2)
+				.address(address)
+				.build();
 
         result = studentJdbcDao.update(docket1, DNI_1, student);
         assertEquals(Result.OK, result);
 
         /**
          * add a second user and change dni to existing user's dni
+		 * Because the student can't change the dni then the result will be ok
          */
-        userArgs.put(USER__DNI_COLUMN, DNI_1);
+        userArgs.put(USER__DNI_COLUMN, DNI_2);
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
-        studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+        studentArgs.put(STUDENT__DNI_COLUMN, DNI_2);
         docket2 = studentInsert.executeAndReturnKey(studentArgs).intValue();
-        student = new Student.Builder(docket2, DNI_2).build();
+        student = new Student.Builder(docket2, DNI_1)
+				.address(address)
+				.build();
 
         result = studentJdbcDao.update(docket2, DNI_1, student);
-        assertNotEquals(Result.OK, result);
-        assertEquals(Result.STUDENT_EXISTS_DNI, result);
+        assertEquals(Result.OK, result);
     }
+
+	@Test
+	public void testGetByDni() {
+//		/**
+//		 * +++xcheck if we can avoid casting studentAnswer
+//		 */
+//		if(studentAnswer != null) {
+//			when(userDao.getByDni(dni, studentBuilder)).then((Answer<?>) studentAnswer);
+//		}
+//		System.out.println(dni);
+//		Student student = studentJdbcDao.getByDni(dni);
+//		assertThat(student, is(expectedStudent));
+
+		final Map<String, Object> userArgs = new HashMap<>();
+		final Map<String, Object> studentArgs = new HashMap<>();
+
+		userArgs.put(USER__DNI_COLUMN, DNI_1);
+		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
+		userInsert.execute(userArgs);
+
+		/**
+		 * Try to get a student that exists
+		 */
+		studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+		docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+
+		Student student = studentJdbcDao.getByDni(DNI_1);
+		assertNotNull(student);
+		assertEquals(docket1, student.getDocket());
+		assertEquals(FIRST_NAME_1_EXPECTED, student.getFirstName());
+		assertEquals(LAST_NAME_1_EXPECTED, student.getLastName());
+		assertEquals(EMAIL_1, student.getEmail());
+
+		/**
+		 * Try to get a student that doesn't exist
+		 */
+		student = studentJdbcDao.getByDni(DNI_2);
+		assertNull(student);
+	}
 
     @Test
     public void createAddress() {
@@ -240,6 +393,7 @@ public class StudentJdbcDaoTest {
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
         studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -272,6 +426,61 @@ public class StudentJdbcDaoTest {
         assertEquals(ADDRESS__ZIP_CODE_EXPECTED, address.getZipCode());
     }
 
+	@Test
+	public void updateAddress(){
+		final Map<String, Object> userArgs = new HashMap<>();
+		final Map<String, Object> studentArgs = new HashMap<>();
+		final Map<String, Object> addressArgs = new HashMap<>();
+
+		userArgs.put(USER__DNI_COLUMN, DNI_1);
+		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
+		userInsert.execute(userArgs);
+
+		studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+		docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+
+		addressArgs.put(ADDRESS__CITY_COLUMN, ADDRESS__CITY_VALUE);
+		addressArgs.put(ADDRESS__COUNTRY_COLUMN, ADDRESS__COUNTRY_VALUE);
+		addressArgs.put(ADDRESS__DNI_COLUMN, DNI_1);
+		addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, ADDRESS__NEIGHBORHOOD_VALUE);
+		addressArgs.put(ADDRESS__STREET_COLUMN, ADDRESS__STREET_VALUE);
+		addressArgs.put(ADDRESS__NUMBER_COLUMN, ADDRESS__NUMBER_VALUE);
+		addressArgs.put(ADDRESS__FLOOR_COLUMN, ADDRESS__FLOOR_VALUE);
+		addressArgs.put(ADDRESS__DOOR_COLUMN, ADDRESS__DOOR_VALUE);
+		addressArgs.put(ADDRESS__TELEPHONE_COLUMN, ADDRESS__TELEPHONE_VALUE);
+		addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, ADDRESS__ZIP_CODE_VALUE);
+		addressInsert.execute(addressArgs);
+
+		Address addr = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
+				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED)
+				.floor(ADDRESS__FLOOR_EXPECTED)
+				.door(ADDRESS__DOOR_EXPECTED)
+				.telephone(ADDRESS__TELEPHONE_EXPECTED)
+				.zipCode(ADDRESS__ZIP_CODE_EXPECTED)
+				.build();
+
+		Student student = new Student.Builder(docket1, DNI_1).address(addr).build();
+
+		studentJdbcDao.updateAddress(DNI_1, student);
+
+		Student student2 = studentJdbcDao.getByDocket(docket1);
+		Address address = student2.getAddress();
+
+		assertEquals(ADDRESS__CITY_EXPECTED, address.getCity());
+		assertEquals(ADDRESS__COUNTRY_EXPECTED, address.getCountry());
+		assertEquals(ADDRESS__NEIGHBORHOOD_EXPECTED, address.getNeighborhood());
+		assertEquals(ADDRESS__STREET_EXPECTED, address.getStreet());
+		assertEquals(ADDRESS__NUMBER_EXPECTED, address.getNumber());
+		assertEquals(ADDRESS__FLOOR_EXPECTED, address.getFloor());
+		assertEquals(ADDRESS__DOOR_EXPECTED, address.getDoor());
+		assertEquals(ADDRESS__TELEPHONE_EXPECTED, address.getTelephone());
+		assertEquals(ADDRESS__ZIP_CODE_EXPECTED, address.getZipCode());
+
+	}
+
     @Test
     public void hasAddress() {
         final Map<String, Object> userArgs = new HashMap<>();
@@ -285,6 +494,7 @@ public class StudentJdbcDaoTest {
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
         hasAddress = studentJdbcDao.hasAddress(DNI_1);
@@ -321,11 +531,13 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs);
 
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs);
 
 		studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -380,6 +592,7 @@ public class StudentJdbcDaoTest {
 		userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs1.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs1);
 
 		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -405,11 +618,13 @@ public class StudentJdbcDaoTest {
 		userArgs1.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs1.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs1);
 		userArgs2.put(USER__DNI_COLUMN, DNI_2);
 		userArgs2.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2.toLowerCase());
 		userArgs2.put(USER__LAST_NAME_COLUMN, LAST_NAME_2.toLowerCase());
 		userArgs2.put(USER__EMAIL_COLUMN, EMAIL_2.toLowerCase());
+		userArgs2.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs2);
 
 		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -423,10 +638,12 @@ public class StudentJdbcDaoTest {
 		courseArgs1.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs1.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs1.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseArgs1.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs1);
 		courseArgs2.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs2.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs2.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+		courseArgs2.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
 		courseInsert.execute(courseArgs2);
 
 		inscriptionArgs.put(INSCRIPTION__COURSE_ID_COLUMN, COURSE_ID_1);
@@ -447,8 +664,8 @@ public class StudentJdbcDaoTest {
 
 		/* Student with courses */
 		Course[] expectedCourses = new Course[] {
-				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).build(),
-				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).build()
+				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).semester(COURSE_SEMESTER_1).build(),
+				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).semester(COURSE_SEMESTER_2).build()
 		};
 		courses = studentJdbcDao.getStudentCourses(docket2);
 		assertNotNull(courses);
@@ -465,6 +682,7 @@ public class StudentJdbcDaoTest {
         userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1);
         userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1);
         userArgs.put(USER__EMAIL_COLUMN, EMAIL_1);
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
         studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -489,7 +707,9 @@ public class StudentJdbcDaoTest {
 		userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs1.put(USER__GENRE_COLUMN, GENRE_1);
 		userArgs1.put(USER__BIRTHDAY_COLUMN, Date.valueOf(BIRTHDAY_1));
-		userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1);
+		System.out.println(EMAIL_1);
+		userArgs1.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs1);
 
 		studentArgs1.put(STUDENT__DNI_COLUMN, DNI_1);
@@ -512,6 +732,7 @@ public class StudentJdbcDaoTest {
 		userArgs2.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_2_EXPECTED.toLowerCase());
 		userArgs2.put(USER__LAST_NAME_COLUMN, LAST_NAME_2_EXPECTED.toLowerCase());
 		userArgs2.put(USER__EMAIL_COLUMN, EMAIL_2);
+		userArgs2.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs2);
 
 		studentArgs2.put(STUDENT__DNI_COLUMN, DNI_2);
@@ -527,7 +748,7 @@ public class StudentJdbcDaoTest {
 		assertEquals(LAST_NAME_1_EXPECTED, student.getLastName());
 		assertEquals(GENRE_1_EXPECTED, student.getGenre());
 		assertEquals(BIRTHDAY_1, student.getBirthday());
-		assertThat(student.getEmail(), anyOf(possibleEmails(docket1, FIRST_NAME_1.toLowerCase(), LAST_NAME_1.toLowerCase())));
+		assertThat(student.getEmail(), anyOf(possibleEmails(DNI_1, FIRST_NAME_1.toLowerCase(), LAST_NAME_1.toLowerCase(), Role.STUDENT)));
 		assertEquals(ADDRESS__COUNTRY_EXPECTED, student.getAddress().getCountry());
 		assertEquals(ADDRESS__CITY_EXPECTED, student.getAddress().getCity());
 		assertEquals(ADDRESS__NEIGHBORHOOD_EXPECTED, student.getAddress().getNeighborhood());
@@ -544,7 +765,7 @@ public class StudentJdbcDaoTest {
 		assertEquals(DNI_2, student.getDni());
 		assertEquals(FIRST_NAME_2_EXPECTED, student.getFirstName());
 		assertEquals(LAST_NAME_2_EXPECTED, student.getLastName());
-		assertEquals("", student.getGenre());
+//		assertEquals(null, student.getGenre()); /* +++xfix */
 		assertEquals(null, student.getBirthday());
 		assertEquals(EMAIL_2, student.getEmail());
 		assertEquals(ADDRESS__COUNTRY_EXPECTED_EMPTY, student.getAddress().getCountry());
@@ -571,6 +792,7 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs);
 
 		studentArgs.put(USER__DNI_COLUMN, DNI_1);
@@ -580,10 +802,12 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs);
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
 		courseInsert.execute(courseArgs);
 
 		/* Invalid student */
@@ -653,6 +877,7 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs);
 
 		studentArgs.put(USER__DNI_COLUMN, DNI_1);
@@ -662,10 +887,12 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+		courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs);
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+		courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
 		courseInsert.execute(courseArgs);
 
 
@@ -732,6 +959,7 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs);
 
 		studentArgs.put(USER__DNI_COLUMN, DNI_1);
@@ -741,10 +969,12 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
-		courseInsert.execute(courseArgs);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
+        courseInsert.execute(courseArgs);
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
 		courseInsert.execute(courseArgs);
 
 
@@ -815,6 +1045,7 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
 		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs);
 
 		studentArgs.put(USER__DNI_COLUMN, DNI_1);
@@ -824,11 +1055,13 @@ public class StudentJdbcDaoTest {
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_1);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_1);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_1);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_1);
 		courseInsert.execute(courseArgs);
 		courseArgs.put(COURSE__ID_COLUMN, COURSE_ID_2);
 		courseArgs.put(COURSE__NAME_COLUMN, COURSE_NAME_2);
 		courseArgs.put(COURSE__CREDITS_COLUMN, COURSE_CREDITS_2);
-		courseInsert.execute(courseArgs);
+        courseArgs.put(COURSE__SEMESTER_COLUMN, COURSE_SEMESTER_2);
+        courseInsert.execute(courseArgs);
 
 		/* Invalid student */
 		Collection<Course> courses = studentJdbcDao.getApprovedCourses(DOCKET_INVALID);
@@ -847,7 +1080,7 @@ public class StudentJdbcDaoTest {
 		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
 		gradeInsert.execute(gradeArgs);
 		Course[] expectedApprovedCourses = new Course[] {
-				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).build()
+				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).semester(COURSE_SEMESTER_1).build()
 		};
 
 		/* Student with one approved course */
@@ -884,8 +1117,8 @@ public class StudentJdbcDaoTest {
 		gradeInsert.execute(gradeArgs);
 
 		expectedApprovedCourses = new Course[] {
-				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).build(),
-				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).build()
+				new Course.Builder(COURSE_ID_1).name(COURSE_NAME_1).credits(COURSE_CREDITS_1).semester(COURSE_SEMESTER_1).build(),
+				new Course.Builder(COURSE_ID_2).name(COURSE_NAME_2).credits(COURSE_CREDITS_2).semester(COURSE_SEMESTER_2).build()
 		};
 
 		/* Student with more than one grade, but only two course approved */
@@ -895,55 +1128,84 @@ public class StudentJdbcDaoTest {
 		/***********************************/
 	}
 
-	/*
+
+
 	@Test
 	public void createStudent() {
-
 		Address address = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
-				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED_2).floor(ADDRESS__FLOOR_EXPECTED_2).door(ADDRESS__DOOR_EXPECTED).
-				telephone(ADDRESS__TELEPHONE_EXPECTED_2).zipCode(ADDRESS__ZIP_CODE_EXPECTED_2).build();
-
-
+				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED).build();
 		// OK insertion
-		Student student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M).
-				birthday(BIRTHDAY_1).address(address).build();
+
+		Student student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1)
+				.address(address)
+				.genre(User.Genre.M).build();//address(address).build();
 
 		Result result = studentJdbcDao.create(student);
 		assertEquals(Result.OK, result);
 
-
 		// Existing  DNI
-		student = new Student.Builder(0, DNI_1).firstName(FIRST_NAME_1).lastName(LAST_NAME_1).genre(User.Genre.M).
-				birthday(BIRTHDAY_1).address(address).build();
-
 		result = studentJdbcDao.create(student);
-		assertEquals(Result.STUDENT_EXISTS_DNI, result);
+		assertEquals(Result.USER_EXISTS_DNI, result);
 
-	}*/
+	}
+/*
+	@Test
+	public void editGrade(){
+		Result result;
+		final Map<String, Object> gradeArgs = new HashMap<>();
 
-	private List<Matcher<? super String>> possibleEmails(final int docket, final String firstName, final String lastName) {
-		final List<Matcher<? super String>> matchers = new LinkedList<>();
-		final String defaultEmail = "student" + docket + EMAIL_DOMAIN;
+		gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
+		gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_1);
+		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
+		KeyHolder keys = gradeInsert.executeAndReturnKeyHolder(gradeArgs);
+		Timestamp modified = (Timestamp)keys.getKeys().get(GRADE__MODIFIED_COLUMN);
+		Grade expectedGrade = new Grade.Builder(docket1, COURSE_ID_1, GRADE_APPROVED).modified(modified).build();
 
-		/* In case firstName == null */
-		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
-			matchers.add(is(defaultEmail));
-			return matchers;
-		}
+		result = studentJdbcDao.editGrade(expectedGrade, GRADE_NEW);
+		assertEquals(Result.OK, result);
 
-		/* Add all possible emails */
-		final String initChar = firstName.substring(0, 1).toLowerCase();
-
-		final String[] lastNames = lastName.toLowerCase().split(" ");
-		StringBuilder currentEmail;
-		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
-			currentEmail = new StringBuilder(initChar);
-			for (int j = 0 ; j <= i; j++) {
-				currentEmail.append(lastNames[j]);
+		//Check the grade actually changed
+		for( Grade grade : studentJdbcDao.getGrades(docket1).getGrades()){
+			if(grade.getModified() != null && grade.getModified().equals(modified)){
+				assertEquals(grade.getGrade(),  GRADE_NEW);
 			}
-			currentEmail.append(EMAIL_DOMAIN);
-			matchers.add(is(String.valueOf(currentEmail)));
 		}
+
+	}
+*/
+
+	private List<Matcher<? super String>> possibleEmails(final int dni, final String firstName, final String lastName, Role role) {
+		final List<Matcher<? super String>> matchers = new LinkedList<>();
+		final StringBuilder defaultEmailBuilder = new StringBuilder();
+		final String defaultEmail;
+		final char rolePrefix = role.originalString().toLowerCase().charAt(0);
+
+		defaultEmailBuilder.append(rolePrefix);
+		defaultEmailBuilder.append(dni);
+		defaultEmailBuilder.append(EMAIL_DOMAIN);
+
+		defaultEmail = defaultEmailBuilder.toString();
+//		final String defaultEmail = "student" + docket + EMAIL_DOMAIN;
+//
+//		/* In case firstName == null */
+//		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
+//			matchers.add(is(defaultEmail));
+//			return matchers;
+//		}
+//
+//		/* Add all possible emails */
+//		final String initChar = firstName.substring(0, 1).toLowerCase();
+//
+//		final String[] lastNames = lastName.toLowerCase().split(" ");
+//		StringBuilder currentEmail;
+//		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
+//			currentEmail = new StringBuilder(initChar);
+//			for (int j = 0 ; j <= i; j++) {
+//				currentEmail.append(lastNames[j]);
+//			}
+//			currentEmail.append(EMAIL_DOMAIN);
+//			matchers.add(is(String.valueOf(currentEmail)));
+//		}
 
 		/* In case all email trials failed */
 		/* This, for sure, does not exists as includes the docket, which is unique */

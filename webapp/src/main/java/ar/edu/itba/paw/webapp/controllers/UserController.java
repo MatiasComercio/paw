@@ -1,519 +1,211 @@
 package ar.edu.itba.paw.webapp.controllers;
 
-import ar.edu.itba.paw.interfaces.StudentService;
-import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.shared.Result;
-import ar.edu.itba.paw.webapp.forms.*;
-import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.shared.CourseFilter;
-import ar.edu.itba.paw.shared.StudentFilter;
+import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
+import ar.edu.itba.paw.webapp.forms.PasswordForm;
+import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
+import ar.edu.itba.paw.webapp.forms.UserForm;
+import ar.edu.itba.paw.webapp.forms.validators.PasswordValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 @Controller
-public class UserController { /* +++xchange: see if it's necessary to call this StudentController */
+public class UserController {
 
-	private static final String STUDENTS_SECTION = "students";
+	private final static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+	private static final String UNAUTHORIZED = "redirect:/errors/403";
 
 	@Autowired
 	private MessageSource messageSource;
 
 	@Autowired
-	private StudentService studentService;
+	PasswordValidator passwordValidator;
 
-	@ModelAttribute("section")
-	public String sectionManager(){
-		return STUDENTS_SECTION;
+	@Autowired
+	private UserService userService;
+
+
+	@Autowired
+	private HttpServletRequest request;
+
+	@ModelAttribute("user")
+	public UserSessionDetails user(final Authentication authentication) {
+		return (UserSessionDetails) authentication.getPrincipal();
 	}
 
+	@RequestMapping(value = "/user/changePassword")
+	public ModelAndView changePassword(
+			@ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
+			final RedirectAttributes redirectAttributes) {
 
-	@RequestMapping(value = "/students", method = RequestMethod.GET)
-	public ModelAndView getStudents(final Model model) {
-
-		if (!model.containsAttribute("studentFilterForm")) {
-			model.addAttribute("studentFilterForm", new StudentFilterForm());
-		}
-		if (!model.containsAttribute("deleteStudentForm")) {
-			model.addAttribute("deleteStudentForm", new StudentFilterForm()); /* +++xcheck: if it is necessary to create a new Form */
-		}
-
-		final StudentFilterForm studentFilterForm = (StudentFilterForm) model.asMap().get("studentFilterForm");
-		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
-				.docket(studentFilterForm.getDocket())
-				.firstName(studentFilterForm.getFirstName())
-				.lastName(studentFilterForm.getLastName())
-				.build();
-
-		// +++ximprove with Spring Security
-		final List<Student> students = studentService.getByFilter(studentFilter);
-		if (students == null) {
-			return new ModelAndView("forward:/errors/404.html");
+		final ModelAndView mav = new ModelAndView("changePassword");
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null) {
+			LOGGER.warn("Someone tried to change a password and auth was null [GET]");
+			return new ModelAndView("redirect:/errors/401");
 		}
 
-		final ModelAndView mav = new ModelAndView("students");
-		mav.addObject("students", students);
-		mav.addObject("studentFilterFormAction", "/students/studentFilterForm");
-		mav.addObject("subsection_students", true);
+		UserDetails userDetails = (UserDetails) auth.getPrincipal();
+		/* userDetails.getUsername() == user's dni; used to load on the PasswordForm */
+		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
+		mav.addObject("dni", userDetails.getUsername());
+		mav.addObject("section2", "changePassword");
+
 		return mav;
 	}
 
-	@RequestMapping(value = "/students/studentFilterForm", method = RequestMethod.GET)
-	public ModelAndView studentFilterForm(             @Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
-	                                                   final BindingResult errors,
-	                                                   final RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.studentFilterForm", errors);
-		redirectAttributes.addFlashAttribute("studentFilterForm", studentFilterForm);
-		return new ModelAndView("redirect:/students");
-	}
-/*
-	@RequestMapping("/students")
-	public ModelAndView getStudentsByFilter(@RequestParam(required = false) final Integer docket,
-	                                        @RequestParam(required = false) final String firstName,
-	                                        @RequestParam(required = false) final String lastName,
-	                                        @RequestParam(required = false) final String genre) {
-		final ModelAndView mav = new ModelAndView("studentsSearch");
-		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
-				.docket(docket)
-				.firstName(firstName)
-				.lastName(lastName)
-				.genre(genre)
-				.build();
-		final List<Student> students = studentService.getByFilter(studentFilter);
-		mav.addObject("students", students);
-		return mav;
-	}
-*/
+	@RequestMapping(value = "/user/resetPassword", method = RequestMethod.POST)
+	public ModelAndView resetPassword(
+		@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm passwordForm,
+		final BindingResult errors,
+		final RedirectAttributes redirectAttributes,
+		@ModelAttribute("user") UserSessionDetails loggedUser) {
 
-	@RequestMapping("/students/{docket}/info")
-	public ModelAndView getStudent(@PathVariable final int docket) {
-		final Student student =  studentService.getByDocket(docket);
-
-		final ModelAndView mav;
-
-		if (student == null) {
-			return new ModelAndView("forward:/errors/404.html");
+		if (!loggedUser.hasAuthority("RESET_PASSWORD")) {
+			LOGGER.warn("User {} tried to delete user doesn't have authority RESET_PASSWORD [POST]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
 		}
 
-		mav = new ModelAndView("student");
-		mav.addObject("student", student);
-		return mav;
-	}
+			if (errors.hasErrors()){
+				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.resetPasswordForm", errors);
+				redirectAttributes.addFlashAttribute("resetPasswordForm", passwordForm);
 
-	@RequestMapping("/students/{docket}/grades")
-	public ModelAndView getStudentGrades(@PathVariable final int docket) {
-		final Student student =  studentService.getGrades(docket);
-
-		final ModelAndView mav;
-
-		if (student == null) {
-			return new ModelAndView("forward:/errors/404.html");
-		}
-
-		mav = new ModelAndView("grades_old"); // +++xchange
-		mav.addObject("student", student);
-		return mav;
-	}
-
-	private ModelAndView studentNotFound(final int docket) {
-		final ModelAndView mav = new ModelAndView("error");
-		mav.addObject("page_header", "No se pudo encontrar la página");
-		mav.addObject("description", "El alumno con legajo " + docket + " no existe.");
-		return mav;
-	}
-
-	@RequestMapping(value = "/students/{docket}/courses", method = RequestMethod.GET)
-	public ModelAndView getStudentCourses(@PathVariable final int docket, final Model model) {
-
-		if (!model.containsAttribute("courseFilterForm")) {
-			model.addAttribute("courseFilterForm", new CourseFilterForm());
-		}
-		if (!model.containsAttribute("inscriptionForm")) {
-			model.addAttribute("inscriptionForm", new InscriptionForm());
-		}
-		if (!model.containsAttribute("gradeForm")) {
-			model.addAttribute("gradeForm", new GradeForm());
-		}
-
-		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
-		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
-				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
-
-		// +++ximprove with Spring Security
-		final Student student = studentService.getByDocket(docket);
-		if (student == null) {
-			return new ModelAndView("forward:/errors/404.html");
-		}
-
-		final ModelAndView mav = new ModelAndView("courses");
-		mav.addObject("student", student);
-		mav.addObject("courseFilterFormAction", "/students/" + docket + "/courses/courseFilterForm"); /* only different line from /inscription */
-		mav.addObject("inscriptionFormAction", "/students/" + docket + "/courses/unenroll");
-		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/add");
-		mav.addObject("subsection_courses", true); /* only different line from /inscription */
-		mav.addObject("courses", studentService.getStudentCourses(docket, courseFilter));
-		mav.addObject("docket", docket);
-		return mav;
-	}
-
-	@RequestMapping(value = "/students/{docket}/courses/unenroll", method = RequestMethod.POST)
-	public ModelAndView unenroll(@PathVariable final Integer docket,
-	                             @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
-	                             final BindingResult errors,
-	                             final RedirectAttributes redirectAttributes){
-		if (errors.hasErrors()) {
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
-			redirectAttributes.addFlashAttribute("inscriptionForm", inscriptionForm);
-			return new ModelAndView("redirect:/students/" + docket + "/courses");
-		}
-
-		Result result = studentService.unenroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
-
-		if (result == null) {
-			result = Result.ERROR_UNKNOWN;
-		}
-		if (!result.equals(Result.OK)) {
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
-		} else {
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("unenroll_success",
-					new Object[] {inscriptionForm.getCourseId(), inscriptionForm.getCourseName()},
-					Locale.getDefault()));
-		}
-
-		return new ModelAndView("redirect:/students/" + docket + "/courses");
-
-	}
-
-	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.GET)
-	public ModelAndView studentInscription(@PathVariable final int docket, final Model model) {
-
-		if (!model.containsAttribute("courseFilterForm")) {
-			model.addAttribute("courseFilterForm", new CourseFilterForm());
-		}
-		if (!model.containsAttribute("inscriptionForm")) {
-			model.addAttribute("inscriptionForm", new InscriptionForm());
-		}
-
-		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
-		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
-				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
-
-		// +++ximprove with Spring Security
-		final Student student = studentService.getByDocket(docket);
-		if (student == null) {
-			return new ModelAndView("forward:/errors/404.html");
-		}
-
-		final ModelAndView mav = new ModelAndView("courses");
-		mav.addObject("student", student);
-		mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
-		mav.addObject("inscriptionFormAction", "/students/" + docket + "/inscription");
-		mav.addObject("subsection_enroll", true);
-		mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
-		mav.addObject("docket", docket);
-		return mav;
-	}
-
-	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.POST)
-	public ModelAndView studentInscription(@PathVariable final int docket,
-	                                       @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
-	                                       final BindingResult errors,
-	                                       final RedirectAttributes redirectAttributes) {
-		if (errors.hasErrors()){
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
-			redirectAttributes.addFlashAttribute("inscriptionForm", inscriptionForm);
-			return new ModelAndView("redirect:/students/" + docket + "/inscription");
-		}
-
-		Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
-		if (result == null) {
-			result = Result.ERROR_UNKNOWN;
-		}
-		if (!result.equals(Result.OK)) {
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
-
-		} else {
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message",
-					messageSource.getMessage("inscription_success",
-							new Object[] {inscriptionForm.getCourseId(), inscriptionForm.getCourseName()},
-							Locale.getDefault()));
-		}
-
-		return new ModelAndView("redirect:/students/" + docket + "/inscription");
-	}
-
-	@RequestMapping(value = "/students/{docket}/inscription/courseFilterForm", method = RequestMethod.GET)
-	public ModelAndView studentInscriptionCourseFilter(@PathVariable final int docket,
-	                                                   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-	                                                   final BindingResult errors,
-	                                                   final RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
-		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
-		return new ModelAndView("redirect:/students/" + docket + "/inscription");
-	}
-
-	@RequestMapping(value = "/students/{docket}/courses/courseFilterForm", method = RequestMethod.GET)
-	public ModelAndView studentCoursesCourseFilter(@PathVariable final int docket,
-	                                               @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-	                                               final BindingResult errors,
-	                                               final RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
-		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
-		return new ModelAndView("redirect:/students/" + docket + "/courses");
-	}
-
-
-	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
-	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
-	                               RedirectAttributes redirectAttributes){
-		ModelAndView mav = new ModelAndView("addStudent");
-		if(redirectAttributes != null) {
-			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
-			if (raMap.get("alert") != null) {
-				mav.addObject("alert", raMap.get("alert"));
-				mav.addObject("message", raMap.get("message"));
+				final String referrer = request.getHeader("referer");
+				return new ModelAndView("redirect:" + referrer);
 			}
-		}
-		setAlertMessages(mav, redirectAttributes);
-		return mav;
-	}
 
-	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
-	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
-	                               final BindingResult errors, RedirectAttributes redirectAttributes) {
-		if (errors.hasErrors()){
-			return addStudent(studentForm, null);
-		}
-		else{
-			Student student = studentForm.build();
-			Result result = studentService.create(student);
-			if(!result.equals(Result.OK)){
+			final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			if (auth == null) {
+				LOGGER.warn("User {} tried to change a password and auth was null [POST]", loggedUser.getDni());
+				return new ModelAndView("redirect:/errors/401");
+			}
+			UserSessionDetails user = (UserSessionDetails) auth.getPrincipal();
+
+		/* Check that the DNI is still valid and was not modified */
+			if (!String.valueOf(passwordForm.getDni()).equals(user.getUsername()) && !user.hasAuthority("ADMIN")) {
+				LOGGER.warn("Someone tried to reset a password from another user.");
+				LOGGER.warn("Logged user's dni: {}", user.getUsername());
+				LOGGER.warn("Victim's dni: {}", passwordForm.getDni());
+
+				return new ModelAndView("redirect:/errors/401");
+			}
+
+			final Result result = userService.resetPassword(passwordForm.getDni());
+
+			if (!result.equals(Result.OK)) {
+				LOGGER.warn("User {} could not reset password, Result = {}", loggedUser.getDni(), result);
 				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", result.getMessage());
-				return addStudent(studentForm, redirectAttributes);
-			}
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addStudent_success",
-					new Object[] {},
-					Locale.getDefault()));
-			return new ModelAndView("redirect:/students");
-		}
-	}
-
-	@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.GET)
-	public ModelAndView editGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
-	                              @PathVariable Integer docket, @PathVariable Integer courseId, @PathVariable Timestamp modified,
-								  @PathVariable BigDecimal grade, @PathVariable String courseName,
-								  RedirectAttributes redirectAttributes){
-		ModelAndView mav = new ModelAndView("editGrade");
-		setAlertMessages(mav, redirectAttributes);
-		gradeForm.setGrade(grade); //Set the old grade (to be displayed in the edit view)
-		gradeForm.setDocket(docket);
-		gradeForm.setCourseId(courseId);
-		gradeForm.setModified(modified);
-		gradeForm.setCourseName(courseName); //Avoid the @NotBlank validation
-
-		mav.addObject("docket", docket);
-		mav.addObject("courseId", courseId);
-		mav.addObject("courseName", courseName);
-
-		return mav;
-	}
-
-	@RequestMapping(value = "/students/{docket}/grades/edit/{courseName}/{grade}/{modified}/{courseId}", method = RequestMethod.POST)
-	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
-	                              @PathVariable Integer docket, @PathVariable Integer courseId,
-	                              @PathVariable Timestamp modified, @PathVariable BigDecimal grade,
-								  @PathVariable String courseName,
-	                              RedirectAttributes redirectAttributes){
-		if (errors.hasErrors()){
-			return editGrade(gradeForm, docket, courseId, modified, grade, courseName, null);
-		}
-
-		Grade newGrade = gradeForm.build();
-
-		Result result = studentService.editGrade(newGrade, grade);
-		if(!result.equals(Result.OK)){
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return editGrade(gradeForm, docket, courseId, modified, grade, courseName,redirectAttributes);
-		}
-		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message",
-				messageSource.getMessage("editGrade_success",
-						new Object[] {},
+				redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			} else {
+				LOGGER.info("User {} reset password successfully", loggedUser.getDni());
+				redirectAttributes.addFlashAttribute("alert", "success");
+				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
+						null,
 						Locale.getDefault()));
-		return new ModelAndView("redirect:/students/" + docket + "/grades");
+			}
 
+		final String referrer = request.getHeader("referer");
+		return new ModelAndView("redirect:" + referrer);
 	}
 
+	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
+	public ModelAndView changePassword(
+			@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
+			final BindingResult errors,
+			final RedirectAttributes redirectAttributes) {
+		LOGGER.info("User {} is about to change password", passwordForm.getDni());
+		passwordValidator.validate(passwordForm, errors);
 
+		if (errors.hasErrors()){
+			LOGGER.warn("User {} could not change password due to {} [POST]", passwordForm.getDni(), errors.getAllErrors());
 
-/*	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.GET)
-	public ModelAndView addGrade(@ModelAttribute("gradeForm") GradeForm gradeForm,
-								 RedirectAttributes redirectAttributes) {
-		ModelAndView mav = new ModelAndView("addGrade");
-
-		setAlertMessages(mav, redirectAttributes);
-
-		mav.addObject("docket", gradeForm.getDocket());
-
-		*//* +++xadd object grade section? *//*
-
-		return mav;
-	}*/
-
-
-
-	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.POST)
-	public ModelAndView addGrade(@PathVariable Integer docket,
-	                             @Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
-	                             final BindingResult errors,
-	                             RedirectAttributes redirectAttributes){
-		if (errors.hasErrors()) {
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message",
-					messageSource.getMessage("addGrade_fail",
-							new Object[] {},
-							Locale.getDefault()));
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
-			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
-			return new ModelAndView("redirect:/students/" + docket + "/courses");
+			return changePassword(passwordForm, redirectAttributes);
 		}
 
-		/********************************/
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null) {
+			LOGGER.warn("Someone tried to change a password and auth was null [POST]");
+			return new ModelAndView("redirect:/errors/401");
+		}
+		UserSessionDetails user = (UserSessionDetails) auth.getPrincipal();
 
-		/*gradeForm.setDocket(docket);*/
-		Grade grade = gradeForm.build();
-		Result result = studentService.addGrade(grade);
+		/* Check that the DNI is still valid and was not modified */
+		if (!String.valueOf(passwordForm.getDni()).equals(user.getUsername())) {
+			LOGGER.warn("Someone tried to change a password from another user.");
+			LOGGER.warn("Logged user's dni: {}", user.getUsername());
+			LOGGER.warn("Victim's dni: {}", passwordForm.getDni());
 
-		if (result == null) {
-			result = Result.ERROR_UNKNOWN;
+			return new ModelAndView("redirect:/errors/401");
+		}
+
+		final Result result = userService.changePassword(
+				passwordForm.getDni(),
+				passwordForm.getCurrentPassword(),
+				passwordForm.getNewPassword(),
+				passwordForm.getRepeatNewPassword());
+
+		if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
-		} else if (!result.equals(Result.OK)) {
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			LOGGER.warn("User {} could not change Password, Result = {}", passwordForm.getDni(), result);
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addGrade_success",
-					new Object[] {},
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
+					null,
 					Locale.getDefault()));
+			LOGGER.info("User {} changed Password successfully", passwordForm.getDni());
+
 		}
 
-		return new ModelAndView("redirect:/students/" + docket + "/courses");
 
-		/********************/
-
-/*		*//*gradeForm.setDocket(docket);*//*
-		Grade grade = gradeForm.build();
-		Result result = studentService.addGrade(grade);
-
-		if(!result.equals(Result.OK)) {
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return addGrade(gradeForm, redirectAttributes);
-		}
-		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", "La nota se ha guardado correctamente.");
-		*//* +++xchange redirect *//*
-		return new ModelAndView("redirect:/students/" + docket + "/info");*/
+		/* +++xchange */
+		return new ModelAndView("redirect:/user/changePassword");
 	}
 
-	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
-	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes) {
-		final Result result = studentService.deleteStudent(docket);
-//		ModelAndView mav = new ModelAndView("studentsSearch");
-		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteStudent_success",
-				new Object[] {},
-				Locale.getDefault()));
-
-		return new ModelAndView("redirect:/students");
-	}
-
-
-	public void setAlertMessages(ModelAndView mav, RedirectAttributes ra){
-		if(ra != null) {
-			Map<String, ?> raMap = ra.getFlashAttributes();
-			if (raMap.get("alert") != null) {
-				mav.addObject("alert", raMap.get("alert"));
-				mav.addObject("message", raMap.get("message"));
-			}
+	@RequestMapping(value = "/user/delete_user", method = RequestMethod.POST)
+	public ModelAndView deleteUser(@Valid @ModelAttribute("userForm") UserForm userForm,
+	                               final BindingResult errors, final RedirectAttributes redirectAttributes,
+	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+		LOGGER.info("Deleting User {}", userForm.getDni());
+		if (!loggedUser.hasAuthority("DELETE_USER")
+				&& !loggedUser.hasAuthority("ADMIN")) {
+			LOGGER.warn("User {} tried to delete user NOT ADMIN and doesn't have authority DELETE_USER [POST]", loggedUser);
+			return new ModelAndView(UNAUTHORIZED);
 		}
-	}
-
-	@RequestMapping("/students/{docket}/edit")
-	public ModelAndView editStudent(@PathVariable final Integer docket,
-	                                @ModelAttribute("studentForm") final StudentForm studentForm,
-	                                RedirectAttributes redirectAttributes) {
-		final ModelAndView mav = new ModelAndView("editStudent");
-
-		if (redirectAttributes != null) {
-			Map<String, ?> raMap = redirectAttributes.getFlashAttributes();
-			if (raMap.get("alert") != null) {
-				mav.addObject("alert", raMap.get("alert"));
-				mav.addObject("message", raMap.get("message"));
-			}
-		}
-
-		Student student = studentService.getByDocket(docket);
-		System.out.println(student.getDocket());
-		if (student == null){
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editStudent_fail",
-					new Object[] {},
-					Locale.getDefault()));
-			return new ModelAndView("redirect:/students");
-		}
-
-		studentForm.loadFromStudent(student);
-
-		mav.addObject("docket", docket);
-
-		return mav;
-	}
-
-
-	@RequestMapping(value = "/students/{docket}/edit", method = RequestMethod.POST)
-	public ModelAndView editStudent(@PathVariable final Integer docket,
-	                                @Valid @ModelAttribute("studentForm") StudentForm studentForm,
-	                                final BindingResult errors,
-	                                RedirectAttributes redirectAttributes){
 		if (errors.hasErrors()){
-			return editStudent(docket, studentForm, redirectAttributes);
+			//return deleteUser(userForm, null); //TODO: see where it returns
 		}
-
-		Student student = studentForm.build();
-		Result result = studentService.update(docket, student);
+		final Result result = userService.delete(userForm.getDni());
 
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
-			return editStudent(docket, studentForm, redirectAttributes);
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			//return deleteUser(userForm, redirectAttributes); //TODO: See where it returns
+			LOGGER.warn("User {} could not be deleted, Result = {}", userForm.getDni(), result);
+		} else {
+			LOGGER.info("User {} was deleted successfully", userForm.getDni());
 		}
-
 		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editStudent_success",
-				new Object[] {},
+		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addStudent_success",
+				null,
 				Locale.getDefault()));
-
 		return new ModelAndView("redirect:/students");
 	}
 }

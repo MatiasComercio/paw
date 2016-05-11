@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.StudentDao;
+import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
@@ -52,6 +54,8 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String USER__GENRE_COLUMN = "genre";
 	private static final String USER__BIRTHDAY_COLUMN = "birthday";
 	private static final String USER__EMAIL_COLUMN = "email";
+	private static final String USER__PASSWORD_COLUMN = "password";
+	private static final String USER__ROLE_COLUMN = "role";
 
 	private static final String ADDRESS__DNI_COLUMN = "dni";
 	private static final String ADDRESS__COUNTRY_COLUMN = "country";
@@ -72,44 +76,63 @@ public class StudentJdbcDao implements StudentDao {
 	private static final String COURSE__ID_COLUMN = "id";
 	private static final String COURSE__NAME_COLUMN = "name";
 	private static final String COURSE__CREDITS_COLUMN = "credits";
+    private static final String COURSE__SEMESTER_COLUMN = "semester";
 
 	private static final String INSCRIPTION__COURSE_ID_COLUMN = "course_id";
 	private static final String INSCRIPTION__DOCKET_COLUMN = "docket";
 
+	private static final BigDecimal VALUE_GRADE_PASS = BigDecimal.valueOf(4);
+
 	private static final String GET_BY_DOCKET =
-					"SELECT * " +
+			"SELECT * " +
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
-						" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN + " " +
-						" LEFT JOIN " + ADDRESS_TABLE + " ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + ADDRESS_TABLE + "." + ADDRESS__DNI_COLUMN + " " +
+					" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN + " " +
+					" LEFT JOIN " + ADDRESS_TABLE + " ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + ADDRESS_TABLE + "." + ADDRESS__DNI_COLUMN + " " +
 					"WHERE " + STUDENT__DOCKET_COLUMN + " = ? LIMIT 1" +
 					";";
 
-	private static final String GET_ALL =
-					"SELECT * " +
+	private static final String GET_BY_DNI =
+			"SELECT * " +
 					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
-							" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN;
+					" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN + " " +
+					" LEFT JOIN " + ADDRESS_TABLE + " ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + ADDRESS_TABLE + "." + ADDRESS__DNI_COLUMN + " " +
+					"WHERE " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = ? LIMIT 1" +
+					";";
+
+	private static final String GET_ALL =
+			"SELECT * " +
+					"FROM " + STUDENT_TABLE + " JOIN " + USER_TABLE +
+					" ON " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN;
 
 	private static final String EMAILS_QUERY =
-					"SELECT " + USER__EMAIL_COLUMN + " " +
+			"SELECT " + USER__EMAIL_COLUMN + " " +
 					"FROM " + USER_TABLE + " " +
 					";";
 
 	private static final String GET_GRADES =
-				"SELECT * " +
-				"FROM " + GRADE_TABLE + " JOIN " + COURSE_TABLE + " ON " +
-						GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." +  COURSE__ID_COLUMN +
-				" WHERE " + GRADE__DOCKET_COLUMN + " = ? " +
-				";";
+			"SELECT * " +
+					"FROM " + GRADE_TABLE + " JOIN " + COURSE_TABLE + " ON " +
+					GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." +  COURSE__ID_COLUMN +
+					" WHERE " + GRADE__DOCKET_COLUMN + " = ? " +
+					";";
+
+
+    private static final String GET_GRADES_SEMESTER =
+            "SELECT * " +
+                    "FROM " + GRADE_TABLE + " JOIN " + COURSE_TABLE + " ON " +
+                    GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." +  COURSE__ID_COLUMN +
+                    " WHERE " + GRADE__DOCKET_COLUMN + " = ? AND " + COURSE__SEMESTER_COLUMN + " = ?" +
+                    ";";
 
 	private static final String GET_COURSES =
-				"SELECT * " +
-				"FROM " + INSCRIPTION_TABLE + " JOIN " + COURSE_TABLE + " ON " +
+			"SELECT * " +
+					"FROM " + INSCRIPTION_TABLE + " JOIN " + COURSE_TABLE + " ON " +
 					INSCRIPTION_TABLE + "." + INSCRIPTION__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." + COURSE__ID_COLUMN
-				+ " WHERE " + INSCRIPTION_TABLE + "." + INSCRIPTION__DOCKET_COLUMN + " = ?";
+					+ " WHERE " + INSCRIPTION_TABLE + "." + INSCRIPTION__DOCKET_COLUMN + " = ?";
 
 	private static final String DELETE_INSCRIPTION =
 			"DELETE FROM " + INSCRIPTION_TABLE + " WHERE " + INSCRIPTION__COURSE_ID_COLUMN + " = ? AND "
-			+ INSCRIPTION__DOCKET_COLUMN + " = ? ";
+					+ INSCRIPTION__DOCKET_COLUMN + " = ? ";
 
 	private static final String DELETE_STUDENT_GRADES = "DELETE FROM " + GRADE_TABLE
 			+ " WHERE " + GRADE__DOCKET_COLUMN + " = ?";
@@ -132,12 +155,25 @@ public class StudentJdbcDao implements StudentDao {
 
 	private static final Integer APPROVING_GRADE = 4;
 	private static final String GET_APPROVED_COURSES =
-					"SELECT * " +
+			"SELECT * " +
 					"FROM " + GRADE_TABLE + " JOIN " + COURSE_TABLE + " ON " +
 					GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = " + COURSE_TABLE + "." +  COURSE__ID_COLUMN +
 					" WHERE " + GRADE__DOCKET_COLUMN + " = ? " + " AND " + GRADE__GRADE_COLUMN + " >= " + APPROVING_GRADE +
 					";";
 
+	private static final String COUNT_PASSED_COURSE = "SELECT COUNT(*) FROM " + GRADE_TABLE
+			+ " WHERE " + STUDENT__DOCKET_COLUMN + " = ? "
+			+ " AND " + GRADE__COURSE_ID_COLUMN + " = ? "
+			+ " AND " + GRADE__GRADE_COLUMN + " >= " + APPROVING_GRADE;
+
+	private static final String QUERY_GET_STUDENTS_PASSED = "SELECT * FROM "
+			+ USER_TABLE
+			+ ", " + STUDENT_TABLE
+			+ ", " + GRADE_TABLE
+			+ " WHERE " + STUDENT_TABLE + "." + STUDENT__DNI_COLUMN + " = " + USER_TABLE + "." + USER__DNI_COLUMN
+			+ " AND " + STUDENT_TABLE + "." + STUDENT__DOCKET_COLUMN + " = " + GRADE_TABLE + "." + GRADE__DOCKET_COLUMN
+			+ " AND " + GRADE_TABLE + "." + GRADE__COURSE_ID_COLUMN + " = ? "
+			+ " AND " + GRADE_TABLE + "." + GRADE__GRADE_COLUMN + " >= " + VALUE_GRADE_PASS;
 
 	private final RowMapper<Student> infoRowMapper = (resultSet, rowNumber) -> {
 		final int docket = resultSet.getInt(STUDENT__DOCKET_COLUMN);
@@ -191,9 +227,11 @@ public class StudentJdbcDao implements StudentDao {
 		addressBuilder.floor(floor).door(door).telephone(telephone).zipCode(zipCode);
 		final Address address = addressBuilder.build();
 
+		final String password = resultSet.getString(USER__PASSWORD_COLUMN);
+
 		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
 		studentBuilder.firstName(firstName).lastName(lastName).
-				genre(genre).birthday(birthday).email(email).address(address);
+				genre(genre).birthday(birthday).email(email).address(address).password(password);
 
 		return studentBuilder.build();
 	};
@@ -202,6 +240,7 @@ public class StudentJdbcDao implements StudentDao {
 			new Course.Builder(resultSet.getInt(COURSE__ID_COLUMN))
 					.name(resultSet.getString(COURSE__NAME_COLUMN))
 					.credits(resultSet.getInt(COURSE__CREDITS_COLUMN))
+                    .semester(resultSet.getInt(COURSE__SEMESTER_COLUMN))
 					.build();
 
 	private final RowMapper<Student.Builder> studentBasicRowMapper = this::getStudentBasicInfo;
@@ -246,9 +285,14 @@ public class StudentJdbcDao implements StudentDao {
 	private SimpleJdbcInsert gradesInsert;
 
 	@Autowired
+	private UserDao userDao;
+
+	@Autowired
 	public StudentJdbcDao (final DataSource dataSource) {
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
-		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE);
+		userInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(USER_TABLE)
+				.usingColumns(USER__DNI_COLUMN, USER__FIRST_NAME_COLUMN, USER__LAST_NAME_COLUMN,
+						USER__GENRE_COLUMN, USER__BIRTHDAY_COLUMN, USER__EMAIL_COLUMN, USER__ROLE_COLUMN);
 		studentInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(STUDENT_TABLE).usingGeneratedKeyColumns(STUDENT__DOCKET_COLUMN);
 		addressInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(ADDRESS_TABLE);
 		inscriptionInsert = new SimpleJdbcInsert(jdbcTemplate).withTableName(INSCRIPTION_TABLE);
@@ -284,6 +328,31 @@ public class StudentJdbcDao implements StudentDao {
 
 		return studentBuilder.build();
 	}
+
+	private boolean hasPassedCourse(final int docket, final int courseId) {
+		Object[] queryParameters = new Object[]{docket, courseId};
+
+		final int gradePassed = jdbcTemplate.queryForObject(COUNT_PASSED_COURSE, queryParameters, Integer.class);
+
+		return gradePassed == 1;
+	}
+
+    @Override
+	public Student getGrades(final Integer docket, final Integer semester) {
+        final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_BY_DOCKET, studentBasicRowMapper, docket);
+
+        if (studentBuilders.isEmpty())
+            return null;
+
+        final Student.Builder studentBuilder = studentBuilders.get(0);
+
+        final List<Grade> grades = jdbcTemplate.query(GET_GRADES_SEMESTER, gradesRowMapper, docket, semester);
+
+        studentBuilder.addGrades(grades);
+
+        return studentBuilder.build();
+
+    }
 
 	@Override
 	public List<Course> getStudentCourses(int docket) {
@@ -349,9 +418,11 @@ public class StudentJdbcDao implements StudentDao {
 //		if(inscriptionsAffected == 0) {
 //			return Result.INSCRIPTION_NOT_EXISTS;
 //		}
+		if(hasPassedCourse(grade.getStudentDocket(), grade.getCourseId())) {
+			return Result.COURSE_ALREADY_PASSED;
+		}
 
 		final Map<String, Object> gradeArgs = new HashMap<>();
-
 		gradeArgs.put(GRADE__DOCKET_COLUMN, grade.getStudentDocket());
 		gradeArgs.put(GRADE__COURSE_ID_COLUMN, grade.getCourseId());
 		gradeArgs.put(GRADE__GRADE_COLUMN, grade.getGrade());
@@ -369,7 +440,7 @@ public class StudentJdbcDao implements StudentDao {
 	public Result editGrade(Grade newGrade, BigDecimal oldGrade){
 		try{
 			jdbcTemplate.update("UPDATE grade SET grade = ? WHERE docket = ? AND " +
-					"course_id = ? AND modified = ? AND grade = ?;",
+							"course_id = ? AND modified = ? AND grade = ?;",
 					newGrade.getGrade(), newGrade.getStudentDocket(), newGrade.getCourseId(), newGrade.getModified(),
 					oldGrade);
 		}
@@ -383,124 +454,131 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result create(Student student) {
+		final Result result = userDao.create(student, Role.STUDENT);
 
-		final Map<String, Object> userArgs = new HashMap<>();
-		final Map<String, Object> studentArgs = new HashMap<>();
-		final Map<String, Object> addressArgs = new HashMap<>();
-
-		/* Store User Data */
-		userArgs.put(USER__DNI_COLUMN, student.getDni());
-		userArgs.put(USER__FIRST_NAME_COLUMN, student.getFirstName());
-		userArgs.put(USER__LAST_NAME_COLUMN, student.getLastName());
-
-		if(student.getGenre().equals("Female"))
-			userArgs.put(USER__GENRE_COLUMN, "F");
-		else
-			userArgs.put(USER__GENRE_COLUMN, "M");
-		userArgs.put(USER__BIRTHDAY_COLUMN, student.getBirthday());
-		userArgs.put(USER__EMAIL_COLUMN, createEmail(student.getDni(), student.getFirstName(),
-				student.getLastName()));
-		try {
-			userInsert.execute(userArgs);
-		}catch(DuplicateKeyException e){
-			return Result.STUDENT_EXISTS_DNI;
-		} catch (DataAccessException e) {
-			return Result.ERROR_UNKNOWN;
+		if(result != Result.OK) {
+			return result;
 		}
+
+		final Map<String, Object> studentArgs = new HashMap<>();
+
+		final int rowsAffected;
 
 		/* Store Student Data */
 		studentArgs.put(STUDENT__DNI_COLUMN, student.getDni());
 		try {
-			studentInsert.execute(studentArgs);
+			rowsAffected = studentInsert.execute(studentArgs);
 		}catch(DuplicateKeyException e){
 			return Result.STUDENT_EXISTS_DOCKET;
 		} catch (DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
 		}
 
-		/* Store Address Data */
-        if(student.getDni() > 0 && student.getAddress() != null) {
-            createAddress(student.getDni(), student);
-        }
-
-		return Result.OK;
+		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 	}
 
-    @Override
-    public Integer getDniByDocket(final Integer docket){
-        return jdbcTemplate.query("SELECT dni FROM student WHERE docket = " + docket + ";", rs -> rs.next() ? rs.getInt("dni") : null);
-    }
+	@Override
+	public Integer getDniByDocket(final Integer docket){
+		return jdbcTemplate.query("SELECT dni FROM student WHERE docket = " + docket + ";", rs -> rs.next() ? rs.getInt("dni") : null);
+	}
 
-    @Override
-    public Result update(final Integer docket, final Integer dni , final Student student) {
+	@Override
+	public Result update(final Integer docket, final Integer dni , final Student student) {
+		int rowsAffected;
+		Result result;
 
-        final String genre = student.getGenre().equals("Female")? "F" : "M";
-
-        final String userUpdate = "UPDATE users SET " + USER__DNI_COLUMN + " = ?, " + USER__FIRST_NAME_COLUMN + " = ?, "
+	    final String genre = student.getGenre().name();
+        final String userUpdate = "UPDATE users SET " + USER__FIRST_NAME_COLUMN + " = ?, "
                 + USER__LAST_NAME_COLUMN + " = ?, " + USER__GENRE_COLUMN + " = ?, " + USER__BIRTHDAY_COLUMN + " = ?, "
                 + USER__EMAIL_COLUMN + " = ? WHERE " + USER__DNI_COLUMN + " = ?";
 
-        //final String studentUpdate = "UPDATE student SET " + STUDENT__DOCKET_COLUMN + " = ? WHERE " + STUDENT__DNI_COLUMN + " = ?;";
 
+		//Update user table
+		try {
+//			Date birthday = student.getBirthday() != null ? Date.valueOf(student.getBirthday()) : null;
 
-        //Update user table
-        try {
-            Date birthday = student.getBirthday() != null ? Date.valueOf(student.getBirthday()) : null;
-
-            jdbcTemplate.update(userUpdate, student.getDni(), student.getFirstName(), student.getLastName(), genre,
-                    birthday, createEmail(student.getDni(), student.getFirstName(),
-                            student.getLastName()), dni);
+//            rowsAffected = jdbcTemplate.update(userUpdate, student.getFirstName(), student.getLastName(), genre,
+//                    birthday, 	createEmail(student.getDni(), student.getFirstName(),
+//                            student.getLastName()), dni);
+			result = userDao.update(dni, student);
         } catch (DuplicateKeyException e) {
             return Result.STUDENT_EXISTS_DNI;
         }
 
-        return Result.OK;
-    }
+		return result;
+	}
 
-    @Override
-    public boolean hasAddress(final Integer dni) {
-        return jdbcTemplate.query("SELECT dni FROM address WHERE dni = " + dni + ";", rs -> rs.next() ? true : false);
-    }
+	@Override
+	public boolean hasAddress(final Integer dni) {
+		return jdbcTemplate.query("SELECT dni FROM address WHERE dni = " + dni + ";", rs -> rs.next() ? true : false);
+	}
 
-    @Override
-    public void createAddress(final Integer dni, final Student student) {
+	@Override
+	public void createAddress(final Integer dni, final Student student) {
 
-        Map<String, Object> addressArgs = new HashMap<>();
+		Map<String, Object> addressArgs = new HashMap<>();
 
-        Address addr = student.getAddress();
+		Address addr = student.getAddress();
 
 
-        addressArgs.put(ADDRESS__DNI_COLUMN, dni);
-        addressArgs.put(ADDRESS__COUNTRY_COLUMN, WordUtils.capitalize(addr.getCountry().toLowerCase()));
-        addressArgs.put(ADDRESS__CITY_COLUMN, WordUtils.capitalize(addr.getCity()).toLowerCase());
-        addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, WordUtils.capitalize(addr.getNeighborhood()).toLowerCase());
-        addressArgs.put(ADDRESS__STREET_COLUMN, WordUtils.capitalize(addr.getStreet()).toLowerCase());
-        addressArgs.put(ADDRESS__NUMBER_COLUMN,addr.getNumber());
-        addressArgs.put(ADDRESS__FLOOR_COLUMN, addr.getFloor());
-        addressArgs.put(ADDRESS__DOOR_COLUMN, addr.getDoor());
-        addressArgs.put(ADDRESS__TELEPHONE_COLUMN, addr.getTelephone());
-        addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, addr.getZipCode());
-        addressInsert.execute(addressArgs);
+		addressArgs.put(ADDRESS__DNI_COLUMN, dni);
+		addressArgs.put(ADDRESS__COUNTRY_COLUMN, WordUtils.capitalize(addr.getCountry().toLowerCase()));
+		addressArgs.put(ADDRESS__CITY_COLUMN, WordUtils.capitalize(addr.getCity()).toLowerCase());
+		addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, WordUtils.capitalize(addr.getNeighborhood()).toLowerCase());
+		addressArgs.put(ADDRESS__STREET_COLUMN, WordUtils.capitalize(addr.getStreet()).toLowerCase());
+		addressArgs.put(ADDRESS__NUMBER_COLUMN,addr.getNumber());
+		addressArgs.put(ADDRESS__FLOOR_COLUMN, addr.getFloor());
+		addressArgs.put(ADDRESS__DOOR_COLUMN, addr.getDoor());
+		addressArgs.put(ADDRESS__TELEPHONE_COLUMN, addr.getTelephone());
+		addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, addr.getZipCode());
+		addressInsert.execute(addressArgs);
 
-    }
-    @Override
-    public void updateAddress(Integer dni, Student student) {
+	}
+	@Override
+	public void updateAddress(Integer dni, Student student) {
 
-        final Address addr = student.getAddress();
+		final Address addr = student.getAddress();
 
-        final String addressUpdate = "UPDATE address SET " + ADDRESS__COUNTRY_COLUMN + " = ?, " + ADDRESS__CITY_COLUMN + " = ?, "
-                + ADDRESS__NEIGHBORHOOD_COLUMN + " = ?, " + ADDRESS__STREET_COLUMN + " = ?, " + ADDRESS__NUMBER_COLUMN + " = ?, "
-                + ADDRESS__FLOOR_COLUMN + " = ?, " + ADDRESS__DOOR_COLUMN + " = ?, " + ADDRESS__TELEPHONE_COLUMN + " = ?, "
-                + ADDRESS__ZIP_CODE_COLUMN + " = ? WHERE " + ADDRESS__DNI_COLUMN + " = ?;";
+		final String addressUpdate = "UPDATE address SET " + ADDRESS__COUNTRY_COLUMN + " = ?, " + ADDRESS__CITY_COLUMN + " = ?, "
+				+ ADDRESS__NEIGHBORHOOD_COLUMN + " = ?, " + ADDRESS__STREET_COLUMN + " = ?, " + ADDRESS__NUMBER_COLUMN + " = ?, "
+				+ ADDRESS__FLOOR_COLUMN + " = ?, " + ADDRESS__DOOR_COLUMN + " = ?, " + ADDRESS__TELEPHONE_COLUMN + " = ?, "
+				+ ADDRESS__ZIP_CODE_COLUMN + " = ? WHERE " + ADDRESS__DNI_COLUMN + " = ?;";
 
-        if (addr != null) {
-            jdbcTemplate.update(addressUpdate, addr.getCountry(), addr.getCity(), addr.getNeighborhood(),
-                    addr.getStreet(), addr.getNumber(), addr.getFloor(), addr.getDoor(), addr.getTelephone(),
-                    addr.getZipCode(), student.getDni());
-        }
-    }
+		if (addr != null) {
+			jdbcTemplate.update(addressUpdate, addr.getCountry(), addr.getCity(), addr.getNeighborhood(),
+					addr.getStreet(), addr.getNumber(), addr.getFloor(), addr.getDoor(), addr.getTelephone(),
+					addr.getZipCode(), student.getDni());
+		}
+	}
 
-    private String createEmail(final int dni, final String firstName, final String lastName) {
+	/*	@Override
+		public Student getByDni(final int dni) {
+			*//* This method should return 0 or 1 student. *//*
+		*//* Grab student's data *//*
+		final List<Student> students = jdbcTemplate.query(GET_BY_DNI, infoRowMapper, dni);
+
+		return students.isEmpty() ? null : students.get(0);
+	}*/
+	@Override
+	public Student getByDni(int dni) {
+		final Integer docket = getDocketByDni(dni);
+		if (docket == null || docket <= 0) {
+			return null;
+		}
+		final Student.Builder studentBuilder = new Student.Builder(docket, dni);
+		return userDao.getByDni(dni, studentBuilder);
+	}
+
+	@Override
+	public List<Student> getStudentsPassed(final int id) {
+		return jdbcTemplate.query(QUERY_GET_STUDENTS_PASSED, studentRowMapper, id);
+	}
+
+	private Integer getDocketByDni(final int dni) {
+		return jdbcTemplate.query("SELECT docket FROM student WHERE dni = " + dni + ";", rs -> rs.next() ? rs.getInt("docket") : null);
+	}
+
+	private String createEmail(final int dni, final String firstName, final String lastName) {
 		final String defaultEmail = "student" + dni + EMAIL_DOMAIN;
 
 		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
@@ -570,7 +648,13 @@ public class StudentJdbcDao implements StudentDao {
 		return jdbcTemplate.query(GET_APPROVED_COURSES, approvedCoursesRowMapper, docket);
 	}
 
-	private boolean exists(final StringBuilder email) {
+    @Override
+    public List<Integer> getApprovedCoursesId(int docket) {
+        final RowMapper<Integer> approvedCoursesIdRowMapper = (rs, rowMapper) -> rs.getInt(COURSE__ID_COLUMN);
+        return jdbcTemplate.query(GET_APPROVED_COURSES, approvedCoursesIdRowMapper, docket);
+    }
+
+    private boolean exists(final StringBuilder email) {
 		List<String> emails = jdbcTemplate.query(EMAILS_QUERY, emailRowMapper);
 		return emails.contains(String.valueOf(email));
 	}
@@ -592,14 +676,16 @@ public class StudentJdbcDao implements StudentDao {
 
 		private final FilterQueryMapper filterBySubWord = (filter, filterName) -> {
 			if(filter != null && !filter.toString().equals("")) {
-				String stringFilter = "%" + filter.toString() + "%";
+				String escapedFilter = escapeFilter(filter);
+				String stringFilter = "%" + escapedFilter + "%";
 				appendFilter(filterName, stringFilter);
 			}
 		};
 
 		private final FilterQueryMapper filterByExactWord = (filter, filterName) -> {
 			if(filter != null && !filter.toString().equals("")) {
-				String stringFilter = filter.toString();
+				String escapedFilter = escapeFilter(filter);
+				String stringFilter = escapedFilter;
 				appendFilter(filterName, stringFilter);
 			}
 		};
@@ -639,6 +725,10 @@ public class StudentJdbcDao implements StudentDao {
 			} else {
 				query.append(AND);
 			}
+		}
+
+		private String escapeFilter(final Object filter) {
+			return filter.toString().replace("%", "\\%").replace("_", "\\_");
 		}
 
 		private void appendFilter(final String filter, final String stringFilter) {

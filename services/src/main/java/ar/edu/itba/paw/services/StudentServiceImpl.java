@@ -12,6 +12,7 @@ import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -27,11 +28,13 @@ public class StudentServiceImpl implements StudentService {
 	@Autowired
 	private CourseService courseService;
 
+	@Transactional
 	@Override
 	public Student getByDocket(final int docket) {
 		return docket <= 0 ? null : studentDao.getByDocket(docket);
 	}
 
+	@Transactional
 	@Override
 	public List<Course> getStudentCourses(final int docket, final CourseFilter courseFilter) {
 		if (docket <= 0) {
@@ -49,16 +52,19 @@ public class StudentServiceImpl implements StudentService {
 		return courses;
 	}
 
+	@Transactional
 	@Override
 	public List<Student> getByFilter(StudentFilter studentFilter) {
 		return studentDao.getByFilter(studentFilter);
 	}
 
+	@Transactional
 	@Override
 	public Result create(Student student) {
 		return studentDao.create(student);
 	}
 
+	@Transactional
 	@Override
 	public Result deleteStudent(Integer docket) {
 		if(docket <= 0) {
@@ -67,6 +73,7 @@ public class StudentServiceImpl implements StudentService {
 		return studentDao.deleteStudent(docket);
 	}
 
+	@Transactional
 	@Override
 	public Result addGrade(final Grade grade) {
 		if (grade == null) {
@@ -80,11 +87,13 @@ public class StudentServiceImpl implements StudentService {
 		return result;
 	}
 
+	@Transactional
 	@Override
 	public Result editGrade(Grade newGrade, BigDecimal oldGrade) {
 		return studentDao.editGrade(newGrade, oldGrade);
 	}
 
+	@Transactional
 	@Override
 	public Result update(Integer docket, Student student) {
 		final Integer dni = studentDao.getDniByDocket(docket);
@@ -101,7 +110,25 @@ public class StudentServiceImpl implements StudentService {
 		return studentDao.update(docket, dni, student);
 	}
 
-	@Override
+    @Override
+    public Integer getTotalPlanCredits() {
+        return courseService.getTotalPlanCredits();
+    }
+
+    @Override
+    public Integer getPassedCredits(Integer docket) {
+        final List<Course> list = (List<Course>) getApprovedCourses(docket);
+
+        Integer amount = 0;
+
+        for (Course course : list) {
+            amount += course.getCredits();
+        }
+        return amount;
+    }
+
+	@Transactional
+    @Override
 	public Student getGrades(final int docket) {
 		return docket <= 0 ? null : studentDao.getGrades(docket);
 	}
@@ -131,6 +158,7 @@ public class StudentServiceImpl implements StudentService {
 		return courses;
 	}
 
+	@Transactional
 	@Override
 	public Result enroll(final int studentDocket, final int courseId) {
 		if (studentDocket <= 0 ) {
@@ -142,12 +170,9 @@ public class StudentServiceImpl implements StudentService {
 
 		Result result;
 
-		/* +++xtodo: implement
-		result = checkCorrelatives(studentDocket, courseId);
-		if (result.equals(Result.DISPROVED_CORRELATIVES)) {
-			return Result.ERROR_UNKNOWN;
+		if (!checkCorrelatives(studentDocket, courseId)) {
+			return Result.ERROR_CORRELATIVE_NOT_APPROVED;
 		}
-		*/
 
 		result = studentDao.enroll(studentDocket, courseId);
 		if (result == null) {
@@ -162,6 +187,60 @@ public class StudentServiceImpl implements StudentService {
 		return result;
 	}
 
+	@Transactional
+	@Override
+	public boolean checkCorrelatives(Integer docket, Integer courseId) {
+		List<Integer> correlatives = courseService.getCorrelatives(courseId);
+        List<Integer> approvedCourses = studentDao.getApprovedCoursesId(docket);
+
+        for (Integer correlative : correlatives){
+            if (!approvedCourses.contains(correlative)){
+                return false;
+            }
+        }
+
+        return true;
+	}
+
+	@Transactional
+	@Override
+	public List<List<Grade>> getTranscript(Integer docket) {
+		final List<List<Grade>> semesterList = new ArrayList<>();
+		final Integer totalSemesters = courseService.getTotalSemesters();
+
+
+		for (int i = 0; i < totalSemesters; i++) {
+            int semesterIndex = i + 1;
+
+            //Get all grades from that semester and add them
+            Student student = studentDao.getGrades(docket, semesterIndex);
+
+            semesterList.add(i, new ArrayList<>());
+
+            for (Grade grade : student.getGrades()) {
+                semesterList.get(i).add(grade);
+            }
+		}
+
+        //Add courses that are being taken
+        final List<Course> coursesTaken = getStudentCourses(docket, null);
+        for (Course course : coursesTaken){
+            int semesterIndex = course.getSemester() - 1;
+            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).taking(true).build());
+        }
+
+        //Complete with the rest of the courses that are not taken
+        final List<Course> availCourses = getAvailableInscriptionCourses(docket, null);
+
+        for (Course course : availCourses){
+            int semesterIndex = course.getSemester() - 1;
+            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).build());
+        }
+
+		return semesterList;
+	}
+
+	@Transactional
 	@Override
 	public Result unenroll(final Integer studentDocket, final Integer courseId) {
 		if (studentDocket <= 0 ) {
@@ -185,9 +264,16 @@ public class StudentServiceImpl implements StudentService {
 		return result;
 	}
 
+	@Transactional
 	@Override
 	public Collection<Course> getApprovedCourses(final int docket) {
 		return docket <= 0 ? null : studentDao.getApprovedCourses(docket);
+	}
+
+	@Transactional
+	@Override
+	public Student getByDni(final int dni) {
+		return dni <= 0 ? null : studentDao.getByDni(dni);
 	}
 
 	/* Test purpose only */
