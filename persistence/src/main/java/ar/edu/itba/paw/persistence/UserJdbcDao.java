@@ -109,7 +109,6 @@ public class UserJdbcDao implements UserDao {
 				update(USERS_TABLE) +
 						set(USER__FIRST_NAME_COLUMN, GIVEN_PARAMETER
 						, 	USER__LAST_NAME_COLUMN, GIVEN_PARAMETER
-						,	USER__EMAIL_COLUMN,	GIVEN_PARAMETER
 						,	USER__BIRTHDAY_COLUMN, GIVEN_PARAMETER
 						,	USER__GENRE_COLUMN, GIVEN_PARAMETER
 						) +
@@ -269,11 +268,11 @@ public class UserJdbcDao implements UserDao {
 			rowsAffected = jdbcTemplate.update(UPDATE_USER,
 					user.getFirstName(),
 					user.getLastName(),
-					user.getEmail(),
 					birthday,
 					genre,
 					dni);
 		} catch (final DataIntegrityViolationException e) {
+			e.printStackTrace();
 			return Result.INVALID_INPUT_PARAMETERS;
 		} catch(final DataAccessException e) {
 			return Result.ERROR_UNKNOWN;
@@ -322,7 +321,7 @@ public class UserJdbcDao implements UserDao {
 	private String createEmail(final int dni, final String firstName, final String lastName, final Role role) {
 		final StringBuilder defaultEmailBuilder = new StringBuilder();
 		final String defaultEmail;
-		final char rolePrefix = role.originalString().charAt(0);
+		final char rolePrefix = role.originalString().toLowerCase().charAt(0);
 
 		defaultEmailBuilder.append(rolePrefix);
 		defaultEmailBuilder.append(dni);
@@ -330,27 +329,24 @@ public class UserJdbcDao implements UserDao {
 
 		defaultEmail = defaultEmailBuilder.toString();
 
-		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
-			return defaultEmail;
-		}
+//		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
+//			return defaultEmail;
+//		}
 
-		final String initChar = firstName.substring(0, 1).toLowerCase();
-
-		final String[] lastNames = lastName.toLowerCase().split(" ");
-		StringBuilder currentEmail;
-		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
-			currentEmail = new StringBuilder(initChar);
-			for (int j = 0 ; j <= i; j++) {
-				currentEmail.append(lastNames[j]);
-			}
-			currentEmail.append(EMAIL_DOMAIN);
-			if (!exists(currentEmail)) { // +++ximprove: should return existent email
-				return String.valueOf(currentEmail);
-			}
-		}
-
-		/* This is in case all email trials failed */
-		/* This, for sure, does not exists as includes the docket, which is unique */
+//		final String initChar = firstName.substring(0, 1).toLowerCase();
+//
+//		final String[] lastNames = lastName.toLowerCase().split(" ");
+//		StringBuilder currentEmail;
+//		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
+//			currentEmail = new StringBuilder(initChar);
+//			for (int j = 0 ; j <= i; j++) {
+//				currentEmail.append(lastNames[j]);
+//			}
+//			currentEmail.append(EMAIL_DOMAIN);
+//			if (!exists(currentEmail)) { // +++ximprove: should return existent email
+//				return String.valueOf(currentEmail);
+//			}
+//		}
 		return defaultEmail;
 	}
 
