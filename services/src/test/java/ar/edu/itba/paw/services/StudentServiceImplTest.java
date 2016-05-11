@@ -3,14 +3,14 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentDao;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class StudentServiceImplTest {
 
@@ -241,4 +241,25 @@ public class StudentServiceImplTest {
 		studentService.getApprovedCourses(DOCKET_INVALID);
 		verify(studentDao, times(0)).getApprovedCourses(DOCKET_INVALID);
 	}
+
+	@Test
+	public void testUpdate() {
+        Student student = new Student.Builder(DOCKET_VALID, DNI_VALID).build();
+
+        /* valid input with address*/
+        when(studentDao.getDniByDocket(DOCKET_VALID)).then((invocation) -> DNI_VALID);
+        when(studentDao.hasAddress(DNI_VALID)).then((invocation) -> true);
+        studentService.update(DOCKET_VALID, student);
+        verify(studentDao, times(1)).getDniByDocket(DOCKET_VALID);
+        verify(studentDao, times(1)).updateAddress(DNI_VALID, student);
+        verify(studentDao, times(0)).createAddress(DNI_VALID, student);
+
+        /* valid input without address*/
+        when(studentDao.getDniByDocket(DOCKET_VALID)).then((invocation) -> DNI_VALID);
+        when(studentDao.hasAddress(DNI_VALID)).then((invocation) -> false);
+        studentService.update(DOCKET_VALID, student);
+        verify(studentDao, times(2)).getDniByDocket(DOCKET_VALID);
+        verify(studentDao, times(1)).updateAddress(DNI_VALID, student);
+        verify(studentDao, times(1)).createAddress(DNI_VALID, student);
+    }
 }
