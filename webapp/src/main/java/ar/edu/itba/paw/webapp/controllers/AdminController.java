@@ -164,7 +164,7 @@ public class AdminController {
 		Result result = adminService.create(admin);
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			LOGGER.warn("User {} could not add admin, Result = {}", adminForm.getDni(), result);
 			return adminsAddAdminG(adminForm, redirectAttributes, loggedUser);
 		}
@@ -193,7 +193,7 @@ public class AdminController {
 		Result result = adminService.disableInscriptions();
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			LOGGER.warn("User {} could not disable inscriptions, Result = {}", loggedUser.getDni(), result);
 		}
 		else{
@@ -228,7 +228,7 @@ public class AdminController {
 		if(!result.equals(Result.OK)){
 			LOGGER.warn("User {} could not enable inscriptions, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 		}
 		else{
 			LOGGER.info("User {} disabled inscriptions successfully", loggedUser.getDni());
@@ -320,7 +320,7 @@ public class AdminController {
 
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			LOGGER.warn("User {} could not edit admin, Result = {}", adminForm.getDni(), result);
 			return editAdmin(dni, adminForm, redirectAttributes, loggedUser);
 		} else {

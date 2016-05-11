@@ -112,7 +112,7 @@ public class UserController {
 			if (!result.equals(Result.OK)) {
 				LOGGER.warn("User {} could not reset password, Result = {}", loggedUser.getDni(), result);
 				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", result.getMessage());
+				redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			} else {
 				LOGGER.info("User {} reset password successfully", loggedUser.getDni());
 				redirectAttributes.addFlashAttribute("alert", "success");
@@ -163,7 +163,7 @@ public class UserController {
 
 		if (!result.equals(Result.OK)) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			LOGGER.warn("User {} could not change Password, Result = {}", passwordForm.getDni(), result);
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
@@ -196,7 +196,7 @@ public class UserController {
 
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			//return deleteUser(userForm, redirectAttributes); //TODO: See where it returns
 			LOGGER.warn("User {} could not be deleted, Result = {}", userForm.getDni(), result);
 		} else {

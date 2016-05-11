@@ -161,8 +161,8 @@ public class CourseController {
 		if (course == null){
 			LOGGER.warn("User {} tried to edit course {} that does not exist", loggedUser.getDni(), courseId);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", "La materia que se intenta editar no existe.");
-			return new ModelAndView(NOT_FOUND);
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editCourse_fail", null, Locale.getDefault()));
+			return new ModelAndView("redirect:/courses");
 		}
 
 		courseForm.loadFromCourse(course);
@@ -200,7 +200,7 @@ public class CourseController {
 		if(!result.equals(Result.OK)){
 			LOGGER.warn("User {} could not edit course, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			return new ModelAndView("redirect:/courses/" + courseId + "/edit");
 		} else {
 			LOGGER.info("User {} edited course {} successfully", loggedUser.getDni(), courseId);
@@ -304,7 +304,7 @@ public class CourseController {
 			if(!result.equals(Result.OK)){
 				LOGGER.warn("User {} could not add course, Result = {}", loggedUser.getDni(), result);
 				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", result.getMessage());
+				redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 				return addCourse(courseForm, redirectAttributes, loggedUser);
 			} else {
 				LOGGER.info("User {} added course {}", loggedUser.getDni(), courseForm.getId());
@@ -339,7 +339,7 @@ public class CourseController {
 		} else { // if course with the specified id does not exist, it will enter here
 			LOGGER.warn("User {} could not delete course, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			urlRedirect = request.getHeader("referer");
 		}
 
@@ -418,7 +418,7 @@ public class CourseController {
 		if (!result.equals(Result.OK)) {
 			LOGGER.warn("User {} could not add correlative, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 
 		} else { // if course with the specified id does not exist, it will enter here
 			LOGGER.info("User {} added correlative successfully", loggedUser.getDni());
@@ -457,7 +457,7 @@ public class CourseController {
 		if (!result.equals(Result.OK)) {
 			LOGGER.warn("User {} could not delete correlative, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", result.getMessage());
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 
 		} else { // if course with the specified id does not exist, it will enter here
 			LOGGER.info("User {} deleted correlative successfully", loggedUser.getDni());
