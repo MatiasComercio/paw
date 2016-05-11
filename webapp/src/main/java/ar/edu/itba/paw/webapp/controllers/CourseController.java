@@ -40,6 +40,7 @@ public class CourseController {
 	private static final String TASK_FORM_ADD = "add";
 	private static final String TASK_FORM_EDIT = "edit";
 	private static final String UNAUTHORIZED = "redirect:/errors/403";
+	private static final String NOT_FOUND = "404";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -124,7 +125,14 @@ public class CourseController {
 			model.addAttribute("correlativeForm", new CorrelativeForm());
 		}
 
-		mav.addObject("course", courseService.getById(id));
+		final Course course = courseService.getById(id);
+
+		if (course == null) {
+			LOGGER.warn("User {} tried to edit course {} that does not exist", loggedUser.getDni(), id);
+			return new ModelAndView(NOT_FOUND);
+		}
+
+		mav.addObject("course", course);
 		mav.addObject("section2", "info"); /* +++xcheck: if it's ok, do the same for all the URLs */
 		mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
 		mav.addObject("subsection_delete_correlative", true);
@@ -154,15 +162,13 @@ public class CourseController {
 			LOGGER.warn("User {} tried to edit course {} that does not exist", loggedUser.getDni(), courseId);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", "La materia que se intenta editar no existe.");
-			return new ModelAndView("redirect:/courses");
+			return new ModelAndView(NOT_FOUND);
 		}
 
 		courseForm.loadFromCourse(course);
 
 		mav.addObject("section2", "edit");
 		mav.addObject("course", course);
-/*		mav.addObject("courseId", courseId);
-		mav.addObject("courseName", course.getName());*/
 		mav.addObject("task", TASK_FORM_EDIT);
 
 		return mav;
@@ -190,6 +196,7 @@ public class CourseController {
 		Course course = courseForm.build();
 		Result result = courseService.update(courseId, course);
 
+		/* If no course with 'courseId' exists, !result.equals(Result.OK) will be true */
 		if(!result.equals(Result.OK)){
 			LOGGER.warn("User {} could not edit course, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
@@ -208,14 +215,6 @@ public class CourseController {
 		return new ModelAndView("redirect:" + referrer);
 	}
 
-
-/*    @RequestMapping("/courses/{id}/students")
-	public ModelAndView getCourseStudents(@PathVariable final Integer id){
-		final ModelAndView mav = new ModelAndView("courseStudents");
-		mav.addObject("courseStudents", courseService.getCourseStudents(id));
-
-		return mav;
-	}*/
 
 	@RequestMapping(value = "/courses/{id}/students", method = RequestMethod.GET)
 	public ModelAndView getCourseStudents(@PathVariable("id") final Integer id,
@@ -242,7 +241,8 @@ public class CourseController {
 		// +++ximprove with Spring Security
 		final Course course = courseService.getById(id);
 		if (course == null) {
-			return new ModelAndView("forward:/errors/404.html");
+			LOGGER.warn("User {} tried to view all enrolled students from course {} that does not exist", loggedUser.getUsername(), id);
+			return new ModelAndView(NOT_FOUND);
 		}
 		final List<Student> students = courseService.getCourseStudents(id, studentFilter);
 
@@ -287,7 +287,7 @@ public class CourseController {
 	@RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
 	public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
 	                              final BindingResult errors, RedirectAttributes redirectAttributes,
-	                              UserSessionDetails loggedUser) {
+	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("ADD_COURSE")) {
 			LOGGER.warn("User {} tried to add a course and doesn't have ADD_COURSE authority [POST]", loggedUser.getDni());
@@ -336,7 +336,7 @@ public class CourseController {
 					null,
 					Locale.getDefault()));
 			urlRedirect = "/courses";
-		} else {
+		} else { // if course with the specified id does not exist, it will enter here
 			LOGGER.warn("User {} could not delete course, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
@@ -369,7 +369,8 @@ public class CourseController {
 		//Check the course exists (in case the url is modified)
 		final Course course = courseService.getById(course_id);
 		if (course == null) {
-			return new ModelAndView("forward:/errors/404");
+			LOGGER.warn("User {} tried to access course {} that does not exist", loggedUser.getDni(), course_id);
+			return new ModelAndView(NOT_FOUND);
 		}
 
 		final ModelAndView mav = new ModelAndView("courses");
@@ -419,7 +420,7 @@ public class CourseController {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 
-		} else {
+		} else { // if course with the specified id does not exist, it will enter here
 			LOGGER.info("User {} added correlative successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message",
@@ -458,7 +459,7 @@ public class CourseController {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", result.getMessage());
 
-		} else {
+		} else { // if course with the specified id does not exist, it will enter here
 			LOGGER.info("User {} deleted correlative successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message",
@@ -494,8 +495,10 @@ public class CourseController {
 		// +++ximprove with Spring Security
 		final Course course = courseService.getStudentsThatPassedCourse(id, studentFilter);
 		if (course == null) {
-			return new ModelAndView("forward:/errors/404");
+			LOGGER.warn("User {} tried to access course {} that does not exist", loggedUser.getDni(), id);
+			return new ModelAndView(NOT_FOUND);
 		}
+
 
 		final ModelAndView mav = new ModelAndView("courseStudents");
 		mav.addObject("course", course);

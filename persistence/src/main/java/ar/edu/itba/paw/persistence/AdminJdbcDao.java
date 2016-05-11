@@ -205,28 +205,29 @@ public class AdminJdbcDao implements AdminDao {
 			return Result.ERROR_UNKNOWN;
 		}
 
-		if (rowsAffected != 1) {
-			return Result.ERROR_UNKNOWN;
-		}
-
-		try {
-			rowsAffected = jdbcTemplate.update(DISABLE_INSCRIPTION, "ADMIN", "DISABLE_INSCRIPTION");
-		} catch (DataAccessException e) {
-			return Result.ERROR_UNKNOWN;
-		}
-
-		if (rowsAffected != 1) {
-			return Result.ERROR_UNKNOWN;
-		}
-
-		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__ROLE_COLUMN, "ADMIN");
-		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__AUTHORITY_COLUMN, "ENABLE_INSCRIPTION");
-
-		try {
-			rowsAffected = roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
-		} catch (DataAccessException e) {
-			return Result.ERROR_UNKNOWN;
-		}
+//		+++xtodo: Enable this when authorities can be dynamically reloaded
+//		if (rowsAffected != 1) {
+//			return Result.ERROR_UNKNOWN;
+//		}
+//
+//		try {
+//			rowsAffected = jdbcTemplate.update(DISABLE_INSCRIPTION, "ADMIN", "DISABLE_INSCRIPTION");
+//		} catch (DataAccessException e) {
+//			return Result.ERROR_UNKNOWN;
+//		}
+//
+//		if (rowsAffected != 1) {
+//			return Result.ERROR_UNKNOWN;
+//		}
+//
+//		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__ROLE_COLUMN, "ADMIN");
+//		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__AUTHORITY_COLUMN, "ENABLE_INSCRIPTION");
+//
+//		try {
+//			rowsAffected = roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
+//		} catch (DataAccessException e) {
+//			return Result.ERROR_UNKNOWN;
+//		}
 		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 	}
 
@@ -258,28 +259,29 @@ public class AdminJdbcDao implements AdminDao {
 			return Result.ERROR_UNKNOWN;
 		}
 
-		if (rowsAffected != 1) {
-			return Result.ERROR_UNKNOWN;
-		}
-
-		try {
-			rowsAffected = jdbcTemplate.update(DISABLE_INSCRIPTION, "ADMIN", "ENABLE_INSCRIPTION");
-		} catch (DataAccessException e) {
-			return Result.ERROR_UNKNOWN;
-		}
-
-		if (rowsAffected != 1) {
-			return Result.ERROR_UNKNOWN;
-		}
-
-		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__ROLE_COLUMN, "ADMIN");
-		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__AUTHORITY_COLUMN, "DISABLE_INSCRIPTION");
-
-		try {
-			rowsAffected = roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
-		} catch (DataAccessException e) {
-			return Result.ERROR_UNKNOWN;
-		}
+//		+++xtodo: Enable this when authorities can be dynamically reloaded
+//		if (rowsAffected != 1) {
+//			return Result.ERROR_UNKNOWN;
+//		}
+//
+//		try {
+//			rowsAffected = jdbcTemplate.update(DISABLE_INSCRIPTION, "ADMIN", "ENABLE_INSCRIPTION");
+//		} catch (DataAccessException e) {
+//			return Result.ERROR_UNKNOWN;
+//		}
+//
+//		if (rowsAffected != 1) {
+//			return Result.ERROR_UNKNOWN;
+//		}
+//
+//		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__ROLE_COLUMN, "ADMIN");
+//		roleAuthoritiesArgs.put(ROLE_AUTHORITIES__AUTHORITY_COLUMN, "DISABLE_INSCRIPTION");
+//
+//		try {
+//			rowsAffected = roleAuthoritiesInsert.execute(roleAuthoritiesArgs);
+//		} catch (DataAccessException e) {
+//			return Result.ERROR_UNKNOWN;
+//		}
 		return rowsAffected == 1 ? Result.OK : Result.ERROR_UNKNOWN;
 	}
 

@@ -7,7 +7,7 @@
 <head>
     <title>
         <c:choose>
-            <c:when test="${section2 eq 'courseStudents'}">
+            <c:when test="${section2 eq 'students'}">
                 <c:set var="title">
                     <spring:message code="webAbbreviation"/> | ${course.name} | <spring:message code="students"/>
                 </c:set>
