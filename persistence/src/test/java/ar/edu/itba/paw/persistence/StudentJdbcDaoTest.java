@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
@@ -109,6 +110,10 @@ public class StudentJdbcDaoTest {
 	private static final int DNI_INVALID_LIMIT = 0;
 	private static final int DNI_INVALID = -7357;
 
+
+	private static final String ROLE_1 = "ADMIN";
+	private static final String ROLE_2 = "STUDENT";
+
 	private static final int DNI_1 = 12345678;
 	private static final String FIRST_NAME_1 = "MaTías NIColas";
 	private static final String FIRST_NAME_1_EXPECTED = "Matías Nicolas";
@@ -117,9 +122,8 @@ public class StudentJdbcDaoTest {
 	private static final String GENRE_1 = "M";
 	private static final User.Genre GENRE_1_EXPECTED = User.Genre.M;
 	private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
-	private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
-	private static final String ROLE_1 = "ADMIN";
-	private static final String ROLE_2 = "STUDENT";
+//	private static final String EMAIL_1 = ROLE_2.toLowerCase().charAt(0) + DNI_1 + "@bait.edu.ar"; /* This does not work as expected */
+	private static final String EMAIL_1 = "s" + DNI_1 + "@bait.edu.ar";
 	private int docket1; /* Auto-generated field */
 
 
@@ -128,7 +132,8 @@ public class StudentJdbcDaoTest {
 	private static final String FIRST_NAME_2_EXPECTED = "Brenda Lihuén";
 	private static final String LAST_NAME_2 = "MaYan";
 	private static final String LAST_NAME_2_EXPECTED = "Mayan";
-	private static final String EMAIL_2 = "blihuen@bait.edu.ar";
+//	private static final String EMAIL_2 = ROLE_2.toLowerCase().charAt(0) + DNI_2 + "@bait.edu.ar"; /* This does not work as expected */
+	private static final String EMAIL_2 = "s" + DNI_2 + "@bait.edu.ar";
 	private int docket2; /* Auto-generated field */
 
 
@@ -291,6 +296,7 @@ public class StudentJdbcDaoTest {
         Result result;
         final Map<String, Object> userArgs = new HashMap<>();
         final Map<String, Object> studentArgs = new HashMap<>();
+        final Map<String, Object> addressArgs = new HashMap<>();
 
         /**
          * update the student's dni
@@ -302,9 +308,14 @@ public class StudentJdbcDaoTest {
 		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
         userInsert.execute(userArgs);
 
+		Address address = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
+				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED).build();
+
         studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
         docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
-        Student student = new Student.Builder(docket1, DNI_2).build();
+        Student student = new Student.Builder(docket1, DNI_2)
+				.address(address)
+				.build();
 
         result = studentJdbcDao.update(docket1, DNI_1, student);
         assertEquals(Result.OK, result);
@@ -322,7 +333,9 @@ public class StudentJdbcDaoTest {
 
         studentArgs.put(STUDENT__DNI_COLUMN, DNI_2);
         docket2 = studentInsert.executeAndReturnKey(studentArgs).intValue();
-        student = new Student.Builder(docket2, DNI_1).build();
+        student = new Student.Builder(docket2, DNI_1)
+				.address(address)
+				.build();
 
         result = studentJdbcDao.update(docket2, DNI_1, student);
         assertEquals(Result.OK, result);
@@ -412,6 +425,61 @@ public class StudentJdbcDaoTest {
         assertEquals(ADDRESS__TELEPHONE_EXPECTED, address.getTelephone());
         assertEquals(ADDRESS__ZIP_CODE_EXPECTED, address.getZipCode());
     }
+
+	@Test
+	public void updateAddress(){
+		final Map<String, Object> userArgs = new HashMap<>();
+		final Map<String, Object> studentArgs = new HashMap<>();
+		final Map<String, Object> addressArgs = new HashMap<>();
+
+		userArgs.put(USER__DNI_COLUMN, DNI_1);
+		userArgs.put(USER__FIRST_NAME_COLUMN, FIRST_NAME_1.toLowerCase());
+		userArgs.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
+		userArgs.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs.put(USER__ROLE_COLUMN, ROLE_2);
+		userInsert.execute(userArgs);
+
+		studentArgs.put(STUDENT__DNI_COLUMN, DNI_1);
+		docket1 = studentInsert.executeAndReturnKey(studentArgs).intValue();
+
+		addressArgs.put(ADDRESS__CITY_COLUMN, ADDRESS__CITY_VALUE);
+		addressArgs.put(ADDRESS__COUNTRY_COLUMN, ADDRESS__COUNTRY_VALUE);
+		addressArgs.put(ADDRESS__DNI_COLUMN, DNI_1);
+		addressArgs.put(ADDRESS__NEIGHBORHOOD_COLUMN, ADDRESS__NEIGHBORHOOD_VALUE);
+		addressArgs.put(ADDRESS__STREET_COLUMN, ADDRESS__STREET_VALUE);
+		addressArgs.put(ADDRESS__NUMBER_COLUMN, ADDRESS__NUMBER_VALUE);
+		addressArgs.put(ADDRESS__FLOOR_COLUMN, ADDRESS__FLOOR_VALUE);
+		addressArgs.put(ADDRESS__DOOR_COLUMN, ADDRESS__DOOR_VALUE);
+		addressArgs.put(ADDRESS__TELEPHONE_COLUMN, ADDRESS__TELEPHONE_VALUE);
+		addressArgs.put(ADDRESS__ZIP_CODE_COLUMN, ADDRESS__ZIP_CODE_VALUE);
+		addressInsert.execute(addressArgs);
+
+		Address addr = new Address.Builder(ADDRESS__COUNTRY_EXPECTED, ADDRESS__CITY_EXPECTED, ADDRESS__NEIGHBORHOOD_EXPECTED,
+				ADDRESS__STREET_EXPECTED, ADDRESS__NUMBER_EXPECTED)
+				.floor(ADDRESS__FLOOR_EXPECTED)
+				.door(ADDRESS__DOOR_EXPECTED)
+				.telephone(ADDRESS__TELEPHONE_EXPECTED)
+				.zipCode(ADDRESS__ZIP_CODE_EXPECTED)
+				.build();
+
+		Student student = new Student.Builder(docket1, DNI_1).address(addr).build();
+
+		studentJdbcDao.updateAddress(DNI_1, student);
+
+		Student student2 = studentJdbcDao.getByDocket(docket1);
+		Address address = student2.getAddress();
+
+		assertEquals(ADDRESS__CITY_EXPECTED, address.getCity());
+		assertEquals(ADDRESS__COUNTRY_EXPECTED, address.getCountry());
+		assertEquals(ADDRESS__NEIGHBORHOOD_EXPECTED, address.getNeighborhood());
+		assertEquals(ADDRESS__STREET_EXPECTED, address.getStreet());
+		assertEquals(ADDRESS__NUMBER_EXPECTED, address.getNumber());
+		assertEquals(ADDRESS__FLOOR_EXPECTED, address.getFloor());
+		assertEquals(ADDRESS__DOOR_EXPECTED, address.getDoor());
+		assertEquals(ADDRESS__TELEPHONE_EXPECTED, address.getTelephone());
+		assertEquals(ADDRESS__ZIP_CODE_EXPECTED, address.getZipCode());
+
+	}
 
     @Test
     public void hasAddress() {
@@ -639,7 +707,8 @@ public class StudentJdbcDaoTest {
 		userArgs1.put(USER__LAST_NAME_COLUMN, LAST_NAME_1.toLowerCase());
 		userArgs1.put(USER__GENRE_COLUMN, GENRE_1);
 		userArgs1.put(USER__BIRTHDAY_COLUMN, Date.valueOf(BIRTHDAY_1));
-		userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1.toLowerCase());
+		userArgs1.put(USER__EMAIL_COLUMN, EMAIL_1);
+		System.out.println(EMAIL_1);
 		userArgs1.put(USER__ROLE_COLUMN, ROLE_2);
 		userInsert.execute(userArgs1);
 
@@ -679,7 +748,7 @@ public class StudentJdbcDaoTest {
 		assertEquals(LAST_NAME_1_EXPECTED, student.getLastName());
 		assertEquals(GENRE_1_EXPECTED, student.getGenre());
 		assertEquals(BIRTHDAY_1, student.getBirthday());
-		assertThat(student.getEmail(), anyOf(possibleEmails(docket1, FIRST_NAME_1.toLowerCase(), LAST_NAME_1.toLowerCase())));
+		assertThat(student.getEmail(), anyOf(possibleEmails(DNI_1, FIRST_NAME_1.toLowerCase(), LAST_NAME_1.toLowerCase(), Role.STUDENT)));
 		assertEquals(ADDRESS__COUNTRY_EXPECTED, student.getAddress().getCountry());
 		assertEquals(ADDRESS__CITY_EXPECTED, student.getAddress().getCity());
 		assertEquals(ADDRESS__NEIGHBORHOOD_EXPECTED, student.getAddress().getNeighborhood());
@@ -1105,29 +1174,38 @@ public class StudentJdbcDaoTest {
 	}
 */
 
-	private List<Matcher<? super String>> possibleEmails(final int docket, final String firstName, final String lastName) {
+	private List<Matcher<? super String>> possibleEmails(final int dni, final String firstName, final String lastName, Role role) {
 		final List<Matcher<? super String>> matchers = new LinkedList<>();
-		final String defaultEmail = "student" + docket + EMAIL_DOMAIN;
+		final StringBuilder defaultEmailBuilder = new StringBuilder();
+		final String defaultEmail;
+		final char rolePrefix = role.originalString().toLowerCase().charAt(0);
 
-		/* In case firstName == null */
-		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
-			matchers.add(is(defaultEmail));
-			return matchers;
-		}
+		defaultEmailBuilder.append(rolePrefix);
+		defaultEmailBuilder.append(dni);
+		defaultEmailBuilder.append(EMAIL_DOMAIN);
 
-		/* Add all possible emails */
-		final String initChar = firstName.substring(0, 1).toLowerCase();
-
-		final String[] lastNames = lastName.toLowerCase().split(" ");
-		StringBuilder currentEmail;
-		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
-			currentEmail = new StringBuilder(initChar);
-			for (int j = 0 ; j <= i; j++) {
-				currentEmail.append(lastNames[j]);
-			}
-			currentEmail.append(EMAIL_DOMAIN);
-			matchers.add(is(String.valueOf(currentEmail)));
-		}
+		defaultEmail = defaultEmailBuilder.toString();
+//		final String defaultEmail = "student" + docket + EMAIL_DOMAIN;
+//
+//		/* In case firstName == null */
+//		if (firstName == null || firstName.equals("")|| lastName == null || lastName.equals("")) {
+//			matchers.add(is(defaultEmail));
+//			return matchers;
+//		}
+//
+//		/* Add all possible emails */
+//		final String initChar = firstName.substring(0, 1).toLowerCase();
+//
+//		final String[] lastNames = lastName.toLowerCase().split(" ");
+//		StringBuilder currentEmail;
+//		for (int i = 0 ; i < 2 && i < lastNames.length ; i++) {
+//			currentEmail = new StringBuilder(initChar);
+//			for (int j = 0 ; j <= i; j++) {
+//				currentEmail.append(lastNames[j]);
+//			}
+//			currentEmail.append(EMAIL_DOMAIN);
+//			matchers.add(is(String.valueOf(currentEmail)));
+//		}
 
 		/* In case all email trials failed */
 		/* This, for sure, does not exists as includes the docket, which is unique */

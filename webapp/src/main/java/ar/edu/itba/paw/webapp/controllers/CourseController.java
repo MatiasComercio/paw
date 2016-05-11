@@ -40,6 +40,7 @@ public class CourseController {
 	private static final String TASK_FORM_ADD = "add";
 	private static final String TASK_FORM_EDIT = "edit";
 	private static final String UNAUTHORIZED = "redirect:/errors/403";
+	private static final String NOT_FOUND = "404";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -66,7 +67,14 @@ public class CourseController {
 	}
 
 	@RequestMapping(value = "/courses", method = RequestMethod.GET)
-	public ModelAndView getCourses(final Model model) {
+	public ModelAndView getCourses(final Model model,
+	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_COURSES")) {
+			LOGGER.warn("User {} tried to view all courses and doesn't have VIEW_COURSES authority [GET]", loggedUser.getDni());
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
 		if (!model.containsAttribute("courseFilterForm")) {
 			model.addAttribute("courseFilterForm", new CourseFilterForm());
 		}
@@ -103,14 +111,28 @@ public class CourseController {
 
 	@RequestMapping("/courses/{id}/info")
 	public ModelAndView getCourse(@PathVariable final Integer id, Model model,
-	                              @ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm) {
+	                              @ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm,
+	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_COURSE")) {
+			LOGGER.warn("User {} tried to view the course {} and doesn't have VIEW_COURSE authority [GET]",
+					loggedUser.getDni(), id);
+			return new ModelAndView(UNAUTHORIZED);
+		}
 		final ModelAndView mav = new ModelAndView("course");
 
 		if (!model.containsAttribute("correlativeForm")) {
 			model.addAttribute("correlativeForm", new CorrelativeForm());
 		}
 
-		mav.addObject("course", courseService.getById(id));
+		final Course course = courseService.getById(id);
+
+		if (course == null) {
+			LOGGER.warn("User {} tried to edit course {} that does not exist", loggedUser.getDni(), id);
+			return new ModelAndView(NOT_FOUND);
+		}
+
+		mav.addObject("course", course);
 		mav.addObject("section2", "info"); /* +++xcheck: if it's ok, do the same for all the URLs */
 		mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
 		mav.addObject("subsection_delete_correlative", true);
@@ -147,8 +169,6 @@ public class CourseController {
 
 		mav.addObject("section2", "edit");
 		mav.addObject("course", course);
-/*		mav.addObject("courseId", courseId);
-		mav.addObject("courseName", course.getName());*/
 		mav.addObject("task", TASK_FORM_EDIT);
 
 		return mav;
@@ -176,6 +196,7 @@ public class CourseController {
 		Course course = courseForm.build();
 		Result result = courseService.update(courseId, course);
 
+		/* If no course with 'courseId' exists, !result.equals(Result.OK) will be true */
 		if(!result.equals(Result.OK)){
 			LOGGER.warn("User {} could not edit course, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
@@ -195,17 +216,16 @@ public class CourseController {
 	}
 
 
-/*    @RequestMapping("/courses/{id}/students")
-	public ModelAndView getCourseStudents(@PathVariable final Integer id){
-		final ModelAndView mav = new ModelAndView("courseStudents");
-		mav.addObject("courseStudents", courseService.getCourseStudents(id));
-
-		return mav;
-	}*/
-
 	@RequestMapping(value = "/courses/{id}/students", method = RequestMethod.GET)
 	public ModelAndView getCourseStudents(@PathVariable("id") final Integer id,
-	                                      final Model model, final RedirectAttributes redirectAttributes) {
+	                                      final Model model, final RedirectAttributes redirectAttributes,
+	                                      @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("VIEW_STUDENTS")) {
+			LOGGER.warn("User {} tried to view all students that are enrolled at course {} " +
+					"and doesn't have VIEW_STUDENTS authority [GET]", loggedUser.getDni(), id);
+			return new ModelAndView(UNAUTHORIZED);
+		}
 
 		if (!model.containsAttribute("studentFilterForm")) {
 			model.addAttribute("studentFilterForm", new StudentFilterForm());
@@ -221,7 +241,8 @@ public class CourseController {
 		// +++ximprove with Spring Security
 		final Course course = courseService.getById(id);
 		if (course == null) {
-			return new ModelAndView("forward:/errors/404.html");
+			LOGGER.warn("User {} tried to view all enrolled students from course {} that does not exist", loggedUser.getUsername(), id);
+			return new ModelAndView(NOT_FOUND);
 		}
 		final List<Student> students = courseService.getCourseStudents(id, studentFilter);
 
@@ -266,7 +287,7 @@ public class CourseController {
 	@RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
 	public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
 	                              final BindingResult errors, RedirectAttributes redirectAttributes,
-	                              UserSessionDetails loggedUser) {
+	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("ADD_COURSE")) {
 			LOGGER.warn("User {} tried to add a course and doesn't have ADD_COURSE authority [POST]", loggedUser.getDni());
@@ -307,8 +328,6 @@ public class CourseController {
 		}
 
 		final Result result = courseService.deleteCourse(id);
-//        ModelAndView mav = new ModelAndView("redirect:/courses");
-//        ModelAndView mav = new ModelAndView("coursesSearch");
 		final String urlRedirect;
 		if(result.equals(Result.OK)) {
 			LOGGER.info("User {} deleted a course successfully", loggedUser.getDni());
@@ -317,7 +336,7 @@ public class CourseController {
 					null,
 					Locale.getDefault()));
 			urlRedirect = "/courses";
-		} else {
+		} else { // if course with the specified id does not exist, it will enter here
 			LOGGER.warn("User {} could not delete course, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
@@ -350,7 +369,8 @@ public class CourseController {
 		//Check the course exists (in case the url is modified)
 		final Course course = courseService.getById(course_id);
 		if (course == null) {
-			return new ModelAndView("forward:/errors/404");
+			LOGGER.warn("User {} tried to access course {} that does not exist", loggedUser.getDni(), course_id);
+			return new ModelAndView(NOT_FOUND);
 		}
 
 		final ModelAndView mav = new ModelAndView("courses");
@@ -400,7 +420,7 @@ public class CourseController {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 
-		} else {
+		} else { // if course with the specified id does not exist, it will enter here
 			LOGGER.info("User {} added correlative successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message",
@@ -439,7 +459,7 @@ public class CourseController {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 
-		} else {
+		} else { // if course with the specified id does not exist, it will enter here
 			LOGGER.info("User {} deleted correlative successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message",
@@ -475,8 +495,10 @@ public class CourseController {
 		// +++ximprove with Spring Security
 		final Course course = courseService.getStudentsThatPassedCourse(id, studentFilter);
 		if (course == null) {
-			return new ModelAndView("forward:/errors/404");
+			LOGGER.warn("User {} tried to access course {} that does not exist", loggedUser.getDni(), id);
+			return new ModelAndView(NOT_FOUND);
 		}
+
 
 		final ModelAndView mav = new ModelAndView("courseStudents");
 		mav.addObject("course", course);

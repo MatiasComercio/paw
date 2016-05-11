@@ -199,6 +199,31 @@ public class CourseServiceImplTest {
         }
     }
 
+    @Test
+    public void addCorrelative(){
+
+        /* Correlative to the same course */
+        courseService.addCorrelative(COURSE_1_ID_VALID, COURSE_1_ID_VALID);
+        verify(courseDao, times(0)).courseExists(COURSE_1_ID_VALID);
+        verify(courseDao, times(0)).checkCorrelativityLoop(COURSE_1_ID_VALID, COURSE_1_ID_VALID);
+        verify(courseDao, times(0)).addCorrelativity(COURSE_1_ID_VALID, COURSE_1_ID_VALID);
+
+        /* Valid input */
+        when(courseDao.courseExists(COURSE_1_ID_VALID)).then((invocation) -> true);
+        when(courseDao.courseExists(COURSE_2_ID_VALID)).then((invocation) -> true);
+
+        when(courseDao.getById(COURSE_1_ID_VALID)).then((invocation) -> new Course.Builder(COURSE_1_ID_VALID).semester(2).build());
+        when(courseDao.getById(COURSE_2_ID_VALID)).then((invocation) -> new Course.Builder(COURSE_2_ID_VALID).semester(1).build());
+
+        when(courseDao.checkCorrelativityLoop(COURSE_1_ID_VALID, COURSE_2_ID_VALID)).then((invocation) -> false);
+
+        courseService.addCorrelative(COURSE_1_ID_VALID, COURSE_2_ID_VALID);
+        verify(courseDao, times(1)).courseExists(COURSE_1_ID_VALID);
+        verify(courseDao, times(1)).courseExists(COURSE_2_ID_VALID);
+        verify(courseDao, times(1)).checkCorrelativityLoop(COURSE_1_ID_VALID, COURSE_2_ID_VALID);
+        verify(courseDao, times(1)).addCorrelativity(COURSE_1_ID_VALID, COURSE_2_ID_VALID);
+    }
+
     /* +++xtodo TODO: write remaining tests */
 
 }

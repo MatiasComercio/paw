@@ -34,7 +34,7 @@ public class CorrelativeForm {
     }
 
     public void setCourseName(String courseName) {
-        this.courseName = courseName;
+        this.courseName = courseName.trim();
     }
 
     public Integer getCorrelativeId() {
@@ -50,6 +50,6 @@ public class CorrelativeForm {
     }
 
     public void setCorrelativeName(String correlativeName) {
-        this.correlativeName = correlativeName;
+        this.correlativeName = correlativeName.trim();
     }
 }

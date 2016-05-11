@@ -5,12 +5,14 @@ import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 public class AdminForm {
+    @Digits(integer=8, fraction=0)
     @NotNull
     @Min(1)
     private Integer dni;
@@ -98,7 +100,7 @@ public class AdminForm {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstName = firstName.trim();
     }
 
     public String getLastName() {
@@ -106,7 +108,7 @@ public class AdminForm {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastName = lastName.trim();
     }
 
     public User.Genre getGenre() {
@@ -130,7 +132,7 @@ public class AdminForm {
     }
 
     public void setCountry(String country) {
-        this.country = country;
+        this.country = country.trim();
     }
 
     public String getCity() {
@@ -138,7 +140,7 @@ public class AdminForm {
     }
 
     public void setCity(String city) {
-        this.city = city;
+        this.city = city.trim();
     }
 
     public String getNeighborhood() {
@@ -146,7 +148,7 @@ public class AdminForm {
     }
 
     public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
+        this.neighborhood = neighborhood.trim();
     }
 
     public String getStreet() {
@@ -154,7 +156,7 @@ public class AdminForm {
     }
 
     public void setStreet(String street) {
-        this.street = street;
+        this.street = street.trim();
     }
 
     public Integer getNumber() {
@@ -178,7 +180,7 @@ public class AdminForm {
     }
 
     public void setDoor(String door) {
-        this.door = door;
+        this.door = door.trim();
     }
 
     public Long getTelephone() {

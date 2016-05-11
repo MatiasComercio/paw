@@ -56,7 +56,7 @@ public class GradeForm {
     }
 
     public void setCourseName(final String courseName) {
-        this.courseName = courseName;
+        this.courseName = courseName.trim();
     }
 
     public BigDecimal getGrade() {

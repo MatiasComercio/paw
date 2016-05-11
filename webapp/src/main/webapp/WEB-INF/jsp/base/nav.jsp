@@ -42,14 +42,16 @@
     <c:set var="studentMenu">
         <li class="spaced"></li>
         <li class="spaced">
-            <a href="<c:url value="/students/${user.id}/courses" />"><i class="fa fa-fw fa-university"></i> <spring:message code="courses"/></a>
+            <a href="<c:url value="/students/${user.id}/courses" />"><i class="fa fa-fw fa-university"></i> <spring:message code="currentCourses"/></a>
         </li>
         <li class="spaced">
             <a href="<c:url value="/students/${user.id}/grades" />"><i class="fa fa-fw fa-graduation-cap"></i> <spring:message code="grades"/></a>
         </li>
-        <li>
-            <a href="<c:url value="/students/${user.id}/inscription" />"><i class="fa fa-fw fa-list-alt"></i> <spring:message code="inscriptions"/></a>
-        </li>
+        <sec:authorize access="hasAuthority('ROLE_ADD_INSCRIPTION')" >
+            <li>
+                <a href="<c:url value="/students/${user.id}/inscription" />"><i class="fa fa-fw fa-list-alt"></i> <spring:message code="inscriptions"/></a>
+            </li>
+        </sec:authorize>
     </c:set>
 </sec:authorize>
 

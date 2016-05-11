@@ -52,7 +52,8 @@ public class UserJdbcDaoTest {
     private static final String FIRST_NAME_1_EXPECTED = "Matías Nicolas";
     private static final String LAST_NAME_1 = "Comercio vazquez";
     private static final String LAST_NAME_1_EXPECTED = "Comercio Vazquez";
-    private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
+//    private static final String EMAIL_1 = "mcomercio@bait.edu.ar";
+    private static final String EMAIL_1 = "a" + DNI_1 + "@bait.edu.ar";
     private static final String PASSWORD_1 = "pass1";
     private static final LocalDate BIRTHDAY_1 = LocalDate.parse("1994-08-17");
     private static final User.Genre GENRE_1 = User.Genre.M;
@@ -63,7 +64,9 @@ public class UserJdbcDaoTest {
     private static final String FIRST_NAME_2_EXPECTED = "Brenda Lihuén";
     private static final String LAST_NAME_2 = "MaYan";
     private static final String LAST_NAME_2_EXPECTED = "Mayan";
-    private static final String EMAIL_2 = "blihuen@bait.edu.ar";
+//    private static final String EMAIL_2 = "blihuen@bait.edu.ar";
+    private static final String EMAIL_2 = "a" + DNI_2 + "@bait.edu.ar";
+
     private static final String PASSWORD_2 = "pass2";
 
     private static final String FIRST_NAME_EXPECTED_EMPTY = "";
@@ -222,7 +225,7 @@ public class UserJdbcDaoTest {
         userUpdated = userJdbcDao.getByDni(DNI_2, adminBuilder);
         assertEquals(FIRST_NAME_2_EXPECTED, userUpdated.getFirstName());
         assertEquals(LAST_NAME_EXPECTED_EMPTY, userUpdated.getLastName());
-        assertEquals(EMAIL_EXPECTED_EMPTY.toLowerCase(), userUpdated.getEmail());
+        assertEquals(EMAIL_2.toLowerCase(), userUpdated.getEmail());
         assertEquals(BIRTHDAY_EXPECTED_EMPTY, userUpdated.getBirthday());
         assertEquals(GENRE_EXPECTED_EMPTY, userUpdated.getGenre());
     }

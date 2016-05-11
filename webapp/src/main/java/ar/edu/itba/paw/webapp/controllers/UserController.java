@@ -54,7 +54,7 @@ public class UserController {
 	public ModelAndView changePassword(
 			@ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
 			final RedirectAttributes redirectAttributes) {
-		LOGGER.info("User {} is about to change password", passwordForm.getDni());
+
 		final ModelAndView mav = new ModelAndView("changePassword");
 		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth == null) {

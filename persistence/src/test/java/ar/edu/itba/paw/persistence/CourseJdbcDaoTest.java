@@ -549,6 +549,13 @@ public class CourseJdbcDaoTest {
     }
 
     @Test
+    public void getTotalSemesters(){
+        int max = Math.max(Math.max(COURSE_SEMESTER_1, COURSE_SEMESTER_2), COURSE_SEMESTER_3);
+        int semesters = courseJdbcDao.getTotalSemesters();
+        assertEquals(semesters, max);
+    }
+
+    @Test
     public void getCorrelatives(){
         final Map<String, Object> correlativeArgs = new HashMap<>();
         final Map<String, Object> correlativeArgs2 = new HashMap<>();

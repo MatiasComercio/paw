@@ -2,9 +2,11 @@ package ar.edu.itba.paw.webapp.forms;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 
 public class ResetPasswordForm {
+	@Digits(integer=8, fraction=0)
 	@NotNull
 	private int dni;
 	@NotBlank
@@ -25,7 +27,7 @@ public class ResetPasswordForm {
 	}
 
 	public void setFirstName(final String firstName) {
-		this.firstName = firstName;
+		this.firstName = firstName.trim();
 	}
 
 	public String getLastName() {
@@ -33,7 +35,7 @@ public class ResetPasswordForm {
 	}
 
 	public void setLastName(final String lastName) {
-		this.lastName = lastName;
+		this.lastName = lastName.trim();
 	}
 
 	public void empty() {
