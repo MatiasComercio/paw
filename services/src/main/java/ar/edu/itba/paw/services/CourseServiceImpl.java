@@ -33,6 +33,14 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     @Override
     public Result update(Integer id, Course course){
+
+        List<Course> correlatives = getCorrelativesByFilter(id, null);
+        for (Course correlative : correlatives){
+            if (correlative.getSemester() >= course.getSemester()) {
+                return Result.CORRELATIVE_SEMESTER_INCOMPATIBILITY;
+            }
+        }
+
         return courseDao.update(id, course);
     }
 
