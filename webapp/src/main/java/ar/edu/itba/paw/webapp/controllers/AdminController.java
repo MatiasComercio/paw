@@ -179,10 +179,17 @@ public class AdminController {
 	public ModelAndView disableInscriptions(RedirectAttributes redirectAttributes,
 	                                        @ModelAttribute("user") UserSessionDetails loggedUser) {
 
-		if (!loggedUser.hasAuthority("DISABLE_INSCRIPTION")) {
-			LOGGER.warn("The user {} is trying to disable inscription and and doesn't have authority DISABLE_INSCRIPTION [POST]", loggedUser.getDni());
+//		+++xtodo: Enable this when authorities can be dynamically reloaded
+//		if (!loggedUser.hasAuthority("DISABLE_INSCRIPTION")) {
+//			LOGGER.warn("The user {} is trying to disable inscription and and doesn't have authority DISABLE_INSCRIPTION [POST]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+		/* tmp fix */
+		if (!loggedUser.hasAuthority("ADMIN")) {
+			LOGGER.warn("The user {} is trying to disable inscription and and doesn't have authority ADMIN [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
+
 		Result result = adminService.disableInscriptions();
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
@@ -204,10 +211,19 @@ public class AdminController {
 	@RequestMapping(value= "/admins/enable_inscriptions", method=RequestMethod.POST)
 	public ModelAndView enableInscriptions(RedirectAttributes redirectAttributes,
 	                                       @ModelAttribute("user") UserSessionDetails loggedUser) {
-		if (!loggedUser.hasAuthority("ENABLE_INSCRIPTION")) {
-			LOGGER.warn("The user {} is trying to enable inscription and and doesn't have authority ENABLE_INSCRIPTION [POST]", loggedUser.getDni());
+
+//		+++xtodo: Enable this when authorities can be dynamically reloaded
+//		if (!loggedUser.hasAuthority("ENABLE_INSCRIPTION")) {
+//			LOGGER.warn("The user {} is trying to enable inscription and and doesn't have authority ENABLE_INSCRIPTION [POST]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+
+		/* tmp fix */
+		if (!loggedUser.hasAuthority("ADMIN")) {
+			LOGGER.warn("The user {} is trying to enable inscription and and doesn't have authority ADMIN [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
+
 		Result result = adminService.enableInscriptions();
 		if(!result.equals(Result.OK)){
 			LOGGER.warn("User {} could not enable inscriptions, Result = {}", loggedUser.getDni(), result);
