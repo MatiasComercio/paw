@@ -81,7 +81,8 @@ public class CourseJdbcDao implements CourseDao {
     private final RowMapper<Course> correlativeCoursesRowMapper = (resultSet, rowNum) ->
             new Course.Builder(resultSet.getInt(ID_COLUMN))
                     .name(resultSet.getString(NAME_COLUMN))
-                    .credits(resultSet.getInt(CREDITS_COLUMN)).build();
+                    .credits(resultSet.getInt(CREDITS_COLUMN))
+                    .semester(resultSet.getInt(SEMESTER_COLUMN)).build();
 
 
     @Autowired
