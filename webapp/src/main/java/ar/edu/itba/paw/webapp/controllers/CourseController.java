@@ -287,7 +287,7 @@ public class CourseController {
 	@RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
 	public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
 	                              final BindingResult errors, RedirectAttributes redirectAttributes,
-	                              UserSessionDetails loggedUser) {
+	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("ADD_COURSE")) {
 			LOGGER.warn("User {} tried to add a course and doesn't have ADD_COURSE authority [POST]", loggedUser.getDni());
