@@ -195,7 +195,7 @@ That's why we are usig <%@include ...%>--%>
                     </c:set>
                     <c:set var="loadScripts">
                         ${loadScripts} `
-                        loadCancelButton("gradeButton");
+                        loadGradeForm("gradeButton");
                     </c:set>
 
 

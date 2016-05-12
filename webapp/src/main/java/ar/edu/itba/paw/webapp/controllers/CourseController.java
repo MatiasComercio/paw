@@ -144,7 +144,7 @@ public class CourseController {
 	public ModelAndView editCourse(
 			@PathVariable final Integer courseId,
 			@ModelAttribute("courseForm") final CourseForm courseForm,
-			@ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm,
+//			@ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm,
 			final RedirectAttributes redirectAttributes,
 			@ModelAttribute("user") UserSessionDetails loggedUser) {
 
@@ -190,7 +190,8 @@ public class CourseController {
 			LOGGER.warn("User {} could not edit course {} due to {} [POST]", loggedUser.getDni(), courseId, errors.getAllErrors());
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseForm", errors);
 			redirectAttributes.addFlashAttribute("courseForm", courseForm);
-			return new ModelAndView("redirect:/courses/" + courseId + "/edit");
+//			return new ModelAndView("redirect:/courses/" + courseId + "/edit");
+			return editCourse(courseId, courseForm, redirectAttributes, loggedUser);
 		}
 
 		Course course = courseForm.build();
@@ -201,7 +202,8 @@ public class CourseController {
 			LOGGER.warn("User {} could not edit course, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
-			return new ModelAndView("redirect:/courses/" + courseId + "/edit");
+//			return new ModelAndView("redirect:/courses/" + courseId + "/edit");
+			return editCourse(courseId, courseForm, redirectAttributes, loggedUser);
 		} else {
 			LOGGER.info("User {} edited course {} successfully", loggedUser.getDni(), courseId);
 		}
