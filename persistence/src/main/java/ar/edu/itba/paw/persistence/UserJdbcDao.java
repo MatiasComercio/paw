@@ -245,7 +245,7 @@ public class UserJdbcDao implements UserDao {
 			return Result.ERROR_UNKNOWN;
 		}
 
-		return rowsAffected == 1 ? Result.OK : Result.INVALID_INPUT_PARAMETERS;
+		return rowsAffected == 1 ? Result.OK : Result.INVALID_PASSWORD;
 	}
 
 	@Override
