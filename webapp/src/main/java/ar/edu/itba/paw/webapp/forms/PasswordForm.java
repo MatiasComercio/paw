@@ -3,7 +3,9 @@ package ar.edu.itba.paw.webapp.forms;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class PasswordForm {
 
@@ -17,9 +19,11 @@ public class PasswordForm {
 	private String currentPassword;
 
 	@NotBlank
+	@Size(min=8, max=32)
 	private String newPassword;
 
 	@NotBlank
+	@Size(min=8, max=32)
 	private String repeatNewPassword;
 
 	public int getDni() {
