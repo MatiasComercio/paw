@@ -247,13 +247,13 @@ public class UserJdbcDaoTest {
          * Change password with an invalid DNI
          */
         result = userJdbcDao.changePassword(DNI_2, PASSWORD_1, PASSWORD_2);
-        assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
+        assertEquals(Result.INVALID_PASSWORD, result);
 
         /**
          * Change password with an invalid password
          */
         result = userJdbcDao.changePassword(DNI_1, PASSWORD_2, PASSWORD_1);
-        assertEquals(Result.INVALID_INPUT_PARAMETERS, result);
+        assertEquals(Result.INVALID_PASSWORD, result);
 
         /**
          * Change password with a valid DNI and check that it was changed
