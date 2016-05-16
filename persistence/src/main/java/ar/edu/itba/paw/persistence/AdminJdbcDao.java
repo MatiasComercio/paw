@@ -182,7 +182,7 @@ public class AdminJdbcDao implements AdminDao {
     }
 
     @Override
-    public Result deleteAdmin(Integer dni) {
+    public Result deleteAdmin(final int dni) {
         int adminRowsAffected;
 
         try {
