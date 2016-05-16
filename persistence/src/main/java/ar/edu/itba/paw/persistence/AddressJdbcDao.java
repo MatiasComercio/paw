@@ -74,7 +74,7 @@ public class AddressJdbcDao implements AddressDao {
     }
 
     @Override
-    public boolean hasAddress(Integer dni) {
+    public boolean hasAddress(final int dni) {
         final Object[] dniObject = new Object[]{dni};
         final int count = jdbcTemplate.queryForObject(COUNT_ADDRESS, dniObject, Integer.class);
 
@@ -82,7 +82,7 @@ public class AddressJdbcDao implements AddressDao {
     }
 
     @Override
-    public Result createAddress(Integer dni, Address address) {
+    public Result createAddress(final int dni, Address address) {
         Map<String, Object> addressArgs = new HashMap<>();
 
         addressArgs.put(ADDRESS__DNI_COLUMN, dni);
@@ -108,7 +108,7 @@ public class AddressJdbcDao implements AddressDao {
     }
 
     @Override
-    public Result updateAddress(Integer dni, Address address) {
+    public Result updateAddress(final int dni, Address address) {
         System.out.println(ADDRESS_UPDATE);
         System.out.println(COUNT_ADDRESS);
 
