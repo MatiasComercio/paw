@@ -27,11 +27,10 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.sql.*;
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
@@ -270,8 +269,9 @@ public class StudentJdbcDao implements StudentDao {
 		final String courseName = resultSet.getString(COURSE__NAME_COLUMN);
 		final BigDecimal grade = resultSet.getBigDecimal(GRADE__GRADE_COLUMN);
 		final Timestamp modified = resultSet.getTimestamp(GRADE__MODIFIED_COLUMN);
+		final LocalDateTime modifiedConverted = modified.toLocalDateTime();
 
-		final Grade.Builder gradeBuilder = new Grade.Builder(docket, courseId, grade).modified(modified);
+		final Grade.Builder gradeBuilder = new Grade.Builder(docket, courseId, grade).modified(modifiedConverted);
 		gradeBuilder.courseName(courseName);
 
 		return gradeBuilder.build();
@@ -438,13 +438,16 @@ public class StudentJdbcDao implements StudentDao {
 
 	@Override
 	public Result editGrade(Grade newGrade, BigDecimal oldGrade){
+		Timestamp newModified = Timestamp.valueOf(newGrade.getModified());
+
 		try{
 			jdbcTemplate.update("UPDATE grade SET grade = ? WHERE docket = ? AND " +
 							"course_id = ? AND modified = ? AND grade = ?;",
-					newGrade.getGrade(), newGrade.getStudentDocket(), newGrade.getCourseId(), newGrade.getModified(),
+					newGrade.getGrade(), newGrade.getStudentDocket(), newGrade.getCourseId(), newModified,
 					oldGrade);
 		}
 		catch(Exception e){
+			e.printStackTrace();
 			return Result.ERROR_UNKNOWN;
 		}
 		return Result.OK;

@@ -3,12 +3,14 @@ package ar.edu.itba.paw.webapp.forms;
 
 import ar.edu.itba.paw.models.Grade;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.cglib.core.Local;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class GradeForm {
     @NotNull
@@ -29,7 +31,8 @@ public class GradeForm {
 
     private BigDecimal oldGrade;
 
-    private Timestamp modified;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime modified;
 
     public Grade build() {
         return new Grade.Builder(docket, courseId, grade).modified(modified).build();
@@ -67,11 +70,11 @@ public class GradeForm {
         this.grade = grade;
     }
 
-    public Timestamp getModified() {
+    public LocalDateTime getModified() {
         return modified;
     }
 
-    public void setModified(Timestamp modified) {
+    public void setModified(LocalDateTime modified) {
         this.modified = modified;
     }
 
