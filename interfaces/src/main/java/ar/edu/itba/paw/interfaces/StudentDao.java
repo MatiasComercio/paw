@@ -20,7 +20,7 @@ public interface StudentDao {
 	 * @param docket The student's docket
 	 * @return The student with the given docket, if exists; null otherwise.
 	 */
-	Student getByDocket(final int docket);
+	Student getByDocket(int docket);
 
 	/**
 	 * Gets the student with the given docket containing all the grades of the courses it took.
@@ -38,7 +38,7 @@ public interface StudentDao {
 	 * @param semesterIndex The number of semester
 	 * @return The student with the given docket, if exists; null otherwise.
      */
-	Student getGrades(Integer docket, Integer semesterIndex);
+	Student getGrades(int docket, int semesterIndex);
 
 	/**
 	 * Gets the courses which match to a student, given a docket.
@@ -46,7 +46,7 @@ public interface StudentDao {
 	 * @return the list of courses, if the student exists. If the docket doesn't match to a student,
 	 * it returns null
 	 */
-	List<Course> getStudentCourses(final int docket);
+	List<Course> getStudentCourses(int docket);
 
 	/**
 	 *
@@ -61,7 +61,7 @@ public interface StudentDao {
 	 * @param student The new student
 	 * @return The Result code of update
 	 */
-	Result update(final Integer docket, final Integer dni, final Student student);
+	Result update(int docket, int dni, Student student);
 
 	/**
 	 * Gets the students that comply to a list of filters
@@ -76,7 +76,7 @@ public interface StudentDao {
      * @param docket docket of specified student;
      * @return Returns dni of specified student or null if not exists
      */
-    Integer getDniByDocket(final Integer docket);
+    Integer getDniByDocket(int docket);
 
 	/**
 	 * Delete the student that matches the given docket.
@@ -84,7 +84,7 @@ public interface StudentDao {
 	 * @return 	OK if the student was deleted;
 	 * 		ERROR_UNKNOWN else;
 	 */
-	Result deleteStudent(Integer docket);
+	Result deleteStudent(int docket);
 
 	/**
 	 * Add the grade for a given student and course;
@@ -109,7 +109,7 @@ public interface StudentDao {
 	 * @param courseId The course id
 	 * @return a Result object containing information of the operation carried out
 	 */
-	Result enroll(final int studentDocket, final int courseId);
+	Result enroll(int studentDocket, int courseId);
 
 	/**
 	 * Unenrolls the student with the given docket of the course with the specified id.
@@ -118,7 +118,7 @@ public interface StudentDao {
 	 * @param courseId The course id
 	 * @return a Result object containing information of the operation carried out
 	 */
-	Result unenroll(final Integer studentDocket, final Integer courseId);
+	Result unenroll(int studentDocket, int courseId);
 
 	/**
 	 * Gets the collection of courses the student already approved.
@@ -126,7 +126,7 @@ public interface StudentDao {
 	 * @return The collection of the courses the student with the given docket has already approved;
 	 *          an empty collection will be returned if no course was approved
 	 */
-	Collection<Course> getApprovedCourses(final int docket);
+	Collection<Course> getApprovedCourses(int docket);
 
     /**
      * Gets the list of ids corresponding to the courses the student already approved.
@@ -134,28 +134,28 @@ public interface StudentDao {
      * @return The list of ids corresponding to the courses the student with the given docket has already approved;
      *          an empty List will be returned if no course was approved
      */
-    List<Integer> getApprovedCoursesId(final int docket);
+    List<Integer> getApprovedCoursesId(int docket);
 
 	/**
 	 * Returns true if there's an Address asociated with the student
 	 * @param dni The student's docket
 	 * @return Address of the specified student or null
      */
-	boolean hasAddress(final Integer dni);
+	boolean hasAddress(int dni);
 
     /**
      * Create address of specified student
      * @param dni The student's dni
      * @param student The student containing the address to create
      */
-    void createAddress(final Integer dni, final Student student);
+    void createAddress(int dni, Student student);
 
     /**
      * Create address of specified student
      * @param dni The student's dni
      * @param student The student containing the address to update
      */
-    void updateAddress(final Integer dni, final Student student);
+    void updateAddress(int dni, Student student);
 
 	/**
 	 * Gets the student's main data that matches the given dni.
@@ -163,7 +163,7 @@ public interface StudentDao {
 	 * @param dni The student's dni
 	 * @return The student with the given dni, if exists; null otherwise.
 	 */
-	Student getByDni(final int dni);
+	Student getByDni(int dni);
 
 	/* +++xtest */
 	/* +++xdocument */

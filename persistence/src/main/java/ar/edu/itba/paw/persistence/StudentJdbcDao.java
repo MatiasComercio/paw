@@ -338,7 +338,7 @@ public class StudentJdbcDao implements StudentDao {
 	}
 
     @Override
-	public Student getGrades(final Integer docket, final Integer semester) {
+	public Student getGrades(final int docket, final int semester) {
         final List<Student.Builder> studentBuilders = jdbcTemplate.query(GET_BY_DOCKET, studentBasicRowMapper, docket);
 
         if (studentBuilders.isEmpty())
@@ -383,7 +383,7 @@ public class StudentJdbcDao implements StudentDao {
 
 	/* +++xchange: TODO: sacar la validacion de dni y docket > 0 (se hace en la capa de servicios */
 	@Override
-	public Result deleteStudent(Integer docket) {
+	public Result deleteStudent(final int docket) {
 		try {
 			int gradeRowsAffected = jdbcTemplate.update(DELETE_STUDENT_GRADES, docket);
 			int inscriptionRowsAffected = jdbcTemplate.update(DELETE_STUDENT_INSCRIPTIONS, docket);
@@ -481,12 +481,12 @@ public class StudentJdbcDao implements StudentDao {
 	}
 
 	@Override
-	public Integer getDniByDocket(final Integer docket){
+	public Integer getDniByDocket(final int docket){
 		return jdbcTemplate.query("SELECT dni FROM student WHERE docket = " + docket + ";", rs -> rs.next() ? rs.getInt("dni") : null);
 	}
 
 	@Override
-	public Result update(final Integer docket, final Integer dni , final Student student) {
+	public Result update(final int docket, final int dni , final Student student) {
 		int rowsAffected;
 		Result result;
 
@@ -512,12 +512,12 @@ public class StudentJdbcDao implements StudentDao {
 	}
 
 	@Override
-	public boolean hasAddress(final Integer dni) {
+	public boolean hasAddress(final int dni) {
 		return jdbcTemplate.query("SELECT dni FROM address WHERE dni = " + dni + ";", rs -> rs.next() ? true : false);
 	}
 
 	@Override
-	public void createAddress(final Integer dni, final Student student) {
+	public void createAddress(final int dni, final Student student) {
 
 		Map<String, Object> addressArgs = new HashMap<>();
 
@@ -538,7 +538,7 @@ public class StudentJdbcDao implements StudentDao {
 
 	}
 	@Override
-	public void updateAddress(Integer dni, Student student) {
+	public void updateAddress(final int dni, Student student) {
 
 		final Address addr = student.getAddress();
 
@@ -563,7 +563,7 @@ public class StudentJdbcDao implements StudentDao {
 		return students.isEmpty() ? null : students.get(0);
 	}*/
 	@Override
-	public Student getByDni(int dni) {
+	public Student getByDni(final int dni) {
 		final Integer docket = getDocketByDni(dni);
 		if (docket == null || docket <= 0) {
 			return null;
@@ -601,7 +601,7 @@ public class StudentJdbcDao implements StudentDao {
 	}
 
 	@Override
-	public Result unenroll(final Integer studentDocket, final Integer courseId) {
+	public Result unenroll(final int studentDocket, final int courseId) {
 
 		int cUpdated = 0;
 		try {
@@ -625,7 +625,7 @@ public class StudentJdbcDao implements StudentDao {
 	}
 
     @Override
-    public List<Integer> getApprovedCoursesId(int docket) {
+    public List<Integer> getApprovedCoursesId(final int docket) {
         final RowMapper<Integer> approvedCoursesIdRowMapper = (rs, rowMapper) -> rs.getInt(COURSE__ID_COLUMN);
         return jdbcTemplate.query(GET_APPROVED_COURSES, approvedCoursesIdRowMapper, docket);
     }
