@@ -22,7 +22,7 @@ public interface CourseService {
      * @param course Modified course.
      * @return The result code of the insertion.
      */
-    Result update(final Integer id, final Course course);
+    Result update(int id, Course course);
 
 	/**
      * Get all the current available courses
@@ -62,7 +62,7 @@ public interface CourseService {
      *         INVALID_INPUT_PARAMETERS if the ID is invalid;
      *         ERROR_UNKNOWN else;
      */
-    Result deleteCourse(Integer id);
+    Result deleteCourse(int id);
 
     /**
      * Gets the desired course by the identifier with the inscribed students,
@@ -71,14 +71,14 @@ public interface CourseService {
      * @param studentFilter the filter to be applied to the student
      * @return the list of students enrolled in the given course
      */
-    List<Student> getCourseStudents(final Integer id, final StudentFilter studentFilter);
+    List<Student> getCourseStudents(int id, StudentFilter studentFilter);
 
     /**
      * @param courseId The id of the course.
      * @return The id's of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
      * given course)
      */
-    List<Integer> getCorrelatives(Integer courseId);
+    List<Integer> getCorrelatives(int courseId);
 
     /**
      * Make the course corresponding to the correlativeId necessary
@@ -89,14 +89,14 @@ public interface CourseService {
      * @param correlativeId The id of the correlative course
      * @return The result indicating if the action could be done.
      */
-    Result addCorrelative(final Integer id, final Integer correlativeId);
+    Result addCorrelative(int id, int correlativeId);
 
     /**
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that require this course to enroll a student in the
      * given course)
      */
-    List<Integer> getUpperCorrelatives(Integer courseId);
+    List<Integer> getUpperCorrelatives(int courseId);
 
     /**
      *
@@ -104,20 +104,20 @@ public interface CourseService {
      * @param correlativeId The id of the correlative for the given course.
      * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
      */
-    Result deleteCorrelative(Integer courseId, Integer correlativeId);
+    Result deleteCorrelative(int courseId, int correlativeId);
 
     /**
      *
      * @param courseId Given the id of a course, delete all the correlative
      * @return The result code of the operation
      */
-    Result deleteCourseCorrelatives(Integer courseId);
+    Result deleteCourseCorrelatives(int courseId);
 
     /**
      * Get the number of semesters.
      * @return Integer indicating the number of semesters
      */
-    Integer getTotalSemesters();
+    int getTotalSemesters();
 
     /**
      *
@@ -125,20 +125,20 @@ public interface CourseService {
      * @param courseFilter The course's filter. If null, no filter is applied.
      * @return A list of correlatives courses to the given course, with the filter applied.
      */
-    List<Course> getCorrelativesByFilter(Integer courseId, CourseFilter courseFilter);
+    List<Course> getCorrelativesByFilter(int courseId, CourseFilter courseFilter);
 
     /**
      *
      * @param courseId The id of the course
      * @return A list of the courses that are available to be added as correlatives for the given course
      */
-    List<Course> getAvailableAddCorrelatives(Integer courseId, CourseFilter courseFilter);
+    List<Course> getAvailableAddCorrelatives(int courseId, CourseFilter courseFilter);
 
     /**
      * Get the total credits of the plan.
      * @return Integer indicating the total credits of the plan.
      */
-    Integer getTotalPlanCredits();
+    int getTotalPlanCredits();
 
     /* +++xtest */
     /* +++xdocument */

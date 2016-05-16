@@ -32,7 +32,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Result update(Integer id, Course course){
+    public Result update(final int id, final Course course){
 
         List<Course> correlatives = getCorrelativesByFilter(id, null);
         for (Course correlative : correlatives){
@@ -73,13 +73,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Integer getTotalPlanCredits() {
+    public int getTotalPlanCredits() {
         return courseDao.getTotalPlanCredits();
     }
 
     @Transactional
     @Override
-    public Result deleteCourse(Integer courseId) {
+    public Result deleteCourse(final int courseId) {
 
         if(courseId<0){
             return Result.ERROR_ID_OUT_OF_BOUNDS;
@@ -101,7 +101,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public List<Student> getCourseStudents(final Integer id, final StudentFilter studentFilter) {
+    public List<Student> getCourseStudents(final int id, final StudentFilter studentFilter) {
 
         final Course course = courseDao.getCourseStudents(id);
         if (course == null) {
@@ -120,15 +120,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Integer getTotalSemesters() {
+    public int getTotalSemesters() {
         return courseDao.getTotalSemesters();
     }
 
     @Transactional
     @Override
-    public Result addCorrelative(final Integer id, final Integer correlativeId) {
+    public Result addCorrelative(final int id, final int correlativeId) {
 
-        if(id.equals(correlativeId)){
+        if(id == correlativeId){
             return Result.CORRELATIVE_SAME_COURSE;
         }
 
@@ -167,13 +167,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public List<Integer> getCorrelatives(Integer courseId) {
+    public List<Integer> getCorrelatives(final int courseId) {
         return courseDao.getCorrelatives(courseId);
     }
 
     @Transactional
     @Override
-    public List<Integer> getUpperCorrelatives(Integer courseId) {
+    public List<Integer> getUpperCorrelatives(final int courseId) {
         return courseDao.getUpperCorrelatives(courseId);
     }
 
@@ -181,12 +181,12 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Result deleteCorrelative(Integer courseId, Integer correlativeId) {
+    public Result deleteCorrelative(final int courseId, final int correlativeId) {
         return courseDao.deleteCorrelative(courseId, correlativeId);
     }
 
     @Override
-    public Result deleteCourseCorrelatives(Integer courseId) {
+    public Result deleteCourseCorrelatives(final int courseId) {
         List<Integer> correlatives = getCorrelatives(courseId);
         List<Integer> upperCorrelatives = getUpperCorrelatives(courseId);
 
@@ -216,7 +216,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public List<Course> getCorrelativesByFilter(Integer courseId, CourseFilter courseFilter) {
+    public List<Course> getCorrelativesByFilter(final int courseId, final CourseFilter courseFilter) {
 
         final List<Course> courses = getByFilter(courseFilter);
 
@@ -236,7 +236,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public List<Course> getAvailableAddCorrelatives(Integer courseId, CourseFilter courseFilter) {
+    public List<Course> getAvailableAddCorrelatives(final int courseId, final CourseFilter courseFilter) {
         List<Course> courses =  getByFilter(courseFilter);
         List<Course> correlatives = getCorrelativesByFilter(courseId, null);
 
