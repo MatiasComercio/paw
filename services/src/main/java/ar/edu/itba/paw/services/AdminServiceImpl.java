@@ -31,7 +31,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override /*+++xtodo: @Gonza improve: you are not validating if the userService creates the admin */
-    public Result create(Admin admin) {
+    public Result create(final Admin admin) {
 //        userService.create(admin);
         Result result = adminDao.create(admin);
 
@@ -42,19 +42,19 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public Admin getByDni(int dni) {
+    public Admin getByDni(final int dni) {
         return adminDao.getByDni(dni);
     }
 
     @Transactional
     @Override
-    public List<Admin> getByFilter(AdminFilter adminFilter) {
+    public List<Admin> getByFilter(final AdminFilter adminFilter) {
         return adminDao.getByFilter(adminFilter);
     }
 
     @Transactional
     @Override
-    public Result deleteAdmin(Integer dni) {
+    public Result deleteAdmin(final int dni) {
         if(dni <= 0) {
             return Result.ERROR_DNI_OUT_OF_BOUNDS;
         }
@@ -62,7 +62,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Result update(Integer dni, Admin admin) {
+    public Result update(final int dni, final Admin admin) {
         if(dni <= 0) {
             return Result.ERROR_DNI_OUT_OF_BOUNDS;
         }
@@ -106,7 +106,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Result resetPassword(final Integer dni) {
+    public Result resetPassword(final int dni) {
         if(dni <= 0) {
             return Result.ERROR_DNI_OUT_OF_BOUNDS;
         }

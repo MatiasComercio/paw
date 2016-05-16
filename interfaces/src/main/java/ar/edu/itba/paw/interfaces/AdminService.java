@@ -49,7 +49,7 @@ public interface AdminService {
      * 		ERROR_DNI_OUT_OF_BOUNDS if the dni is invalid;
      * 		ERROR_UNKNOWN else;
      */
-    Result deleteAdmin(Integer dni);
+    Result deleteAdmin(int dni);
 
     /**
      * Update an admin
@@ -57,7 +57,7 @@ public interface AdminService {
      * @param admin The new student
      * @return The Result code of update
      */
-    Result update(Integer dni, Admin admin);
+    Result update(int dni, Admin admin);
 
     /**
      * Disables inscription authority for Students
@@ -84,5 +84,5 @@ public interface AdminService {
      *		INVALID_INPUT_PARAMETERS if the provided dni doesn't match to a user;
      *		else ERROR_UNKNOWN in other case;
      */
-    Result resetPassword(Integer dni);
+    Result resetPassword(int dni);
 }
