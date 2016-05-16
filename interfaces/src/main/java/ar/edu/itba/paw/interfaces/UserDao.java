@@ -30,7 +30,7 @@ public interface UserDao {
 	 * @param dni The user's dni
 	 * @return The user's roles; null if no user was found with the given dni.
 	 */
-	List<Role> getRole(final int dni);
+	List<Role> getRole(int dni);
 
 	/**
 	 * Creates a new user with the given data
