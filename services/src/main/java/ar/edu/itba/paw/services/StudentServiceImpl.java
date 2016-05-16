@@ -54,19 +54,19 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public List<Student> getByFilter(StudentFilter studentFilter) {
+	public List<Student> getByFilter(final StudentFilter studentFilter) {
 		return studentDao.getByFilter(studentFilter);
 	}
 
 	@Transactional
 	@Override
-	public Result create(Student student) {
+	public Result create(final Student student) {
 		return studentDao.create(student);
 	}
 
 	@Transactional
 	@Override
-	public Result deleteStudent(Integer docket) {
+	public Result deleteStudent(final int docket) {
 		if(docket <= 0) {
 			return Result.ERROR_DOCKET_OUT_OF_BOUNDS;
 		}
@@ -89,13 +89,13 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public Result editGrade(Grade newGrade, BigDecimal oldGrade) {
+	public Result editGrade(final Grade newGrade, final BigDecimal oldGrade) {
 		return studentDao.editGrade(newGrade, oldGrade);
 	}
 
 	@Transactional
 	@Override
-	public Result update(Integer docket, Student student) {
+	public Result update(final int docket, final Student student) {
 		final Integer dni = studentDao.getDniByDocket(docket);
 
         if (dni == null)
@@ -111,12 +111,12 @@ public class StudentServiceImpl implements StudentService {
 	}
 
     @Override
-    public Integer getTotalPlanCredits() {
+    public int getTotalPlanCredits() {
         return courseService.getTotalPlanCredits();
     }
 
     @Override
-    public Integer getPassedCredits(Integer docket) {
+    public Integer getPassedCredits(final int docket) {
         final List<Course> list = (List<Course>) getApprovedCourses(docket);
 
         Integer amount = 0;
@@ -189,7 +189,7 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean checkCorrelatives(Integer docket, Integer courseId) {
+	public boolean checkCorrelatives(final int docket, final int courseId) {
 		List<Integer> correlatives = courseService.getCorrelatives(courseId);
         List<Integer> approvedCourses = studentDao.getApprovedCoursesId(docket);
 
@@ -204,7 +204,7 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public List<List<Grade>> getTranscript(Integer docket) {
+	public List<List<Grade>> getTranscript(final int docket) {
 		final List<List<Grade>> semesterList = new ArrayList<>();
 		final Integer totalSemesters = courseService.getTotalSemesters();
 
@@ -242,7 +242,7 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public Result unenroll(final Integer studentDocket, final Integer courseId) {
+	public Result unenroll(final int studentDocket, final int courseId) {
 		if (studentDocket <= 0 ) {
 			return Result.ERROR_DOCKET_OUT_OF_BOUNDS;
 		}
