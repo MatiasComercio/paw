@@ -13,4 +13,12 @@
     <name>models</name>
     <url>http://maven.apache.org</url>
 
+    <dependencies>
+        <!--JPA Annotations for Models-->
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.1-api</artifactId>
+        </dependency>
+        <!--/JPA Annotations for Models-->
+    </dependencies>
 </project>

@@ -19,8 +19,9 @@
       <maven.compiler.target>1.8</maven.compiler.target>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	  <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>
-	  <org.springframework.version>4.2.5.RELEASE</org.springframework.version>
+	  <org.springframework.version>4.2.6.RELEASE</org.springframework.version>
       <spring.security.version>4.0.4.RELEASE</spring.security.version>
+      <org.hibernate.version>5.1.0.Final</org.hibernate.version>
 	  <servlet-api.version>2.5</servlet-api.version>
       <org.slf4j.version>1.7.21</org.slf4j.version>
       <ch.qos.logback.version>1.1.7</ch.qos.logback.version>
@@ -34,6 +35,7 @@
       <javax.validation-api.version>1.1.0.Final</javax.validation-api.version>
       <org.hibernate-validator.version>5.2.4.Final</org.hibernate-validator.version>
       <maven-war-plugin.version>2.6</maven-war-plugin.version>
+      <hibernate.jpa-api.version>1.0.0.Final</hibernate.jpa-api.version>
 	</properties>
   <build>
     <plugins>
@@ -64,16 +66,23 @@
         <version>${jstl.version}</version>
         <scope>runtime</scope>
       </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-webmvc</artifactId>
-        <version>${org.springframework.version}</version>
-      </dependency>
+
+      <!--Spring Context-->
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
         <version>${org.springframework.version}</version>
       </dependency>
+      <!--Spring Context-->
+      <!--Spring WebMVC-->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${org.springframework.version}</version>
+      </dependency>
+      <!--Spring WebMVC-->
+
+      <!--DAO-->
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-jdbc</artifactId>
@@ -81,10 +90,42 @@
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
+        <artifactId>spring-orm</artifactId>
+        <version>${org.springframework.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>${org.hibernate.version}</version>
+      </dependency>
+      <!-- for JPA, use hibernate-entitymanager instead of hibernate-core -->
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>${org.hibernate.version}</version>
+      </dependency>
+
+      <!--JPA Annotations for Models-->
+      <!-- Just for not letting models know we are using Hibernate -->
+      <dependency>
+        <groupId>org.hibernate.javax.persistence</groupId>
+        <artifactId>hibernate-jpa-2.1-api</artifactId>
+        <version>${hibernate.jpa-api.version}</version>
+      </dependency>
+      <!--/JPA Annotations for Models-->
+      <!--/DAO-->
+
+      <!--Spring Test Tools-->
+      <!-- See: http://docs.spring.io/spring/docs/current/spring-framework-reference/html/integration-testing.html-->
+      <dependency>
+        <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
         <version>${org.springframework.version}</version>
         <scope>test</scope>
       </dependency>
+      <!--Spring Test Tools-->
+
       <!-- Spring Security -->
       <dependency>
         <groupId>org.springframework.security</groupId>
@@ -101,14 +142,16 @@
         <artifactId>spring-security-config</artifactId>
         <version>${spring.security.version}</version>
       </dependency>
-      <dependency> <!-- Added for the secutiry/tags library, as mentioned here:
+      <dependency>
+        <!-- Added for the security/tags library, as mentioned here:
       http://stackoverflow.com/questions/16099840/spring-security-taglib-cannot-be-found#answer-19896543-->
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-taglibs</artifactId>
         <version>${spring.security.version}</version>
       </dependency>
       <!-- /Spring Security -->
-      <!--logback-->
+
+      <!--Logging-->
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
@@ -135,7 +178,9 @@
         <version>${org.logback.extensions.version}</version>
         <scope>runtime</scope>
       </dependency>
-      <!--/logback-->
+      <!--/Logging-->
+
+      <!--Testing-->
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
@@ -148,6 +193,9 @@
         <version>${mockito.version}</version>
         <scope>test</scope>
       </dependency>
+      <!--/Testing-->
+
+      <!--Databases-->
       <dependency>
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
@@ -159,6 +207,9 @@
         <version>${org.hsqldb.version}</version>
         <scope>test</scope>
       </dependency>
+      <!--/Databases-->
+
+      <!--Form Validation-->
       <dependency>
         <groupId>javax.validation</groupId>
         <artifactId>validation-api</artifactId>
@@ -169,6 +220,7 @@
         <artifactId>hibernate-validator</artifactId>
         <version>${org.hibernate-validator.version}</version>
       </dependency>
+      <!--/Form Validation-->
 
       <!-- WordUtils class from Apache -->
       <dependency>
