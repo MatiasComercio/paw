@@ -8,18 +8,14 @@ import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
-import ar.edu.itba.paw.shared.StudentFilter;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,22 +24,15 @@ import org.springframework.test.jdbc.JdbcTestUtils;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.runners.Parameterized.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
+import static org.junit.runners.Parameterized.Parameter;
+import static org.junit.runners.Parameterized.Parameters;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -827,7 +816,7 @@ public class StudentJdbcDaoTest {
 		gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
 		gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_1);
 		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_APPROVED);
-		final Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
+		final LocalDateTime timestamp = LocalDateTime.now();
 		gradeArgs.put(GRADE__MODIFIED_COLUMN, timestamp);
 		gradeInsert.execute(gradeArgs);
 		Grade[] expectedGrades = new Grade[] {
@@ -847,7 +836,7 @@ public class StudentJdbcDaoTest {
 		gradeArgs.put(GRADE__DOCKET_COLUMN, docket1);
 		gradeArgs.put(GRADE__COURSE_ID_COLUMN, COURSE_ID_2);
 		gradeArgs.put(GRADE__GRADE_COLUMN, GRADE_DISAPPROVED);
-		final Timestamp timestamp2 = Timestamp.valueOf(LocalDateTime.now());
+		final LocalDateTime timestamp2 = LocalDateTime.now();
 		gradeArgs.put(GRADE__MODIFIED_COLUMN, timestamp2);
 		gradeInsert.execute(gradeArgs);
 		expectedGrades = new Grade[] {
