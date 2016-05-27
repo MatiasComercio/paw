@@ -125,7 +125,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		if (isDevelopmentMode()) {
 			// never show this on production
 			hibernateProperties.setProperty("hibernate.show_sql", "true");
-			hibernateProperties.setProperty("format_sql", "true");
+			hibernateProperties.setProperty("hibernate.format_sql", "true");
 		}
 
 		emf.setJpaProperties(hibernateProperties);

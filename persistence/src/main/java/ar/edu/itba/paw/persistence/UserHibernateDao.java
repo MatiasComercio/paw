@@ -4,6 +4,8 @@ import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +17,9 @@ import java.util.List;
 @Repository
 @Primary // remove this when UserJdbcDao is deleted
 public class UserHibernateDao implements UserDao {
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserHibernateDao.class);
+
+	private static final String GET_ROLE_QUERY = "from User as u where u.dni = :dni";
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -27,8 +32,14 @@ public class UserHibernateDao implements UserDao {
 
 	@Override
 	public List<Role> getRole(final int dni) {
-		final TypedQuery<User> query = entityManager.createQuery("select User from User as u where u.dni = :dni", User.class);
-		query.getSingleResult();
+		// write "from..." not "select...". The second form will be causing an exception
+		final TypedQuery<User> query = entityManager.createQuery(GET_ROLE_QUERY, User.class);
+		query.setParameter("dni", dni);
+		query.setMaxResults(1);
+		final List<User> users = query.getResultList();
+		if (!users.isEmpty()) {
+			LOGGER.debug("User got by dni: {}", users.get(0));
+		}
 		return null;
 	}
 
