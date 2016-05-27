@@ -92,13 +92,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	/* JDBC Beans */ // +++xremove
 //	@Value("classpath:schema.sql")
 //	private Resource schemaSql;
-	@Bean
-	public DataSourceInitializer dataSourceInitializer(final DataSource dataSource) {
-		final DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
-		dataSourceInitializer.setDataSource(dataSource);
-//		dataSourceInitializer.setDatabasePopulator(databasePopulator());
-		return dataSourceInitializer;
-	}
+//	@Bean
+//	public DataSourceInitializer dataSourceInitializer(final DataSource dataSource) {
+//		final DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
+//		dataSourceInitializer.setDataSource(dataSource);
+////		dataSourceInitializer.setDatabasePopulator(databasePopulator());
+//		return dataSourceInitializer;
+//	}
 
 //	private DatabasePopulator databasePopulator() {
 //		final ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
@@ -112,7 +112,8 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
 		final LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
 
-		emf.setPackagesToScan("ar.edu.itba.paw.models");
+		emf.setPackagesToScan("ar.edu.itba.paw.models.users",
+				"ar.edu.itba.paw.models");
 		emf.setDataSource(dataSource());
 
 		final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -126,7 +127,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
 
 		// set hibernate dialect; tells which database implementation we are using
-		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL92Dialect");
+		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL94Dialect");
 
 		if (isDevelopmentMode()) {
 			// never show this on production
