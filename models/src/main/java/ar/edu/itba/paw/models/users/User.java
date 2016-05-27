@@ -5,21 +5,52 @@ package ar.edu.itba.paw.models.users;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Authority;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.RoleClass;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.*;
 
+@Entity
+@Table(name = "users")
 public abstract class User {
-	private final int dni;
-	private final String firstName;
-	private final String lastName;
-	private final Genre genre;
-	private final LocalDate birthday;
-	private final String email;
-	private final Address address;
-	private final String password;
-	private final Collection<Role> roles;
-	private final Collection<Authority> authorities;
+	@Id
+	@Column(name = "dni", nullable = false)
+	private int dni;
+
+	@Basic
+	@Column(name = "first_name", nullable = false, length = 50)
+	private String firstName;
+
+	@Basic
+	@Column(name = "last_name", nullable = false, length = 50)
+	private String lastName;
+
+	@Enumerated(value = EnumType.STRING)
+	private Genre genre;
+
+	@Basic
+	@Column(name = "birthday")
+	private LocalDate birthday;
+
+	@Basic
+	@Column(name = "email", nullable = false, length = 100)
+	private String email;
+
+	@OneToOne
+	private Address address;
+
+	@Basic
+	@Column(name = "password", length = 100)
+	private String password;
+
+	@ManyToOne
+	@JoinColumn(name = "role", referencedColumnName = "role", nullable = false)
+	private RoleClass role;
+
+	protected User() {
+		// Just for Hibernate, we love you too!
+	}
 
 	protected User(final Builder builder) {
 		this.dni = builder.dni;
@@ -30,8 +61,6 @@ public abstract class User {
 		this.email = builder.email;
 		this.address = builder.address;
 		this.password = builder.password;
-		this.roles = builder.roles;
-		this.authorities = builder.authorities;
 	}
 
 	public int getDni() {
@@ -75,12 +104,12 @@ public abstract class User {
 		return password;
 	}
 
-	public Collection<Role> getRoles() {
-		return Collections.unmodifiableCollection(roles);
+	public Role getRole() {
+		return role == null ? null : role.getRole();
 	}
 
 	public Collection<Authority> getAuthorities() {
-		return Collections.unmodifiableCollection(authorities);
+		return role == null ? Collections.EMPTY_SET : role.getAuthorities();
 	}
 
 	@Override
@@ -122,14 +151,10 @@ public abstract class User {
 		private String email = null;
 		private Address address = null;
 		private String password = null;
-		private Collection<Role> roles;
-		private Collection<Authority> authorities;
 
 		public Builder(final int dni) {
 			this.dni = dni;
 			this.thisBuilder = thisBuilder();
-			this.roles = new HashSet<>();
-			this.authorities = new HashSet<>();
 		}
 
 		/* Each subclass should implement how a user should be build */
@@ -183,34 +208,6 @@ public abstract class User {
 		public T password(final String password) {
 			if (password != null) {
 				this.password = password;
-			}
-			return thisBuilder;
-		}
-
-		public T role(final Role role) {
-			if (role != null) {
-				this.roles.add(role);
-			}
-			return thisBuilder;
-		}
-
-		public T roles(final Collection<? extends Role> roles) {
-			if (roles != null) {
-				this.roles.addAll(roles);
-			}
-			return thisBuilder;
-		}
-
-		public T authority(final Authority authority) {
-			if (authority != null) {
-				this.authorities.add(authority);
-			}
-			return thisBuilder;
-		}
-
-		public T authorities(final Collection<? extends Authority> authorities) {
-			if (authorities != null) {
-				this.authorities.addAll(authorities);
 			}
 			return thisBuilder;
 		}

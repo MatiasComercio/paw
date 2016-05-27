@@ -15,7 +15,7 @@
         </encoder>
     </appender>
 
-    <root level="WARN">
+    <root level="DEBUG">
         <appender-ref ref="root-appender" />
     </root>
 
