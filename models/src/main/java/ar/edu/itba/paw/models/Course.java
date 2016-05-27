@@ -10,8 +10,8 @@ import java.util.List;
 public class Course {
 
     @Id
-    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_courseid_seq")
-    //@SequenceGenerator(sequenceName = "course_courseid_seq", name = "course_courseid_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_courseid_seq")
+    @SequenceGenerator(sequenceName = "course_courseid_seq", name = "course_courseid_seq", allocationSize = 1)
     private int id;
 
     @Column(length = 100, nullable = false, unique = true)
@@ -23,8 +23,9 @@ public class Course {
     @Column(nullable = false)
     private int semester;
 
-    @Column(length=5, unique=true)
+    /*@Column(length=5, unique=true)
     private String code;
+    */
 
     //@Column(name = "code", length = 5, unique = true)
     //private String code;
@@ -36,9 +37,7 @@ public class Course {
     //private List<Student> students;
 
 
-    /*default*/ Course(){
-
-    }
+    protected Course(){}
 
     private Course(Builder builder) {
         this.id = builder.id;

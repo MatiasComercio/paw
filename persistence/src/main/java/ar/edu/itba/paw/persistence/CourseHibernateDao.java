@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
+import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -19,23 +20,57 @@ public class CourseHibernateDao implements CourseDao {
     private EntityManager em;
 
     @Override
+    public Result create(Course course){
+        Session session = em.unwrap(Session.class);
+        session.save(course);
+        return Result.OK;
+    }
+
+    @Override
+    public Result update(int id, Course course) {
+        Course updatedCourse = new Course.Builder(id).name(course.getName()).credits(course.getCredits()).semester(course.getId()).build();
+        Session session = em.unwrap(Session.class);
+        session.save(updatedCourse);
+        return Result.OK;
+    }
+
+    @Override
+    public Course getById(int id) {
+        /*final TypedQuery<Course> query = em.createQuery("from Course as c where c.id = :id", Course.class);
+        query.setParameter("id", id);
+        final List<Course> list = query.getResultList();
+        return list.isEmpty() ? null : list.get(0);*/
+        return em.find(Course.class,id);
+    }
+
+    @Override
     public Course getCourseStudents(int id) {
         return null;
     }
 
     @Override
     public List<Course> getAllCourses() {
-        return null;
+        //final TypedQuery<Course> query = em.createQuery("from " + Course.class.getName(), Course.class);
+        final TypedQuery<Course> query = em.createQuery("select c from Course c", Course.class);
+        final List<Course> list = query.getResultList();
+        return list;
+
     }
 
     @Override
     public List<Course> getByFilter(CourseFilter courseFilter) {
-        return null;
+        //if (courseFilter == null){
+        return getAllCourses();
+        //}
+        //return null;
+
     }
 
     @Override
     public Result deleteCourse(int id) {
-        return null;
+        Course course = getById(id);
+        em.remove(course);
+        return Result.OK;
     }
 
     @Override
@@ -55,7 +90,7 @@ public class CourseHibernateDao implements CourseDao {
 
     @Override
     public boolean courseExists(int id) {
-        return false;
+        return getById(id) == null;
     }
 
     @Override
@@ -96,26 +131,5 @@ public class CourseHibernateDao implements CourseDao {
     @Override
     public Course getStudentsThatPassedCourse(int id) {
         return null;
-    }
-
-    //@Override
-    public Result create(Course course) {
-        em.persist(course);
-        return Result.OK;
-    }
-
-    //@Override
-    public Result update(int id, Course course) {
-        Course updatedCourse = new Course.Builder(id).name(course.getName()).credits(course.getCredits()).semester(course.getId()).build();
-        em.persist(updatedCourse);
-        return Result.OK;
-    }
-
-    //@Override
-    public Course getById(int id) {
-        final TypedQuery<Course> query = em.createQuery("from course as c where c.id = :id", Course.class);
-        query.setParameter("id", id);
-        final List<Course> list = query.getResultList();
-        return list.isEmpty() ? null : list.get(0);
     }
 }
