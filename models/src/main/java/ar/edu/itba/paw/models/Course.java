@@ -2,10 +2,7 @@ package ar.edu.itba.paw.models;
 
 import ar.edu.itba.paw.models.users.Student;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -26,14 +23,17 @@ public class Course {
     @Column(nullable = false)
     private int semester;
 
+    @Column(length=5, unique=true)
+    private String code;
+
     //@Column(name = "code", length = 5, unique = true)
     //private String code;
 
     //@ManyToMany()
-    @Column(nullable = true)
+    //@Column(nullable = true)
     //@JoinTable(name="inscription", joinColumns=@JoinColumn(name="course_id"),
     //        inverseJoinColumns=@JoinColumn(name="docket"))
-    private List<Student> students;
+    //private List<Student> students;
 
 
     /*default*/ Course(){
@@ -72,11 +72,11 @@ public class Course {
     }
 
     public List<Student> getStudents() {
-        return this.students;
+        return null;//this.students;
     }
 
     public void setStudents(List<Student> students){
-        this.students = students;
+        //this.students = students;
     }
 
     public void setSemester(int semester){
