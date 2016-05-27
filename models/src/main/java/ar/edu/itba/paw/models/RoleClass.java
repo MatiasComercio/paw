@@ -13,7 +13,10 @@ public class RoleClass {
 	private Role role;
 
 	@OneToMany
-	@JoinColumn(name = "authority")
+	@JoinTable(name = "role_authorities",
+		joinColumns = {@JoinColumn(name = "role")},
+			inverseJoinColumns = {@JoinColumn(name = "authority")}
+	)
 	private Collection<Authority> authorities;
 
 	protected RoleClass() {

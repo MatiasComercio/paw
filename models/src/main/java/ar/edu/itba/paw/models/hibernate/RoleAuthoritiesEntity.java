@@ -2,9 +2,9 @@ package ar.edu.itba.paw.models.hibernate;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "role_authorities", schema = "public", catalog = "paw")
-@IdClass(RoleAuthoritiesEntityPK.class)
+//@Entity
+//@Table(name = "role_authorities", schema = "public", catalog = "paw")
+//@IdClass(RoleAuthoritiesEntityPK.class)
 public class RoleAuthoritiesEntity {
 	private String role;
 	private String authority;

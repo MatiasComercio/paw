@@ -3,11 +3,12 @@ package ar.edu.itba.paw.models;
 import ar.edu.itba.paw.models.users.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
 @Table(name = "address")
-public class Address {
+public class Address implements Serializable {
 
 	@Id
 	@OneToOne

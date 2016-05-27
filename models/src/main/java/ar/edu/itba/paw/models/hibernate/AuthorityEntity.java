@@ -3,8 +3,8 @@ package ar.edu.itba.paw.models.hibernate;
 import javax.persistence.*;
 import java.util.Collection;
 
-@Entity
-@Table(name = "authority")
+//@Entity
+//@Table(name = "authority")
 public class AuthorityEntity {
 	private String authority;
 	private Collection<RoleAuthoritiesEntity> roleAuthoritiesByAuthority;
