@@ -2,8 +2,8 @@ package ar.edu.itba.paw.models.hibernate;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "address")
+//@Entity
+//@Table(name = "address")
 public class AddressEntity {
 	private int dni;
 	private String country;

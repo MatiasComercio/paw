@@ -2,8 +2,8 @@ package ar.edu.itba.paw.models.hibernate;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "admin")
+//@Entity
+//@Table(name = "admin")
 public class AdminEntity {
 	private int dni;
 	private UsersEntity usersByDni;

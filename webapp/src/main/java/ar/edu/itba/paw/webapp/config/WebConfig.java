@@ -3,18 +3,12 @@ package ar.edu.itba.paw.webapp.config;
 import org.postgresql.Driver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.io.Resource;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.jdbc.datasource.init.DatabasePopulator;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -131,10 +125,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 		if (isDevelopmentMode()) {
 			// never show this on production
-			hibernateProperties.setProperty("hibernate.show.sql", "true");
-			hibernateProperties.setProperty("format_sql", "true");
-		}
 
+		}
+        hibernateProperties.setProperty("hibernate.show_sql", "true");
+        hibernateProperties.setProperty("hibernate.format_sql", "true");
 		emf.setJpaProperties(hibernateProperties);
 
 		return emf;
@@ -158,6 +152,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	private static boolean isDevelopmentMode() {
 		// +++xcheck both on development & production mode
 		// use LOGGER debug mode for switching this on/off development/production mode respectively
-		return LOGGER.isDebugEnabled();
+		return true;
 	}
 }

@@ -4,8 +4,8 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Collection;
 
-@Entity
-@Table(name = "users", schema = "public", catalog = "paw")
+//@Entity
+//@Table(name = "users", schema = "public", catalog = "paw")
 public class UsersEntity {
 	private int dni;
 	private String firstName;

@@ -4,9 +4,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-@Entity
-@Table(name = "grade")
-@IdClass(GradeEntityPK.class)
+//@Entity
+//@Table(name = "grade")
+//@IdClass(GradeEntityPK.class)
 public class GradeEntity {
 	private int docket;
 	private int courseId;

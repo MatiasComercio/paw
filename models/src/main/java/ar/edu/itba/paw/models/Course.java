@@ -2,15 +2,43 @@ package ar.edu.itba.paw.models;
 
 import ar.edu.itba.paw.models.users.Student;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.List;
 
+@Entity
+@Table(name = "course")
 public class Course {
 
+    @Id
+    //@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_courseid_seq")
+    //@SequenceGenerator(sequenceName = "course_courseid_seq", name = "course_courseid_seq", allocationSize = 1)
     private int id;
+
+    @Column(length = 100, nullable = false, unique = true)
     private String name;
+
+    @Column(nullable = false)
     private int credits;
+
+    @Column(nullable = false)
     private int semester;
+
+    //@Column(name = "code", length = 5, unique = true)
+    //private String code;
+
+    //@ManyToMany()
+    @Column(nullable = true)
+    //@JoinTable(name="inscription", joinColumns=@JoinColumn(name="course_id"),
+    //        inverseJoinColumns=@JoinColumn(name="docket"))
     private List<Student> students;
+
+
+    /*default*/ Course(){
+
+    }
 
     private Course(Builder builder) {
         this.id = builder.id;

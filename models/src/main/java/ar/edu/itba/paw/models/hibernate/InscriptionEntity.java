@@ -2,9 +2,9 @@ package ar.edu.itba.paw.models.hibernate;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "inscription", schema = "public", catalog = "paw")
-@IdClass(InscriptionEntityPK.class)
+//@Entity
+//@Table(name = "inscription", schema = "public", catalog = "paw")
+//@IdClass(InscriptionEntityPK.class)
 public class InscriptionEntity {
 	private int docket;
 	private int courseId;

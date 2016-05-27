@@ -2,9 +2,9 @@ package ar.edu.itba.paw.models.hibernate;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "correlative")
-@IdClass(CorrelativeEntityPK.class)
+//@Entity
+//@Table(name = "correlative")
+//@IdClass(CorrelativeEntityPK.class)
 public class CorrelativeEntity {
 	private int courseId;
 	private int correlativeId;
