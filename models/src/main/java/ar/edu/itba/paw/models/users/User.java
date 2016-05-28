@@ -1,16 +1,17 @@
 package ar.edu.itba.paw.models.users;
 
 
-
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Authority;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.RoleClass;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static javax.persistence.InheritanceType.JOINED;
 
@@ -36,8 +37,7 @@ public abstract class User {
 
 	@Basic
 	@Column(name = "birthday")
-	// +++xchange
-	private Timestamp birthday;
+	private LocalDate birthday;
 
 	@Basic
 	@Column(name = "email", nullable = false, length = 100, unique = true)
@@ -64,8 +64,7 @@ public abstract class User {
 		this.firstName = builder.firstName;
 		this.lastName = builder.lastName;
 		this.genre = builder.genre;
-		// +++xchange
-		this.birthday = Timestamp.valueOf(builder.birthday.toString());
+		this.birthday = builder.birthday;
 		this.email = builder.email;
 		this.address = builder.address;
 		this.password = builder.password;
@@ -92,8 +91,7 @@ public abstract class User {
 	}
 
 	public LocalDate getBirthday() {
-		// +++xchange
-		return LocalDate.now();
+		return birthday;
 	}
 
 	public String getEmail() {
