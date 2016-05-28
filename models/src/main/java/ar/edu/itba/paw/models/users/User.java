@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.RoleClass;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -35,7 +36,8 @@ public abstract class User {
 
 	@Basic
 	@Column(name = "birthday")
-	private LocalDate birthday;
+	// +++xchange
+	private Timestamp birthday;
 
 	@Basic
 	@Column(name = "email", nullable = false, length = 100, unique = true)
@@ -62,7 +64,8 @@ public abstract class User {
 		this.firstName = builder.firstName;
 		this.lastName = builder.lastName;
 		this.genre = builder.genre;
-		this.birthday = builder.birthday;
+		// +++xchange
+		this.birthday = Timestamp.valueOf(builder.birthday.toString());
 		this.email = builder.email;
 		this.address = builder.address;
 		this.password = builder.password;
@@ -89,7 +92,8 @@ public abstract class User {
 	}
 
 	public LocalDate getBirthday() {
-		return birthday;
+		// +++xchange
+		return LocalDate.now();
 	}
 
 	public String getEmail() {
