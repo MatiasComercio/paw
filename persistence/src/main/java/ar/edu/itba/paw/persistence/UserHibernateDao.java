@@ -17,15 +17,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Repository
-@Primary // remove this when UserJdbcDao is deleted
+@Primary // +++xremove this when UserJdbcDao is deleted
 public class UserHibernateDao implements UserDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserHibernateDao.class);
 
 	private static final String GET_ROLE_QUERY = "from User as u where u.dni = :dni";
+
 	private static final int FIRST = 0;
+	private static final int ONE = 1;
+	private static final String DNI_PARAM = "dni";
 
 	@PersistenceContext
-	private EntityManager entityManager;
+	private EntityManager em;
 
 	@Override
 	public <V extends User, T extends User.Builder<V, T>> V getByDni(final int dni, final User.Builder<V, T> builder) {
@@ -36,15 +39,15 @@ public class UserHibernateDao implements UserDao {
 	@Override // +++xchange: return only one role
 	public List<Role> getRole(final int dni) {
 		// write "from..." not "select...". The second form will be causing an exception
-		final TypedQuery<User> query = entityManager.createQuery(GET_ROLE_QUERY, User.class);
-		query.setParameter("dni", dni);
-		query.setMaxResults(1);
+		final TypedQuery<User> query = em.createQuery(GET_ROLE_QUERY, User.class);
+		query.setParameter(DNI_PARAM, dni);
+		query.setMaxResults(ONE);
 		final List<User> users = query.getResultList();
 		if (users.isEmpty()) {
 			return Collections.emptyList();
 		}
 		final User user = users.get(FIRST);
-		LOGGER.debug("User got by dni: {}", user);
+		LOGGER.debug("[getRole] - User got by dni: {}", user);
 		final List<Role> roles = new LinkedList<>();
 		roles.add(user.getRole());
 		return roles;
