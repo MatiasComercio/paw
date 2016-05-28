@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "address")
-public class Address implements Serializable {
+public class Address implements Serializable{
 
 	@Id
 	@Column(name = "dni", nullable = false)

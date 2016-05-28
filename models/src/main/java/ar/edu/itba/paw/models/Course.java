@@ -60,9 +60,13 @@ public class Course {
     @ManyToMany(
             cascade={CascadeType.PERSIST, CascadeType.MERGE}
     )
-    @JoinTable(name="inscription", joinColumns=@JoinColumn(name="course_id"),
-            inverseJoinColumns=@JoinColumn(name="docket"))
+    @JoinTable(name="inscription", joinColumns=@JoinColumn(name="course_id", referencedColumnName = "id"),
+            inverseJoinColumns=@JoinColumn(name="docket", referencedColumnName = "docket")
+    )
     private List<Student> students;
+
+    @Transient
+    private List<Student> approvedStudents;
 
 
     protected Course(){}
@@ -128,6 +132,14 @@ public class Course {
 
     public void setUpperCorrelatives(Set<Course> upperCorrelatives) {
         this.upperCorrelatives = upperCorrelatives;
+    }
+
+    public List<Student> getApprovedStudents() {
+        return approvedStudents;
+    }
+
+    public void setApprovedStudents(List<Student> approvedStudents) {
+        this.approvedStudents = approvedStudents;
     }
 
     @Override

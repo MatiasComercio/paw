@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.RoleClass;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,7 +21,7 @@ import static javax.persistence.InheritanceType.JOINED;
 @Inheritance(strategy=JOINED)
 @DiscriminatorColumn(name="role")
 // not abstract anymore just for Hibernate
-public class User {
+public class User implements Serializable{
 	@Id
 	@Column(name = "dni", nullable = false)
 	private int dni;
