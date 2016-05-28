@@ -19,6 +19,11 @@
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.1-api</artifactId>
         </dependency>
+        <!-- Just for compatibility between java.time.LocalDate and java.sql.Date -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-java8</artifactId>
+        </dependency>
         <!--/JPA Annotations for Models-->
     </dependencies>
 </project>

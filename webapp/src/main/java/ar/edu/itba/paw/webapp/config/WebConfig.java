@@ -103,12 +103,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 	/* JPA Beans */
 	@Bean
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+	public LocalContainerEntityManagerFactoryBean entityManagerFactory(final DataSource dataSource) {
 		final LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
 
-		emf.setPackagesToScan("ar.edu.itba.paw.models.users",
-				"ar.edu.itba.paw.models");
-		emf.setDataSource(dataSource());
+		emf.setPackagesToScan("ar.edu.itba.paw.models");
+		emf.setDataSource(dataSource);
 
 		final JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 		emf.setJpaVendorAdapter(vendorAdapter);
@@ -125,10 +124,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
 		if (isDevelopmentMode()) {
 			// never show this on production
-
+			hibernateProperties.setProperty("hibernate.show_sql", "true");
+			hibernateProperties.setProperty("hibernate.format_sql", "true");
 		}
-        hibernateProperties.setProperty("hibernate.show_sql", "true");
-        hibernateProperties.setProperty("hibernate.format_sql", "true");
+
 		emf.setJpaProperties(hibernateProperties);
 
 		return emf;
@@ -152,6 +151,6 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	private static boolean isDevelopmentMode() {
 		// +++xcheck both on development & production mode
 		// use LOGGER debug mode for switching this on/off development/production mode respectively
-		return true;
+		return LOGGER.isDebugEnabled();
 	}
 }

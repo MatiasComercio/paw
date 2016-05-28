@@ -159,7 +159,7 @@ public class UserJdbcDao implements UserDao {
 		if (roles != null && !roles.isEmpty()) {
 			final Role role = roles.get(0);
 			final List<Authority> authorities = getAuthorities(role);
-			userBuilder.role(role).authorities(authorities);
+			/*userBuilder.role(role).authorities(authorities)*/;
 		}
 
 		return userBuilder.build();

@@ -1,12 +1,25 @@
 package ar.edu.itba.paw.models;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "authority")
 public class Authority {
-	private final String authority;
-	private final String roleAuthority;
+
+	@Id
+	@Column(name = "authority", nullable = false, length = 50)
+	private String authority;
+
+	@Transient
+	private String roleAuthority;
 
 	public Authority(final String authority) {
 		this.authority = authority;
 		this.roleAuthority = "ROLE_" + authority;
+	}
+
+	protected Authority() {
+		// Just for Hibernate
 	}
 
 	public String getAuthority() {
@@ -14,7 +27,7 @@ public class Authority {
 	}
 
 	public String getRoleAuthority() {
-		return roleAuthority;
+		return roleAuthority == null ? "ROLE_" + authority : roleAuthority;
 	}
 
 	@Override
