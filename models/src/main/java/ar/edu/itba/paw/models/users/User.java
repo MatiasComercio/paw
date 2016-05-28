@@ -19,7 +19,10 @@ import static javax.persistence.InheritanceType.JOINED;
 @Table(name = "users")
 @Inheritance(strategy=JOINED)
 @DiscriminatorColumn(name="role")
-public abstract class User {
+// +++xchange this: when student entity is mapped
+@DiscriminatorValue("STUDENT")
+// not abstract anymore just for Hibernate
+public class User {
 	@Id
 	@Column(name = "dni", nullable = false)
 	private int dni;

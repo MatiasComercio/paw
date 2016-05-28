@@ -2,7 +2,6 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import org.slf4j.Logger;
@@ -13,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 @Repository
@@ -20,7 +21,8 @@ import java.util.List;
 public class UserHibernateDao implements UserDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserHibernateDao.class);
 
-	private static final String GET_ROLE_QUERY = "from Admin as u where u.dni = :dni";
+	private static final String GET_ROLE_QUERY = "from User as u where u.dni = :dni";
+	private static final int FIRST = 0;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -31,17 +33,21 @@ public class UserHibernateDao implements UserDao {
 		return null;
 	}
 
-	@Override
+	@Override // +++xchange: return only one role
 	public List<Role> getRole(final int dni) {
 		// write "from..." not "select...". The second form will be causing an exception
-		final TypedQuery<Admin> query = entityManager.createQuery(GET_ROLE_QUERY, Admin.class);
+		final TypedQuery<User> query = entityManager.createQuery(GET_ROLE_QUERY, User.class);
 		query.setParameter("dni", dni);
 		query.setMaxResults(1);
-		final List<Admin> admins = query.getResultList();
-		if (!admins.isEmpty()) {
-			LOGGER.debug("User got by dni: {}", admins.get(0));
+		final List<User> users = query.getResultList();
+		if (users.isEmpty()) {
+			return Collections.emptyList();
 		}
-		return null;
+		final User user = users.get(FIRST);
+		LOGGER.debug("User got by dni: {}", user);
+		final List<Role> roles = new LinkedList<>();
+		roles.add(user.getRole());
+		return roles;
 	}
 
 	@Override
