@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -75,7 +76,13 @@ public class CourseHibernateDao implements CourseDao {
 
     @Override
     public List<Integer> getCorrelatives(int courseId) {
-        return null;
+        Course course = getById(courseId);
+        List<Integer> correlatives = new ArrayList<Integer>();
+
+        for(Course correlative: course.getCorrelatives()){
+            correlatives.add(correlative.getId());
+        }
+        return correlatives;
     }
 
     @Override
@@ -120,7 +127,13 @@ public class CourseHibernateDao implements CourseDao {
 
     @Override
     public List<Course> getCorrelativeCourses(int courseId) {
-        return null;
+        Course course = getById(courseId);
+        List<Course> correlatives = new ArrayList<Course>();
+
+        for(Course correlative: course.getCorrelatives()){
+            correlatives.add(correlative);
+        }
+        return correlatives;
     }
 
     @Override

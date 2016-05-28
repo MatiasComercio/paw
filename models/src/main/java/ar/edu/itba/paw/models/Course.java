@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.users.Student;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "course")
@@ -22,6 +23,17 @@ public class Course {
 
     @Column(nullable = false)
     private int semester;
+
+    @ManyToMany(
+            cascade={CascadeType.PERSIST, CascadeType.MERGE},
+            targetEntity=Course.class
+    )
+    @JoinTable(
+            name="correlative",
+            joinColumns=@JoinColumn(name="course_id"),
+            inverseJoinColumns=@JoinColumn(name="correlative_id")
+    )
+    private Set<Course> correlatives;
 
     /*@Column(length=5, unique=true)
     private String code;
@@ -84,6 +96,14 @@ public class Course {
 
     public int getSemester(){
         return this.semester;
+    }
+
+    public Set<Course> getCorrelatives() {
+        return correlatives;
+    }
+
+    public void setCorrelatives(Set<Course> correlatives) {
+        this.correlatives = correlatives;
     }
 
     @Override
