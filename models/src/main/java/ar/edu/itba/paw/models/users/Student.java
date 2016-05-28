@@ -11,12 +11,15 @@ import java.util.List;
 @Table(name = "student")
 @DiscriminatorValue("STUDENT")
 public class Student extends User {
-
-	@Id
+	// +++xcheck: +++xquestion
+	/*
+	What I wanted to do is that a subclass would have another field as a primary key
+	regarding the superclass, but after I rethought the problem,
+	I guess Hibernate was right about don't allow me to do it.
+	I think if I'd do this way, I would be against the concept of inheritance.
+	So I better redesigned my database.
+	 */
 	private int docket;
-
-	@PrimaryKeyJoinColumn
-	private Integer dni;
 
 	@OneToMany
 	private List<Grade> grades;

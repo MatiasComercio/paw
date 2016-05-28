@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "grade")
+@IdClass(GradePK.class)
 public class Grade {
 
 	@Id
@@ -37,13 +38,13 @@ public class Grade {
     private Boolean taking;
 
 	// +++xcheck
-	@ManyToOne
-	@JoinColumn(name = "docket", referencedColumnName = "docket", nullable = false)
-	private Student studentByDocket;
+//	@ManyToOne
+//	@JoinColumn(name = "docket", referencedColumnName = "docket", nullable = false)
+//	private Student studentByDocket;
 
-	@ManyToOne
-	@JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
-	private Course courseByCourseId;
+//	@ManyToOne
+//	@JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
+//	private Course courseByCourseId;
 
 	private Grade(final Builder builder) {
 		this.studentDocket = builder.studentDocket;
