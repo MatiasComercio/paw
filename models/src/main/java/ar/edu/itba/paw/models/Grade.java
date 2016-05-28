@@ -8,9 +8,15 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "grade")
-@IdClass(GradePK.class)
+//@IdClass(GradePK.class)
+@IdClass(GradePK.class) //TODO: REMOVE
 public class Grade {
 
+	/*@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_courseid_seq")
+	@SequenceGenerator(sequenceName = "course_courseid_seq", name = "course_courseid_seq", allocationSize = 1)
+	private int id;
+	*/
 	@Id
 	@Column(name = "docket", nullable = false)
 	private int studentDocket;
@@ -24,6 +30,8 @@ public class Grade {
 	@Id
 	@Column(name = "course_id", nullable = false)
 	private int courseId;
+
+	@Transient
 	private String courseName;
 
 	@Id

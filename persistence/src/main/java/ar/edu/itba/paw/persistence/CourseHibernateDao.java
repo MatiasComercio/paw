@@ -75,18 +75,17 @@ public class CourseHibernateDao implements CourseDao {
 
     @Override
     public Course getById(int id) {
-        //TODO: For DEBUG purposes only
-        //Set<Course> upperCorrelatives = em.find(Course.clKass,id).getUpperCorrelatives();
-        //Integer semesters = getTotalSemesters();
-        //Integer credits = getTotalPlanCredits();
-        //checkCorrelativityLoop();
-        //boolean gradeExists = gradeExists(id);
-        //boolean inscriptionExists = inscriptionExists(id);
+//        //TODO: For DEBUG purposes only
+//        Set<Course> upperCorrelatives = em.find(Course.clKass,id).getUpperCorrelatives();
+//        Integer semesters = getTotalSemesters();
+//        Integer credits = getTotalPlanCredits();
+//        checkCorrelativityLoop();
+//        boolean inscriptionExists = inscriptionExists(id);
+        boolean gradeExists = gradeExists(id);
 
         return em.find(Course.class,id);
     }
 
-    //TODO: Problem: Docket is not id of Student, hibernate tries to join inscription.docket = student.dni
     @Override
     public Course getCourseStudents(int id) {
         Course course = getById(id);
@@ -96,6 +95,7 @@ public class CourseHibernateDao implements CourseDao {
 
     @Override
     public List<Course> getAllCourses() {
+
         final TypedQuery<Course> query = em.createQuery("select c from Course c", Course.class);
         final List<Course> list = query.getResultList();
         return list;
@@ -229,7 +229,6 @@ public class CourseHibernateDao implements CourseDao {
 
     @Override
     public Integer getTotalSemesters() {
-        //final TypedQuery<Integer> query = em.createQuery("select c.semester from Course as c where c.semester = max(c.semester)", Integer.class);
         final TypedQuery<Integer> query = em.createQuery("select max(c.semester) from Course as c", Integer.class);
         Integer totalSemesters = query.getSingleResult();
         return totalSemesters;
@@ -246,7 +245,6 @@ public class CourseHibernateDao implements CourseDao {
         return correlatives;
     }
 
-
     @Override
     public Integer getTotalPlanCredits() {
         final TypedQuery<Long> query = em.createQuery("select sum(c.credits) from Course as c", Long.class);
@@ -254,14 +252,12 @@ public class CourseHibernateDao implements CourseDao {
         return totalCredits;
     }
 
-    //TODO: Requires students
-    //TODO: WTF: La version vieja obtiene los que pasaron e pisa la lista de alumnos que estan inscriptos con la de alumnos que ya aprobaron.
-    @Override
+    //TODO: TEST THIS
     public Course getStudentsThatPassedCourse(int id) {
         Course course = getById(id);
-        List<Student> studentsPassed = studentDao.getStudentsPassed(id);
-        //WTF!!!!!!!!!!!!!! course.setStudents(studentsPassed);
-        return null;
+        List<Student> approvedStudents = studentDao.getStudentsPassed(id);
+        course.setApprovedStudents(approvedStudents);
+        return course;
     }
 
     //QueryFilter
