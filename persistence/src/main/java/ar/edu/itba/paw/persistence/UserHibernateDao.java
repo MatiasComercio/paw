@@ -95,7 +95,7 @@ public class UserHibernateDao implements UserDao {
 
 		private final CriteriaBuilder builder;
 		private final CriteriaQuery<T> query;
-		private final EntityType<T> type;
+		private final EntityType<User> type;
 		private final Root<T> root;
 
 		private final List<Predicate> predicates;
@@ -103,7 +103,10 @@ public class UserHibernateDao implements UserDao {
 		/* package-private */ QueryFilter(final EntityManager em, final Class<T> modelTClass) {
 			builder = em.getCriteriaBuilder();
 			query = builder.createQuery(modelTClass);
-			type = em.getMetamodel().entity(modelTClass);
+			// 'type' does not use modelTClass because declaredSingularAttribute are load with
+			// the explicitly declared fields of the entity, i.e., it does not inherit the ones
+			// from User.class, and we need some of those fields to filter
+			type = em.getMetamodel().entity(User.class);
 			root = query.from(modelTClass);
 			predicates = new ArrayList<>();
 		}
@@ -135,12 +138,12 @@ public class UserHibernateDao implements UserDao {
 
 		private void filterByFirstName(final UserFilter userFilter) {
 			final Object keyword = userFilter.getFirstName();
-			addPredicate("first_name", keyword);
+			addPredicate("firstName", keyword);
 		}
 
 		private void filterByLastName(final UserFilter userFilter) {
 			final Object keyword = userFilter.getLastName();
-			addPredicate("last_name", keyword);
+			addPredicate("lastName", keyword);
 		}
 
 		private <Y> void  addPredicate(final String attribute, final Object keyword) {
