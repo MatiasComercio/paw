@@ -35,36 +35,44 @@ public class CourseHibernateDao implements CourseDao {
         return Result.OK;
     }
 
+
+    @Override
+    public Result update(int id, Course course) {
+
+        //NOTE: In this case if the id is changed an exception is thrown. In the future we shouldn't allow a user to modify the seq_id!
+        Session session = em.unwrap(Session.class);
+        Course oldCourse = em.getReference(Course.class, id);
+        em.detach(oldCourse);
+        session.update(course);
+
+        return Result.OK;
+    }
+
+/*  TODO: Delete (Backup purposes only)
     @Override
     public Result update(int id, Course course) {
         //Course updatedCourse = new Course.Builder(id).name(course.getName()).credits(course.getCredits()).semester(course.getId()).build();
 
         Session session = em.unwrap(Session.class);
-        //session.save(updatedCourse);
-        //session.update(updatedCourse);
-
         Course oldCourse = em.getReference(Course.class, id);
+
         //oldCourse.setId(course.getId());
+
         oldCourse.setName(course.getName());
         oldCourse.setCredits(course.getCredits());
         oldCourse.setSemester(course.getSemester());
 
-        session.update(oldCourse);
-
+        session.update(course);
         return Result.OK;
     }
+*/
 
     @Override
     public Course getById(int id) {
-        /*final TypedQuery<Course> query = em.createQuery("from Course as c where c.id = :id", Course.class);
-        query.setParameter("id", id);
-        final List<Course> list = query.getResultList();
-        return list.isEmpty() ? null : list.get(0);*/
-
         //TODO: For DEBUG purposes only
         //Set<Course> upperCorrelatives = em.find(Course.clKass,id).getUpperCorrelatives();
-        Integer semesters = getTotalSemesters();
-        Integer credits = getTotalPlanCredits();
+        //Integer semesters = getTotalSemesters();
+        //Integer credits = getTotalPlanCredits();
         //checkCorrelativityLoop();
 
         return em.find(Course.class,id);
@@ -116,10 +124,10 @@ public class CourseHibernateDao implements CourseDao {
     @Override
     public boolean checkCorrelativityLoop(int id, int correlativeId) {
 
-        //If the given id is in the list of inmediate correlatives of correlativeId, a cycle is detected, because it would be
-        //necesary to pass id in order to be able to enroll in correlativeId.
-        //If no loop is detected in the inmediate correlatives, then we keep searching in the correlative's correlatives until
-        //the loop is found or no more correlatives can be add.
+        /* If the given id is in the list of inmediate correlatives of correlativeId, a cycle is detected, because it would be
+        necesary to pass id in order to be able to enroll in correlativeId.
+        If no loop is detected in the inmediate correlatives, then we keep searching in the correlative's correlatives until
+        the loop is found or no more correlatives can be add. */
 
         Course course = getById(id);
         Course correlative = getById(correlativeId);
