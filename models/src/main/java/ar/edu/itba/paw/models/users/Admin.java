@@ -3,7 +3,6 @@ package ar.edu.itba.paw.models.users;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
 import javax.persistence.Table;
 
 @Entity

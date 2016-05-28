@@ -2,18 +2,33 @@ package ar.edu.itba.paw.models.users;
 
 import ar.edu.itba.paw.models.Grade;
 
+import javax.persistence.*;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+@Entity
+@Table(name = "student")
+@DiscriminatorValue("STUDENT")
 public class Student extends User {
-	private final int docket;
-	private final List<Grade> grades;
+
+	@Id
+	private int docket;
+
+	@PrimaryKeyJoinColumn
+	private Integer dni;
+
+	@OneToMany
+	private List<Grade> grades;
 
 	private Student(final Builder builder) {
 		super(builder);
 		this.docket = builder.docket;
 		this.grades = builder.grades;
+	}
+
+	protected Student() {
+		// just for Hibernate
 	}
 
 	public int getDocket() {

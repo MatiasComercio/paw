@@ -1,17 +1,49 @@
 package ar.edu.itba.paw.models;
 
+import ar.edu.itba.paw.models.users.Student;
+
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "grade")
 public class Grade {
-	private final int studentDocket;
-	private final String studentFirstName;
-	private final String studentLastName;
-	private final int courseId;
-	private final String courseName;
-	private final BigDecimal grade;
-	private final LocalDateTime modified;
-    private final Boolean taking;
+
+	@Id
+	@Column(name = "docket", nullable = false)
+	private int studentDocket;
+
+	@Transient
+	private String studentFirstName;
+
+	@Transient
+	private String studentLastName;
+
+	@Id
+	@Column(name = "course_id", nullable = false)
+	private int courseId;
+	private String courseName;
+
+	@Id
+	@Column(name = "grade", nullable = false, precision = 2)
+	private BigDecimal grade;
+
+	@Id
+	@Column(name = "modified", nullable = false)
+	private LocalDateTime modified;
+
+	@Transient
+    private Boolean taking;
+
+	// +++xcheck
+	@ManyToOne
+	@JoinColumn(name = "docket", referencedColumnName = "docket", nullable = false)
+	private Student studentByDocket;
+
+	@ManyToOne
+	@JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
+	private Course courseByCourseId;
 
 	private Grade(final Builder builder) {
 		this.studentDocket = builder.studentDocket;
@@ -22,6 +54,10 @@ public class Grade {
 		this.grade = builder.grade;
 		this.modified = builder.modified;
         this.taking = builder.taking;
+	}
+
+	protected Grade() {
+		// Just for Hibernate
 	}
 
 	public int getStudentDocket() {
