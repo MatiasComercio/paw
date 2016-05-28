@@ -19,6 +19,7 @@ public class Student extends User {
 	I think if I'd do this way, I would be against the concept of inheritance.
 	So I better redesigned my database.
 	 */
+	@Column(unique = true)
 	private int docket;
 
 	@OneToMany

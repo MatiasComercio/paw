@@ -80,8 +80,8 @@ public class CourseHibernateDao implements CourseDao {
         //Integer semesters = getTotalSemesters();
         //Integer credits = getTotalPlanCredits();
         //checkCorrelativityLoop();
-        boolean gradeExists = gradeExists(id);
-        boolean inscriptionExists = inscriptionExists(id);
+        //boolean gradeExists = gradeExists(id);
+        //boolean inscriptionExists = inscriptionExists(id);
 
         return em.find(Course.class,id);
     }
