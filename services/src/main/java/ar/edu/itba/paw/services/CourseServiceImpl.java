@@ -185,6 +185,7 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.deleteCorrelative(courseId, correlativeId);
     }
 
+    @Transactional
     @Override
     public Result deleteCourseCorrelatives(final int courseId) {
         List<Integer> correlatives = getCorrelatives(courseId);
@@ -235,6 +236,7 @@ public class CourseServiceImpl implements CourseService {
         return correlatives;
     }
 
+    @Transactional
     @Override
     public List<Course> getAvailableAddCorrelatives(final int courseId, final CourseFilter courseFilter) {
         List<Course> courses =  getByFilter(courseFilter);

@@ -2,15 +2,66 @@ package ar.edu.itba.paw.models;
 
 import ar.edu.itba.paw.models.users.Student;
 
+import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
+@Entity
+@Table(name = "course")
 public class Course {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_courseid_seq")
+    @SequenceGenerator(sequenceName = "course_courseid_seq", name = "course_courseid_seq", allocationSize = 1)
     private int id;
+
+    @Column(length = 100, nullable = false, unique = true)
     private String name;
+
+    @Column(nullable = false)
     private int credits;
+
+    @Column(nullable = false)
     private int semester;
-    private List<Student> students;
+
+    @ManyToMany(
+            cascade={CascadeType.PERSIST, CascadeType.MERGE},
+            targetEntity=Course.class
+    )
+    @JoinTable(
+            name="correlative",
+            joinColumns=@JoinColumn(name="course_id"),
+            inverseJoinColumns=@JoinColumn(name="correlative_id")
+    )
+    private Set<Course> correlatives;
+
+    @ManyToMany(
+            cascade={CascadeType.PERSIST, CascadeType.MERGE},
+            targetEntity=Course.class
+    )
+    @JoinTable(
+            name="correlative",
+            joinColumns=@JoinColumn(name="correlative_id"),
+            inverseJoinColumns=@JoinColumn(name="course_id")
+    )
+    private Set<Course> upperCorrelatives;
+
+
+    /*@Column(length=5, unique=true)
+    private String code;
+    */
+
+    //@Column(name = "code", length = 5, unique = true)
+    //private String code;
+
+    //@ManyToMany()
+    //@Column(nullable = true)
+    //@JoinTable(name="inscription", joinColumns=@JoinColumn(name="course_id"),
+    //        inverseJoinColumns=@JoinColumn(name="docket"))
+    //private List<Student> students;
+
+
+    protected Course(){}
 
     private Course(Builder builder) {
         this.id = builder.id;
@@ -44,11 +95,11 @@ public class Course {
     }
 
     public List<Student> getStudents() {
-        return this.students;
+        return null;//this.students;
     }
 
     public void setStudents(List<Student> students){
-        this.students = students;
+        //this.students = students;
     }
 
     public void setSemester(int semester){
@@ -57,6 +108,22 @@ public class Course {
 
     public int getSemester(){
         return this.semester;
+    }
+
+    public Set<Course> getCorrelatives() {
+        return correlatives;
+    }
+
+    public void setCorrelatives(Set<Course> correlatives) {
+        this.correlatives = correlatives;
+    }
+
+    public Set<Course> getUpperCorrelatives() {
+        return upperCorrelatives;
+    }
+
+    public void setUpperCorrelatives(Set<Course> upperCorrelatives) {
+        this.upperCorrelatives = upperCorrelatives;
     }
 
     @Override
