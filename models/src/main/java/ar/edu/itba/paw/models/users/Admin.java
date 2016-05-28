@@ -1,13 +1,12 @@
 package ar.edu.itba.paw.models.users;
 
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "admin")
 @DiscriminatorValue("ADMIN")
+@AttributeOverride(name = "dni", column = @Column(name = "dni", unique = true))
 public class Admin extends User {
 
     private Admin(final Builder builder) {

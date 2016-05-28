@@ -10,6 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "student")
 @DiscriminatorValue("STUDENT")
+@AttributeOverride(name = "dni", column = @Column(name = "dni", unique = true))
 public class Student extends User {
 	// +++xcheck: +++xquestion
 	/*
@@ -19,6 +20,7 @@ public class Student extends User {
 	I think if I'd do this way, I would be against the concept of inheritance.
 	So I better redesigned my database.
 	 */
+	@Column(unique = true, updatable = false)
 	private int docket;
 
 	@OneToMany

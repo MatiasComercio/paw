@@ -62,8 +62,9 @@ public class UserHibernateDao implements UserDao {
 
 	@Override
 	public Result create(final User user, final Role role) {
+		em.persist(user);
 		// TODO
-		return null;
+		return Result.OK;
 	}
 
 	@Override

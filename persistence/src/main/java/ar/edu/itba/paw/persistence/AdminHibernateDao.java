@@ -8,6 +8,7 @@ import ar.edu.itba.paw.models.RoleClass;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
@@ -45,8 +46,9 @@ public class AdminHibernateDao implements AdminDao {
 
 	@Override
 	public Result create(final Admin admin) {
-		// TODO
-		return null;
+		/* +++xdebug */
+		em.persist(admin);
+		return Result.OK;
 	}
 
 	@Override

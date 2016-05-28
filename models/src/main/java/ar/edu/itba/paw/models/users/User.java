@@ -16,13 +16,28 @@ import java.util.Map;
 import static javax.persistence.InheritanceType.JOINED;
 
 @Entity
-@Table(name = "users")
+@Table(
+		name = "users",
+		indexes = {
+				@Index(columnList = "id_seq")
+		},
+		uniqueConstraints = {
+				@UniqueConstraint(columnNames = "dni"),
+				@UniqueConstraint(columnNames = "email")
+		}
+)
 @Inheritance(strategy=JOINED)
 @DiscriminatorColumn(name="role")
 // not abstract anymore just for Hibernate
 public class User {
+
 	@Id
-	@Column(name = "dni", nullable = false)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq_seq")
+	@SequenceGenerator(sequenceName = "users_id_seq_seq", name = "users_id_seq_seq", allocationSize = 1)
+	@Column(name = "id_seq")
+	private int id_seq;
+
+	@Column(name = "dni", nullable = false, insertable = false, updatable = false)
 	private int dni;
 
 	@Basic
@@ -44,7 +59,7 @@ public class User {
 	@Column(name = "email", nullable = false, length = 100, unique = true)
 	private String email;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "dni", referencedColumnName = "dni")
 	private Address address;
 
