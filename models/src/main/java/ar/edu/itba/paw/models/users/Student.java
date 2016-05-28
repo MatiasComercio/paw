@@ -23,7 +23,9 @@ public class Student extends User {
 	private int docket;
 
 	@OneToMany
-	@OrderColumn(name = "modified")
+	//@OrderColumn(name = "modified")
+	//@OrderBy(value = "modified")
+	@JoinColumn(name = "modified")
 	private List<Grade> grades;
 
 	private Student(final Builder builder) {

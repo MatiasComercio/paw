@@ -8,16 +8,14 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "grade")
-//@IdClass(GradePK.class)
-@IdClass(GradePK.class) //TODO: REMOVE
+//@IdClass(GradePK.class) //TODO: DELETE
 public class Grade {
 
-	/*@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_courseid_seq")
-	@SequenceGenerator(sequenceName = "course_courseid_seq", name = "course_courseid_seq", allocationSize = 1)
-	private int id;
-	*/
 	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "grade_gradeid_seq")
+	@SequenceGenerator(sequenceName = "grade_gradeid_seq", name = "grade_gradeid_seq", allocationSize = 1)
+	private int id;
+
 	@Column(name = "docket", nullable = false)
 	private int studentDocket;
 
@@ -27,18 +25,15 @@ public class Grade {
 	@Transient
 	private String studentLastName;
 
-	@Id
 	@Column(name = "course_id", nullable = false)
 	private int courseId;
 
 	@Transient
 	private String courseName;
 
-	@Id
 	@Column(name = "grade", nullable = false, precision = 2)
 	private BigDecimal grade;
 
-	@Id
 	@Column(name = "modified", nullable = false)
 	private LocalDateTime modified;
 
