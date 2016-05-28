@@ -11,6 +11,9 @@ import java.util.Objects;
 public class Address implements Serializable {
 
 	@Id
+	@Column(name = "dni", nullable = false)
+	private int dni;
+
 	@OneToOne
 	@JoinColumn(name = "dni", referencedColumnName = "dni", nullable = false)
 	private User userByDni;

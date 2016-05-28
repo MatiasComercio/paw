@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "authority")
@@ -13,6 +10,7 @@ public class Authority {
 	@Column(name = "authority", nullable = false, length = 50)
 	private String authority;
 
+	@Transient
 	private String roleAuthority;
 
 	public Authority(final String authority) {

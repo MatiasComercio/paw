@@ -9,10 +9,10 @@ import java.util.Collections;
 public class RoleClass {
 
 	@Id
-	@Enumerated
+	@Enumerated(EnumType.STRING)
 	private Role role;
 
-	@OneToMany
+	@OneToMany(cascade = {CascadeType.ALL})
 	@JoinTable(name = "role_authorities",
 		joinColumns = {@JoinColumn(name = "role")},
 			inverseJoinColumns = {@JoinColumn(name = "authority")}

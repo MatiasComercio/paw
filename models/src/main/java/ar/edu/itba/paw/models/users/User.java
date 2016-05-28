@@ -11,8 +11,12 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.*;
 
+import static javax.persistence.InheritanceType.JOINED;
+
 @Entity
 @Table(name = "users")
+@Inheritance(strategy=JOINED)
+@DiscriminatorColumn(name="role")
 public abstract class User {
 	@Id
 	@Column(name = "dni", nullable = false)
@@ -34,17 +38,18 @@ public abstract class User {
 	private LocalDate birthday;
 
 	@Basic
-	@Column(name = "email", nullable = false, length = 100)
+	@Column(name = "email", nullable = false, length = 100, unique = true)
 	private String email;
 
 	@OneToOne
+	@JoinColumn(name = "dni")
 	private Address address;
 
 	@Basic
 	@Column(name = "password", length = 100)
 	private String password;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "role", referencedColumnName = "role", nullable = false)
 	private RoleClass role;
 

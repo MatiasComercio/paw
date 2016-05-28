@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import org.slf4j.Logger;
@@ -19,7 +20,7 @@ import java.util.List;
 public class UserHibernateDao implements UserDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserHibernateDao.class);
 
-	private static final String GET_ROLE_QUERY = "from User as u where u.dni = :dni";
+	private static final String GET_ROLE_QUERY = "from Admin as u where u.dni = :dni";
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -33,12 +34,12 @@ public class UserHibernateDao implements UserDao {
 	@Override
 	public List<Role> getRole(final int dni) {
 		// write "from..." not "select...". The second form will be causing an exception
-		final TypedQuery<User> query = entityManager.createQuery(GET_ROLE_QUERY, User.class);
+		final TypedQuery<Admin> query = entityManager.createQuery(GET_ROLE_QUERY, Admin.class);
 		query.setParameter("dni", dni);
 		query.setMaxResults(1);
-		final List<User> users = query.getResultList();
-		if (!users.isEmpty()) {
-			LOGGER.debug("User got by dni: {}", users.get(0));
+		final List<Admin> admins = query.getResultList();
+		if (!admins.isEmpty()) {
+			LOGGER.debug("User got by dni: {}", admins.get(0));
 		}
 		return null;
 	}
