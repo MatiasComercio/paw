@@ -62,7 +62,7 @@ public class CourseHibernateDao implements CourseDao {
         return list.isEmpty() ? null : list.get(0);*/
 
         //TODO: For DEBUG purposes only
-        //Set<Course> upperCorrelatives = em.find(Course.class,id).getUpperCorrelatives();
+        //Set<Course> upperCorrelatives = em.find(Course.clKass,id).getUpperCorrelatives();
         Integer semesters = getTotalSemesters();
         Integer credits = getTotalPlanCredits();
         //checkCorrelativityLoop();
@@ -113,7 +113,6 @@ public class CourseHibernateDao implements CourseDao {
         return correlatives;
     }
 
-    //TODO: TEST
     @Override
     public boolean checkCorrelativityLoop(int id, int correlativeId) {
 
@@ -125,6 +124,7 @@ public class CourseHibernateDao implements CourseDao {
         Course course = getById(id);
         Course correlative = getById(correlativeId);
 
+        Set<Course> toAdd;
         Set<Course> current = new HashSet<Course>();
         current.addAll(correlative.getCorrelatives());
 
@@ -136,10 +136,13 @@ public class CourseHibernateDao implements CourseDao {
                 loop = true;
             }
             else{
+                toAdd = new HashSet<>();
                 prevSize = current.size();
                 for(Course auxCourse: current){
-                    current.addAll(auxCourse.getCorrelatives());
+                    //current.addAll(auxCourse.getCorrelatives());
+                    toAdd.addAll(auxCourse.getCorrelatives());
                 }
+                current.addAll(toAdd);
             }
         }
         return loop;
@@ -195,7 +198,7 @@ public class CourseHibernateDao implements CourseDao {
         return Result.OK;
     }
 
-    //TODO: TEST THIS
+
     @Override
     public Integer getTotalSemesters() {
         //final TypedQuery<Integer> query = em.createQuery("select c.semester from Course as c where c.semester = max(c.semester)", Integer.class);
@@ -215,7 +218,7 @@ public class CourseHibernateDao implements CourseDao {
         return correlatives;
     }
 
-    //TODO: TEST THIS
+
     @Override
     public Integer getTotalPlanCredits() {
         final TypedQuery<Long> query = em.createQuery("select sum(c.credits) from Course as c", Long.class);
