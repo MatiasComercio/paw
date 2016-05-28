@@ -79,7 +79,9 @@ public class StudentHibernateDao implements StudentDao {
 	@Override
 	public List<Student> getByFilter(final StudentFilter studentFilter) {
 		// TODO
-		return null;
+		final TypedQuery<Student> query = em.createQuery(GET_ALL_STUDENTS, Student.class);
+		final List<Student> list = query.getResultList();
+		return list;
 	}
 
 	@Override

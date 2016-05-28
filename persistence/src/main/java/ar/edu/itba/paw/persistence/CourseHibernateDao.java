@@ -2,10 +2,13 @@ package ar.edu.itba.paw.persistence;
 
 
 import ar.edu.itba.paw.interfaces.CourseDao;
+import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -28,6 +31,9 @@ public class CourseHibernateDao implements CourseDao {
     @PersistenceContext
     private EntityManager em;
 
+    @Autowired
+    private StudentDao studentDao;
+
     @Override
     public Result create(Course course){
         Session session = em.unwrap(Session.class);
@@ -37,7 +43,7 @@ public class CourseHibernateDao implements CourseDao {
 
 
     @Override
-    public Result update(int id, Course course) {
+    public Result update(int id, Course course){
 
         //NOTE: In this case if the id is changed an exception is thrown. In the future we shouldn't allow a user to modify the seq_id!
         Session session = em.unwrap(Session.class);
@@ -74,14 +80,18 @@ public class CourseHibernateDao implements CourseDao {
         //Integer semesters = getTotalSemesters();
         //Integer credits = getTotalPlanCredits();
         //checkCorrelativityLoop();
+        boolean gradeExists = gradeExists(id);
+        boolean inscriptionExists = inscriptionExists(id);
 
         return em.find(Course.class,id);
     }
 
-    //TODO: Requires students
+    //TODO: Problem: Docket is not id of Student, hibernate tries to join inscription.docket = student.dni
     @Override
     public Course getCourseStudents(int id) {
-        return null;
+        Course course = getById(id);
+        course.getStudents();
+        return course;
     }
 
     @Override
@@ -173,15 +183,25 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     //TODO: Requires students
+    //TODO: Test this
     @Override
     public boolean inscriptionExists(int courseId) {
-        return false;
+        Course course = getById(courseId);
+        if(course.getStudents() == null || course.getStudents().size() == 0){
+            return false;
+        }
+        return true;
     }
 
     //TODO: Requires students
+    //TODO: Test this
     @Override
     public boolean gradeExists(int courseId) {
-        return false;
+
+        final TypedQuery<Integer> query = em.createQuery("select count(gr) from Grade as gr where gr.course_id = :id", Integer.class);
+        query.setParameter("id", courseId);
+        Integer totalGrades = query.getSingleResult();
+        return totalGrades > 0;
     }
 
     @Override
@@ -235,8 +255,12 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     //TODO: Requires students
+    //TODO: WTF: La version vieja obtiene los que pasaron e pisa la lista de alumnos que estan inscriptos con la de alumnos que ya aprobaron.
     @Override
     public Course getStudentsThatPassedCourse(int id) {
+        Course course = getById(id);
+        List<Student> studentsPassed = studentDao.getStudentsPassed(id);
+        //WTF!!!!!!!!!!!!!! course.setStudents(studentsPassed);
         return null;
     }
 

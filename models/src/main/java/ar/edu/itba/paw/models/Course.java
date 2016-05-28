@@ -15,6 +15,7 @@ public class Course {
     @SequenceGenerator(sequenceName = "course_courseid_seq", name = "course_courseid_seq", allocationSize = 1)
     private int id;
 
+    //TODO: Add Basic annotation
     @Column(length = 100, nullable = false, unique = true)
     private String name;
 
@@ -26,6 +27,7 @@ public class Course {
 
     @ManyToMany(
             cascade={CascadeType.PERSIST, CascadeType.MERGE},
+            //TODO: Delete targetEntity: Since Collection use generics (Set<Course>) it's not needed
             targetEntity=Course.class
     )
     @JoinTable(
@@ -37,6 +39,7 @@ public class Course {
 
     @ManyToMany(
             cascade={CascadeType.PERSIST, CascadeType.MERGE},
+            //TODO: Delete targetEntity: Since Collection use generics (Set<Course>) it's not needed
             targetEntity=Course.class
     )
     @JoinTable(
@@ -54,11 +57,12 @@ public class Course {
     //@Column(name = "code", length = 5, unique = true)
     //private String code;
 
-    //@ManyToMany()
-    //@Column(nullable = true)
-    //@JoinTable(name="inscription", joinColumns=@JoinColumn(name="course_id"),
-    //        inverseJoinColumns=@JoinColumn(name="docket"))
-    //private List<Student> students;
+    @ManyToMany(
+            cascade={CascadeType.PERSIST, CascadeType.MERGE}
+    )
+    @JoinTable(name="inscription", joinColumns=@JoinColumn(name="course_id"),
+            inverseJoinColumns=@JoinColumn(name="docket"))
+    private List<Student> students;
 
 
     protected Course(){}
@@ -95,11 +99,11 @@ public class Course {
     }
 
     public List<Student> getStudents() {
-        return null;//this.students;
+        return this.students;
     }
 
     public void setStudents(List<Student> students){
-        //this.students = students;
+        this.students = students;
     }
 
     public void setSemester(int semester){
