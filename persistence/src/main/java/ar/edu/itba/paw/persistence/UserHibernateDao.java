@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.shared.UserFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
@@ -12,6 +13,12 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -81,5 +88,78 @@ public class UserHibernateDao implements UserDao {
 	public Result resetPassword(final int dni) {
 		// TODO
 		return null;
+	}
+
+	// QueryFilter
+	/* package-private */static class QueryFilter<T extends User> {
+
+		private final CriteriaBuilder builder;
+		private final CriteriaQuery<T> query;
+		private final EntityType<T> type;
+		private final Root<T> root;
+
+		private final List<Predicate> predicates;
+
+		/* package-private */ QueryFilter(final EntityManager em, final Class<T> modelTClass) {
+			builder = em.getCriteriaBuilder();
+			query = builder.createQuery(modelTClass);
+			type = em.getMetamodel().entity(modelTClass);
+			root = query.from(modelTClass);
+			predicates = new ArrayList<>();
+		}
+
+		/* package-private */ void applyFilters(final UserFilter userFilter) {
+			filterByDni(userFilter);
+			filterByFirstName(userFilter);
+			filterByLastName(userFilter);
+		}
+
+		/* package-private */ CriteriaQuery<T> getQuery() {
+			return query.where(builder.and(predicates.toArray(new Predicate[] {})));
+		}
+
+		private void filterByDni(final UserFilter userFilter) {
+			final Object dni = userFilter.getDni();
+			final Predicate p;
+
+			if (dni != null){
+				p = builder.like(
+						root.get(
+								type.getDeclaredSingularAttribute("dni", dni.getClass())
+						).as(String.class),
+						"%" + escapeFilter(dni) + "%"
+				);
+				predicates.add(p);
+			}
+		}
+
+		private void filterByFirstName(final UserFilter userFilter) {
+			final Object keyword = userFilter.getFirstName();
+			addPredicate("first_name", keyword);
+		}
+
+		private void filterByLastName(final UserFilter userFilter) {
+			final Object keyword = userFilter.getLastName();
+			addPredicate("last_name", keyword);
+		}
+
+		private <Y> void  addPredicate(final String attribute, final Object keyword) {
+			final Predicate p;
+			if (keyword != null){
+				p = builder.like(
+						builder.lower(
+								root.get(
+										type.getDeclaredSingularAttribute(attribute, keyword.getClass())
+								).as(String.class)
+						),
+						"%" + escapeFilter(keyword).toLowerCase() + "%"
+				);
+				predicates.add(p);
+			}
+		}
+
+		private String escapeFilter(final Object filter) {
+			return filter.toString().replace("%", "\\%").replace("_", "\\_");
+		}
 	}
 }

@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.AdminDao;
+import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Authority;
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.RoleClass;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
@@ -27,7 +29,6 @@ public class AdminHibernateDao implements AdminDao {
 	private static final String GET_BY_ID = "from Admin as a where a.dni = :dni";
 	private static final String IS_INSCRIPTION_ENABLED = "from RoleClass as r where r.role = :role";
 	private static final String ROLE_COLUMN = "role";
-	private static final String STUDENT_ROLE = "STUDENT";
 
 	private static final int FIRST = 0;
 	private static final int ONE = 1;
@@ -60,8 +61,13 @@ public class AdminHibernateDao implements AdminDao {
 
 	@Override
 	public List<Admin> getByFilter(final AdminFilter adminFilter) {
-		// TODO
-		return null;
+		final UserHibernateDao.QueryFilter<Admin> queryFilter = new UserHibernateDao.QueryFilter<>(em, Admin.class);
+
+		if (adminFilter != null) {
+			queryFilter.applyFilters(adminFilter);
+		}
+
+		return em.createQuery(queryFilter.getQuery()).getResultList();
 	}
 
 	@Override
@@ -99,7 +105,7 @@ public class AdminHibernateDao implements AdminDao {
 		// +++xcheck
 		// get students authorities
 		final TypedQuery<RoleClass> query = em.createQuery(IS_INSCRIPTION_ENABLED, RoleClass.class);
-		query.setParameter(ROLE_COLUMN, STUDENT_ROLE);
+		query.setParameter(ROLE_COLUMN, Role.STUDENT);
 		query.setMaxResults(ONE);
 		final List<RoleClass> roles = query.getResultList();
 		if (roles.isEmpty()) {
