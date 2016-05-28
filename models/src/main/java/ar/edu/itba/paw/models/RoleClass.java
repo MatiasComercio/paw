@@ -12,7 +12,7 @@ public class RoleClass {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
-	@OneToMany(cascade = {CascadeType.ALL})
+	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
 	@JoinTable(name = "role_authorities",
 		joinColumns = {@JoinColumn(name = "role")},
 			inverseJoinColumns = {@JoinColumn(name = "authority")}

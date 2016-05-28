@@ -27,7 +27,7 @@ public class Authority {
 	}
 
 	public String getRoleAuthority() {
-		return roleAuthority;
+		return roleAuthority == null ? "ROLE_" + authority : roleAuthority;
 	}
 
 	@Override
