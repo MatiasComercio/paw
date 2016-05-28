@@ -35,6 +35,18 @@ public class Course {
     )
     private Set<Course> correlatives;
 
+    @ManyToMany(
+            cascade={CascadeType.PERSIST, CascadeType.MERGE},
+            targetEntity=Course.class
+    )
+    @JoinTable(
+            name="correlative",
+            joinColumns=@JoinColumn(name="correlative_id"),
+            inverseJoinColumns=@JoinColumn(name="course_id")
+    )
+    private Set<Course> upperCorrelatives;
+
+
     /*@Column(length=5, unique=true)
     private String code;
     */
@@ -104,6 +116,14 @@ public class Course {
 
     public void setCorrelatives(Set<Course> correlatives) {
         this.correlatives = correlatives;
+    }
+
+    public Set<Course> getUpperCorrelatives() {
+        return upperCorrelatives;
+    }
+
+    public void setUpperCorrelatives(Set<Course> upperCorrelatives) {
+        this.upperCorrelatives = upperCorrelatives;
     }
 
     @Override
