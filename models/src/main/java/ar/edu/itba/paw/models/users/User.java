@@ -44,8 +44,8 @@ public class User {
 	@Column(name = "email", nullable = false, length = 100, unique = true)
 	private String email;
 
-	@OneToOne
-	@JoinColumn(name = "dni")
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "dni", referencedColumnName = "dni")
 	private Address address;
 
 	@Basic
