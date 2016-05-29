@@ -16,7 +16,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="input-group">
-                                <span class="input-group-addon"><spring:message code="docket"/></span>
+                                <span class="input-group-addon search-label"><spring:message code="docket"/></span>
                                 <spring:message code="docket" var="docketPlaceholder"/>
                                 <form:input path="docket"  type="text" class="form-control" placeholder="${docketPlaceholder}..."/>
                             </div>
@@ -30,7 +30,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="input-group">
-                                <span class="input-group-addon"><spring:message code="firstName"/></span>
+                                <span class="input-group-addon search-label"><spring:message code="firstName"/></span>
                                 <spring:message code="firstName" var="firstNamePlaceholder"/>
                                 <form:input path="firstName" type="text" class="form-control" placeholder="${firstNamePlaceholder}..."/>
                             </div>
@@ -44,7 +44,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="input-group">
-                                <span class="input-group-addon"><spring:message code="lastName"/></span>
+                                <span class="input-group-addon search-label"><spring:message code="lastName"/></span>
                                 <spring:message code="lastName" var="lastNamePlaceholder"/>
                                 <form:input path="lastName" type="text" class="form-control" placeholder="${lastNamePlaceholder}..."/>
                             </div>

@@ -362,3 +362,7 @@ a.btn.tableButton {
 li.spaced {
     padding-bottom: 9px;
 }
+
+.search-label {
+    min-width: 76px;
+}
