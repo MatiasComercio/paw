@@ -8,27 +8,17 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "address")
+// Needs to implement Serializable because of the loadUserByUsername method.
+// (I assume that Spring Security serializes all the data it manages)
 public class Address implements Serializable {
-
-//	@Id
-//	@JoinColumn(name = "dni", referencedColumnName = "dni", nullable = false)
-//	@OneToOne(optional = false, targetEntity = User.class, cascade = CascadeType.ALL)
-//	private Integer dni;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_id_seq_seq")
 	@SequenceGenerator(sequenceName = "address_id_seq_seq", name = "address_id_seq_seq", allocationSize = 1)
 	private Integer id_seq;
 
-		@Column(name = "dni", unique = true)
-//	@OneToOne(optional = false, cascade = CascadeType.ALL)
-		/* with this uncommented, could retrieve data , but not create */
-//	@JoinColumn(name = "dni", referencedColumnName = "dni", nullable = false)
+	@Column(name = "dni", unique = true)
 	private Integer dni;
-
-//	@JoinColumn(name = "dni", referencedColumnName = "dni", nullable = false)
-//	@OneToOne(optional = false, cascade = CascadeType.ALL)
-//	private User user;
 
 	@Basic
 	@Column(name = "country", nullable = false, length = 50)

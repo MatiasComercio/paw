@@ -50,7 +50,8 @@ public class User {
 	@Column(name = "email", nullable = false, length = 100, unique = true)
 	private String email;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	// Unidirectional Mapping
+	@OneToOne(cascade = CascadeType.ALL/*, fetch = FetchType.LAZY*/)
 	@JoinColumn(name = "dni", referencedColumnName = "dni", insertable = false, updatable = false)
 	private Address address;
 
