@@ -9,8 +9,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "student")
-@DiscriminatorValue("STUDENT")
-@AttributeOverride(name = "dni", column = @Column(name = "dni", unique = true))
+//@DiscriminatorValue("STUDENT")
+//@AttributeOverride(name = "dni", column = @Column(name = "dni", unique = true))
 public class Student extends User {
 	// +++xcheck: +++xquestion
 	/*
@@ -20,6 +20,8 @@ public class Student extends User {
 	I think if I'd do this way, I would be against the concept of inheritance.
 	So I better redesigned my database.
 	 */
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_docket_seq")
+	@SequenceGenerator(sequenceName = "student_docket_seq", name = "student_docket_seq", allocationSize = 1)
 	@Column(unique = true, updatable = false)
 	private int docket;
 

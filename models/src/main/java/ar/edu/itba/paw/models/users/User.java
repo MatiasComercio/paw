@@ -28,7 +28,7 @@ public class User {
 	@Column(name = "id_seq")
 	private Integer id_seq;
 
-	@Column(name = "dni", nullable = false)
+	@Column(name = "dni", unique = true, nullable = false)
 	private int dni;
 
 	@Basic
