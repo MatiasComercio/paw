@@ -22,13 +22,11 @@ public class Student extends User {
 	 */
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_docket_seq")
 	@SequenceGenerator(sequenceName = "student_docket_seq", name = "student_docket_seq", allocationSize = 1)
-	@Column(unique = true, updatable = false)
+	@Column(unique = true, insertable = false, updatable = false)
 	private int docket;
 
 	@OneToMany
-	//@OrderColumn(name = "modified")
-	//@OrderBy(value = "modified")
-	@JoinColumn(name = "modified")
+	@JoinColumn(name = "docket")
 	private List<Grade> grades;
 
 	private Student(final Builder builder) {

@@ -46,10 +46,6 @@ public class AdminHibernateDao implements AdminDao {
 
 	@Override
 	public Result create(final Admin admin) {
-		/* +++xdebug */
-//		Session session = em.unwrap(Session.class);
-////		session.save(admin.getAddress());
-//		session.save(admin);
 		em.persist(admin);
 		return Result.OK;
 	}

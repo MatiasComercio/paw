@@ -66,8 +66,8 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Result create(final Student student) {
-		// TODO
-		return null;
+		em.persist(student);
+		return Result.OK;
 	}
 
 	@Override

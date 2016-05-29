@@ -154,7 +154,7 @@ public class UserHibernateDao implements UserDao {
 
 		private <Y> void  addPredicate(final String attribute, final Object keyword) {
 			final Predicate p;
-			if (keyword != null){
+			if (keyword != null) {
 				p = builder.like(
 						builder.lower(
 								root.get(

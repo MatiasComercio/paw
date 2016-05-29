@@ -3,9 +3,11 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
+import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
@@ -18,12 +20,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
 	@Autowired
 	private StudentDao studentDao;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private CourseService courseService;
@@ -61,6 +67,10 @@ public class StudentServiceImpl implements StudentService {
 	@Transactional
 	@Override
 	public Result create(final Student student) {
+		student.setRole(Role.STUDENT);
+		if (student.getEmail() == null || Objects.equals(student.getEmail(), "")) {
+			student.setEmail(userService.createEmail(student));
+		}
 		return studentDao.create(student);
 	}
 
