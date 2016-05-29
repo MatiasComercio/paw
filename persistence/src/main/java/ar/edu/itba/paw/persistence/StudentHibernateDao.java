@@ -38,7 +38,6 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Student getByDocket(final int docket) {
-		// +++xcheck
 		final TypedQuery<Student> query = em.createQuery(GET_BY_DOCKET, Student.class);
 		query.setParameter(DOCKET_PARAM, docket);
 		query.setMaxResults(ONE);
@@ -96,8 +95,8 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Result deleteStudent(final int docket) {
-		// TODO
-		return null;
+		em.remove(getByDocket(docket));
+		return Result.OK;
 	}
 
 	@Override

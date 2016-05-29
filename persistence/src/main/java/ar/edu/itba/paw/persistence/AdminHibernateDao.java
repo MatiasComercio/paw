@@ -47,12 +47,12 @@ public class AdminHibernateDao implements AdminDao {
 	@Override
 	public Result create(final Admin admin) {
 		em.persist(admin);
+		LOGGER.debug("[create] - {}", admin);
 		return Result.OK;
 	}
 
 	@Override
 	public Admin getByDni(final int dni) {
-		// +++xcheck
 		final TypedQuery<Admin> query = em.createQuery(GET_BY_ID, Admin.class);
 		query.setParameter(DNI_PARAM, dni);
 		query.setMaxResults(ONE);
@@ -73,8 +73,9 @@ public class AdminHibernateDao implements AdminDao {
 
 	@Override
 	public Result deleteAdmin(final int dni) {
-		// TODO
-		return null;
+		// +++xcheck: have to implement front end
+		em.remove(getByDni(dni));
+		return Result.OK;
 	}
 
 	@Override

@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 @ControllerAdvice /* Global Handler */
-/* +++xcheck +++xchange: used when changing a @PathVariable --> BadCast for example */
 public class ExceptionHandlerController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandlerController.class);
 
@@ -51,7 +50,13 @@ public class ExceptionHandlerController {
 
 	@ExceptionHandler(DataAccessException.class)
 	public ModelAndView dataAccessException(final DataAccessException e) {
-		LOGGER.warn("Exception: {}", e.getMessage());
+		LOGGER.warn("Exception: {}", (Object[]) e.getStackTrace());
+		return new ModelAndView("503");
+	}
+
+	@ExceptionHandler(Exception.class)
+	public ModelAndView exception(final Exception e) {
+		LOGGER.warn("Exception: {}", (Object[]) e.getStackTrace());
 		return new ModelAndView("500");
 	}
 }
