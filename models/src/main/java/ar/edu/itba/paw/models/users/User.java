@@ -20,7 +20,7 @@ import static javax.persistence.InheritanceType.JOINED;
 @Table(name = "users")
 @Inheritance(strategy=JOINED)
 // not abstract anymore just for Hibernate
-public class User implements Serializable {
+public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq_seq")
@@ -50,7 +50,7 @@ public class User implements Serializable {
 	@Column(name = "email", nullable = false, length = 100, unique = true)
 	private String email;
 
-	@OneToOne(cascade = CascadeType.ALL/*, fetch = FetchType.LAZY*/)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "dni", referencedColumnName = "dni", insertable = false, updatable = false)
 	private Address address;
 
@@ -58,7 +58,7 @@ public class User implements Serializable {
 	@Column(name = "password", length = 100)
 	private String password;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "role", referencedColumnName = "role", nullable = false)
 	private RoleClass role;
 

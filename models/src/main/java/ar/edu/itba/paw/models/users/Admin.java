@@ -5,9 +5,6 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "admin")
-//@DiscriminatorValue("ADMIN")
-@PrimaryKeyJoinColumn(referencedColumnName = "id_seq")
-@AttributeOverride(name = "dni", column = @Column(name = "dni", unique = true))
 public class Admin extends User {
     private Admin(final Builder builder) {
         super(builder);
