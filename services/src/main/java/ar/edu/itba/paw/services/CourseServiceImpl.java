@@ -261,7 +261,8 @@ public class CourseServiceImpl implements CourseService {
             return null;
         }
 
-        final List<Student> students = course.getStudents();
+        //TODO: DELETE - final List<Student> students = course.getStudents();
+        final List<Student> students = course.getApprovedStudents();
         if (students  != null) {
             students.retainAll(studentService.getByFilter(studentFilter));
         }

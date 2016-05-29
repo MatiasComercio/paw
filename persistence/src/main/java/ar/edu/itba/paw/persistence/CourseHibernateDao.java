@@ -2,10 +2,13 @@ package ar.edu.itba.paw.persistence;
 
 
 import ar.edu.itba.paw.interfaces.CourseDao;
+import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -28,6 +31,9 @@ public class CourseHibernateDao implements CourseDao {
     @PersistenceContext
     private EntityManager em;
 
+    @Autowired
+    private StudentDao studentDao;
+
     @Override
     public Result create(Course course){
         Session session = em.unwrap(Session.class);
@@ -37,7 +43,7 @@ public class CourseHibernateDao implements CourseDao {
 
 
     @Override
-    public Result update(int id, Course course) {
+    public Result update(int id, Course course){
 
         //NOTE: In this case if the id is changed an exception is thrown. In the future we shouldn't allow a user to modify the seq_id!
         Session session = em.unwrap(Session.class);
@@ -69,23 +75,27 @@ public class CourseHibernateDao implements CourseDao {
 
     @Override
     public Course getById(int id) {
-        //TODO: For DEBUG purposes only
-        //Set<Course> upperCorrelatives = em.find(Course.clKass,id).getUpperCorrelatives();
-        //Integer semesters = getTotalSemesters();
-        //Integer credits = getTotalPlanCredits();
-        //checkCorrelativityLoop();
+//        //TODO: For DEBUG purposes only
+//        Set<Course> upperCorrelatives = em.find(Course.clKass,id).getUpperCorrelatives();
+//        Integer semesters = getTotalSemesters();
+//        Integer credits = getTotalPlanCredits();
+//        checkCorrelativityLoop();
+//        boolean inscriptionExists = inscriptionExists(id);
+//        boolean gradeExists = gradeExists(id);
 
         return em.find(Course.class,id);
     }
 
-    //TODO: Requires students
     @Override
     public Course getCourseStudents(int id) {
-        return null;
+        Course course = getById(id);
+        course.getStudents();
+        return course;
     }
 
     @Override
     public List<Course> getAllCourses() {
+
         final TypedQuery<Course> query = em.createQuery("select c from Course c", Course.class);
         final List<Course> list = query.getResultList();
         return list;
@@ -173,15 +183,25 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     //TODO: Requires students
+    //TODO: Test this
     @Override
     public boolean inscriptionExists(int courseId) {
-        return false;
+        Course course = getById(courseId);
+        if(course.getStudents() == null || course.getStudents().size() == 0){
+            return false;
+        }
+        return true;
     }
 
     //TODO: Requires students
+    //TODO: Test this
     @Override
     public boolean gradeExists(int courseId) {
-        return false;
+
+        final TypedQuery<Integer> query = em.createQuery("select count(gr) from Grade as gr where gr.course_id = :id", Integer.class);
+        query.setParameter("id", courseId);
+        Integer totalGrades = query.getSingleResult();
+        return totalGrades > 0;
     }
 
     @Override
@@ -209,7 +229,6 @@ public class CourseHibernateDao implements CourseDao {
 
     @Override
     public Integer getTotalSemesters() {
-        //final TypedQuery<Integer> query = em.createQuery("select c.semester from Course as c where c.semester = max(c.semester)", Integer.class);
         final TypedQuery<Integer> query = em.createQuery("select max(c.semester) from Course as c", Integer.class);
         Integer totalSemesters = query.getSingleResult();
         return totalSemesters;
@@ -226,7 +245,6 @@ public class CourseHibernateDao implements CourseDao {
         return correlatives;
     }
 
-
     @Override
     public Integer getTotalPlanCredits() {
         final TypedQuery<Long> query = em.createQuery("select sum(c.credits) from Course as c", Long.class);
@@ -234,10 +252,12 @@ public class CourseHibernateDao implements CourseDao {
         return totalCredits;
     }
 
-    //TODO: Requires students
-    @Override
+    //TODO: TEST THIS
     public Course getStudentsThatPassedCourse(int id) {
-        return null;
+        Course course = getById(id);
+        List<Student> approvedStudents = studentDao.getStudentsPassed(id);
+        course.setApprovedStudents(approvedStudents);
+        return course;
     }
 
     //QueryFilter

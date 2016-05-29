@@ -504,7 +504,8 @@ public class CourseController {
 
 		final ModelAndView mav = new ModelAndView("courseStudents");
 		mav.addObject("course", course);
-		mav.addObject("students", course.getStudents());
+		//TODO: DELETE - mav.addObject("students", course.getStudents());
+		mav.addObject("students", course.getApprovedStudents());
 		mav.addObject("section2", "studentsPassed");
 		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students_passed/studentFilterForm");
 		return mav;
