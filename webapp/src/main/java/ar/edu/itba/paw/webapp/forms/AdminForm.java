@@ -60,7 +60,7 @@ public class AdminForm {
     public AdminForm() {}
 
     public Admin build() {
-        this.address = new Address.Builder(country, city, neighborhood, street, number).floor(floor).
+        this.address = new Address.Builder(dni, country, city, neighborhood, street, number).floor(floor).
                 door(door).telephone(telephone).zipCode(zipCode).build();
         return new Admin.Builder(dni).firstName(firstName).lastName(lastName).genre(genre).
                 birthday(birthday).address(address).build();

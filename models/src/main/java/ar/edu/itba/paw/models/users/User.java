@@ -7,6 +7,7 @@ import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.RoleClass;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,28 +17,18 @@ import java.util.Map;
 import static javax.persistence.InheritanceType.JOINED;
 
 @Entity
-@Table(
-		name = "users",
-		indexes = {
-				@Index(columnList = "id_seq")
-		},
-		uniqueConstraints = {
-				@UniqueConstraint(columnNames = "dni"),
-				@UniqueConstraint(columnNames = "email")
-		}
-)
+@Table(name = "users")
 @Inheritance(strategy=JOINED)
-@DiscriminatorColumn(name="role")
 // not abstract anymore just for Hibernate
-public class User {
+public class User implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq_seq")
 	@SequenceGenerator(sequenceName = "users_id_seq_seq", name = "users_id_seq_seq", allocationSize = 1)
 	@Column(name = "id_seq")
-	private int id_seq;
+	private Integer id_seq;
 
-	@Column(name = "dni", nullable = false, insertable = false, updatable = false)
+	@Column(name = "dni", nullable = false)
 	private int dni;
 
 	@Basic
@@ -59,8 +50,8 @@ public class User {
 	@Column(name = "email", nullable = false, length = 100, unique = true)
 	private String email;
 
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "dni", referencedColumnName = "dni")
+	@OneToOne(cascade = CascadeType.ALL/*, fetch = FetchType.LAZY*/)
+	@JoinColumn(name = "dni", referencedColumnName = "dni", insertable = false, updatable = false)
 	private Address address;
 
 	@Basic
@@ -110,6 +101,14 @@ public class User {
 		return birthday;
 	}
 
+	// +++ximprove:
+	public void setEmail(final String email) {
+		if (email != null) {
+			this.email = email;
+		}
+	}
+
+
 	public String getEmail() {
 		return email == null ? "" : email;
 	}
@@ -130,6 +129,12 @@ public class User {
 	public Role getRole() {
 		return role == null ? null : role.getRole();
 	}
+
+	// +++ximprove
+	public void setRole(final Role role) {
+		this.role = role == null ? null : new RoleClass(role, null);
+	}
+
 
 	public Collection<Authority> getAuthorities() {
 		return role == null ? Collections.EMPTY_SET : role.getAuthorities();
@@ -161,6 +166,14 @@ public class User {
 				", birthday=" + birthday +
 				", email='" + email + '\'' +
 				'}';
+	}
+
+	public Integer getId_seq() {
+		return id_seq;
+	}
+
+	public void setId_seq(final Integer id_seq) {
+		this.id_seq = id_seq;
 	}
 
 	public static abstract class Builder<V extends User, T extends Builder<V,T>> {

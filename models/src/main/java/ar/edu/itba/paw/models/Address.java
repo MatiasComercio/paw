@@ -10,9 +10,25 @@ import java.util.Objects;
 @Table(name = "address")
 public class Address implements Serializable {
 
+//	@Id
+//	@JoinColumn(name = "dni", referencedColumnName = "dni", nullable = false)
+//	@OneToOne(optional = false, targetEntity = User.class, cascade = CascadeType.ALL)
+//	private Integer dni;
+
 	@Id
-	@JoinColumn(name = "dni", referencedColumnName = "dni", nullable = false)
-	private int dni;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_id_seq_seq")
+	@SequenceGenerator(sequenceName = "address_id_seq_seq", name = "address_id_seq_seq", allocationSize = 1)
+	private Integer id_seq;
+
+		@Column(name = "dni", unique = true)
+//	@OneToOne(optional = false, cascade = CascadeType.ALL)
+		/* with this uncommented, could retrieve data , but not create */
+//	@JoinColumn(name = "dni", referencedColumnName = "dni", nullable = false)
+	private Integer dni;
+
+//	@JoinColumn(name = "dni", referencedColumnName = "dni", nullable = false)
+//	@OneToOne(optional = false, cascade = CascadeType.ALL)
+//	private User user;
 
 	@Basic
 	@Column(name = "country", nullable = false, length = 50)
@@ -51,6 +67,7 @@ public class Address implements Serializable {
 	private Integer zipCode;
 
 	private Address(final Builder builder) {
+		this.dni = builder.dni;
 		this.country = builder.country;
 		this.city = builder.city;
 		this.neighborhood = builder.neighborhood;
@@ -138,6 +155,7 @@ public class Address implements Serializable {
 	}
 
 	public static class Builder {
+		private Integer dni;
 		private String country;
 		private String city;
 		private String neighborhood;
@@ -149,8 +167,9 @@ public class Address implements Serializable {
 		private Long telephone;
 		private Integer zipCode;
 
-		public Builder(final String country, final String city,
+		public Builder(final Integer dni, final String country, final String city,
 		               final String neighborhood, final String street, final Integer number) {
+			this.dni = dni;
 			this.country = country == null ? "" : country;
 			this.city = city == null ? "" : city;
 			this.neighborhood = neighborhood == null ? "" : neighborhood;

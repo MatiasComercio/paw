@@ -67,7 +67,7 @@ public class StudentForm {
 
     public Student build(){
 
-        this.address = new Address.Builder(country, city, neighborhood, street, number).floor(floor).
+        this.address = new Address.Builder(dni, country, city, neighborhood, street, number).floor(floor).
                 door(door).telephone(telephone).zipCode(zipCode).build();
         return new Student.Builder(EMPTY_DOCKET, dni).firstName(firstName).lastName(lastName).genre(genre).
                 birthday(birthday).address(address).build();

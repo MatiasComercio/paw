@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -32,12 +33,12 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     @Override /*+++xtodo: @Gonza improve: you are not validating if the userService creates the admin */
     public Result create(final Admin admin) {
-//        userService.create(admin);
-        Result result = adminDao.create(admin);
-
         //TODO: add role to roles table which indicates (dni, role)
-
-        return result;
+        admin.setRole(Role.ADMIN);
+        if (admin.getEmail() == null || Objects.equals(admin.getEmail(), "")) {
+            admin.setEmail(userService.createEmail(admin));
+        }
+        return adminDao.create(admin);
     }
 
     @Transactional
