@@ -1,6 +1,8 @@
 package ar.edu.itba.paw.models.users;
 
 
+import ar.edu.itba.paw.models.Role;
+
 import javax.persistence.*;
 
 @Entity
@@ -31,7 +33,7 @@ public class Admin extends User {
 
     public static class Builder extends User.Builder<Admin, Builder> {
         public Builder(int dni) {
-            super(dni);
+            super(dni, Role.ADMIN);
         }
 
         @Override

@@ -79,4 +79,10 @@ public interface AdminDao {
      */
     boolean isInscriptionEnabled();
 
+	/**
+     * Updates the given admin, if possible
+     * @param admin the admin to be updated, containing the updated values
+     * @return The Result code of the operation
+     */
+    Result update(final Admin admin);
 }

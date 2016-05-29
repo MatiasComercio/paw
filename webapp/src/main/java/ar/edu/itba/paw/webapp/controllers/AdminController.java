@@ -321,6 +321,19 @@ public class AdminController {
 			return editAdmin(dni, adminForm, redirectAttributes, loggedUser);
 		}
 
+		final Admin originalAdmin = adminService.getByDni(dni);
+
+		if (originalAdmin == null) {
+			LOGGER.warn("User {} tried to access admin {} that does not exist", loggedUser.getUsername());
+			return new ModelAndView(NOT_FOUND);
+		}
+
+		// Write data that was hidden at the form --> not submitted
+		adminForm.setId_seq(originalAdmin.getId_seq());
+		adminForm.setAddress_id_seq(originalAdmin.getAddress().getId_seq());
+		adminForm.setPassword(originalAdmin.getPassword());
+		adminForm.setEmail(originalAdmin.getEmail());
+
 		final Admin admin = adminForm.build();
 		final Result result = adminService.update(dni, admin);
 

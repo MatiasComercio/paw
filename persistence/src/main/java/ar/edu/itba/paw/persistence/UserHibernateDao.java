@@ -89,7 +89,8 @@ public class UserHibernateDao implements UserDao {
 
 	@Override
 	public Result update(final int dni, final User user) {
-		// TODO
+		// +++xcheck
+		em.persist(user);
 		return null;
 	}
 

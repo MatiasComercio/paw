@@ -48,6 +48,13 @@ public class AdminHibernateDao implements AdminDao {
 	}
 
 	@Override
+	public Result update(final Admin admin) {
+		em.merge(admin);
+		LOGGER.debug("[update] - {}", admin);
+		return Result.OK;
+	}
+
+	@Override
 	public Admin getByDni(final int dni) {
 		final TypedQuery<Admin> query = em.createQuery(GET_BY_ID, Admin.class);
 		query.setParameter(DNI_PARAM, dni);

@@ -4,7 +4,7 @@
 <html>
 <head>
     <title>
-        <spring:message code="webAbbreviation"/> | <spring:message code="pageUnauthorized_head"/>
+        <spring:message code="webAbbreviation"/> | <spring:message code="pageServerUnavailable_title"/>
     </title>
     <jsp:include page="base/head.jsp" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">

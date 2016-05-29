@@ -17,7 +17,7 @@ public class Address implements Serializable {
 	@SequenceGenerator(sequenceName = "address_id_seq_seq", name = "address_id_seq_seq", allocationSize = 1)
 	private Integer id_seq;
 
-	@Column(name = "dni", unique = true)
+	@Column(name = "dni", unique = true, updatable = false)
 	private Integer dni;
 
 	@Basic
@@ -57,6 +57,7 @@ public class Address implements Serializable {
 	private Integer zipCode;
 
 	private Address(final Builder builder) {
+		this.id_seq = builder.id_seq;
 		this.dni = builder.dni;
 		this.country = builder.country;
 		this.city = builder.city;
@@ -144,7 +145,12 @@ public class Address implements Serializable {
 		return result;
 	}
 
+	public Integer getId_seq() {
+		return id_seq;
+	}
+
 	public static class Builder {
+		private Integer id_seq;
 		private Integer dni;
 		private String country;
 		private String city;
@@ -157,8 +163,9 @@ public class Address implements Serializable {
 		private Long telephone;
 		private Integer zipCode;
 
-		public Builder(final Integer dni, final String country, final String city,
+		public Builder(final Integer id_seq, final Integer dni, final String country, final String city,
 		               final String neighborhood, final String street, final Integer number) {
+			this.id_seq = id_seq;
 			this.dni = dni;
 			this.country = country == null ? "" : country;
 			this.city = city == null ? "" : city;

@@ -62,13 +62,15 @@ public class AdminServiceImpl implements AdminService {
         return adminDao.deleteAdmin(dni);
     }
 
+    @Transactional
     @Override
     public Result update(final int dni, final Admin admin) {
         if(dni <= 0) {
             return Result.ERROR_DNI_OUT_OF_BOUNDS;
         }
 
-        return userService.update(dni, admin);
+        return adminDao.update(admin);
+//        return userService.update(dni, admin);
     }
 
     @Transactional

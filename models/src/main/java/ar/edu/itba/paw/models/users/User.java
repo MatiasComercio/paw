@@ -9,10 +9,7 @@ import ar.edu.itba.paw.models.RoleClass;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static javax.persistence.InheritanceType.JOINED;
 
@@ -28,7 +25,7 @@ public class User {
 	@Column(name = "id_seq")
 	private Integer id_seq;
 
-	@Column(name = "dni", unique = true, nullable = false)
+	@Column(name = "dni", unique = true, nullable = false, updatable = false)
 	private int dni;
 
 	@Basic
@@ -47,7 +44,7 @@ public class User {
 	private LocalDate birthday;
 
 	@Basic
-	@Column(name = "email", nullable = false, length = 100, unique = true)
+	@Column(name = "email", nullable = false, length = 100, unique = true, updatable = false)
 	private String email;
 
 	// Unidirectional Mapping
@@ -68,6 +65,7 @@ public class User {
 	}
 
 	protected User(final Builder builder) {
+		this.id_seq = builder.id_seq;
 		this.dni = builder.dni;
 		this.firstName = builder.firstName;
 		this.lastName = builder.lastName;
@@ -76,7 +74,22 @@ public class User {
 		this.email = builder.email;
 		this.address = builder.address;
 		this.password = builder.password;
+		this.role = new RoleClass(builder.role, null);
 	}
+
+//	public <T extends User, V extends Builder<T,V>> T merge(final T u, final Builder<T, V> builder) {
+//		final Integer id_seq = u.getId_seq() == null ? this.id_seq : u.getId_seq();
+//		final int dni = this.dni;
+//		final String firstName = u.getFirstName();
+//		final String lastName = u.getLastName();
+//		final Genre genre = u.getGenre() == null ? this.genre : u.getGenre();
+//		final LocalDate birthday = u.getBirthday() == null ? this.birthday : u.getBirthday();
+//		final String email = this.email;
+//		final Address address = this.address.merge(u.getAddress());
+//		final String password = u.getPassword() == null ? this.password : u.getPassword();
+//
+//		return
+//	}
 
 	public int getDni() {
 		return dni;
@@ -178,19 +191,22 @@ public class User {
 	}
 
 	public static abstract class Builder<V extends User, T extends Builder<V,T>> {
-		private int dni;
-		private T thisBuilder;
+		private final int dni;
+		private final Role role;
 
+		private T thisBuilder;
+		private int id_seq;
 		private String firstName = null;
 		private String lastName = null;
 		private Genre genre = Genre.N;
 		private LocalDate birthday = null;
 		private String email = null;
 		private Address address = null;
-		private String password = null;
+		private String password = "pass";
 
-		public Builder(final int dni) {
+		public Builder(final int dni, final Role role) {
 			this.dni = dni;
+			this.role = role;
 			this.thisBuilder = thisBuilder();
 		}
 
@@ -199,6 +215,11 @@ public class User {
 
 		/* Each subclass should implement this method to return it's own builder */
 		public abstract T thisBuilder();
+
+		public T id_seq(final int id_seq) {
+			this.id_seq = id_seq;
+			return thisBuilder;
+		}
 
 		public T firstName(final String firstName) {
 			if (firstName != null) {
@@ -243,7 +264,7 @@ public class User {
 		}
 
 		public T password(final String password) {
-			if (password != null) {
+			if (password != null && !Objects.equals(password, "")) {
 				this.password = password;
 			}
 			return thisBuilder;

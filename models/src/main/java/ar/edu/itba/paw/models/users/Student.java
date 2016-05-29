@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models.users;
 
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.Role;
 
 import javax.persistence.*;
 import java.util.Collections;
@@ -70,7 +71,7 @@ public class Student extends User {
 		private List<Grade> grades;
 
 		public Builder(final int docket, final int dni) {
-			super(dni);
+			super(dni, Role.STUDENT);
 			this.docket = docket;
 			this.grades = new LinkedList<>();
 		}

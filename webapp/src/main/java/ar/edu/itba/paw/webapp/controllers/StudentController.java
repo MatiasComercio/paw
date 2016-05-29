@@ -572,6 +572,14 @@ public class StudentController {
 			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
 		}
 
+		final Student s = studentService.getByDocket(docket);
+
+		// Write data that was hidden at the form --> not submitted
+		studentForm.setId_seq(s.getId_seq());
+		studentForm.setAddress_id_seq(s.getAddress().getId_seq());
+		studentForm.setPassword(s.getPassword());
+		studentForm.setEmail(s.getEmail());
+
 		Student student = studentForm.build();
 		Result result = studentService.update(docket, student);
 
