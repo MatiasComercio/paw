@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.List;
 
 @Repository
-@Primary // +++xremove this when AdmindbcDao is deleted
 public class AdminHibernateDao implements AdminDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AdminHibernateDao.class);
 
@@ -71,7 +70,9 @@ public class AdminHibernateDao implements AdminDao {
 	@Override
 	public Result deleteAdmin(final int dni) {
 		// +++xtodo: have to implement front end
-		em.remove(getByDni(dni));
+		final Admin admin = getByDni(dni);
+		em.remove(admin);
+		LOGGER.debug("[delete] - {}", admin);
 		return Result.OK;
 	}
 

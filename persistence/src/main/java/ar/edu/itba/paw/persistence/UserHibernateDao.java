@@ -28,7 +28,7 @@ import java.util.List;
 public class UserHibernateDao implements UserDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserHibernateDao.class);
 
-	private static final String GET_ROLE_QUERY = "from User as u where u.dni = :dni";
+	private static final String GET_BY_DNI = "from User as u where u.dni = :dni";
 
 	private static final int FIRST = 0;
 	private static final int ONE = 1;
@@ -39,14 +39,21 @@ public class UserHibernateDao implements UserDao {
 
 	@Override
 	public <V extends User, T extends User.Builder<V, T>> V getByDni(final int dni, final User.Builder<V, T> builder) {
-		// TODO
-		return null;
+		final TypedQuery<User> query = em.createQuery(GET_BY_DNI, User.class);
+		query.setParameter(DNI_PARAM, dni);
+		query.setMaxResults(ONE);
+		final List<User> users = query.getResultList();
+		final User u = users.get(FIRST);
+
+		return builder.firstName(u.getFirstName()).lastName(u.getLastName()).address(u.getAddress())
+				.genre(u.getGenre()).birthday(u.getBirthday()).email(u.getEmail()).password(u.getPassword())
+				.build();
 	}
 
 	@Override // +++xchange: return only one role
 	public List<Role> getRole(final int dni) {
 		// write "from..." not "select...". The second form will be causing an exception
-		final TypedQuery<User> query = em.createQuery(GET_ROLE_QUERY, User.class);
+		final TypedQuery<User> query = em.createQuery(GET_BY_DNI, User.class);
 		query.setParameter(DNI_PARAM, dni);
 		query.setMaxResults(ONE);
 		final List<User> users = query.getResultList();
@@ -63,7 +70,6 @@ public class UserHibernateDao implements UserDao {
 	@Override
 	public Result create(final User user, final Role role) {
 		em.persist(user);
-		// TODO
 		return Result.OK;
 	}
 
