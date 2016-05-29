@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.UserFilter;
@@ -73,10 +74,11 @@ public class UserHibernateDao implements UserDao {
 		return Result.OK;
 	}
 
-	@Override
+	@Override /* +++xremove when service function with the same name is removed */
 	public Result delete(final int dni) {
-		// TODO
-		return null;
+		// this method should not be directly called
+		// use delete method of subclasses DAO implementations
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Transactional
-	@Override
+	@Override /* +++xremove: not used */
 	public Result delete(final int dni) {
 		if(dni <= 0) {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
