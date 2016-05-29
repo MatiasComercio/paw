@@ -1,14 +1,12 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.AdminDao;
-import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Authority;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.RoleClass;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
-import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Primary;
@@ -18,7 +16,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -28,7 +25,7 @@ public class AdminHibernateDao implements AdminDao {
 
 	private static final String GET_ALL_ADMINS = "from Admin";
 	private static final String GET_BY_ID = "from Admin as a where a.dni = :dni";
-	private static final String IS_INSCRIPTION_ENABLED = "from RoleClass as r where r.role = :role";
+	private static final String GET_ROLE = "from RoleClass as r where r.role = :role";
 	private static final String ROLE_COLUMN = "role";
 
 	private static final int FIRST = 0;
@@ -73,40 +70,80 @@ public class AdminHibernateDao implements AdminDao {
 
 	@Override
 	public Result deleteAdmin(final int dni) {
-		// +++xcheck: have to implement front end
+		// +++xtodo: have to implement front end
 		em.remove(getByDni(dni));
 		return Result.OK;
 	}
 
+/* +++xchange: all this logic should be on the service when authorities are migrated to runtime */
 	@Override
 	public Result disableAddInscriptions() {
-		// TODO
-		return null;
+		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
+		query.setParameter(ROLE_COLUMN, Role.STUDENT);
+		query.setMaxResults(ONE);
+		final List<RoleClass> roles = query.getResultList();
+		final RoleClass role =  roles.get(FIRST);
+		final Collection<Authority> authorities = role.getMutableAuthorities();
+
+		authorities.remove(new Authority("ADD_INSCRIPTION"));
+
+		em.persist(role);
+
+		return Result.OK;
 	}
 
 	@Override
 	public Result disableDeleteInscriptions() {
-		// TODO
-		return null;
+		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
+		query.setParameter(ROLE_COLUMN, Role.STUDENT);
+		query.setMaxResults(ONE);
+		final List<RoleClass> roles = query.getResultList();
+		final RoleClass role =  roles.get(FIRST);
+		final Collection<Authority> authorities = role.getMutableAuthorities();
+
+		authorities.remove(new Authority("DELETE_INSCRIPTION"));
+
+		em.persist(role);
+
+		return Result.OK;
 	}
 
 	@Override
 	public Result enableAddInscriptions() {
-		// TODO
-		return null;
+		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
+		query.setParameter(ROLE_COLUMN, Role.STUDENT);
+		query.setMaxResults(ONE);
+		final List<RoleClass> roles = query.getResultList();
+		final RoleClass role =  roles.get(FIRST);
+		final Collection<Authority> authorities = role.getMutableAuthorities();
+
+		authorities.add(new Authority("ADD_INSCRIPTION"));
+
+		em.persist(role);
+
+		return Result.OK;
 	}
 
 	@Override
 	public Result enableDeleteInscriptions() {
-		// TODO
-		return null;
+		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
+		query.setParameter(ROLE_COLUMN, Role.STUDENT);
+		query.setMaxResults(ONE);
+		final List<RoleClass> roles = query.getResultList();
+		final RoleClass role =  roles.get(FIRST);
+		final Collection<Authority> authorities = role.getMutableAuthorities();
+
+		authorities.add(new Authority("DELETE_INSCRIPTION"));
+
+		em.persist(role);
+
+		return Result.OK;
 	}
 
 	@Override
 	public boolean isInscriptionEnabled() {
-		// +++xcheck
 		// get students authorities
-		final TypedQuery<RoleClass> query = em.createQuery(IS_INSCRIPTION_ENABLED, RoleClass.class);
+		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
 		query.setParameter(ROLE_COLUMN, Role.STUDENT);
 		query.setMaxResults(ONE);
 		final List<RoleClass> roles = query.getResultList();
