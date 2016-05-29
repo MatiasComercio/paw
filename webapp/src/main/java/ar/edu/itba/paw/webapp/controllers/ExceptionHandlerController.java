@@ -1,6 +1,9 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -17,6 +20,7 @@ import java.util.function.BiConsumer;
 @ControllerAdvice /* Global Handler */
 /* +++xcheck +++xchange: used when changing a @PathVariable --> BadCast for example */
 public class ExceptionHandlerController {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandlerController.class);
 
 	private static final String PAGE_HEADER =
 			"Error en los datos";
@@ -43,6 +47,12 @@ public class ExceptionHandlerController {
 		mav.addObject("details", details);
 
 		return mav;
+	}
+
+	@ExceptionHandler(DataAccessException.class)
+	public ModelAndView dataAccessException(final DataAccessException e) {
+		LOGGER.warn("Exception: {}", e.getMessage());
+		return new ModelAndView("500");
 	}
 }
 

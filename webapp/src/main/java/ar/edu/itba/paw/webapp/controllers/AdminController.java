@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -161,7 +162,12 @@ public class AdminController {
 			return adminsAddAdminG(adminForm, null, loggedUser);
 		}
 		Admin admin = adminForm.build();
-		Result result = adminService.create(admin);
+		Result result;
+		try {
+			result = adminService.create(admin);
+		} catch (final DataIntegrityViolationException e) {
+			result = Result.USER_EXISTS_DNI;
+		}
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
