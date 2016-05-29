@@ -96,24 +96,27 @@ public class UserHibernateDao implements UserDao {
 
 		private final CriteriaBuilder builder;
 		private final CriteriaQuery<T> query;
-		private final EntityType<User> type;
+		private final EntityType<T> type;
 		private final Root<T> root;
 
 		private final List<Predicate> predicates;
 
+		private final EntityManager em;
+
 		/* package-private */ QueryFilter(final EntityManager em, final Class<T> modelTClass) {
+			this.em = em;
 			builder = em.getCriteriaBuilder();
 			query = builder.createQuery(modelTClass);
 			// 'type' does not use modelTClass because declaredSingularAttribute are load with
 			// the explicitly declared fields of the entity, i.e., it does not inherit the ones
 			// from User.class, and we need some of those fields to filter
-			type = em.getMetamodel().entity(User.class);
+			type = em.getMetamodel().entity(modelTClass);
 			root = query.from(modelTClass);
 			predicates = new ArrayList<>();
 		}
 
 		/* package-private */ void applyFilters(final UserFilter userFilter) {
-			filterByDni(userFilter);
+			filterById(userFilter);
 			filterByFirstName(userFilter);
 			filterByLastName(userFilter);
 		}
@@ -122,16 +125,18 @@ public class UserHibernateDao implements UserDao {
 			return query.where(builder.and(predicates.toArray(new Predicate[] {})));
 		}
 
-		private void filterByDni(final UserFilter userFilter) {
-			final Object dni = userFilter.getDni();
+		private void filterById(final UserFilter userFilter) {
+			final Object id = userFilter.getId();
+			final String attribute = userFilter.getAttributeId();
+
 			final Predicate p;
 
-			if (dni != null){
+			if (id != null){
 				p = builder.like(
 						root.get(
-								type.getDeclaredSingularAttribute("dni", dni.getClass())
+								type.getSingularAttribute(attribute, id.getClass())
 						).as(String.class),
-						"%" + escapeFilter(dni) + "%"
+						"%" + escapeFilter(id) + "%"
 				);
 				predicates.add(p);
 			}
@@ -153,7 +158,7 @@ public class UserHibernateDao implements UserDao {
 				p = builder.like(
 						builder.lower(
 								root.get(
-										type.getDeclaredSingularAttribute(attribute, keyword.getClass())
+										type.getSingularAttribute(attribute, keyword.getClass())
 								).as(String.class)
 						),
 						"%" + escapeFilter(keyword).toLowerCase() + "%"
