@@ -18,7 +18,7 @@ public class Student extends User {
 
 	// TODO +++xcheck if grades are being delete on cascade
 	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "docket")
+	@JoinColumn(name = "docket", referencedColumnName = "docket")
 	private List<Grade> grades;
 
 	private Student(final Builder builder) {
