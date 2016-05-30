@@ -18,6 +18,7 @@ import static javax.persistence.InheritanceType.JOINED;
 @Inheritance(strategy=JOINED)
 // not abstract anymore just for Hibernate
 public class User {
+	public static final String DEFAULT_PASSWORD = "pass";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq_seq")
@@ -194,12 +195,16 @@ public class User {
 		this.password = password;
 	}
 
+	public void resetPassword() {
+		this.password = DEFAULT_PASSWORD;
+	}
+
 	public static abstract class Builder<V extends User, T extends Builder<V,T>> {
 		private final int dni;
 		private final Role role;
 
 		private T thisBuilder;
-		private int id_seq;
+		private Integer id_seq;
 		private String firstName = null;
 		private String lastName = null;
 		private Genre genre = Genre.N;
@@ -220,7 +225,7 @@ public class User {
 		/* Each subclass should implement this method to return it's own builder */
 		public abstract T thisBuilder();
 
-		public T id_seq(final int id_seq) {
+		public T id_seq(final Integer id_seq) {
 			this.id_seq = id_seq;
 			return thisBuilder;
 		}

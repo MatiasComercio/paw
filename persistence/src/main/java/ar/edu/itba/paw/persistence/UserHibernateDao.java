@@ -105,8 +105,7 @@ public class UserHibernateDao implements UserDao {
 
 	@Override
 	public Result resetPassword(final int dni) {
-		// TODO
-		return null;
+		return changePassword(dni, null, User.DEFAULT_PASSWORD);
 	}
 
 	// QueryFilter
