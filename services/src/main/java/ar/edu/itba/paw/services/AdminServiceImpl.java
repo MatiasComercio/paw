@@ -5,7 +5,6 @@ import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
-import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +58,7 @@ public class AdminServiceImpl implements AdminService {
         if(dni <= 0) {
             return Result.ERROR_DNI_OUT_OF_BOUNDS;
         }
-        return adminDao.deleteAdmin(dni);
+        return adminDao.delete(dni);
     }
 
     @Transactional

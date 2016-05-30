@@ -48,7 +48,7 @@ public interface AdminDao {
      * @return 	OK if the dni was deleted;
      * 		ERROR_UNKNOWN else;
      */
-    Result deleteAdmin(int dni);
+    Result delete(int dni);
 
     /**
      * Disables the Student's authority to add inscriptions

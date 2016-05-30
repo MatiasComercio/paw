@@ -190,6 +190,10 @@ public class User {
 		this.id_seq = id_seq;
 	}
 
+	public void setPassword(final String password) {
+		this.password = password;
+	}
+
 	public static abstract class Builder<V extends User, T extends Builder<V,T>> {
 		private final int dni;
 		private final Role role;

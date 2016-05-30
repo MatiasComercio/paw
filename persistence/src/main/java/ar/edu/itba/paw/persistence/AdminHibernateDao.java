@@ -55,6 +55,15 @@ public class AdminHibernateDao implements AdminDao {
 	}
 
 	@Override
+	public Result delete(final int dni) {
+		// +++xtodo: have to implement front end
+		final Admin admin = getByDni(dni);
+		em.remove(admin);
+		LOGGER.debug("[delete] - {}", admin);
+		return Result.OK;
+	}
+
+	@Override
 	public Admin getByDni(final int dni) {
 		final TypedQuery<Admin> query = em.createQuery(GET_BY_ID, Admin.class);
 		query.setParameter(DNI_PARAM, dni);
@@ -72,15 +81,6 @@ public class AdminHibernateDao implements AdminDao {
 		}
 
 		return em.createQuery(queryFilter.getQuery()).getResultList();
-	}
-
-	@Override
-	public Result deleteAdmin(final int dni) {
-		// +++xtodo: have to implement front end
-		final Admin admin = getByDni(dni);
-		em.remove(admin);
-		LOGGER.debug("[delete] - {}", admin);
-		return Result.OK;
 	}
 
 /* +++xchange: all this logic should be on the service when authorities are migrated to runtime */
