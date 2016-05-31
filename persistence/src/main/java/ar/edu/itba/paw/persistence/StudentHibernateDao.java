@@ -1,14 +1,15 @@
 package ar.edu.itba.paw.persistence;
 
+import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
-import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +17,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -24,8 +26,8 @@ import java.util.List;
 public class StudentHibernateDao implements StudentDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StudentHibernateDao.class);
 
-	private static final String GET_ALL_STUDENTS = "from Student";
 	private static final String GET_BY_DOCKET = "from Student as s where s.docket = :docket";
+    private static final String GET_APPROVED_GRADES_BY_DOCKET = "from Grade as g where g.studentDocket = :docket and g.grade >= 4";
 	private static final String IS_INSCRIPTION_ENABLED = "from RoleClass as r where r.role = :role";
 	private static final String ROLE_COLUMN = "role";
 
@@ -35,6 +37,9 @@ public class StudentHibernateDao implements StudentDao {
 
 	@PersistenceContext
 	private EntityManager em;
+
+    @Autowired
+    private CourseDao courseDao;
 
 	@Override
 	public Student getByDocket(final int docket) {
@@ -47,8 +52,7 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Student getGrades(final int docket) {
-		// TODO
-		return null;
+		return getByDocket(docket);
 	}
 
 	@Override
@@ -59,8 +63,7 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public List<Course> getStudentCourses(final int docket) {
-		// TODO
-		return null;
+        return null;
 	}
 
 	@Override
@@ -125,9 +128,19 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Collection<Course> getApprovedCourses(final int docket) {
-		// TODO
-		return null;
-	}
+        final Collection<Course> courses = new ArrayList<>();
+
+        final TypedQuery<Grade> query = em.createQuery(GET_APPROVED_GRADES_BY_DOCKET, Grade.class);
+        query.setParameter(DOCKET_PARAM, docket);
+
+        final List<Grade> approvedGrades = query.getResultList();
+
+        for (Grade grade : approvedGrades) {
+            courses.add(courseDao.getById(grade.getCourseId()));
+        }
+
+        return courses;
+    }
 
 	@Override
 	public List<Integer> getApprovedCoursesId(final int docket) {

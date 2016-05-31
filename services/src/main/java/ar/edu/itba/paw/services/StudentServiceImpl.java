@@ -4,7 +4,6 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Role;
@@ -47,8 +46,19 @@ public class StudentServiceImpl implements StudentService {
 			return null;
 		}
 
-		List<Course> courses = studentDao.getStudentCourses(docket);
-		if (courses == null) {
+		Student student = getByDocket(docket);
+		List<Course> courses = new ArrayList<>();
+
+		//Get all student courses
+		List<Course> courseList = courseService.getAllCourses();
+
+		for (Course course : courseList) {
+			if (course.getStudents().contains(student))
+				courses.add(course);
+		}
+
+		//List<Course> courses = studentDao.getStudentCourses(docket);
+		if (courses.isEmpty()) {
 			return null;
 		}
 
