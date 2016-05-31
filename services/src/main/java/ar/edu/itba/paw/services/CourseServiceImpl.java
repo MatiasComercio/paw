@@ -84,11 +84,13 @@ public class CourseServiceImpl implements CourseService {
         if(courseId<0){
             return Result.ERROR_ID_OUT_OF_BOUNDS;
         }
-        if(courseDao.inscriptionExists(courseId)){
-            return Result.COURSE_EXISTS_INSCRIPTION;
-        }
+        //TODO: Change order
         if(courseDao.gradeExists(courseId)){
             return Result.COURSE_EXISTS_GRADE;
+        }
+
+        if(courseDao.inscriptionExists(courseId)){
+            return Result.COURSE_EXISTS_INSCRIPTION;
         }
 
         deleteCourseCorrelatives(courseId);

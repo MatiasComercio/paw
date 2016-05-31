@@ -17,7 +17,7 @@ import static javax.persistence.InheritanceType.JOINED;
 @Table(name = "users")
 @Inheritance(strategy=JOINED)
 // not abstract anymore just for Hibernate
-public class User {
+public class User implements Serializable {
 	public static final String DEFAULT_PASSWORD = "pass";
 
 	@Id
