@@ -154,22 +154,6 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public boolean hasAddress(final int dni) {
-		// TODO
-		return false;
-	}
-
-	@Override
-	public void createAddress(final int dni, final Student student) {
-		// TODO
-	}
-
-	@Override
-	public void updateAddress(final int dni, final Student student) {
-		// TODO
-	}
-
-	@Override
 	public Student getByDni(final int dni) {
 		return getBy(GET_BY_DNI, DNI_PARAM, dni);
 	}

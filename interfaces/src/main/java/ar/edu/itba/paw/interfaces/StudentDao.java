@@ -128,27 +128,6 @@ public interface StudentDao {
     List<Integer> getApprovedCoursesId(int docket);
 
 	/**
-	 * Returns true if there's an Address asociated with the student
-	 * @param dni The student's docket
-	 * @return Address of the specified student or null
-     */
-	boolean hasAddress(int dni);
-
-    /**
-     * Create address of specified student
-     * @param dni The student's dni
-     * @param student The student containing the address to create
-     */
-    void createAddress(int dni, Student student);
-
-    /**
-     * Create address of specified student
-     * @param dni The student's dni
-     * @param student The student containing the address to update
-     */
-    void updateAddress(int dni, Student student);
-
-	/**
 	 * Gets the student's main data that matches the given dni.
 	 * If no student exists with that dni, null is returned.
 	 * @param dni The student's dni
