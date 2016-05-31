@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class Grade {
 
 	@ManyToOne
-	@JoinColumn(name = "course_id", referencedColumnName = "id", insertable = false, updatable = false)
+	@JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
 	private Course course;
 
 	@Id
@@ -27,12 +27,6 @@ public class Grade {
 
 	@Transient
 	private String studentLastName;
-
-	@Column(name = "course_id", nullable = false)
-	private int courseId;
-
-	@Transient
-	private String courseName;
 
 	@Column(name = "grade", nullable = false, precision = 2)
 	private BigDecimal grade;
@@ -52,16 +46,11 @@ public class Grade {
 //	@JoinColumn(name = "docket", referencedColumnName = "docket", nullable = false)
 //	private Student studentByDocket;
 
-//	@ManyToOne
-//	@JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
-//	private Course courseByCourseId;
-
 	private Grade(final Builder builder) {
 		this.studentDocket = builder.studentDocket;
 		this.studentFirstName = builder.studentFirstName;
 		this.studentLastName = builder.studentLastName;
-		this.courseId = builder.courseId;
-		this.courseName = builder.courseName;
+		this.course = new Course.Builder(builder.courseId).name(builder.courseName).build();
 		this.grade = builder.grade;
 		this.modified = builder.modified;
         this.taking = builder.taking;
@@ -88,11 +77,11 @@ public class Grade {
 	}
 
 	public int getCourseId() {
-		return courseId;
+		return course.getId();
 	}
 
 	public String getCourseName() {
-		return courseName;
+		return course.getName();
 	}
 
 	public BigDecimal getGrade() {
@@ -113,23 +102,21 @@ public class Grade {
 
 		final Grade grade1 = (Grade) o;
 
+		if (id != grade1.id) return false;
 		if (studentDocket != grade1.studentDocket) return false;
-		if (courseId != grade1.courseId) return false;
-		if (!grade.equals(grade1.grade)) return false;
-		return modified.equals(grade1.modified);
+		if (course != null ? !course.equals(grade1.course) : grade1.course != null) return false;
+		if (grade != null ? !grade.equals(grade1.grade) : grade1.grade != null) return false;
+		return modified != null ? modified.equals(grade1.modified) : grade1.modified == null;
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = studentDocket;
-		result = 31 * result + courseId;
-
-        //TODO: grade and modified could be null
-        if (grade != null)
-            result = 31 * result + grade.hashCode();
-		if (modified != null)
-            result = 31 * result + modified.hashCode();
+		int result = course != null ? course.hashCode() : 0;
+		result = 31 * result + id;
+		result = 31 * result + studentDocket;
+		result = 31 * result + (grade != null ? grade.hashCode() : 0);
+		result = 31 * result + (modified != null ? modified.hashCode() : 0);
 		return result;
 	}
 

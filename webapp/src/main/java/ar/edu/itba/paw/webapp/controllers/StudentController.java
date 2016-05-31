@@ -178,53 +178,6 @@ public class StudentController {
 		return mav;
 	}
 
-//	private List<List<GradeForm>> getSemesters(final int docket) {
-//		final List<List<GradeForm>> semesters = new ArrayList<>();
-////		final int tSemesters = courseService.getTotalSemesters();
-////		int iSemester;
-////
-////		// Load all semesters
-////		for (int i = 0 ; i < tSemesters; i++) {
-////			semesters.add(new LinkedList<>());
-////		}
-////
-////		GradeForm gradeForm = new GradeForm();
-////
-////		// add taken courses
-////		final Student student = studentService.getGrades(docket);
-////		final List<Grade> approved = student.getGrades();
-////		for (Grade g : approved) {
-////			iSemester = g.getCourse().getSemester() - 1;
-////			gradeForm.loadFromGrade(g);
-////			semesters.get(iSemester).add(gradeForm);
-////		}
-////
-////		// add current courses
-////		final List<Course> current = studentService.getStudentCourses(docket, null);
-////		for (Course c : current) {
-////			iSemester = c.getSemester() - 1;
-////			gradeForm = new GradeForm();
-////			gradeForm.setDocket(docket);
-////			gradeForm.setCourseId(c.getId());
-////			gradeForm.setCourseName(c.getName());
-////			gradeForm.setTaking(true);
-////			semesters.get(iSemester).add(gradeForm);
-////		}
-////
-////		// add not taken courses
-////		final List<Course> future = studentService.getAvailableInscriptionCourses(docket, null);
-////		for (Course c : future) {
-////			iSemester = c.getSemester() - 1;
-////			gradeForm = new GradeForm();
-////			gradeForm.setDocket(docket);
-////			gradeForm.setCourseId(c.getId());
-////			gradeForm.setCourseName(c.getName());
-////			semesters.get(iSemester).add(gradeForm);
-////		}
-//
-//		return semesters;
-//	}
-
 	@RequestMapping(value = "/students/{docket}/courses", method = RequestMethod.GET)
 	public ModelAndView getStudentCourses(@PathVariable final int docket, final Model model,
 	                                      @ModelAttribute("user") UserSessionDetails loggedUser) {
