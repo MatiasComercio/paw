@@ -17,8 +17,10 @@ public class Student extends User {
 	private int docket;
 
 	// TODO +++xcheck if grades are being delete on cascade
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "docket", referencedColumnName = "docket")
+	//+++xcheck: this is causing ar.edu.itba.paw.models.users.Student cannot be cast to java.io.Serializable
+//	@OneToMany(cascade = CascadeType.ALL)
+//	@JoinColumn(name = "docket", referencedColumnName = "docket")
+	@Transient
 	private List<Grade> grades;
 
 	private Student(final Builder builder) {
