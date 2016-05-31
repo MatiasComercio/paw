@@ -1,9 +1,11 @@
 package ar.edu.itba.paw.models.users;
 
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Role;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,11 +19,20 @@ public class Student extends User {
 	private int docket;
 
 	// TODO +++xcheck if grades are being delete on cascade
-	//+++xcheck: this is causing ar.edu.itba.paw.models.users.Student cannot be cast to java.io.Serializable
 //	@OneToMany(cascade = CascadeType.ALL)
 //	@JoinColumn(name = "docket", referencedColumnName = "docket")
 	@Transient
 	private List<Grade> grades;
+
+	@ManyToMany(
+			cascade={CascadeType.PERSIST, CascadeType.MERGE}
+	)
+	@JoinTable(
+			name="inscription",
+			joinColumns=@JoinColumn(name="docket", referencedColumnName = "docket"),
+			inverseJoinColumns=@JoinColumn(name="course_id", referencedColumnName = "id")
+	)
+	private List<Course> studentCourses;
 
 	private Student(final Builder builder) {
 		super(builder);
@@ -65,6 +76,10 @@ public class Student extends User {
 		return "Student{" +
 				"docket=" + docket +
 				"} " + super.toString();
+	}
+
+	public List<Course> getStudentCourses() {
+		return studentCourses;
 	}
 
 	public static class Builder extends User.Builder<Student, Builder> {

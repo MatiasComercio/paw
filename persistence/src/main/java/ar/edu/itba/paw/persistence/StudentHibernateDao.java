@@ -59,8 +59,15 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public List<Course> getStudentCourses(final int docket) {
-		// TODO
-		return null;
+		final TypedQuery<Student> query = em.createQuery(GET_BY_DOCKET, Student.class);
+		query.setParameter(DOCKET_PARAM, docket);
+		query.setMaxResults(ONE);
+		final List<Student> students = query.getResultList();
+		if (students.isEmpty()) {
+			return null;
+		}
+
+		return students.get(FIRST).getStudentCourses();
 	}
 
 	@Override
