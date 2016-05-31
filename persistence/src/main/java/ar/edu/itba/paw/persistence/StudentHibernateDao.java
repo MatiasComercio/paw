@@ -24,16 +24,20 @@ import java.util.List;
 @Repository
 @Primary // +++xremove this when AdmindbcDao is deleted
 public class StudentHibernateDao implements StudentDao {
+
+	private static final String GET_APPROVED_GRADES_BY_DOCKET = "from Grade as g where g.studentDocket = :docket and g.grade >= 4";
 	private static final Logger LOGGER = LoggerFactory.getLogger(StudentHibernateDao.class);
-
+	private static final String GET_ALL_STUDENTS = "from Student";
 	private static final String GET_BY_DOCKET = "from Student as s where s.docket = :docket";
-    private static final String GET_APPROVED_GRADES_BY_DOCKET = "from Grade as g where g.studentDocket = :docket and g.grade >= 4";
+	private static final String GET_BY_DNI = "from Student as s where s.dni = :dni";
 	private static final String IS_INSCRIPTION_ENABLED = "from RoleClass as r where r.role = :role";
-	private static final String ROLE_COLUMN = "role";
 
+	private static final String ROLE_COLUMN = "role";
 	private static final int FIRST = 0;
 	private static final int ONE = 1;
 	private static final String DOCKET_PARAM = "docket";
+	private static final String DNI_PARAM = "dni";
+	private static final String GET_GRADES = "from Grade as g where ";
 
 	@PersistenceContext
 	private EntityManager em;
@@ -52,18 +56,40 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Student getGrades(final int docket) {
-		return getByDocket(docket);
+		final Student student = getBy(GET_GRADES, DOCKET_PARAM, docket);
+		// call the grades list in case it is lazy initialized
+		if (student != null) {
+			student.getGrades();
+		}
+		return student;
+	}
+
+	private Student getBy(final String queryName, final String paramName, final int paramValue) {
+		final TypedQuery<Student> query = em.createQuery(queryName, Student.class);
+		query.setParameter(paramName, paramValue);
+		query.setMaxResults(ONE);
+		final List<Student> students = query.getResultList();
+		return students.isEmpty() ? null : students.get(FIRST);
 	}
 
 	@Override
 	public Student getGrades(final int docket, final int semesterIndex) {
-		// TODO
+
 		return null;
 	}
 
 	@Override
 	public List<Course> getStudentCourses(final int docket) {
-        return null;
+
+		final TypedQuery<Student> query = em.createQuery(GET_BY_DOCKET, Student.class);
+		query.setParameter(DOCKET_PARAM, docket);
+		query.setMaxResults(ONE);
+		final List<Student> students = query.getResultList();
+		if (students.isEmpty()) {
+			return null;
+		}
+
+		return students.get(FIRST).getStudentCourses();
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.models.users;
 
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Role;
 
@@ -21,6 +22,17 @@ public class Student extends User {
 	@JoinColumn(name = "docket", referencedColumnName = "docket")
 	private List<Grade> grades;
 
+
+	@ManyToMany(
+			cascade={CascadeType.PERSIST, CascadeType.MERGE}
+	)
+	@JoinTable(
+			name="inscription",
+			joinColumns=@JoinColumn(name="docket", referencedColumnName = "docket"),
+			inverseJoinColumns=@JoinColumn(name="course_id", referencedColumnName = "id")
+	)
+	private List<Course> studentCourses;
+
 	private Student(final Builder builder) {
 		super(builder);
 		this.docket = builder.docket;
@@ -37,6 +49,18 @@ public class Student extends User {
 
 	public List<Grade> getGrades() {
 		return Collections.unmodifiableList(grades);
+	}
+
+	public List<Course> getStudentCourses() {
+		return studentCourses;
+	}
+
+	public void setStudentCourses(List<Course> studentCourses) {
+		this.studentCourses = studentCourses;
+	}
+
+	public void setGrades(List<Grade> grades) {
+		this.grades = grades;
 	}
 
 	@Override
