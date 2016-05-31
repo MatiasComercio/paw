@@ -68,12 +68,6 @@ public interface StudentDao {
 	 */
 	List<Student> getByFilter(StudentFilter studentFilter);
 
-    /**
-     * Get student's dni
-     * @param docket docket of specified student;
-     * @return Returns dni of specified student or null if not exists
-     */
-    Integer getDniByDocket(int docket);
 
 	/**
 	 * Delete the student that matches the given docket.

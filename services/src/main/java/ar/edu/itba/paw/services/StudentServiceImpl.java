@@ -132,6 +132,7 @@ public class StudentServiceImpl implements StudentService {
 		return docket <= 0 ? null : studentDao.getGrades(docket);
 	}
 
+	@Transactional
 	@Override
 	public List<Course> getAvailableInscriptionCourses(final int docket, final CourseFilter courseFilter) {
 		if (docket <= 0) {
@@ -150,7 +151,7 @@ public class StudentServiceImpl implements StudentService {
 		}
 
 		Collection<Course> approvedCourses = getApprovedCourses(docket);
-		if (currentCourses != null) {
+		if (currentCourses != null && approvedCourses != null) {
 			courses.removeAll(approvedCourses);
 		}
 
