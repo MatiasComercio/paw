@@ -4,10 +4,7 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.models.Address;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Grade;
-import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
@@ -17,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -205,40 +199,88 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public List<List<Grade>> getTranscript(final int docket) {
-		final List<List<Grade>> semesterList = new ArrayList<>();
-		final Integer totalSemesters = courseService.getTotalSemesters();
+	public List<List<TranscriptGrade>> getTranscript(final int docket) {
+		final List<List<TranscriptGrade>> semesters = new ArrayList<>();
+		final int tSemesters = courseService.getTotalSemesters();
+		int iSemester;
 
-
-		for (int i = 0; i < totalSemesters; i++) {
-            int semesterIndex = i + 1;
-
-            //Get all grades from that semester and add them
-            Student student = studentDao.getGrades(docket, semesterIndex);
-
-            semesterList.add(i, new ArrayList<>());
-
-            for (Grade grade : student.getGrades()) {
-                semesterList.get(i).add(grade);
-            }
+		// Load all semesters
+		for (int i = 0 ; i < tSemesters; i++) {
+			semesters.add(new LinkedList<>());
 		}
 
-        //Add courses that are being taken
-        final List<Course> coursesTaken = getStudentCourses(docket, null);
-        for (Course course : coursesTaken){
-            int semesterIndex = course.getSemester() - 1;
-            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).taking(true).build());
-        }
+		TranscriptGrade gradeForm = new TranscriptGrade();
 
-        //Complete with the rest of the courses that are not taken
-        final List<Course> availCourses = getAvailableInscriptionCourses(docket, null);
+		// add taken courses
+		final Student student = getGrades(docket);
+		final List<Grade> approved = student.getGrades();
+		for (Grade g : approved) {
+			iSemester = g.getCourse().getSemester() - 1;
+			gradeForm.loadFromGrade(g);
 
-        for (Course course : availCourses){
-            int semesterIndex = course.getSemester() - 1;
-            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).build());
-        }
+			semesters.get(iSemester).add(gradeForm);
+		}
 
-		return semesterList;
+		// add current courses
+		final List<Course> current = getStudentCourses(docket, null);
+		for (Course c : current) {
+			iSemester = c.getSemester() - 1;
+			gradeForm = new TranscriptGrade();
+			gradeForm.setDocket(docket);
+			gradeForm.setCourseId(c.getId());
+			gradeForm.setCourseName(c.getName());
+			gradeForm.setTaking(true);
+			semesters.get(iSemester).add(gradeForm);
+		}
+
+		// add not taken courses
+		final List<Course> future = getAvailableInscriptionCourses(docket, null);
+		for (Course c : future) {
+			iSemester = c.getSemester() - 1;
+			gradeForm = new TranscriptGrade();
+			gradeForm.setDocket(docket);
+			gradeForm.setCourseId(c.getId());
+			gradeForm.setCourseName(c.getName());
+			semesters.get(iSemester).add(gradeForm);
+		}
+
+		return semesters;
+
+
+
+
+//		final List<List<Grade>> semesterList = new ArrayList<>();
+//		final Integer totalSemesters = courseService.getTotalSemesters();
+//
+//		for (int i = 0; i < totalSemesters; i++) {
+//            int semesterIndex = i + 1;
+//
+//            //Get all grades from that semester and add them
+//            Student student = studentDao.getGrades(docket, semesterIndex);
+//
+//            semesterList.add(i, new ArrayList<>());
+//
+//            for (Grade grade : student.getGrades()) {
+//                semesterList.get(i).add(grade);
+//            }
+//		}
+//
+//        //Add courses that are being taken
+//        final List<Course> coursesTaken = getStudentCourses(docket, null);
+//        for (Course course : coursesTaken){
+//            int semesterIndex = course.getSemester() - 1;
+//            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).taking(true).build());
+//        }
+//
+//        //Complete with the rest of the courses that are not taken
+//        final List<Course> availCourses = getAvailableInscriptionCourses(docket, null);
+//
+//        for (Course course : availCourses){
+//            int semesterIndex = course.getSemester() - 1;
+//            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).build());
+//        }
+//
+//		return semesterList;
 	}
 
 	@Transactional

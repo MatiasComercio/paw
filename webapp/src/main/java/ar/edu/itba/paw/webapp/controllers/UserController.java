@@ -5,7 +5,6 @@ import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.PasswordForm;
 import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
-import ar.edu.itba.paw.webapp.forms.UserForm;
 import ar.edu.itba.paw.webapp.forms.validators.PasswordValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

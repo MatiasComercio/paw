@@ -43,6 +43,10 @@ public class Grade {
 	@Transient
     private Boolean taking;
 
+	public void setTaking(final Boolean taking) {
+		this.taking = taking;
+	}
+
 	// +++xcheck
 //	@ManyToOne
 //	@JoinColumn(name = "docket", referencedColumnName = "docket", nullable = false)

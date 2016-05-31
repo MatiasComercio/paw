@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
+import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,8 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Controller
 public class StudentController {
@@ -45,6 +44,7 @@ public class StudentController {
 
 	@Autowired
 	private HttpServletRequest request;
+	private Object semesters;
 
 	@ModelAttribute("section")
 	public String sectionManager(){
@@ -168,7 +168,7 @@ public class StudentController {
 
 		totalCredits = studentService.getTotalPlanCredits();
 		passedCredits = studentService.getPassedCredits(docket);
-		percentage = (!totalCredits.equals(0))? (passedCredits * 100)/totalCredits: 0;
+		percentage = (!totalCredits.equals(0)) ? (passedCredits * 100) / totalCredits : 0;
 
 		mav.addObject("section2", "grades");
 		mav.addObject("semesters", studentService.getTranscript(docket));
@@ -177,6 +177,53 @@ public class StudentController {
 		mav.addObject("percentage", percentage);
 		return mav;
 	}
+
+//	private List<List<GradeForm>> getSemesters(final int docket) {
+//		final List<List<GradeForm>> semesters = new ArrayList<>();
+////		final int tSemesters = courseService.getTotalSemesters();
+////		int iSemester;
+////
+////		// Load all semesters
+////		for (int i = 0 ; i < tSemesters; i++) {
+////			semesters.add(new LinkedList<>());
+////		}
+////
+////		GradeForm gradeForm = new GradeForm();
+////
+////		// add taken courses
+////		final Student student = studentService.getGrades(docket);
+////		final List<Grade> approved = student.getGrades();
+////		for (Grade g : approved) {
+////			iSemester = g.getCourse().getSemester() - 1;
+////			gradeForm.loadFromGrade(g);
+////			semesters.get(iSemester).add(gradeForm);
+////		}
+////
+////		// add current courses
+////		final List<Course> current = studentService.getStudentCourses(docket, null);
+////		for (Course c : current) {
+////			iSemester = c.getSemester() - 1;
+////			gradeForm = new GradeForm();
+////			gradeForm.setDocket(docket);
+////			gradeForm.setCourseId(c.getId());
+////			gradeForm.setCourseName(c.getName());
+////			gradeForm.setTaking(true);
+////			semesters.get(iSemester).add(gradeForm);
+////		}
+////
+////		// add not taken courses
+////		final List<Course> future = studentService.getAvailableInscriptionCourses(docket, null);
+////		for (Course c : future) {
+////			iSemester = c.getSemester() - 1;
+////			gradeForm = new GradeForm();
+////			gradeForm.setDocket(docket);
+////			gradeForm.setCourseId(c.getId());
+////			gradeForm.setCourseName(c.getName());
+////			semesters.get(iSemester).add(gradeForm);
+////		}
+//
+//		return semesters;
+//	}
 
 	@RequestMapping(value = "/students/{docket}/courses", method = RequestMethod.GET)
 	public ModelAndView getStudentCourses(@PathVariable final int docket, final Model model,
@@ -598,4 +645,20 @@ public class StudentController {
 		final String referrer = request.getHeader("referer");
 		return new ModelAndView("redirect:" + referrer);
 	}
+
+//	private List<List<GradeForm>> getSemesters(final int docket) {
+//		final List<List<GradeForm>> semesters = new LinkedList<>();
+//		for (List<GradeForm> semester : semesters) {
+//			semester = new ArrayList<>();
+//		}
+//
+//		final Student student = studentService.getGrades(docket);
+//
+//		final List<Grade> approvedCourses = student.getGrades();
+//		for (Grade g : approvedCourses) {
+//
+//		}
+//
+//		return semesters;
+//	}
 }

@@ -4,7 +4,6 @@ import ar.edu.itba.paw.interfaces.CourseService;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
@@ -29,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 @Controller
 public class CourseController {

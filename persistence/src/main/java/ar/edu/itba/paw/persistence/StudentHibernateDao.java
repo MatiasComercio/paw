@@ -59,7 +59,7 @@ public class StudentHibernateDao implements StudentDao {
 		final Student student = getBy(GET_BY_DOCKET, DOCKET_PARAM, docket);
 		// call the grades list in case it is lazy initialized
 		if (student != null) {
-			student.getGrades();
+			student.getModifiableGrades();
 		}
 		return student;
 	}
