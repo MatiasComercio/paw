@@ -20,7 +20,9 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 @Repository
@@ -31,6 +33,7 @@ public class StudentHibernateDao implements StudentDao {
 	private static final String GET_ALL_STUDENTS = "from Student";
 	private static final String GET_BY_DOCKET = "from Student as s where s.docket = :docket";
 	private static final String GET_BY_DNI = "from Student as s where s.dni = :dni";
+	private static final String GET_APPROVED_GRADES_BY_DOCKET = "from Grade as g where g.studentDocket = :docket and g.grade >= 4";
 	private static final String IS_INSCRIPTION_ENABLED = "from RoleClass as r where r.role = :role";
 
 	private static final String ROLE_COLUMN = "role";
@@ -38,6 +41,7 @@ public class StudentHibernateDao implements StudentDao {
 	private static final int ONE = 1;
 	private static final String DOCKET_PARAM = "docket";
 	private static final String DNI_PARAM = "dni";
+//	private static final String GET_GRADES = "from Grade as g where g.studentDocket = :docket";
 
 	@PersistenceContext
 	private EntityManager em;
@@ -52,14 +56,29 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Student getGrades(final int docket) {
-		// TODO
-		return null;
+		final Student student = getBy(GET_BY_DOCKET, DOCKET_PARAM, docket);
+		// call the grades list in case it is lazy initialized
+		if (student != null) {
+			student.getGrades();
+		}
+		return student;
 	}
 
 	@Override
 	public Student getGrades(final int docket, final int semesterIndex) {
-		// TODO
-		return null;
+		final Student student = getBy(GET_BY_DOCKET, DOCKET_PARAM, docket);
+		// call the grades list in case it is lazy initialized
+		if (student != null) {
+			final List<Grade> grades = student.getModifiableGrades();
+			grades.removeIf(grade -> {
+				final Course course = grade.getCourse();
+				if (course != null && course.getSemester() == semesterIndex) {
+					return true;
+				}
+				return false;
+			});
+		}
+		return student;
 	}
 
 	@Override
@@ -111,14 +130,16 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Result addGrade(final Grade grade) {
-		// TODO
-		return null;
+		em.persist(grade);
+		LOGGER.debug("[addGrade] - {}", grade);
+		return Result.OK;
 	}
 
 	@Override
 	public Result editGrade(final Grade newGrade, final BigDecimal oldGrade) {
-		// TODO
-		return null;
+		em.merge(newGrade);
+		LOGGER.debug("[editGrade] - {}", newGrade);
+		return Result.OK;
 	}
 
 	@Override
@@ -143,12 +164,39 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Collection<Course> getApprovedCourses(final int docket) {
+		// +++xcheck why this does not work; figure it out, and replace the code below with this commented one
+//		final Collection<Course> courses = new ArrayList<>();
+//
+//		final TypedQuery<Grade> query = em.createQuery(GET_APPROVED_GRADES_BY_DOCKET, Grade.class);
+//		query.setParameter(DOCKET_PARAM, docket);
+//
+//		final List<Grade> approvedGrades = query.getResultList();
+//
+//		//TODO: Improve efficiency
+//		for (Grade grade : approvedGrades) {
+//			courses.add(grade.getCourse());
+//		}
+//
+//		return courses;
+		final Student student = getByDocket(docket);
+		final List<Course> courses = new LinkedList<>();
+		for (Grade grade : student.getGrades()) {
+			if (BigDecimal.valueOf(4).compareTo(grade.getGrade()) <= 0) {
+				courses.add(grade.getCourse());
+			}
+		}
+
+		return courses;
+	}
+
+	@Override
+	public List<Integer> getApprovedCoursesId(final int docket) {
 		// TODO
 		return null;
 	}
 
 	@Override
-	public List<Integer> getApprovedCoursesId(final int docket) {
+	public List<Student> getStudentsPassed(final int id) {
 		// TODO
 		return null;
 	}
@@ -164,11 +212,5 @@ public class StudentHibernateDao implements StudentDao {
 		query.setMaxResults(ONE);
 		final List<Student> students = query.getResultList();
 		return students.isEmpty() ? null : students.get(FIRST);
-	}
-
-	@Override
-	public List<Student> getStudentsPassed(final int id) {
-		// TODO
-		return null;
 	}
 }

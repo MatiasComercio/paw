@@ -8,8 +8,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "grade")
-//@IdClass(GradePK.class) //TODO: DELETE
 public class Grade {
+
+	@ManyToOne
+	@JoinColumn(name = "course_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Course course;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "grade_gradeid_seq")
@@ -62,6 +65,10 @@ public class Grade {
 
 	protected Grade() {
 		// Just for Hibernate
+	}
+
+	public Course getCourse() {
+		return course;
 	}
 
 	public int getStudentDocket() {

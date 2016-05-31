@@ -19,9 +19,9 @@ public class Student extends User {
 	private int docket;
 
 	// TODO +++xcheck if grades are being delete on cascade
-//	@OneToMany(cascade = CascadeType.ALL)
-//	@JoinColumn(name = "docket", referencedColumnName = "docket")
-	@Transient
+	@OneToMany
+	@JoinColumn(name = "docket", referencedColumnName = "docket")
+//	@Transient
 	private List<Grade> grades;
 
 	@ManyToMany(
@@ -50,6 +50,10 @@ public class Student extends User {
 
 	public List<Grade> getGrades() {
 		return Collections.unmodifiableList(grades);
+	}
+
+	public List<Grade> getModifiableGrades() {
+		return grades;
 	}
 
 	@Override

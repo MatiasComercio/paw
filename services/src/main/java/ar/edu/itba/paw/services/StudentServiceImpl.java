@@ -114,6 +114,7 @@ public class StudentServiceImpl implements StudentService {
         return courseService.getTotalPlanCredits();
     }
 
+	@Transactional
     @Override
     public Integer getPassedCredits(final int docket) {
         final List<Course> list = (List<Course>) getApprovedCourses(docket);
