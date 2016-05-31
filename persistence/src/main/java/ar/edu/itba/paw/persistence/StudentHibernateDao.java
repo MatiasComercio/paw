@@ -73,13 +73,23 @@ public class StudentHibernateDao implements StudentDao {
 	@Override
 	public Result create(final Student student) {
 		em.persist(student);
+		LOGGER.debug("[create] - {}", student);
 		return Result.OK;
 	}
 
 	@Override
-	public Result update(final int docket, final int dni, final Student student) {
-		// TODO
-		return null;
+	public Result update(final Student student) {
+		em.merge(student);
+		LOGGER.debug("[update] - {}", student);
+		return Result.OK;
+	}
+
+	@Override
+	public Result deleteStudent(final int docket) {
+		final Student student = getByDocket(docket);
+		em.remove(student);
+		LOGGER.debug("[delete] - {}", student);
+		return Result.OK;
 	}
 
 	@Override
@@ -98,12 +108,6 @@ public class StudentHibernateDao implements StudentDao {
 	public Integer getDniByDocket(final int docket) {
 		// TODO
 		return null;
-	}
-
-	@Override
-	public Result deleteStudent(final int docket) {
-		em.remove(getByDocket(docket));
-		return Result.OK;
 	}
 
 	@Override

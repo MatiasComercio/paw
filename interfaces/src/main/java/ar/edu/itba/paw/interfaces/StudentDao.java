@@ -55,11 +55,10 @@ public interface StudentDao {
 
 	/**
 	 * Update student
-	 * @param docket  The docket of the old student
 	 * @param student The new student
 	 * @return The Result code of update
 	 */
-	Result update(int docket, int dni, Student student);
+	Result update(Student student);
 
 	/**
 	 * Gets the students that comply to a list of filters

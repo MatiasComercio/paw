@@ -106,18 +106,7 @@ public class StudentServiceImpl implements StudentService {
 	@Transactional
 	@Override
 	public Result update(final int docket, final Student student) {
-		final Integer dni = studentDao.getDniByDocket(docket);
-
-        if (dni == null)
-            return Result.STUDENT_NOT_EXISTS;
-
-		if (studentDao.hasAddress(dni)){
-            studentDao.updateAddress(dni, student);
-		} else {
-            studentDao.createAddress(dni, student);
-		}
-
-		return studentDao.update(docket, dni, student);
+		return studentDao.update(student);
 	}
 
     @Override
