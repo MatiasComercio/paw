@@ -12,6 +12,7 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
+	private static final String EMAIL_DOMAIN = "@bait.edu.ar";
 
 	@Autowired
 	private UserDao userDao;
@@ -20,6 +21,18 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<Role> getRole(final int dni) {
 		return userDao.getRole(dni);
+	}
+
+	@Override
+	public String createEmail(final User user) {
+		final StringBuilder defaultEmailBuilder = new StringBuilder();
+		final char rolePrefix = user.getRole().originalString().toLowerCase().charAt(0);
+
+		defaultEmailBuilder.append(rolePrefix);
+		defaultEmailBuilder.append(user.getDni());
+		defaultEmailBuilder.append(EMAIL_DOMAIN);
+
+		return defaultEmailBuilder.toString();
 	}
 
 //	@Override
@@ -84,7 +97,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Transactional
-	@Override
+	@Override /* +++xremove: not used */
 	public Result delete(final int dni) {
 		if(dni <= 0) {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;

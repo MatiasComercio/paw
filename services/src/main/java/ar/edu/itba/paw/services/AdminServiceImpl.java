@@ -5,7 +5,6 @@ import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
-import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -32,12 +32,12 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     @Override /*+++xtodo: @Gonza improve: you are not validating if the userService creates the admin */
     public Result create(final Admin admin) {
-//        userService.create(admin);
-        Result result = adminDao.create(admin);
-
         //TODO: add role to roles table which indicates (dni, role)
-
-        return result;
+        admin.setRole(Role.ADMIN);
+        if (admin.getEmail() == null || Objects.equals(admin.getEmail(), "")) {
+            admin.setEmail(userService.createEmail(admin));
+        }
+        return adminDao.create(admin);
     }
 
     @Transactional
@@ -58,16 +58,18 @@ public class AdminServiceImpl implements AdminService {
         if(dni <= 0) {
             return Result.ERROR_DNI_OUT_OF_BOUNDS;
         }
-        return adminDao.deleteAdmin(dni);
+        return adminDao.delete(dni);
     }
 
+    @Transactional
     @Override
     public Result update(final int dni, final Admin admin) {
         if(dni <= 0) {
             return Result.ERROR_DNI_OUT_OF_BOUNDS;
         }
 
-        return userService.update(dni, admin);
+        return adminDao.update(admin);
+//        return userService.update(dni, admin);
     }
 
     @Transactional

@@ -9,21 +9,24 @@ import ar.edu.itba.paw.models.RoleClass;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static javax.persistence.InheritanceType.JOINED;
 
 @Entity
 @Table(name = "users")
 @Inheritance(strategy=JOINED)
-@DiscriminatorColumn(name="role")
 // not abstract anymore just for Hibernate
-public class User implements Serializable{
+public class User implements Serializable {
+	public static final String DEFAULT_PASSWORD = "pass";
+
 	@Id
-	@Column(name = "dni", nullable = false)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq_seq")
+	@SequenceGenerator(sequenceName = "users_id_seq_seq", name = "users_id_seq_seq", allocationSize = 1)
+	@Column(name = "id_seq")
+	private Integer id_seq;
+
+	@Column(name = "dni", unique = true, nullable = false, updatable = false)
 	private int dni;
 
 	@Basic
@@ -42,18 +45,19 @@ public class User implements Serializable{
 	private LocalDate birthday;
 
 	@Basic
-	@Column(name = "email", nullable = false, length = 100, unique = true)
+	@Column(name = "email", nullable = false, length = 100, unique = true, updatable = false)
 	private String email;
 
-	@OneToOne
-	@JoinColumn(name = "dni")
+	// Unidirectional Mapping
+	@OneToOne(cascade = CascadeType.ALL/*, fetch = FetchType.LAZY*/)
+	@JoinColumn(name = "dni", referencedColumnName = "dni", insertable = false, updatable = false)
 	private Address address;
 
 	@Basic
 	@Column(name = "password", length = 100)
 	private String password;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	@JoinColumn(name = "role", referencedColumnName = "role", nullable = false)
 	private RoleClass role;
 
@@ -62,6 +66,7 @@ public class User implements Serializable{
 	}
 
 	protected User(final Builder builder) {
+		this.id_seq = builder.id_seq;
 		this.dni = builder.dni;
 		this.firstName = builder.firstName;
 		this.lastName = builder.lastName;
@@ -70,7 +75,22 @@ public class User implements Serializable{
 		this.email = builder.email;
 		this.address = builder.address;
 		this.password = builder.password;
+		this.role = new RoleClass(builder.role, null);
 	}
+
+//	public <T extends User, V extends Builder<T,V>> T merge(final T u, final Builder<T, V> builder) {
+//		final Integer id_seq = u.getId_seq() == null ? this.id_seq : u.getId_seq();
+//		final int dni = this.dni;
+//		final String firstName = u.getFirstName();
+//		final String lastName = u.getLastName();
+//		final Genre genre = u.getGenre() == null ? this.genre : u.getGenre();
+//		final LocalDate birthday = u.getBirthday() == null ? this.birthday : u.getBirthday();
+//		final String email = this.email;
+//		final Address address = this.address.merge(u.getAddress());
+//		final String password = u.getPassword() == null ? this.password : u.getPassword();
+//
+//		return
+//	}
 
 	public int getDni() {
 		return dni;
@@ -96,6 +116,14 @@ public class User implements Serializable{
 		return birthday;
 	}
 
+	// +++ximprove:
+	public void setEmail(final String email) {
+		if (email != null) {
+			this.email = email;
+		}
+	}
+
+
 	public String getEmail() {
 		return email == null ? "" : email;
 	}
@@ -116,6 +144,12 @@ public class User implements Serializable{
 	public Role getRole() {
 		return role == null ? null : role.getRole();
 	}
+
+	// +++ximprove
+	public void setRole(final Role role) {
+		this.role = role == null ? null : new RoleClass(role, null);
+	}
+
 
 	public Collection<Authority> getAuthorities() {
 		return role == null ? Collections.EMPTY_SET : role.getAuthorities();
@@ -149,20 +183,39 @@ public class User implements Serializable{
 				'}';
 	}
 
-	public static abstract class Builder<V extends User, T extends Builder<V,T>> {
-		private int dni;
-		private T thisBuilder;
+	public Integer getId_seq() {
+		return id_seq;
+	}
 
+	public void setId_seq(final Integer id_seq) {
+		this.id_seq = id_seq;
+	}
+
+	public void setPassword(final String password) {
+		this.password = password;
+	}
+
+	public void resetPassword() {
+		this.password = DEFAULT_PASSWORD;
+	}
+
+	public static abstract class Builder<V extends User, T extends Builder<V,T>> {
+		private final int dni;
+		private final Role role;
+
+		private T thisBuilder;
+		private Integer id_seq;
 		private String firstName = null;
 		private String lastName = null;
 		private Genre genre = Genre.N;
 		private LocalDate birthday = null;
 		private String email = null;
 		private Address address = null;
-		private String password = null;
+		private String password = "pass";
 
-		public Builder(final int dni) {
+		public Builder(final int dni, final Role role) {
 			this.dni = dni;
+			this.role = role;
 			this.thisBuilder = thisBuilder();
 		}
 
@@ -171,6 +224,11 @@ public class User implements Serializable{
 
 		/* Each subclass should implement this method to return it's own builder */
 		public abstract T thisBuilder();
+
+		public T id_seq(final Integer id_seq) {
+			this.id_seq = id_seq;
+			return thisBuilder;
+		}
 
 		public T firstName(final String firstName) {
 			if (firstName != null) {
@@ -215,7 +273,7 @@ public class User implements Serializable{
 		}
 
 		public T password(final String password) {
-			if (password != null) {
+			if (password != null && !Objects.equals(password, "")) {
 				this.password = password;
 			}
 			return thisBuilder;

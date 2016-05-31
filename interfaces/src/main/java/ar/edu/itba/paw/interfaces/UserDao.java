@@ -45,6 +45,8 @@ public interface UserDao {
 	 * Delete a user with the corresponding id
 	 * @param dni The user's dni
 	 * @return OK if the user was deleted.
+	 * @throws UnsupportedOperationException if the current implementation requires
+	 *         that a call to delete on User's subclasses DAO 's should be done instead
 	 */
 	Result delete(int dni);
 

@@ -32,6 +32,10 @@ public abstract class UserFilter {
         return genre;
     }
 
+    public abstract Object getId();
+
+    public abstract String getAttributeId();
+
     protected static abstract class UserFilterBuilder<V extends UserFilter, T extends UserFilterBuilder<V,T>> {
         private Object dni;
 

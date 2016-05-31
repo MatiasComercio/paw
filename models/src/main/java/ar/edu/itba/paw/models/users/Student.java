@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.models.users;
 
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.Role;
 
 import javax.persistence.*;
 import java.util.Collections;
@@ -9,23 +10,15 @@ import java.util.List;
 
 @Entity
 @Table(name = "student")
-@DiscriminatorValue("STUDENT")
 public class Student extends User {
-	// +++xcheck: +++xquestion
-	/*
-	What I wanted to do is that a subclass would have another field as a primary key
-	regarding the superclass, but after I rethought the problem,
-	I guess Hibernate was right about don't allow me to do it.
-	I think if I'd do this way, I would be against the concept of inheritance.
-	So I better redesigned my database.
-	 */
-	@Column(unique = true)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_docket_seq")
+	@SequenceGenerator(sequenceName = "student_docket_seq", name = "student_docket_seq", allocationSize = 1)
+	@Column(unique = true, insertable = false, updatable = false)
 	private int docket;
 
-	@OneToMany
-	//@OrderColumn(name = "modified")
-	//@OrderBy(value = "modified")
-	@JoinColumn(name = "modified")
+	// TODO +++xcheck if grades are being delete on cascade
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "docket", referencedColumnName = "docket")
 	private List<Grade> grades;
 
 	private Student(final Builder builder) {
@@ -78,7 +71,7 @@ public class Student extends User {
 		private List<Grade> grades;
 
 		public Builder(final int docket, final int dni) {
-			super(dni);
+			super(dni, Role.STUDENT);
 			this.docket = docket;
 			this.grades = new LinkedList<>();
 		}

@@ -126,6 +126,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 			// never show this on production
 			hibernateProperties.setProperty("hibernate.show_sql", "true");
 			hibernateProperties.setProperty("hibernate.format_sql", "true");
+            hibernateProperties.setProperty("hibernate.default_schema", "public");
 		}
 
 		emf.setJpaProperties(hibernateProperties);

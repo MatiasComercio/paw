@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -386,8 +388,14 @@ public class StudentController {
 		}
 		else{
 			Student student = studentForm.build();
-			Result result = studentService.create(student);
-			if(!result.equals(Result.OK)){
+			Result result = null;
+			try {
+				result = studentService.create(student);
+			} catch (final DataIntegrityViolationException e) {
+				result = Result.USER_EXISTS_DNI;
+			}
+
+			if(result == null || !result.equals(Result.OK)){
 				LOGGER.warn("User {} could not add student with DNI {}, Result = {}", loggedUser.getDni(), student.getDni(), result);
 				redirectAttributes.addFlashAttribute("alert", "danger");
 				redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
@@ -563,6 +571,14 @@ public class StudentController {
 			LOGGER.warn("User {} could not edit student due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
 			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
 		}
+
+		final Student s = studentService.getByDocket(docket);
+
+		// Write data that was hidden at the form --> not submitted
+		studentForm.setId_seq(s.getId_seq());
+		studentForm.setAddress_id_seq(s.getAddress().getId_seq());
+		studentForm.setPassword(s.getPassword());
+		studentForm.setEmail(s.getEmail());
 
 		Student student = studentForm.build();
 		Result result = studentService.update(docket, student);

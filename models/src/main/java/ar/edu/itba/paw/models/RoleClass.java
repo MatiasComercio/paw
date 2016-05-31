@@ -12,7 +12,7 @@ public class RoleClass {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "role_authorities",
 		joinColumns = {@JoinColumn(name = "role")},
 			inverseJoinColumns = {@JoinColumn(name = "authority")}
@@ -34,6 +34,10 @@ public class RoleClass {
 
 	public Collection<Authority> getAuthorities() {
 		return Collections.unmodifiableCollection(authorities);
+	}
+
+	public Collection<Authority> getMutableAuthorities() {
+		return authorities;
 	}
 
 	@Override

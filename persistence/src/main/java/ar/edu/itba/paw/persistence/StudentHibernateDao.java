@@ -38,7 +38,6 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Student getByDocket(final int docket) {
-		// +++xcheck
 		final TypedQuery<Student> query = em.createQuery(GET_BY_DOCKET, Student.class);
 		query.setParameter(DOCKET_PARAM, docket);
 		query.setMaxResults(ONE);
@@ -66,8 +65,8 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Result create(final Student student) {
-		// TODO
-		return null;
+		em.persist(student);
+		return Result.OK;
 	}
 
 	@Override
@@ -78,10 +77,14 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public List<Student> getByFilter(final StudentFilter studentFilter) {
-		// TODO
-		final TypedQuery<Student> query = em.createQuery(GET_ALL_STUDENTS, Student.class);
-		final List<Student> list = query.getResultList();
-		return list;
+		final UserHibernateDao.QueryFilter<Student> queryFilter
+				= new UserHibernateDao.QueryFilter<>(em, Student.class);
+
+		if (studentFilter != null) {
+			queryFilter.applyFilters(studentFilter);
+		}
+
+		return em.createQuery(queryFilter.getQuery()).getResultList();
 	}
 
 	@Override
@@ -92,8 +95,8 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Result deleteStudent(final int docket) {
-		// TODO
-		return null;
+		em.remove(getByDocket(docket));
+		return Result.OK;
 	}
 
 	@Override

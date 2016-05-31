@@ -2,6 +2,7 @@ package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.UserFilter;
@@ -28,7 +29,7 @@ import java.util.List;
 public class UserHibernateDao implements UserDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserHibernateDao.class);
 
-	private static final String GET_ROLE_QUERY = "from User as u where u.dni = :dni";
+	private static final String GET_BY_DNI = "from User as u where u.dni = :dni";
 
 	private static final int FIRST = 0;
 	private static final int ONE = 1;
@@ -39,14 +40,21 @@ public class UserHibernateDao implements UserDao {
 
 	@Override
 	public <V extends User, T extends User.Builder<V, T>> V getByDni(final int dni, final User.Builder<V, T> builder) {
-		// TODO
-		return null;
+		final TypedQuery<User> query = em.createQuery(GET_BY_DNI, User.class);
+		query.setParameter(DNI_PARAM, dni);
+		query.setMaxResults(ONE);
+		final List<User> users = query.getResultList();
+		final User u = users.get(FIRST);
+
+		return builder.firstName(u.getFirstName()).lastName(u.getLastName()).address(u.getAddress())
+				.genre(u.getGenre()).birthday(u.getBirthday()).email(u.getEmail()).password(u.getPassword())
+				.build();
 	}
 
 	@Override // +++xchange: return only one role
 	public List<Role> getRole(final int dni) {
 		// write "from..." not "select...". The second form will be causing an exception
-		final TypedQuery<User> query = em.createQuery(GET_ROLE_QUERY, User.class);
+		final TypedQuery<User> query = em.createQuery(GET_BY_DNI, User.class);
 		query.setParameter(DNI_PARAM, dni);
 		query.setMaxResults(ONE);
 		final List<User> users = query.getResultList();
@@ -62,32 +70,42 @@ public class UserHibernateDao implements UserDao {
 
 	@Override
 	public Result create(final User user, final Role role) {
-		// TODO
-		return null;
+		em.persist(user);
+		return Result.OK;
 	}
 
-	@Override
+	@Override /* +++xremove when service function with the same name is removed */
 	public Result delete(final int dni) {
-		// TODO
-		return null;
+		// this method should not be directly called
+		// use delete method of subclasses DAO implementations
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public Result changePassword(final int dni, final String prevPassword, final String newPassword) {
-		// TODO
-		return null;
+		final TypedQuery<User> query = em.createQuery(GET_BY_DNI, User.class);
+		query.setParameter(DNI_PARAM, dni);
+		query.setMaxResults(ONE);
+		final List<User> users = query.getResultList();
+		if (users.isEmpty()) {
+			return null;
+		}
+		final User user = users.get(FIRST);
+		user.setPassword(newPassword);
+		em.persist(user);
+		return Result.OK;
 	}
 
 	@Override
 	public Result update(final int dni, final User user) {
-		// TODO
-		return null;
+		em.merge(user);
+		LOGGER.debug("[update] - {}", user);
+		return Result.OK;
 	}
 
 	@Override
 	public Result resetPassword(final int dni) {
-		// TODO
-		return null;
+		return changePassword(dni, null, User.DEFAULT_PASSWORD);
 	}
 
 	// QueryFilter
@@ -95,24 +113,27 @@ public class UserHibernateDao implements UserDao {
 
 		private final CriteriaBuilder builder;
 		private final CriteriaQuery<T> query;
-		private final EntityType<User> type;
+		private final EntityType<T> type;
 		private final Root<T> root;
 
 		private final List<Predicate> predicates;
 
+		private final EntityManager em;
+
 		/* package-private */ QueryFilter(final EntityManager em, final Class<T> modelTClass) {
+			this.em = em;
 			builder = em.getCriteriaBuilder();
 			query = builder.createQuery(modelTClass);
 			// 'type' does not use modelTClass because declaredSingularAttribute are load with
 			// the explicitly declared fields of the entity, i.e., it does not inherit the ones
 			// from User.class, and we need some of those fields to filter
-			type = em.getMetamodel().entity(User.class);
+			type = em.getMetamodel().entity(modelTClass);
 			root = query.from(modelTClass);
 			predicates = new ArrayList<>();
 		}
 
 		/* package-private */ void applyFilters(final UserFilter userFilter) {
-			filterByDni(userFilter);
+			filterById(userFilter);
 			filterByFirstName(userFilter);
 			filterByLastName(userFilter);
 		}
@@ -121,16 +142,18 @@ public class UserHibernateDao implements UserDao {
 			return query.where(builder.and(predicates.toArray(new Predicate[] {})));
 		}
 
-		private void filterByDni(final UserFilter userFilter) {
-			final Object dni = userFilter.getDni();
+		private void filterById(final UserFilter userFilter) {
+			final Object id = userFilter.getId();
+			final String attribute = userFilter.getAttributeId();
+
 			final Predicate p;
 
-			if (dni != null){
+			if (id != null){
 				p = builder.like(
 						root.get(
-								type.getDeclaredSingularAttribute("dni", dni.getClass())
+								type.getSingularAttribute(attribute, id.getClass())
 						).as(String.class),
-						"%" + escapeFilter(dni) + "%"
+						"%" + escapeFilter(id) + "%"
 				);
 				predicates.add(p);
 			}
@@ -148,11 +171,11 @@ public class UserHibernateDao implements UserDao {
 
 		private <Y> void  addPredicate(final String attribute, final Object keyword) {
 			final Predicate p;
-			if (keyword != null){
+			if (keyword != null) {
 				p = builder.like(
 						builder.lower(
 								root.get(
-										type.getDeclaredSingularAttribute(attribute, keyword.getClass())
+										type.getSingularAttribute(attribute, keyword.getClass())
 								).as(String.class)
 						),
 						"%" + escapeFilter(keyword).toLowerCase() + "%"

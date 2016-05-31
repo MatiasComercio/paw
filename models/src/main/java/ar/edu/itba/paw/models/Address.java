@@ -8,15 +8,17 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "address")
-public class Address implements Serializable{
+// Needs to implement Serializable because of the loadUserByUsername method.
+// (I assume that Spring Security serializes all the data it manages)
+public class Address implements Serializable {
 
 	@Id
-	@Column(name = "dni", nullable = false)
-	private int dni;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_id_seq_seq")
+	@SequenceGenerator(sequenceName = "address_id_seq_seq", name = "address_id_seq_seq", allocationSize = 1)
+	private Integer id_seq;
 
-	@OneToOne
-	@JoinColumn(name = "dni", referencedColumnName = "dni", nullable = false)
-	private User userByDni;
+	@Column(name = "dni", unique = true, updatable = false)
+	private Integer dni;
 
 	@Basic
 	@Column(name = "country", nullable = false, length = 50)
@@ -55,6 +57,8 @@ public class Address implements Serializable{
 	private Integer zipCode;
 
 	private Address(final Builder builder) {
+		this.id_seq = builder.id_seq;
+		this.dni = builder.dni;
 		this.country = builder.country;
 		this.city = builder.city;
 		this.neighborhood = builder.neighborhood;
@@ -141,7 +145,13 @@ public class Address implements Serializable{
 		return result;
 	}
 
+	public Integer getId_seq() {
+		return id_seq;
+	}
+
 	public static class Builder {
+		private Integer id_seq;
+		private Integer dni;
 		private String country;
 		private String city;
 		private String neighborhood;
@@ -153,8 +163,10 @@ public class Address implements Serializable{
 		private Long telephone;
 		private Integer zipCode;
 
-		public Builder(final String country, final String city,
+		public Builder(final Integer id_seq, final Integer dni, final String country, final String city,
 		               final String neighborhood, final String street, final Integer number) {
+			this.id_seq = id_seq;
+			this.dni = dni;
 			this.country = country == null ? "" : country;
 			this.city = city == null ? "" : city;
 			this.neighborhood = neighborhood == null ? "" : neighborhood;

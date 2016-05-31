@@ -1,15 +1,13 @@
 package ar.edu.itba.paw.models.users;
 
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import ar.edu.itba.paw.models.Role;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "admin")
-@DiscriminatorValue("ADMIN")
 public class Admin extends User {
-
     private Admin(final Builder builder) {
         super(builder);
     }
@@ -35,7 +33,7 @@ public class Admin extends User {
 
     public static class Builder extends User.Builder<Admin, Builder> {
         public Builder(int dni) {
-            super(dni);
+            super(dni, Role.ADMIN);
         }
 
         @Override

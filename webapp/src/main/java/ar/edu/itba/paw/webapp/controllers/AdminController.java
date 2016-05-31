@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -161,7 +162,12 @@ public class AdminController {
 			return adminsAddAdminG(adminForm, null, loggedUser);
 		}
 		Admin admin = adminForm.build();
-		Result result = adminService.create(admin);
+		Result result;
+		try {
+			result = adminService.create(admin);
+		} catch (final DataIntegrityViolationException e) {
+			result = Result.USER_EXISTS_DNI;
+		}
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
@@ -314,6 +320,19 @@ public class AdminController {
 			LOGGER.warn("There were errors when User {} tried to edit an admin {}", loggedUser, errors.getAllErrors());
 			return editAdmin(dni, adminForm, redirectAttributes, loggedUser);
 		}
+
+		final Admin originalAdmin = adminService.getByDni(dni);
+
+		if (originalAdmin == null) {
+			LOGGER.warn("User {} tried to access admin {} that does not exist", loggedUser.getUsername());
+			return new ModelAndView(NOT_FOUND);
+		}
+
+		// Write data that was hidden at the form --> not submitted
+		adminForm.setId_seq(originalAdmin.getId_seq());
+		adminForm.setAddress_id_seq(originalAdmin.getAddress().getId_seq());
+		adminForm.setPassword(originalAdmin.getPassword());
+		adminForm.setEmail(originalAdmin.getEmail());
 
 		final Admin admin = adminForm.build();
 		final Result result = adminService.update(dni, admin);

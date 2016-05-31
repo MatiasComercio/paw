@@ -15,6 +15,9 @@ public interface UserService {
 	 */
 	List<Role> getRole(int dni);
 
+	/* +++xdocument +++xtest */
+	String createEmail(final User user);
+
 //
 //	/**
 //	 * Gets all the data associated with the user that has the
