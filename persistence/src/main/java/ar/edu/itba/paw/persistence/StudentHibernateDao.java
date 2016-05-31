@@ -135,6 +135,7 @@ public class StudentHibernateDao implements StudentDao {
 
         final List<Grade> approvedGrades = query.getResultList();
 
+        //TODO: Improve efficiency
         for (Grade grade : approvedGrades) {
             courses.add(courseDao.getById(grade.getCourseId()));
         }
