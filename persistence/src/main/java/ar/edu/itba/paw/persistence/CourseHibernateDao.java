@@ -20,7 +20,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import java.util.ArrayList;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -83,7 +82,7 @@ public class CourseHibernateDao implements CourseDao {
 //        boolean inscriptionExists = inscriptionExists(id);
 //        boolean gradeExists = gradeExists(id);
 
-        return em.find(Course.class,id);
+        return em.find(Course.class, id);
     }
 
     @Override
@@ -143,7 +142,7 @@ public class CourseHibernateDao implements CourseDao {
         Course correlative = getById(correlativeId);
 
         Set<Course> toAdd;
-        Set<Course> current = new HashSet<Course>();
+        Set<Course> current = new HashSet<>();
         current.addAll(correlative.getCorrelatives());
 
         int prevSize = 0;
@@ -207,9 +206,9 @@ public class CourseHibernateDao implements CourseDao {
     @Override
     public List<Integer> getUpperCorrelatives(int courseId) {
         Course course = getById(courseId);
-        List<Integer> upperCorrelatives = new ArrayList<Integer>();
+        List<Integer> upperCorrelatives = new ArrayList<>();
 
-        for(Course correlative: course.getUpperCorrelatives()){
+        for(Course correlative : course.getUpperCorrelatives()){
             upperCorrelatives.add(correlative.getId());
         }
         return upperCorrelatives;
@@ -237,7 +236,7 @@ public class CourseHibernateDao implements CourseDao {
     @Override
     public List<Course> getCorrelativeCourses(int courseId) {
         Course course = getById(courseId);
-        List<Course> correlatives = new ArrayList<Course>();
+        List<Course> correlatives = new ArrayList<>();
 
         for(Course correlative: course.getCorrelatives()){
             correlatives.add(correlative);
