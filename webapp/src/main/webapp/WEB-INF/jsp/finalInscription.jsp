@@ -85,6 +85,17 @@
     <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
+<script>
+    $( document ).ready(function() {
+
+        <c:choose>
+            <c:when test="${section2=='final_inscription'}">
+                loadfinalInscriptionForm("final_inscription");
+        </c:when>
+        </c:choose>
+    });
+</script>
+
 <jsp:include page="base/scripts.jsp" />
 
 </body>

@@ -9,8 +9,10 @@ function loadfinalInscriptionForm(nameAttr) {
         var vacancy = $(this).data("vacancy");
 
         var inscriptionForm = $("#inscription_form");
-        inscriptionForm.find("input[name='courseId']").val(courseId);
+        inscriptionForm.find("input[name='id']").val(inscriptionId);
         inscriptionForm.find("input[name='courseName']").val(courseName);
+        inscriptionForm.find("input[name='vacancy']").val(vacancy);
+        inscriptionForm.find("input[name='finalExamDate']").val(finalExamDate);
     });
 
     $("#finalInscriptionFormConfirmAction").on("click", function() {

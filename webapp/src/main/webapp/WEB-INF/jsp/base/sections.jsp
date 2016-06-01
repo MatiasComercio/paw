@@ -142,6 +142,7 @@ That's why we are usig <%@include ...%>--%>
                 </c:set>
             </c:when>
 
+
             <c:otherwise>
                 <jsp:include page="../template/studentActionsPanel.jsp" />
                 <jsp:include page="../template/resetPasswordForm.jsp" />
