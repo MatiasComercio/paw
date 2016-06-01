@@ -1,10 +1,9 @@
 package ar.edu.itba.paw.models;
 
-import ar.edu.itba.paw.models.users.Student;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "grade")
@@ -36,6 +35,9 @@ public class Grade {
 
 	@Transient
     private Boolean taking;
+
+    @OneToMany()
+	private List<FinalGrade> finalGrades;
 
 	public void setTaking(final Boolean taking) {
 		this.taking = taking;
@@ -94,6 +96,15 @@ public class Grade {
 	}
 
 	public LocalDateTime getModified() { return modified; }
+
+
+    public List<FinalGrade> getFinalGrades() {
+        return finalGrades;
+    }
+
+    public void setFinalGrades(List<FinalGrade> finalGrades) {
+        this.finalGrades = finalGrades;
+    }
 
     public Boolean getTaking() {
         return taking;
@@ -175,5 +186,6 @@ public class Grade {
 		public Grade build() {
 			return new Grade(this);
 		}
+
 	}
 }
