@@ -206,7 +206,7 @@ public class StudentServiceImpl implements StudentService {
 
 		// Load all semesters
 		for (int i = 0 ; i < tSemesters; i++) {
-			semesters.add(new HashSet<>());
+			semesters.add(new LinkedList<>());
 		}
 
 		TranscriptGrade gradeForm;
@@ -246,42 +246,6 @@ public class StudentServiceImpl implements StudentService {
 		}
 
 		return semesters;
-
-
-
-
-//		final List<List<Grade>> semesterList = new ArrayList<>();
-//		final Integer totalSemesters = courseService.getTotalSemesters();
-//
-//		for (int i = 0; i < totalSemesters; i++) {
-//            int semesterIndex = i + 1;
-//
-//            //Get all grades from that semester and add them
-//            Student student = studentDao.getGrades(docket, semesterIndex);
-//
-//            semesterList.add(i, new ArrayList<>());
-//
-//            for (Grade grade : student.getGrades()) {
-//                semesterList.get(i).add(grade);
-//            }
-//		}
-//
-//        //Add courses that are being taken
-//        final List<Course> coursesTaken = getStudentCourses(docket, null);
-//        for (Course course : coursesTaken){
-//            int semesterIndex = course.getSemester() - 1;
-//            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).taking(true).build());
-//        }
-//
-//        //Complete with the rest of the courses that are not taken
-//        final List<Course> availCourses = getAvailableInscriptionCourses(docket, null);
-//
-//        for (Course course : availCourses){
-//            int semesterIndex = course.getSemester() - 1;
-//            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).build());
-//        }
-//
-//		return semesterList;
 	}
 
 	@Transactional
