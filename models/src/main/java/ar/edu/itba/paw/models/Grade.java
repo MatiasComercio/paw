@@ -137,7 +137,21 @@ public class Grade {
 		return result;
 	}
 
-	public static class Builder {
+    @Override
+    public String toString() {
+        return "Grade{" +
+                "course=" + course +
+                ", id=" + id +
+                ", studentDocket=" + studentDocket +
+                ", studentFirstName='" + studentFirstName + '\'' +
+                ", studentLastName='" + studentLastName + '\'' +
+                ", grade=" + grade +
+                ", modified=" + modified +
+                ", taking=" + taking +
+                '}';
+    }
+
+    public static class Builder {
 		private final Integer id;
 		private final int studentDocket;
 		private final int courseId;

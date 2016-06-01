@@ -51,6 +51,14 @@ public class FinalGrade {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "FinalGrade{" +
+                "id=" + id +
+                ", grade=" + grade +
+                ", modified=" + modified +
+                '}';
+    }
 
     public LocalDateTime getModified() {
         return modified;
