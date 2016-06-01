@@ -17,7 +17,7 @@ public class Grade {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "grade_gradeid_seq")
 	@SequenceGenerator(sequenceName = "grade_gradeid_seq", name = "grade_gradeid_seq", allocationSize = 1)
-	private int id;
+	private Integer id;
 
 	@Column(name = "docket", nullable = false)
 	private int studentDocket;
@@ -47,6 +47,7 @@ public class Grade {
 //	private Student studentByDocket;
 
 	private Grade(final Builder builder) {
+		this.id = builder.id;
 		this.studentDocket = builder.studentDocket;
 		this.studentFirstName = builder.studentFirstName;
 		this.studentLastName = builder.studentLastName;
@@ -58,6 +59,10 @@ public class Grade {
 
 	protected Grade() {
 		// Just for Hibernate
+	}
+
+	public Integer getId() {
+		return id;
 	}
 
 	public Course getCourse() {
@@ -121,6 +126,7 @@ public class Grade {
 	}
 
 	public static class Builder {
+		private final Integer id;
 		private final int studentDocket;
 		private final int courseId;
 		private final BigDecimal grade;
@@ -131,10 +137,12 @@ public class Grade {
 		private LocalDateTime modified;
         private Boolean taking = false;
 
-		public Builder(final int studentDocket, final int courseId, final BigDecimal grade) {
+		public Builder(final Integer id, final int studentDocket, final int courseId, final BigDecimal grade) {
+			this.id = id;
 			this.studentDocket = studentDocket;
 			this.courseId = courseId;
 			this.grade = grade;
+			this.modified = LocalDateTime.now();
 		}
 
 		public Builder studentFirstName(final String studentFirstName) {
@@ -153,7 +161,9 @@ public class Grade {
 		}
 
 		public Builder modified(final LocalDateTime modified) {
-			this.modified = modified;
+			if (modified != null) {
+				this.modified = modified;
+			}
 			return this;
 		}
 

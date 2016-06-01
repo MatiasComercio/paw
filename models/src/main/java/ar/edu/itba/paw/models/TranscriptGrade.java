@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class TranscriptGrade {
+	private Integer id;
 	private Integer docket;
 	private Integer courseId;
 	private String courseName;
@@ -12,6 +13,7 @@ public class TranscriptGrade {
 	private boolean taking;
 
 	public void loadFromGrade(final Grade grade){
+		this.id = grade.getId();
 		this.docket = grade.getStudentDocket();
 		this.courseId = grade.getCourseId();
 		this.courseName = grade.getCourseName();
@@ -65,5 +67,29 @@ public class TranscriptGrade {
 
 	public void setTaking(final boolean taking) {
 		this.taking = taking;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(final Integer id) {
+		this.id = id;
+	}
+
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (!(o instanceof TranscriptGrade)) return false;
+
+		final TranscriptGrade that = (TranscriptGrade) o;
+
+		return id != null ? id.equals(that.id) : that.id == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		return id != null ? id.hashCode() : 0;
 	}
 }

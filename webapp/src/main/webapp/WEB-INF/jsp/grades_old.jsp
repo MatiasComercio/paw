@@ -123,6 +123,7 @@
                                     <c:if test="${grade.modified != null }">
                                     <s:authorize access="hasAuthority('ROLE_EDIT_GRADE')">
                                     <button name="gradeButton" class="btn btn-info" type="button"
+                                            data-id="${grade.id}"
                                             data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
                                             data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
                                             data-target="#gradeFormConfirmationModal">

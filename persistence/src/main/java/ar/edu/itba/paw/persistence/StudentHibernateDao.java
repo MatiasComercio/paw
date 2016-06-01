@@ -17,8 +17,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -138,6 +137,12 @@ public class StudentHibernateDao implements StudentDao {
 	@Override
 	public Result editGrade(final Grade newGrade, final BigDecimal oldGrade) {
 		em.merge(newGrade);
+//		final CriteriaBuilder cb = em.getCriteriaBuilder();
+//		final CriteriaUpdate<Grade> query = cb.createCriteriaUpdate(Grade.class);
+//		final Root<Grade> root = query.from(Grade.class);
+//		private final List<Predicate> predicates;
+//		final Predicate pCourseId = builder.equal(root.get("id"), id);
+
 		LOGGER.debug("[editGrade] - {}", newGrade);
 		return Result.OK;
 	}

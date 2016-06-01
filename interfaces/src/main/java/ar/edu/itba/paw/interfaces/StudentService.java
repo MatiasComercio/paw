@@ -148,7 +148,7 @@ public interface StudentService {
 	 * @param docket
 	 * @return A list containing lists in which all the grades of a semester are placed
      */
-	List<List<TranscriptGrade>> getTranscript(int docket);
+	Collection<Collection<TranscriptGrade>> getTranscript(int docket);
 
 	/**
 	 * Get the total credits of the plan.

@@ -199,23 +199,24 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public List<List<TranscriptGrade>> getTranscript(final int docket) {
-		final List<List<TranscriptGrade>> semesters = new ArrayList<>();
+	public Collection<Collection<TranscriptGrade>> getTranscript(final int docket) {
+		final List<Collection<TranscriptGrade>> semesters = new ArrayList<>();
 		final int tSemesters = courseService.getTotalSemesters();
 		int iSemester;
 
 		// Load all semesters
 		for (int i = 0 ; i < tSemesters; i++) {
-			semesters.add(new LinkedList<>());
+			semesters.add(new HashSet<>());
 		}
 
-		TranscriptGrade gradeForm = new TranscriptGrade();
+		TranscriptGrade gradeForm;
 
 		// add taken courses
 		final Student student = getGrades(docket);
 		final List<Grade> approved = student.getGrades();
 		for (Grade g : approved) {
 			iSemester = g.getCourse().getSemester() - 1;
+			gradeForm = new TranscriptGrade();
 			gradeForm.loadFromGrade(g);
 
 			semesters.get(iSemester).add(gradeForm);

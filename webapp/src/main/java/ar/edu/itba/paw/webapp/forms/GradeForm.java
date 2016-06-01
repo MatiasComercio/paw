@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class GradeForm {
+    private Integer id;
+
     @NotNull
     @Min(1)
     private Integer docket;
@@ -34,7 +36,7 @@ public class GradeForm {
     private LocalDateTime modified;
 
     public Grade build() {
-        return new Grade.Builder(docket, courseId, grade).modified(modified).build();
+        return new Grade.Builder(id, docket, courseId, grade).modified(modified).build();
     }
 
     public Integer getDocket() {
@@ -78,6 +80,7 @@ public class GradeForm {
     }
 
     public void loadFromGrade(final Grade grade){
+        this.id = grade.getId();
         this.docket = grade.getStudentDocket();
         this.courseId = grade.getCourseId();
         this.grade = grade.getGrade();
@@ -89,5 +92,13 @@ public class GradeForm {
 
     public void setOldGrade(BigDecimal oldGrade) {
         this.oldGrade = oldGrade;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(final Integer id) {
+        this.id = id;
     }
 }
