@@ -112,3 +112,6 @@ local.properties
 
 # Intellij JPA syntax configuration folder
 /webapp/META-INF/
+
+.DS_Store
+*.pg_dump
