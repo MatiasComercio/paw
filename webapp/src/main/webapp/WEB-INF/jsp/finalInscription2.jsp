@@ -70,7 +70,7 @@
                                                 <c:when test="${section2 eq 'final_inscription'}">
                                                     <button name="final_inscription" class="btn btn-info" type="button"
                                                             data-inscription_id="${ inscription.id }" data-course_name="${ inscription.course.name }"
-                                                            data-vacancy="${ inscription.vacancy}" data-finalExamDate="${ inscription.finalExamDate}
+                                                            data-vacancy="${ inscription.vacancy}" data-finalExamDate="${ inscription.finalExamDate}"
                                                             data-toggle="modal" data-target="#finalInscriptionFormConfirmationModal">
                                                     <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="enroll"/>
                                                     </button>
@@ -122,7 +122,7 @@
 
             /* Remove focus on the modal trigger button */
             $('#finalInscriptionFormConfirmationModal').on('show.bs.modal', function(e){
-                loadfinalInscription.one('focus', function(e){$(this).blur();});
+                loadfinalInscriptionFormButton.one('focus', function(e){$(this).blur();});
             });
             /* /Inscription Form Action Sequence */
         }

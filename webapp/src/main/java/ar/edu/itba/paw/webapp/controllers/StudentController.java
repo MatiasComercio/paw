@@ -702,7 +702,7 @@ public class StudentController {
 //		return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
 //	}
 //
-
+//add
 
 
 
