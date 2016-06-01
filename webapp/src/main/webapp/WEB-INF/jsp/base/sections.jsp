@@ -289,8 +289,16 @@ That's why we are usig <%@include ...%>--%>
                         ${includeScripts} ` <%@include file="../../js/template/searchStudents.js"%>
                     </c:set>
                     <c:set var="loadScripts">
-                        ${loadScripts} ` loadStudentSearch();
+                        ${loadScripts} ` loadSearchStudents();
                     </c:set>
+
+                    <c:set var="includeScripts" >
+                        ${includeScripts} ` <%@include file="../../js/template/gradeForm.js"%>
+                    </c:set>
+                    <c:set var="loadScripts">
+                        ${loadScripts} ` loadGradeForm("gradeButton");
+                    </c:set>
+
                 </c:when>
 
                 <c:when test="${section2=='studentsPassed'}">
@@ -300,7 +308,7 @@ That's why we are usig <%@include ...%>--%>
                         ${includeScripts} ` <%@include file="../../js/template/searchStudents.js"%>
                     </c:set>
                     <c:set var="loadScripts">
-                        ${loadScripts} ` loadStudentSearch();
+                        ${loadScripts} ` loadSearchStudents();
                     </c:set>
                 </c:when>
 

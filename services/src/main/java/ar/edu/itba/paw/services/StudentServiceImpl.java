@@ -47,9 +47,15 @@ public class StudentServiceImpl implements StudentService {
 		}
 
 		List<Course> coursesFiltered = courseService.getByFilter(courseFilter);
-		courses.retainAll(coursesFiltered);
 
-		return courses;
+		final List<Course> rCourses = new LinkedList<>();
+		for (Course c : coursesFiltered) {
+			if (courses.contains(c)) {
+				rCourses.add(c);
+			}
+		}
+
+		return rCourses;
 	}
 
 	@Transactional

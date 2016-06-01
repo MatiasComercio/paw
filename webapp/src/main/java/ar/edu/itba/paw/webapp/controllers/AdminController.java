@@ -158,7 +158,11 @@ public class AdminController {
 		}
 		if (errors.hasErrors()){
 			LOGGER.warn("The user {} is trying to add an admin and there was an error = {}", loggedUser, errors.getAllErrors());
-			return adminsAddAdminG(adminForm, null, loggedUser);
+			/* set alert */
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+			/* --------- */
+			return adminsAddAdminG(adminForm, redirectAttributes, loggedUser);
 		}
 		Admin admin = adminForm.build();
 		Result result;
@@ -292,7 +296,9 @@ public class AdminController {
 			return new ModelAndView(NOT_FOUND);
 		}
 
-		adminForm.loadFromAdmin(admin);
+		if (!redirectAttributes.getFlashAttributes().containsKey("justCalled")) {
+			adminForm.loadFromAdmin(admin);
+		}
 
 		final ModelAndView mav = new ModelAndView("addUser");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
@@ -317,6 +323,11 @@ public class AdminController {
 
 		if (errors.hasErrors()){
 			LOGGER.warn("There were errors when User {} tried to edit an admin {}", loggedUser, errors.getAllErrors());
+			/* set alert */
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+			/* --------- */
+			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editAdmin(dni, adminForm, redirectAttributes, loggedUser);
 		}
 
@@ -340,6 +351,7 @@ public class AdminController {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			LOGGER.warn("User {} could not edit admin, Result = {}", adminForm.getDni(), result);
+			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editAdmin(dni, adminForm, redirectAttributes, loggedUser);
 		} else {
 			LOGGER.info("User {} could edited admins, Result = {}", adminForm.getDni());

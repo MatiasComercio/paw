@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -109,13 +110,18 @@ public class CourseServiceImpl implements CourseService {
         if (course == null) {
             return null;
         }
-        final List<Student> students = course.getStudents();
-        if (students == null) {
+        final List<Student> modifiableStudents = course.getStudents();
+        if (modifiableStudents == null) {
             return null;
         }
 
         List<Student> studentsFiltered = studentService.getByFilter(studentFilter);
-        students.retainAll(studentsFiltered);
+        final List<Student> students = new LinkedList<>();
+        for (Student s : studentsFiltered) {
+            if (modifiableStudents.contains(s)) {
+                students.add(s);
+            }
+        }
 
         return students;
     }
@@ -233,9 +239,14 @@ public class CourseServiceImpl implements CourseService {
         }
 
         //Remove all courses that do not match the filter
-        correlatives.retainAll(courses);
+        final List<Course> rCourses = new LinkedList<>();
+        for (Course c : courses) {
+            if (correlatives.contains(c)) {
+                rCourses.add(c);
+            }
+        }
 
-        return correlatives;
+        return rCourses;
     }
 
     @Transactional
@@ -265,10 +276,16 @@ public class CourseServiceImpl implements CourseService {
 
         //TODO: DELETE - final List<Student> students = course.getStudents();
         final List<Student> students = course.getApprovedStudents();
+        final List<Student> st = new LinkedList<>();
         if (students  != null) {
-            students.retainAll(studentService.getByFilter(studentFilter));
+            final List<Student> studentsFilter = studentService.getByFilter(studentFilter);
+            for (Student s : studentsFilter) {
+                if (students.contains(s)) {
+                    st.add(s);
+                }
+            }
         }
-        course.setStudents(students);
+        course.setStudents(st);
 
         return course;
     }
