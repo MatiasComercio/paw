@@ -73,7 +73,7 @@
                                                             data-course_id="${inscription.course.id}"
                                                             data-vacancy="${ inscription.vacancy}" data-final_exam_date="${ inscription.finalExamDate}"
                                                             data-toggle="modal" data-target="#finalInscriptionFormConfirmationModal">
-                                                    <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="enroll"/>
+                                                    <span class="fa fa-list-alt" aria-hidden="true"></span> Inscribirse
                                                     </button>
                                                 </c:when>
                                             </c:choose>

@@ -26,7 +26,6 @@ public class FinalInscriptionForm {
     @NotNull
     private int vacancy;
 
-    @NotNull
     private LocalDateTime finalExamDate;
 
 //    public FinalInscription build(){

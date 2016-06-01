@@ -686,10 +686,10 @@ public class StudentController {
 		//Result result = studentService.enroll(finalInscriptionForm.getStudentDocket(), finalInscriptionForm.getCourseId());
 		//TODO: Implement this: FinalInscription finalInscription = finalInscriptionForm.build();
 
-		FinalInscription finalInscription = studentService.getFinalInscription(finalInscriptionForm.getId());
+		//FinalInscription finalInscription = studentService.getFinalInscription(finalInscriptionForm.getId());
 
-		//TODO: Create this in a student service, check for vacancy
-		finalInscription.getStudents().add(studentService.getByDocket(docket));
+		//TODO: check for vacancy
+		studentService.addStudentFinalInscription(docket, finalInscriptionForm.getId());
 		Result result = Result.OK;
 
 		if (result == null) {

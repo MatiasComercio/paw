@@ -178,4 +178,10 @@ public interface StudentService {
 	 * @return The Final Inscription
      */
 	FinalInscription getFinalInscription(int id);
+
+	/**
+	 * Adds the given student to the Final Inscription instance
+	 * @param docket The student's docket
+     */
+	void addStudentFinalInscription(int docket, int finalInscriptionId);
 }

@@ -326,8 +326,17 @@ public class StudentServiceImpl implements StudentService {
 		return finalInscriptions;
 	}
 
+	@Transactional
 	@Override
 	public FinalInscription getFinalInscription(int id) {
 		return studentDao.getFinalInscription(id);
+	}
+
+	@Transactional
+	@Override
+	public void addStudentFinalInscription(int docket, int finalInscriptionId) {
+		FinalInscription finalInscription = studentDao.getFinalInscription(finalInscriptionId);
+		finalInscription.getStudents().add(studentDao.getByDocket(docket));
+
 	}
 }
