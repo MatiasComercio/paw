@@ -59,7 +59,7 @@
                             <form:errors path="finalExamDate" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
-                    </div>
+
                 </form:form>
                 <%-- FinalInscription Form--%>
             </div>
