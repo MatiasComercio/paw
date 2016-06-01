@@ -3,7 +3,6 @@ package ar.edu.itba.paw.webapp.forms;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Digits;

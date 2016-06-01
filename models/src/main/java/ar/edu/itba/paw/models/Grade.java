@@ -8,13 +8,16 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "grade")
-//@IdClass(GradePK.class) //TODO: DELETE
 public class Grade {
+
+	@ManyToOne
+	@JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
+	private Course course;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "grade_gradeid_seq")
 	@SequenceGenerator(sequenceName = "grade_gradeid_seq", name = "grade_gradeid_seq", allocationSize = 1)
-	private int id;
+	private Integer id;
 
 	@Column(name = "docket", nullable = false)
 	private int studentDocket;
@@ -25,12 +28,6 @@ public class Grade {
 	@Transient
 	private String studentLastName;
 
-	@Column(name = "course_id", nullable = false)
-	private int courseId;
-
-	@Transient
-	private String courseName;
-
 	@Column(name = "grade", nullable = false, precision = 2)
 	private BigDecimal grade;
 
@@ -40,21 +37,21 @@ public class Grade {
 	@Transient
     private Boolean taking;
 
+	public void setTaking(final Boolean taking) {
+		this.taking = taking;
+	}
+
 	// +++xcheck
 //	@ManyToOne
 //	@JoinColumn(name = "docket", referencedColumnName = "docket", nullable = false)
 //	private Student studentByDocket;
 
-//	@ManyToOne
-//	@JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
-//	private Course courseByCourseId;
-
 	private Grade(final Builder builder) {
+		this.id = builder.id;
 		this.studentDocket = builder.studentDocket;
 		this.studentFirstName = builder.studentFirstName;
 		this.studentLastName = builder.studentLastName;
-		this.courseId = builder.courseId;
-		this.courseName = builder.courseName;
+		this.course = new Course.Builder(builder.courseId).name(builder.courseName).build();
 		this.grade = builder.grade;
 		this.modified = builder.modified;
         this.taking = builder.taking;
@@ -62,6 +59,14 @@ public class Grade {
 
 	protected Grade() {
 		// Just for Hibernate
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public Course getCourse() {
+		return course;
 	}
 
 	public int getStudentDocket() {
@@ -77,11 +82,11 @@ public class Grade {
 	}
 
 	public int getCourseId() {
-		return courseId;
+		return course.getId();
 	}
 
 	public String getCourseName() {
-		return courseName;
+		return course.getName();
 	}
 
 	public BigDecimal getGrade() {
@@ -102,27 +107,26 @@ public class Grade {
 
 		final Grade grade1 = (Grade) o;
 
+		if (id != grade1.id) return false;
 		if (studentDocket != grade1.studentDocket) return false;
-		if (courseId != grade1.courseId) return false;
-		if (!grade.equals(grade1.grade)) return false;
-		return modified.equals(grade1.modified);
+		if (course != null ? !course.equals(grade1.course) : grade1.course != null) return false;
+		if (grade != null ? !grade.equals(grade1.grade) : grade1.grade != null) return false;
+		return modified != null ? modified.equals(grade1.modified) : grade1.modified == null;
 
 	}
 
 	@Override
 	public int hashCode() {
-		int result = studentDocket;
-		result = 31 * result + courseId;
-
-        //TODO: grade and modified could be null
-        if (grade != null)
-            result = 31 * result + grade.hashCode();
-		if (modified != null)
-            result = 31 * result + modified.hashCode();
+		int result = course != null ? course.hashCode() : 0;
+		result = 31 * result + id;
+		result = 31 * result + studentDocket;
+		result = 31 * result + (grade != null ? grade.hashCode() : 0);
+		result = 31 * result + (modified != null ? modified.hashCode() : 0);
 		return result;
 	}
 
 	public static class Builder {
+		private final Integer id;
 		private final int studentDocket;
 		private final int courseId;
 		private final BigDecimal grade;
@@ -133,10 +137,12 @@ public class Grade {
 		private LocalDateTime modified;
         private Boolean taking = false;
 
-		public Builder(final int studentDocket, final int courseId, final BigDecimal grade) {
+		public Builder(final Integer id, final int studentDocket, final int courseId, final BigDecimal grade) {
+			this.id = id;
 			this.studentDocket = studentDocket;
 			this.courseId = courseId;
 			this.grade = grade;
+			this.modified = LocalDateTime.now();
 		}
 
 		public Builder studentFirstName(final String studentFirstName) {
@@ -155,7 +161,9 @@ public class Grade {
 		}
 
 		public Builder modified(final LocalDateTime modified) {
-			this.modified = modified;
+			if (modified != null) {
+				this.modified = modified;
+			}
 			return this;
 		}
 

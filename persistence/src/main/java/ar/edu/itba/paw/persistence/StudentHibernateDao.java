@@ -16,20 +16,22 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 @Repository
 @Primary // +++xremove this when AdmindbcDao is deleted
 public class StudentHibernateDao implements StudentDao {
 
-	private static final String GET_APPROVED_GRADES_BY_DOCKET = "from Grade as g where g.studentDocket = :docket and g.grade >= 4";
 	private static final Logger LOGGER = LoggerFactory.getLogger(StudentHibernateDao.class);
 	private static final String GET_ALL_STUDENTS = "from Student";
 	private static final String GET_BY_DOCKET = "from Student as s where s.docket = :docket";
 	private static final String GET_BY_DNI = "from Student as s where s.dni = :dni";
+	private static final String GET_APPROVED_GRADES_BY_DOCKET = "from Grade as g where g.studentDocket = :docket and g.grade >= 4";
 	private static final String IS_INSCRIPTION_ENABLED = "from RoleClass as r where r.role = :role";
 
 	private static final String ROLE_COLUMN = "role";
@@ -37,7 +39,7 @@ public class StudentHibernateDao implements StudentDao {
 	private static final int ONE = 1;
 	private static final String DOCKET_PARAM = "docket";
 	private static final String DNI_PARAM = "dni";
-	private static final String GET_GRADES = "from Grade as g where ";
+    private static final String GET_GRADES = "from Grade as g where g.studentDocket = :docket";
 
 	@PersistenceContext
 	private EntityManager em;
@@ -47,40 +49,40 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Student getByDocket(final int docket) {
-		final TypedQuery<Student> query = em.createQuery(GET_BY_DOCKET, Student.class);
-		query.setParameter(DOCKET_PARAM, docket);
-		query.setMaxResults(ONE);
-		final List<Student> students = query.getResultList();
-		return students.isEmpty() ? null : students.get(FIRST);
+		return getBy(GET_BY_DOCKET, DOCKET_PARAM, docket);
 	}
 
 	@Override
 	public Student getGrades(final int docket) {
-		final Student student = getBy(GET_GRADES, DOCKET_PARAM, docket);
+
+		final Student student = getBy(GET_BY_DOCKET, DOCKET_PARAM, docket);
 		// call the grades list in case it is lazy initialized
 		if (student != null) {
-			student.getGrades();
+			student.getModifiableGrades();
 		}
 		return student;
-	}
-
-	private Student getBy(final String queryName, final String paramName, final int paramValue) {
-		final TypedQuery<Student> query = em.createQuery(queryName, Student.class);
-		query.setParameter(paramName, paramValue);
-		query.setMaxResults(ONE);
-		final List<Student> students = query.getResultList();
-		return students.isEmpty() ? null : students.get(FIRST);
 	}
 
 	@Override
 	public Student getGrades(final int docket, final int semesterIndex) {
 
-		return null;
+		final Student student = getBy(GET_BY_DOCKET, DOCKET_PARAM, docket);
+		// call the grades list in case it is lazy initialized
+		if (student != null) {
+			final List<Grade> grades = student.getModifiableGrades();
+			grades.removeIf(grade -> {
+				final Course course = grade.getCourse();
+				if (course != null && course.getSemester() == semesterIndex) {
+					return true;
+				}
+				return false;
+			});
+		}
+		return student;
 	}
 
 	@Override
 	public List<Course> getStudentCourses(final int docket) {
-
 		final TypedQuery<Student> query = em.createQuery(GET_BY_DOCKET, Student.class);
 		query.setParameter(DOCKET_PARAM, docket);
 		query.setMaxResults(ONE);
@@ -95,13 +97,23 @@ public class StudentHibernateDao implements StudentDao {
 	@Override
 	public Result create(final Student student) {
 		em.persist(student);
+		LOGGER.debug("[create] - {}", student);
 		return Result.OK;
 	}
 
 	@Override
-	public Result update(final int docket, final int dni, final Student student) {
-		// TODO
-		return null;
+	public Result update(final Student student) {
+		em.merge(student);
+		LOGGER.debug("[update] - {}", student);
+		return Result.OK;
+	}
+
+	@Override
+	public Result deleteStudent(final int docket) {
+		final Student student = getByDocket(docket);
+		em.remove(student);
+		LOGGER.debug("[delete] - {}", student);
+		return Result.OK;
 	}
 
 	@Override
@@ -117,82 +129,74 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public Integer getDniByDocket(final int docket) {
-		// TODO
-		return null;
-	}
-
-	@Override
-	public Result deleteStudent(final int docket) {
-		em.remove(getByDocket(docket));
+	public Result addGrade(final Grade grade) {
+		em.persist(grade);
+		LOGGER.debug("[addGrade] - {}", grade);
 		return Result.OK;
 	}
 
 	@Override
-	public Result addGrade(final Grade grade) {
-		// TODO
-		return null;
-	}
-
-	@Override
 	public Result editGrade(final Grade newGrade, final BigDecimal oldGrade) {
-		// TODO
-		return null;
+		em.merge(newGrade);
+//		final CriteriaBuilder cb = em.getCriteriaBuilder();
+//		final CriteriaUpdate<Grade> query = cb.createCriteriaUpdate(Grade.class);
+//		final Root<Grade> root = query.from(Grade.class);
+//		private final List<Predicate> predicates;
+//		final Predicate pCourseId = builder.equal(root.get("id"), id);
+
+		LOGGER.debug("[editGrade] - {}", newGrade);
+		return Result.OK;
 	}
 
 	@Override
 	public Result enroll(final int studentDocket, final int courseId) {
-		// TODO
-		return null;
+		final Student student = getByDocket(studentDocket);
+		final Course course = courseDao.getById(courseId);
+		final List<Course> studentCourses = student.getStudentCourses();
+		studentCourses.add(course);
+		em.merge(student);
+		return Result.OK;
 	}
 
 	@Override
 	public Result unenroll(final int studentDocket, final int courseId) {
-		// TODO
-		return null;
+		final Student student = getByDocket(studentDocket);
+		final Course course = courseDao.getById(courseId);
+		final List<Course> studentCourses = student.getStudentCourses();
+		studentCourses.remove(course);
+		em.merge(student);
+		return Result.OK;
 	}
 
 	@Override
 	public Collection<Course> getApprovedCourses(final int docket) {
-        final Collection<Course> courses = new ArrayList<>();
+		// +++xcheck why this does not work; figure it out, and replace the code below with this commented one
+//		final Collection<Course> courses = new ArrayList<>();
+//
+//		final TypedQuery<Grade> query = em.createQuery(GET_APPROVED_GRADES_BY_DOCKET, Grade.class);
+//		query.setParameter(DOCKET_PARAM, docket);
+//
+//		final List<Grade> approvedGrades = query.getResultList();
+//
+//		//TODO: Improve efficiency
+//		for (Grade grade : approvedGrades) {
+//			courses.add(grade.getCourse());
+//		}
+//
+//		return courses;
+		final Student student = getByDocket(docket);
+		final List<Course> courses = new LinkedList<>();
+		for (Grade grade : student.getGrades()) {
+			if (BigDecimal.valueOf(4).compareTo(grade.getGrade()) <= 0) {
+				courses.add(grade.getCourse());
+			}
+		}
 
-        final TypedQuery<Grade> query = em.createQuery(GET_APPROVED_GRADES_BY_DOCKET, Grade.class);
-        query.setParameter(DOCKET_PARAM, docket);
-
-        final List<Grade> approvedGrades = query.getResultList();
-
-        //TODO: Improve efficiency
-        for (Grade grade : approvedGrades) {
-            courses.add(courseDao.getById(grade.getCourseId()));
-        }
-
-        return courses;
-    }
+		return courses;
+	}
 
 	@Override
 	public List<Integer> getApprovedCoursesId(final int docket) {
-		// TODO
-		return null;
-	}
-
-	@Override
-	public boolean hasAddress(final int dni) {
-		// TODO
-		return false;
-	}
-
-	@Override
-	public void createAddress(final int dni, final Student student) {
-		// TODO
-	}
-
-	@Override
-	public void updateAddress(final int dni, final Student student) {
-		// TODO
-	}
-
-	@Override
-	public Student getByDni(final int dni) {
 		// TODO
 		return null;
 	}
@@ -202,4 +206,18 @@ public class StudentHibernateDao implements StudentDao {
 		// TODO
 		return null;
 	}
+
+	@Override
+	public Student getByDni(final int dni) {
+		return getBy(GET_BY_DNI, DNI_PARAM, dni);
+	}
+
+	private Student getBy(final String queryName, final String paramName, final int paramValue) {
+		final TypedQuery<Student> query = em.createQuery(queryName, Student.class);
+		query.setParameter(paramName, paramValue);
+		query.setMaxResults(ONE);
+		final List<Student> students = query.getResultList();
+		return students.isEmpty() ? null : students.get(FIRST);
+	}
+
 }

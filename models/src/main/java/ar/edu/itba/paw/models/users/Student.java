@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Role;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,8 +19,9 @@ public class Student extends User {
 	private int docket;
 
 	// TODO +++xcheck if grades are being delete on cascade
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany
 	@JoinColumn(name = "docket", referencedColumnName = "docket")
+//	@Transient
 	private List<Grade> grades;
 
 
@@ -51,16 +53,16 @@ public class Student extends User {
 		return Collections.unmodifiableList(grades);
 	}
 
-	public List<Course> getStudentCourses() {
-		return studentCourses;
-	}
-
 	public void setStudentCourses(List<Course> studentCourses) {
 		this.studentCourses = studentCourses;
 	}
 
 	public void setGrades(List<Grade> grades) {
 		this.grades = grades;
+	}
+
+	public List<Grade> getModifiableGrades() {
+		return grades;
 	}
 
 	@Override
@@ -87,6 +89,10 @@ public class Student extends User {
 		return "Student{" +
 				"docket=" + docket +
 				"} " + super.toString();
+	}
+
+	public List<Course> getStudentCourses() {
+		return studentCourses;
 	}
 
 	public static class Builder extends User.Builder<Student, Builder> {

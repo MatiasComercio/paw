@@ -55,11 +55,10 @@ public interface StudentDao {
 
 	/**
 	 * Update student
-	 * @param docket  The docket of the old student
 	 * @param student The new student
 	 * @return The Result code of update
 	 */
-	Result update(int docket, int dni, Student student);
+	Result update(Student student);
 
 	/**
 	 * Gets the students that comply to a list of filters
@@ -69,12 +68,6 @@ public interface StudentDao {
 	 */
 	List<Student> getByFilter(StudentFilter studentFilter);
 
-    /**
-     * Get student's dni
-     * @param docket docket of specified student;
-     * @return Returns dni of specified student or null if not exists
-     */
-    Integer getDniByDocket(int docket);
 
 	/**
 	 * Delete the student that matches the given docket.
@@ -133,27 +126,6 @@ public interface StudentDao {
      *          an empty List will be returned if no course was approved
      */
     List<Integer> getApprovedCoursesId(int docket);
-
-	/**
-	 * Returns true if there's an Address asociated with the student
-	 * @param dni The student's docket
-	 * @return Address of the specified student or null
-     */
-	boolean hasAddress(int dni);
-
-    /**
-     * Create address of specified student
-     * @param dni The student's dni
-     * @param student The student containing the address to create
-     */
-    void createAddress(int dni, Student student);
-
-    /**
-     * Create address of specified student
-     * @param dni The student's dni
-     * @param student The student containing the address to update
-     */
-    void updateAddress(int dni, Student student);
 
 	/**
 	 * Gets the student's main data that matches the given dni.

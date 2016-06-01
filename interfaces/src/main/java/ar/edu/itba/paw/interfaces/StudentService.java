@@ -2,8 +2,8 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.TranscriptGrade;
 import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -148,7 +148,7 @@ public interface StudentService {
 	 * @param docket
 	 * @return A list containing lists in which all the grades of a semester are placed
      */
-	List<List<Grade>> getTranscript(int docket);
+	Collection<Collection<TranscriptGrade>> getTranscript(int docket);
 
 	/**
 	 * Get the total credits of the plan.

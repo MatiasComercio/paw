@@ -3,6 +3,7 @@ package ar.edu.itba.paw.models;
 import ar.edu.itba.paw.models.users.Student;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 

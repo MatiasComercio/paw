@@ -17,7 +17,12 @@ import static javax.persistence.InheritanceType.JOINED;
 @Table(name = "users")
 @Inheritance(strategy=JOINED)
 // not abstract anymore just for Hibernate
+	/* +++xcheck
+	Entities inside Student are causing the need of java.io.Serializable.
+	When the error is found, this Serializable shoudl be removed.
+	 */
 public class User implements Serializable {
+
 	public static final String DEFAULT_PASSWORD = "pass";
 
 	@Id

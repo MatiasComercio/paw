@@ -3,10 +3,12 @@ function loadGradeForm(nameAttr) {
     var gradeFormButton = $("[name='" + nameAttr + "']");
 
     gradeFormButton.on("click", function() {
+        var id = $(this).data("id");
         var courseId = $(this).data("course_id");
         var courseName = $(this).data("course_name");
         var modified = $(this).data("modified");
         var gradeForm = $("#grade_form");
+        gradeForm.find("input[name='id']").val(id);
         gradeForm.find("input[name='courseId']").val(courseId);
         gradeForm.find("input[name='courseName']").val(courseName);
         gradeForm.find("input[name='modified']").val(modified);
