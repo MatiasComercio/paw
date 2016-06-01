@@ -3,6 +3,8 @@ function loadfinalInscriptionForm(nameAttr) {
     var loadfinalInscriptionFormButton = $("[name='" + nameAttr + "']");
 
     loadfinalInscriptionFormButton.on("click", function() {
+
+        alert("asdsadsa");
         var inscriptionId = $(this).data("inscription_id");
         var courseName = $(this).data("course_name");
         var finalExamDate = $(this).data("finalExamDate");

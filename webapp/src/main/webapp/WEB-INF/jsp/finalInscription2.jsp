@@ -12,7 +12,10 @@
 
 <div id="wrapper">
 
+    <jsp:include page="base/sections.jsp" />
     <jsp:include page="base/nav.jsp" />
+    <jsp:include page="template/finalInscriptionForm.jsp" />
+
 
     <div id="page-wrapper">
 
@@ -92,19 +95,15 @@
 </div>
 <!-- Scripts -->
 <jsp:include page="base/scripts.jsp" />
-<%--<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchStudents.js"%></script>--%>
-<%--<c:if test="${subsection_students}">
-    <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteStudentForm.js"%></script>
-</c:if>--%>
-<%--<script>
+<script>
     $( document ).ready(function() {
-        loadSearchStudents();
-/*        <c:choose>
-        <c:when test="${subsection_students}">
-        loadDeleteStudentForm("deleteStudentButton");
+
+        <c:choose>
+        <c:when test="${section2=='final_inscription'}">
+            loadfinalInscriptionForm("final_inscription");
         </c:when>
-        </c:choose>*/
+        </c:choose>
     });
-</script>--%>
+</script>
 </body>
 </html>
