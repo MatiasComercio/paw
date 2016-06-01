@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.controllers;
 
-import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
@@ -27,7 +26,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class StudentController {
@@ -649,7 +649,7 @@ public class StudentController {
 //		mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
 //		mav.addObject("docket", docket);
 
-		final ModelAndView mav = new ModelAndView("finalInscription");
+		final ModelAndView mav = new ModelAndView("finalInscription2");
 		mav.addObject("student", student);
 		mav.addObject("section2", "final_inscription");
 		//Don't use: mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
