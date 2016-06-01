@@ -197,9 +197,9 @@ public class CourseHibernateDao implements CourseDao {
     @Override
     public boolean gradeExists(int courseId) {
 
-        final TypedQuery<Integer> query = em.createQuery("select count(gr) from Grade as gr where gr.course_id = :id", Integer.class);
+        final TypedQuery<Long> query = em.createQuery("select count(gr) from Grade as gr where gr.course.id = :id", Long.class);
         query.setParameter("id", courseId);
-        Integer totalGrades = query.getSingleResult();
+        Long totalGrades = query.getSingleResult();
         return totalGrades > 0;
     }
 
