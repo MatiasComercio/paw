@@ -105,6 +105,7 @@
                                 </td>
                                 <td>
                                     <c:forEach items="${grade.finalGrades}" var="finalGrade">
+                                        <div class="row">
                                         <c:choose>
                                             <c:when test="${finalGrade.grade >= 4}">
                                                 <c:set var="gradeColorClass" value="text-success" />
@@ -114,6 +115,7 @@
                                             </c:otherwise>
                                         </c:choose>
                                         <span class="${gradeColorClass}">${ finalGrade.grade }</span>
+                                        </div>
                                     </c:forEach>
                                 </td>
                                 <td>
