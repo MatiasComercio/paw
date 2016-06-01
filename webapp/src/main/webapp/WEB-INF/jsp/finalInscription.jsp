@@ -10,12 +10,14 @@
     <jsp:include page="base/head.jsp" />
 </head>
 <body>
+
 <div id="wrapper">
 
     <jsp:include page="base/sections.jsp" />
     <jsp:include page="base/nav.jsp" />
     <jsp:include page="template/finalInscriptionForm.jsp" />
 
+    <div class="container">
     <div id="page-wrapper">
         <div class="container-fluid">
             <!-- Page Heading -->
@@ -74,7 +76,7 @@
                     </tbody>
                 </table>
             </div>
-
+</div>
             <!-- /content -->
 
         </div>
@@ -82,9 +84,11 @@
 
     </div>
     <!-- /#page-wrapper -->
+
     <jsp:include page="base/footer.jsp" />
 </div>
-<!-- Scripts -->
+
+    <!-- Scripts -->
 <jsp:include page="base/scripts.jsp" />
 
 </body>
