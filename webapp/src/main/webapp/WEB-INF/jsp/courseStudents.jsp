@@ -32,6 +32,9 @@
 <div id="wrapper">
     <jsp:include page="base/sections.jsp" />
     <jsp:include page="template/courseActionsPanel.jsp" />
+    <c:if test="${section2 eq 'students'}">
+        <jsp:include page="template/gradeForm.jsp" />
+    </c:if>
     <jsp:include page="base/nav.jsp" />
 
     <div id="page-wrapper">

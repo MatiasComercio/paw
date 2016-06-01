@@ -504,7 +504,8 @@ public class StudentController {
 					Locale.getDefault()));
 		}
 
-		return new ModelAndView("redirect:/students/" + docket + "/courses");
+		final String referrer = request.getHeader("referer");
+		return new ModelAndView("redirect:" + referrer);
 	}
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)

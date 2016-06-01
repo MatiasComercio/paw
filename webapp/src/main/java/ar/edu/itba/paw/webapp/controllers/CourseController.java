@@ -7,11 +7,8 @@ import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
-import ar.edu.itba.paw.webapp.forms.CorrelativeForm;
-import ar.edu.itba.paw.webapp.forms.CourseFilterForm;
-import ar.edu.itba.paw.webapp.forms.CourseForm;
+import ar.edu.itba.paw.webapp.forms.*;
 import ar.edu.itba.paw.shared.CourseFilter;
-import ar.edu.itba.paw.webapp.forms.StudentFilterForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -233,6 +230,9 @@ public class CourseController {
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
+		if (!model.containsAttribute("gradeForm")) {
+			model.addAttribute("gradeForm", new GradeForm());
+		}
 		if (!model.containsAttribute("studentFilterForm")) {
 			model.addAttribute("studentFilterForm", new StudentFilterForm());
 		}

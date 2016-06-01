@@ -105,13 +105,13 @@
                                         <a class="btn btn-default" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
                                             <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="information"/>
                                         </a>
-                                        <sec:authorize access="hasAuthority('ROLE_ADD_GRADE')">
+                                        <%--<sec:authorize access="hasAuthority('ROLE_ADD_GRADE')">
                                             <button name="gradeButton" class="btn btn-info" type="button"
                                                     data-course_id="${ eachCourse.id }" data-course_name="${ eachCourse.name }"
                                                     data-toggle="modal" data-target="#gradeFormConfirmationModal">
                                                 <span class="fa fa-graduation-cap" aria-hidden="true"></span> <spring:message code="rate"/>
                                             </button>
-                                        </sec:authorize>
+                                        </sec:authorize>--%>
                                         <sec:authorize access="hasAuthority('ROLE_DELETE_INSCRIPTION')">
                                             <c:if test="${user.id eq student.docket}">
                                                 <button name="unenroll" class="btn btn-danger" type="button"

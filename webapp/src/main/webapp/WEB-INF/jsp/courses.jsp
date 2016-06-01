@@ -134,7 +134,7 @@
         </c:when>
         <c:when test="${subsection_courses}">
         loadEnrollForm("unenroll");
-        loadGradeForm("gradeButton")
+        loadGradeForm("gradeButton");
         </c:when>
         </c:choose>
         </c:when>
