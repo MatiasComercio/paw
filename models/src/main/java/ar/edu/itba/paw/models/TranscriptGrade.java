@@ -76,20 +76,4 @@ public class TranscriptGrade {
 	public void setId(final Integer id) {
 		this.id = id;
 	}
-
-	@Override
-	public boolean equals(final Object o) {
-		if (this == o) return true;
-		if (!(o instanceof TranscriptGrade)) return false;
-
-		final TranscriptGrade that = (TranscriptGrade) o;
-
-		return id != null ? id.equals(that.id) : that.id == null;
-
-	}
-
-	@Override
-	public int hashCode() {
-		return id != null ? id.hashCode() : 0;
-	}
 }

@@ -72,10 +72,8 @@
                     <table class="table table-hover <%--table-bordered--%> <%--table-condensed--%>">
                         <thead>
                         <tr>
-                            <th class="col-xs-5">
-                                <span class="col-xs-2"><spring:message code="id"/></span>
-                                <span class="col-xs-10"><spring:message code="course"/></span>
-                            </th>
+                            <th class="col-xs-1"><span><spring:message code="id"/></span>
+                            <th class="col-xs-4"><span><spring:message code="course"/></span></th>
                             <th class="col-xs-2"><spring:message code="grade"/></th>
                             <th class="col-xs-2"><spring:message code="modified"/></th>
                             <th class="col-xs-3"><spring:message code="actions"/></th>
@@ -84,10 +82,8 @@
                         <tbody>
                         <c:forEach items="${semester}" var="grade">
                             <tr>
-                                <td>
-                                    <span class="col-xs-2"> ${ grade.courseId }</span>
-                                    <span class="col-xs-10"> ${ grade.courseName }</span>
-                                </td>
+                                <td><span> ${ grade.courseId }</span></td>
+                                <td><span> ${ grade.courseName }</span></td>
                                 <td>
                                     <c:choose>
                                         <c:when test="${grade.taking}">
