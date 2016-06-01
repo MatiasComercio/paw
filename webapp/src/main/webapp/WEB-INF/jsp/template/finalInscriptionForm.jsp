@@ -20,7 +20,7 @@
                 <form:form class="form-horizontal" id="final_inscription_form" modelAttribute="finalInscriptionForm" action="${finalInscriptionFormAction}" method="post" enctype="application/x-www-form-urlencoded">
                     <%-- Seq id = Acta --%>
                     <div class="form-group">
-                        <form:label path="id" class="col-xs-4 control-label"><spring:message code="minutes"/></form:label>
+                        <form:label path="id" class="col-xs-4 control-label"><spring:message code="inscriptionCode"/></form:label>
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="id" value="${id}" readonly="true"/>
                         </div>
@@ -30,7 +30,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="courseName" class="col-xs-4 control-label"><spring:message code="studentDocket"/></form:label>
+                        <form:label path="courseName" class="col-xs-4 control-label"><spring:message code="course"/></form:label>
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="courseName" value="${docket}" readonly="true"/>
                         </div>
@@ -40,7 +40,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="vacancy" class="col-xs-4 control-label"><spring:message code="courseId"/></form:label>
+                        <form:label path="vacancy" class="col-xs-4 control-label"><spring:message code="final_vacancy"/></form:label>
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="vacancy" readonly="true"/>
                         </div>
@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <form:label path="finalExamDate" class="col-xs-4 control-label"><spring:message code="courseName"/></form:label>
+                        <form:label path="finalExamDate" class="col-xs-4 control-label"><spring:message code="final_date"/></form:label>
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="finalExamDate" readonly="true"/>
                         </div>
