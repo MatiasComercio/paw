@@ -384,7 +384,11 @@ public class StudentController {
 		}
 		if (errors.hasErrors()){
 			LOGGER.warn("User {} could not add student due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
-			return addStudent(studentForm, null, loggedUser);
+			/* set alert */
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+			/* --------- */
+			return addStudent(studentForm, redirectAttributes, loggedUser);
 		}
 		else{
 			Student student = studentForm.build();
@@ -398,7 +402,9 @@ public class StudentController {
 			if(result == null || !result.equals(Result.OK)){
 				LOGGER.warn("User {} could not add student with DNI {}, Result = {}", loggedUser.getDni(), student.getDni(), result);
 				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+				if (result != null) {
+					redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+				}
 				return addStudent(studentForm, redirectAttributes, loggedUser);
 			}
 			redirectAttributes.addFlashAttribute("alert", "success");
@@ -546,7 +552,9 @@ public class StudentController {
 			return new ModelAndView("redirect:/students");
 		}
 
-		studentForm.loadFromStudent(student);
+		if (!redirectAttributes.getFlashAttributes().containsKey("justCalled")) {
+			studentForm.loadFromStudent(student);
+		}
 
 		mav.addObject("docket", docket);
 		mav.addObject("student", student);
@@ -569,6 +577,11 @@ public class StudentController {
 		}
 		if (errors.hasErrors()){
 			LOGGER.warn("User {} could not edit student due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
+			/* set alert */
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+			/* --------- */
+			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
 		}
 
@@ -586,7 +599,9 @@ public class StudentController {
 		if(!result.equals(Result.OK)){
 			LOGGER.warn("User {} could not edit student, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("message",
+					messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
 		}
 
