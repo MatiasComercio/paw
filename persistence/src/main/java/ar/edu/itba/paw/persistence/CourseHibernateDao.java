@@ -192,8 +192,6 @@ public class CourseHibernateDao implements CourseDao {
         return true;
     }
 
-    //TODO: Requires students
-    //TODO: Test this
     @Override
     public boolean gradeExists(int courseId) {
 
