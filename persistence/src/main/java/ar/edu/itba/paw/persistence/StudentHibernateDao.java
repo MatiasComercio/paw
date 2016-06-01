@@ -3,6 +3,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalGrade;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -132,6 +132,20 @@ public class StudentHibernateDao implements StudentDao {
 	public Result addGrade(final Grade grade) {
 		em.persist(grade);
 		LOGGER.debug("[addGrade] - {}", grade);
+		return Result.OK;
+	}
+
+	@Override
+	public Result addFinalGrade(final Grade grade, final FinalGrade finalGrade) {
+		//TODO: Test this
+		em.persist(finalGrade);
+		LOGGER.debug("[addFinalGrade] - {} - {}", grade, finalGrade);
+
+		List<FinalGrade> list = new ArrayList<>();
+		list.addAll(grade.getFinalGrades());
+		list.add(finalGrade);
+		em.merge(grade);
+
 		return Result.OK;
 	}
 

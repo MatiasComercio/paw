@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalGrade;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
@@ -85,6 +86,16 @@ public interface StudentDao {
 	 * 		ERROR_UNKNOWN else;
 	 */
 	Result addGrade(Grade grade);
+
+	/**
+	 * Add the final grade for a given student and course;
+	 * @param grade which contains the student docket, the course id and the grade
+	 * @param finalGrade Final grade to asociate with the
+	 * @return OK if the grade was added;
+	 * 		INVALID_INPUT_PARAMETERS if one or more parameters are invalid;
+	 * 		ERROR_UNKNOWN else;
+	 */
+	Result addFinalGrade(Grade grade, FinalGrade finalGrade);
 
 	/**
 	 * @param newGrade The new grade values
