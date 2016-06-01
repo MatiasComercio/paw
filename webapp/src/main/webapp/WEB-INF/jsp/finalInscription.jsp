@@ -82,7 +82,6 @@
 
     </div>
     <!-- /#page-wrapper -->
-    <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
 <script>
