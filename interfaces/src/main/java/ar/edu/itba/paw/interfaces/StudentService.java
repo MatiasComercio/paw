@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.TranscriptGrade;
 import ar.edu.itba.paw.models.users.Student;
@@ -11,6 +12,7 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface StudentService {
 
@@ -162,4 +164,11 @@ public interface StudentService {
 	 * @return Integer indicating the amount of credits passed.
      */
 	Integer getPassedCredits(int docket);
+
+	/**
+	 * Get the final exams inscriptions available for the given student
+	 * @param docket The studentś docket.
+	 * @return The final inscriptions
+     */
+	List<FinalInscription> getAvailableFinalInscriptions(int docket);
 }

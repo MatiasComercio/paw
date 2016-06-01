@@ -307,4 +307,21 @@ public class StudentServiceImpl implements StudentService {
 	/* default */ void setCourseService(final CourseService courseService) {
 		this.courseService = courseService;
 	}
+
+	@Transactional
+	@Override
+	public List<FinalInscription> getAvailableFinalInscriptions(int docket) {
+
+		List<FinalInscription> finalInscriptions = new ArrayList<>();
+
+		//TODO: Check correlativity
+		for(FinalInscription inscription : studentDao.getAllFinalInscriptions()){
+			if(studentDao.isApproved(docket, inscription.getCourse().getId())){
+				finalInscriptions.add(inscription);
+			}
+		}
+
+		return finalInscriptions;
+
+	}
 }

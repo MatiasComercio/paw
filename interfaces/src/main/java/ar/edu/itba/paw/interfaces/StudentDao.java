@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalGrade;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
@@ -10,6 +11,7 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface StudentDao {
 
@@ -149,4 +151,20 @@ public interface StudentDao {
 	/* +++xtest */
 	/* +++xdocument */
 	List<Student> getStudentsPassed(int id);
+
+
+	/**
+	 *
+	 * @param docket The student's docket
+	 * @param courseId The course's id
+	 * @return A boolean indicating whether the given student passed the given course
+     */
+	boolean isApproved(int docket, int courseId);
+
+	/**
+	 *
+	 * @return All the final inscriptions available
+     */
+	List<FinalInscription> getAllFinalInscriptions();
+
 }

@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalGrade;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
@@ -18,10 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Repository
 @Primary // +++xremove this when AdmindbcDao is deleted
@@ -209,7 +207,6 @@ public class StudentHibernateDao implements StudentDao {
 		return courses;
 	}
 
-	//TODO: TEST THIS
 	@Override
 	public List<Integer> getApprovedCoursesId(final int docket) {
 		final Student student = getByDocket(docket);
@@ -222,7 +219,6 @@ public class StudentHibernateDao implements StudentDao {
 		return coursesId;
 	}
 
-	//TODO: ALL WORKING =)
 	@Override
 	public List<Student> getStudentsPassed(final int id) {
 
@@ -255,4 +251,26 @@ public class StudentHibernateDao implements StudentDao {
 		return students.isEmpty() ? null : students.get(FIRST);
 	}
 
+	//TODO: Test this
+	@Override
+	public boolean isApproved(int docket, int courseId) {
+		//TODO: This is doing 1 query per loop: Improve eficiency. (Use student's grades??)
+		TypedQuery<Long> query = em.createQuery("select count(gr) from Grade as gr where gr.course.id=:id and gr.studentDocket = :docket" +
+				" and gr.grade >= 4",
+				Long.class);
+		query.setParameter("id", courseId);
+		query.setParameter("docket", docket);
+		Long approvedGrades = query.getSingleResult();
+		return approvedGrades > 0;
+	}
+
+	//TODO: Test this
+	@Override
+	public List<FinalInscription> getAllFinalInscriptions() {
+		final TypedQuery<FinalInscription> query = em.createQuery("select inscription from FinalInscription inscription", FinalInscription.class);
+		final List<FinalInscription> list = query.getResultList();
+
+
+		return list;
+	}
 }

@@ -18,7 +18,6 @@ public class FinalInscription {
     @Basic
     private int vacancy;
 
-
     @ManyToMany(
             cascade = CascadeType.ALL
     )
@@ -27,7 +26,8 @@ public class FinalInscription {
 //    )
     private Set<Student> student;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    //TODO: Fetch EAGER?
+    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
     private Course course;
 
     @Column(nullable = false)
@@ -78,25 +78,34 @@ public class FinalInscription {
     }
 
     private FinalInscription(Builder builder){
-        this.id = builder.id;
+        //this.id = builder.id;
         this.vacancy = builder.vacancy;
         this.finalExamDate = builder.finalExamDate;
     }
 
     public static class Builder{
-        private int id;
+        //private int id;
         private int vacancy;
         private LocalDateTime finalExamDate;
+        private Course course;
 
-        public Builder(int id, int vacancy, LocalDateTime finalExamDate){
-            this.id = id;
+        public Builder(int vacancy, LocalDateTime finalExamDate, Course course){
             this.vacancy = vacancy;
-            this.finalExamDate = finalExamDate;
+            //this.finalExamDate = finalExamDate;
+            //TODO: Debug purposes only
+            this.finalExamDate = LocalDateTime.now();
+            this.course = course;
         }
 
         public FinalInscription build(){
             return new FinalInscription(this);
         }
+
+        Builder vacancy (int vacancy){
+            this.vacancy = vacancy;
+            return this;
+        }
+
 
     }
 
