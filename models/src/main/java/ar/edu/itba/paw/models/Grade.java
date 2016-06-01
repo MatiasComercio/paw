@@ -3,6 +3,7 @@ package ar.edu.itba.paw.models;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -36,7 +37,7 @@ public class Grade {
 	@Transient
     private Boolean taking;
 
-    @OneToMany()
+    @OneToMany(fetch = FetchType.EAGER)
 	private List<FinalGrade> finalGrades;
 
 	public void setTaking(final Boolean taking) {
@@ -99,7 +100,7 @@ public class Grade {
 
 
     public List<FinalGrade> getFinalGrades() {
-        return finalGrades;
+        return Collections.unmodifiableList(finalGrades);
     }
 
     public void setFinalGrades(List<FinalGrade> finalGrades) {

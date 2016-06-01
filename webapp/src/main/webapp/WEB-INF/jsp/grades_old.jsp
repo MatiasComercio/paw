@@ -74,7 +74,8 @@
                         <tr>
                             <th class="col-xs-1"><span><spring:message code="id"/></span>
                             <th class="col-xs-4"><span><spring:message code="course"/></span></th>
-                            <th class="col-xs-2"><spring:message code="grade"/></th>
+                            <th class="col-xs-1"><spring:message code="grade"/></th>
+                            <th class="col-xs-1"><spring:message code="finalGrade"/></th>
                             <th class="col-xs-2"><spring:message code="modified"/></th>
                             <th class="col-xs-3"><spring:message code="actions"/></th>
                         </tr>
@@ -101,6 +102,19 @@
                                             <span class="${gradeColorClass}">${ grade.grade }</span>
                                         </c:otherwise>
                                     </c:choose>
+                                </td>
+                                <td>
+                                    <c:forEach items="${grade.finalGrades}" var="finalGrade">
+                                        <c:choose>
+                                            <c:when test="${finalGrade.grade >= 4}">
+                                                <c:set var="gradeColorClass" value="text-success" />
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:set var="gradeColorClass" value="text-danger" />
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <span class="${gradeColorClass}">${ finalGrade.grade }</span>
+                                    </c:forEach>
                                 </td>
                                 <td>
                                     <c:choose>

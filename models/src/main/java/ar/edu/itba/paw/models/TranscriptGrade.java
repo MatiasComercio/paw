@@ -2,6 +2,7 @@ package ar.edu.itba.paw.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TranscriptGrade {
 	private Integer id;
@@ -12,6 +13,7 @@ public class TranscriptGrade {
 	private LocalDateTime modified;
 	private boolean taking;
 	private boolean canEdit = false;
+	private List<FinalGrade> finalGrades;
 
 	public void loadFromGrade(final Grade grade){
 		this.id = grade.getId();
@@ -20,6 +22,7 @@ public class TranscriptGrade {
 		this.courseName = grade.getCourseName();
 		this.grade = grade.getGrade();
 		this.modified = grade.getModified();
+		this.finalGrades = grade.getFinalGrades();
 	}
 
 	public Integer getDocket() {
@@ -84,5 +87,13 @@ public class TranscriptGrade {
 
 	public void setCanEdit(final boolean canEdit) {
 		this.canEdit = canEdit;
+	}
+
+	public List<FinalGrade> getFinalGrades() {
+		return finalGrades;
+	}
+
+	public void setFinalGrades(List<FinalGrade> finalGrades) {
+		this.finalGrades = finalGrades;
 	}
 }
