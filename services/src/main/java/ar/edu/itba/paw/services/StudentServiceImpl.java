@@ -314,14 +314,20 @@ public class StudentServiceImpl implements StudentService {
 
 		List<FinalInscription> finalInscriptions = new ArrayList<>();
 
+		Student student = studentDao.getByDocket(docket);
+
 		//TODO: Check correlativity
 		for(FinalInscription inscription : studentDao.getAllFinalInscriptions()){
-			if(studentDao.isApproved(docket, inscription.getCourse().getId())){
+			if(studentDao.isApproved(docket, inscription.getCourse().getId()) &&
+					!inscription.getStudents().contains(student)){
 				finalInscriptions.add(inscription);
 			}
 		}
-
 		return finalInscriptions;
+	}
 
+	@Override
+	public FinalInscription getFinalInscription(int id) {
+		return studentDao.getFinalInscription(id);
 	}
 }

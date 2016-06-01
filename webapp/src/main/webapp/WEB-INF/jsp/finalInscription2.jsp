@@ -70,7 +70,8 @@
                                                 <c:when test="${section2 eq 'final_inscription'}">
                                                     <button name="final_inscription" class="btn btn-info" type="button"
                                                             data-inscription_id="${ inscription.id }" data-course_name="${ inscription.course.name }"
-                                                            data-vacancy="${ inscription.vacancy}" data-finalExamDate="${ inscription.finalExamDate}"
+                                                            data-course_id="${inscription.course.id}"
+                                                            data-vacancy="${ inscription.vacancy}" data-final_exam_date="${ inscription.finalExamDate}"
                                                             data-toggle="modal" data-target="#finalInscriptionFormConfirmationModal">
                                                     <span class="fa fa-list-alt" aria-hidden="true"></span> <spring:message code="enroll"/>
                                                     </button>
@@ -105,7 +106,7 @@
             loadfinalInscriptionFormButton.on("click", function() {
                 var inscriptionId = $(this).data("inscription_id");
                 var courseName = $(this).data("course_name");
-                var finalExamDate = $(this).data("finalExamDate");
+                var finalExamDate = $(this).data("final_exam_date");
                 var vacancy = $(this).data("vacancy");
 
                 var inscriptionForm = $("#final_inscription_form");

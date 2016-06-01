@@ -24,7 +24,7 @@ public class FinalInscription {
 //    @JoinTable(name="inscription", joinColumns=@JoinColumn(name="course_id", referencedColumnName = "id"),
 //            inverseJoinColumns=@JoinColumn(name="docket", referencedColumnName = "docket")
 //    )
-    private Set<Student> student;
+    private Set<Student> students;
 
     //TODO: Fetch EAGER?
     @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
@@ -49,12 +49,12 @@ public class FinalInscription {
         this.vacancy = vacancy;
     }
 
-    public Set<Student> getStudent() {
-        return student;
+    public Set<Student> getStudents() {
+        return students;
     }
 
-    public void setStudent(Set<Student> student) {
-        this.student = student;
+    public void setStudents(Set<Student> students) {
+        this.students = students;
     }
 
     public Course getCourse() {
@@ -84,12 +84,13 @@ public class FinalInscription {
     }
 
     public static class Builder{
-        //private int id;
+        private int id;
         private int vacancy;
         private LocalDateTime finalExamDate;
         private Course course;
 
-        public Builder(int vacancy, LocalDateTime finalExamDate, Course course){
+        public Builder(int id, int vacancy, LocalDateTime finalExamDate, Course course){
+            this.id = id;
             this.vacancy = vacancy;
             //this.finalExamDate = finalExamDate;
             //TODO: Debug purposes only

@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.forms;
 
+import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Min;
@@ -26,6 +28,10 @@ public class FinalInscriptionForm {
 
     @NotNull
     private LocalDateTime finalExamDate;
+
+//    public FinalInscription build(){
+//        return new FinalInscription(id).Builder(vacancy).build();
+//    }
 
 
     public Integer getCourseId() {

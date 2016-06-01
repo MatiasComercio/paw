@@ -273,4 +273,9 @@ public class StudentHibernateDao implements StudentDao {
 
 		return list;
 	}
+
+	@Override
+	public FinalInscription getFinalInscription(int id) {
+		return em.find(FinalInscription.class, id);
+	}
 }

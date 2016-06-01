@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
@@ -662,47 +663,52 @@ public class StudentController {
 		return mav;
 	}
 
-//	@RequestMapping(value = "/students/{docket}/final_inscription", method = RequestMethod.POST)
-//	public ModelAndView studentFinalInscription(@PathVariable final int docket,
-//										   @Valid @ModelAttribute("finalInscriptionForm") FinalInscriptionForm finalInscriptionForm,
-//										   final BindingResult errors,
-//										   final RedirectAttributes redirectAttributes,
-//										   @ModelAttribute("user") UserSessionDetails loggedUser) {
-//
-//		if (!loggedUser.hasAuthority("ADD_FINAL_INSCRIPTION")
-//				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
-//			LOGGER.warn("User {} tried to add inscription for student {} and doesn't have ADD_FINAL_INSCRIPTION authority [POST]", loggedUser.getDni(), docket);
-//			return new ModelAndView(UNAUTHORIZED);
-//		}
-//		if (errors.hasErrors()){
-//			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
-//			redirectAttributes.addFlashAttribute("finalInscriptionForm", finalInscriptionForm);
-//			return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
-//		}
-//
-//		//Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
-//		//TODO: Create a method for creating finalInscription
-//		Result result = studentService.enroll(finalInscriptionForm.getStudentDocket(), finalInscriptionForm.getCourseId());
-//
-//		if (result == null) {
-//			result = Result.ERROR_UNKNOWN;
-//		}
-//		if (!result.equals(Result.OK)) {
-//			LOGGER.warn("User {} could not add final inscription for student {}, Result = {}", loggedUser.getDni(), docket, result);
-//			redirectAttributes.addFlashAttribute("alert", "danger");
-//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
-//
-//		} else {
-//			LOGGER.info("User {} added final inscription of student {} successfully", loggedUser.getDni(), docket);
-//			redirectAttributes.addFlashAttribute("alert", "success");
-//			redirectAttributes.addFlashAttribute("message",
-//					messageSource.getMessage("final_inscription_success", null, Locale.getDefault()));
-//		}
-//
-//		return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
-//	}
-//
-//add
+	@RequestMapping(value = "/students/{docket}/final_inscription", method = RequestMethod.POST)
+	public ModelAndView studentFinalInscription(@PathVariable final int docket,
+										   @Valid @ModelAttribute("finalInscriptionForm") FinalInscriptionForm finalInscriptionForm,
+										   final BindingResult errors,
+										   final RedirectAttributes redirectAttributes,
+										   @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_FINAL_INSCRIPTION")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			LOGGER.warn("User {} tried to add inscription for student {} and doesn't have ADD_FINAL_INSCRIPTION authority [POST]", loggedUser.getDni(), docket);
+			return new ModelAndView(UNAUTHORIZED);
+		}
+		if (errors.hasErrors()){
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.finalInscriptionForm", errors);
+			redirectAttributes.addFlashAttribute("finalInscriptionForm", finalInscriptionForm);
+			return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
+		}
+
+		//Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
+		//TODO: Create a method for creating finalInscription
+		//Result result = studentService.enroll(finalInscriptionForm.getStudentDocket(), finalInscriptionForm.getCourseId());
+		//TODO: Implement this: FinalInscription finalInscription = finalInscriptionForm.build();
+
+		FinalInscription finalInscription = studentService.getFinalInscription(finalInscriptionForm.getId());
+
+		//TODO: Create this in a student service, check for vacancy
+		finalInscription.getStudents().add(studentService.getByDocket(docket));
+		Result result = Result.OK;
+
+		if (result == null) {
+			result = Result.ERROR_UNKNOWN;
+		}
+		if (!result.equals(Result.OK)) {
+			LOGGER.warn("User {} could not add final inscription for student {}, Result = {}", loggedUser.getDni(), docket, result);
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+
+		} else {
+			LOGGER.info("User {} added final inscription of student {} successfully", loggedUser.getDni(), docket);
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message",
+					messageSource.getMessage("final_inscription_success", null, Locale.getDefault()));
+		}
+
+		return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
+	}
 
 
 

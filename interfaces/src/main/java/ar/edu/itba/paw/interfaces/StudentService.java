@@ -171,4 +171,11 @@ public interface StudentService {
 	 * @return The final inscriptions
      */
 	List<FinalInscription> getAvailableFinalInscriptions(int docket);
+
+	/**
+	 * Get a final inscription by it's id
+	 * @param id The given's final inscription's id
+	 * @return The Final Inscription
+     */
+	FinalInscription getFinalInscription(int id);
 }
