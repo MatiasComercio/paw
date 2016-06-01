@@ -214,11 +214,26 @@ public class StudentServiceImpl implements StudentService {
 		// add taken courses
 		final Student student = getGrades(docket);
 		final List<Grade> approved = student.getGrades();
+		Course course;
+		TranscriptGrade lastGrade;
+		Map<Integer, TranscriptGrade> lastGrades = new HashMap<>();
 		for (Grade g : approved) {
-			iSemester = g.getCourse().getSemester() - 1;
+			course = g.getCourse();
+			iSemester = course.getSemester() - 1;
 			gradeForm = new TranscriptGrade();
 			gradeForm.loadFromGrade(g);
-
+			if ((lastGrade = lastGrades.get(course.getId())) != null) {
+				if (lastGrade.getModified().compareTo(g.getModified()) < 0) {
+					// there is a new grade that can be edited
+					lastGrades.put(course.getId(), gradeForm);
+					gradeForm.setCanEdit(true);
+					lastGrade.setCanEdit(false);
+				}
+			} else {
+				// this is the first grade for this course
+				lastGrades.put(course.getId(), gradeForm);
+				gradeForm.setCanEdit(true);
+			}
 			semesters.get(iSemester).add(gradeForm);
 		}
 

@@ -11,6 +11,7 @@ public class TranscriptGrade {
 	private BigDecimal grade;
 	private LocalDateTime modified;
 	private boolean taking;
+	private boolean canEdit = false;
 
 	public void loadFromGrade(final Grade grade){
 		this.id = grade.getId();
@@ -75,5 +76,13 @@ public class TranscriptGrade {
 
 	public void setId(final Integer id) {
 		this.id = id;
+	}
+
+	public boolean getCanEdit() {
+		return canEdit;
+	}
+
+	public void setCanEdit(final boolean canEdit) {
+		this.canEdit = canEdit;
 	}
 }
