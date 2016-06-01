@@ -34,6 +34,8 @@
             <c:set var="formAction">
                 <c:url value="/courses/add_course" />
             </c:set>
+            <c:set var="hidden" value="hidden" />
+            <c:set var="readonly" value="false" />
             <spring:message var="formButton" code="add"/>
         </c:when>
         <c:when test="${section2 eq 'edit'}" >
@@ -43,6 +45,8 @@
             <c:set var="formAction">
                 <c:url value="/courses/${course.id}/edit" />
             </c:set>
+            <c:set var="hidden" value="" />
+            <c:set var="readonly" value="true" />
             <spring:message var="formButton" code="saveChanges"/>
         </c:when>
     </c:choose>
@@ -73,10 +77,10 @@
                         (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
                     </div>
 
-                    <div class="form-group col-xs-12">
+                    <div class="form-group col-xs-12 ${hidden}">
                         <form:label path="id"><spring:message code="id"/>
                             (<span class="text-danger"><spring:message code="requiredIcon"/></span>)</form:label>
-                        <form:input path="id" type="text" class="form-control" />
+                        <form:input path="id" type="text" class="form-control" readonly="${readonly}"/>
                         <form:errors path="id" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group col-xs-12">

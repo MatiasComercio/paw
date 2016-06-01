@@ -10,7 +10,6 @@ import javax.validation.constraints.Size;
 public class CourseForm {
 
     @Min(1)
-    @NotNull
     private Integer id;
 
     @NotNull

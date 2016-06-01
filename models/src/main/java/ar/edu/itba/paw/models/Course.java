@@ -14,7 +14,7 @@ public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_courseid_seq")
     @SequenceGenerator(sequenceName = "course_courseid_seq", name = "course_courseid_seq", allocationSize = 1)
-    private int id;
+    private Integer id;
 
     //TODO: Add Basic annotation
     @Column(length = 100, nullable = false, unique = true)
@@ -99,7 +99,7 @@ public class Course {
         this.name = name;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -160,12 +160,12 @@ public class Course {
     }
 
     public static class Builder {
-        private int id;
+        private Integer id;
         private String name;
         private int credits;
         private int semester;
 
-        public Builder(int id) {
+        public Builder(Integer id) {
             this.id = id;
         }
 
