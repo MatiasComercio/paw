@@ -196,14 +196,33 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public List<Integer> getApprovedCoursesId(final int docket) {
-		// TODO
-		return null;
+		final Student student = getByDocket(docket);
+		final List<Integer> coursesId = new LinkedList<>();
+		for (Grade grade : student.getGrades()) {
+			if (BigDecimal.valueOf(4).compareTo(grade.getGrade()) <= 0) {
+				coursesId.add(grade.getCourse().getId());
+			}
+		}
+		return coursesId;
 	}
 
 	@Override
 	public List<Student> getStudentsPassed(final int id) {
-		// TODO
-		return null;
+		final List<Student> studentsPassed = new LinkedList<>();
+
+		//TODO: Add a Student variable instead of a docket in Grade model
+		final TypedQuery<Integer> query =
+				em.createQuery("select gr.studentDocket from Grade as gr where gr.course.id = :id and gr.grade >= 4",
+						Integer.class);
+
+		query.setParameter("id", id);
+
+		List<Integer> docketList = query.getResultList();
+		for(Integer docket: docketList){
+			studentsPassed.add(getByDocket(docket));
+		}
+
+		return studentsPassed;
 	}
 
 	@Override
