@@ -212,7 +212,7 @@ public class StudentHibernateDao implements StudentDao {
 
 		//TODO: Add a Student variable instead of a docket in Grade model
 		final TypedQuery<Integer> query =
-				em.createQuery("select gr.studentDocket from Grade as gr where gr.course.id = :id and gr.grade >= 4",
+				em.createQuery("select gr.student.docket from Grade as gr where gr.course.id = :id and gr.grade >= 4",
 						Integer.class);
 
 		query.setParameter("id", id);

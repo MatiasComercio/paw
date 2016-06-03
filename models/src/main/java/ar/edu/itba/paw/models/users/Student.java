@@ -19,9 +19,7 @@ public class Student extends User {
 	private int docket;
 
 	// TODO +++xcheck if grades are being delete on cascade
-	@OneToMany
-	@JoinColumn(name = "docket", referencedColumnName = "docket")
-//	@Transient
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
 	private List<Grade> grades;
 
 	@ManyToMany(

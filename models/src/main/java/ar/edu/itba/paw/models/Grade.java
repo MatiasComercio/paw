@@ -19,15 +19,6 @@ public class Grade {
 	@SequenceGenerator(sequenceName = "grade_gradeid_seq", name = "grade_gradeid_seq", allocationSize = 1)
 	private Integer id;
 
-	@Column(name = "docket", nullable = false)
-	private int studentDocket;
-
-	@Transient
-	private String studentFirstName;
-
-	@Transient
-	private String studentLastName;
-
 	@Column(name = "grade", nullable = false, precision = 2)
 	private BigDecimal grade;
 
@@ -41,16 +32,13 @@ public class Grade {
 		this.taking = taking;
 	}
 
-	// +++xcheck
-//	@ManyToOne
-//	@JoinColumn(name = "docket", referencedColumnName = "docket", nullable = false)
-//	private Student studentByDocket;
+	@ManyToOne
+	@JoinColumn(name = "docket", referencedColumnName = "docket", nullable = false)
+	private Student student;
 
 	private Grade(final Builder builder) {
 		this.id = builder.id;
-		this.studentDocket = builder.studentDocket;
-		this.studentFirstName = builder.studentFirstName;
-		this.studentLastName = builder.studentLastName;
+		this.student = builder.student;
 		this.course = new Course.Builder(builder.courseId).name(builder.courseName).build();
 		this.grade = builder.grade;
 		this.modified = builder.modified;
@@ -70,15 +58,15 @@ public class Grade {
 	}
 
 	public int getStudentDocket() {
-		return studentDocket;
+		return student.getDocket();
 	}
 
 	public String getStudentFirstName() {
-		return studentFirstName;
+		return student.getFirstName();
 	}
 
 	public String getStudentLastName() {
-		return studentLastName;
+		return student.getLastName();
 	}
 
 	public int getCourseId() {
@@ -99,6 +87,13 @@ public class Grade {
         return taking;
     }
 
+	public void setStudent(final Student student) {
+		this.student = student;
+	}
+
+	public Student getStudent() {
+		return this.student;
+	}
 
 	@Override
 	public boolean equals(final Object o) {
@@ -107,39 +102,39 @@ public class Grade {
 
 		final Grade grade1 = (Grade) o;
 
-		if (id != grade1.id) return false;
-		if (studentDocket != grade1.studentDocket) return false;
 		if (course != null ? !course.equals(grade1.course) : grade1.course != null) return false;
+		if (id != null ? !id.equals(grade1.id) : grade1.id != null) return false;
 		if (grade != null ? !grade.equals(grade1.grade) : grade1.grade != null) return false;
-		return modified != null ? modified.equals(grade1.modified) : grade1.modified == null;
+		if (modified != null ? !modified.equals(grade1.modified) : grade1.modified != null) return false;
+		return student != null ? student.equals(grade1.student) : grade1.student == null;
 
 	}
 
 	@Override
 	public int hashCode() {
 		int result = course != null ? course.hashCode() : 0;
-		result = 31 * result + id;
-		result = 31 * result + studentDocket;
+		result = 31 * result + (id != null ? id.hashCode() : 0);
 		result = 31 * result + (grade != null ? grade.hashCode() : 0);
 		result = 31 * result + (modified != null ? modified.hashCode() : 0);
+		result = 31 * result + (student != null ? student.hashCode() : 0);
 		return result;
 	}
 
 	public static class Builder {
 		private final Integer id;
-		private final int studentDocket;
 		private final int courseId;
 		private final BigDecimal grade;
 
 		private String studentFirstName = "";
 		private String studentLastName = "";
+		private Student student;
 		private String courseName = "";
 		private LocalDateTime modified;
         private Boolean taking = false;
 
-		public Builder(final Integer id, final int studentDocket, final int courseId, final BigDecimal grade) {
+		public Builder(final Integer id, final Student student, final int courseId, final BigDecimal grade) {
 			this.id = id;
-			this.studentDocket = studentDocket;
+			this.student = student;
 			this.courseId = courseId;
 			this.grade = grade;
 			this.modified = LocalDateTime.now();

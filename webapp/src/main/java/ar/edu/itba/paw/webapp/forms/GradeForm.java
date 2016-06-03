@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.forms;
 
 
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.users.Student;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -35,8 +36,11 @@ public class GradeForm {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime modified;
 
+
+    private Student student;
+
     public Grade build() {
-        return new Grade.Builder(id, docket, courseId, grade).modified(modified).build();
+        return new Grade.Builder(id, student, courseId, grade).modified(modified).build();
     }
 
     public Integer getDocket() {
@@ -81,9 +85,10 @@ public class GradeForm {
 
     public void loadFromGrade(final Grade grade){
         this.id = grade.getId();
-        this.docket = grade.getStudentDocket();
+        this.docket = grade.getStudent().getDocket();
         this.courseId = grade.getCourseId();
         this.grade = grade.getGrade();
+        this.student = grade.getStudent();
     }
 
     public BigDecimal getOldGrade() {
@@ -100,5 +105,13 @@ public class GradeForm {
 
     public void setId(final Integer id) {
         this.id = id;
+    }
+
+    public void setStudent(final Student student) {
+        this.student = student;
+    }
+
+    public Student getStudent() {
+        return student;
     }
 }
