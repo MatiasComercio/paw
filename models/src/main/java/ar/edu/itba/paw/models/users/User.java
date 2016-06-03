@@ -1,10 +1,7 @@
 package ar.edu.itba.paw.models.users;
 
 
-import ar.edu.itba.paw.models.Address;
-import ar.edu.itba.paw.models.Authority;
-import ar.edu.itba.paw.models.Role;
-import ar.edu.itba.paw.models.RoleClass;
+import ar.edu.itba.paw.models.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -65,6 +62,11 @@ public class User implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "role", referencedColumnName = "role", nullable = false)
 	private RoleClass role;
+
+	@OneToMany(
+			cascade={CascadeType.PERSIST, CascadeType.MERGE}
+	)
+	private List<Procedure> procedures;
 
 	protected User() {
 		// Just for Hibernate, we love you too!
