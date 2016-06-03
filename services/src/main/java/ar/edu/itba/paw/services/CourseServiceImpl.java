@@ -15,8 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+/* IMPORTANT! Do not annotate with @Transactional; do it for each method that requires it */
 public class CourseServiceImpl implements CourseService {
 
     @Autowired
@@ -53,11 +55,7 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     @Override
     public Course getById(int id) {
-        if(id >= 1) {
-            return courseDao.getById(id);
-        } else {
-            return null;
-        }
+        return courseDao.getById(id);
     }
 
     @Transactional
@@ -82,9 +80,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Result deleteCourse(final int courseId) {
 
-        if(courseId<0){
-            return Result.ERROR_ID_OUT_OF_BOUNDS;
-        }
         //TODO: Change order
         if(courseDao.gradeExists(courseId)){
             return Result.COURSE_EXISTS_GRADE;
@@ -96,9 +91,7 @@ public class CourseServiceImpl implements CourseService {
 
         deleteCourseCorrelatives(courseId);
 
-        Result result = courseDao.deleteCourse(courseId);
-
-        return result;
+        return courseDao.deleteCourse(courseId);
 
     }
 
@@ -116,14 +109,11 @@ public class CourseServiceImpl implements CourseService {
         }
 
         List<Student> studentsFiltered = studentService.getByFilter(studentFilter);
-        final List<Student> students = new LinkedList<>();
-        for (Student s : studentsFiltered) {
-            if (modifiableStudents.contains(s)) {
-                students.add(s);
-            }
-        }
 
-        return students;
+        return studentsFiltered
+                .stream()
+                .filter(modifiableStudents::contains)
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Transactional
@@ -255,6 +245,8 @@ public class CourseServiceImpl implements CourseService {
         List<Course> courses =  getByFilter(courseFilter);
         List<Course> correlatives = getCorrelativesByFilter(courseId, null);
 
+        // +++ximprove: should not show incompatible correlative courses
+
         //Remove all correlatives from the list
         courses.removeAll(correlatives);
 
@@ -265,10 +257,6 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course getStudentsThatPassedCourse(final int id, final StudentFilter studentFilter) {
-        if (id <= 0) {
-            return null;
-        }
-
         final Course course = courseDao.getStudentsThatPassedCourse(id);
         if (course == null) {
             return null;
@@ -285,6 +273,8 @@ public class CourseServiceImpl implements CourseService {
                 }
             }
         }
+        // Care with this! if the method or class is annotated with @Transactional, this could
+        // be updating course students, and data could be lost
         course.setStudents(st);
 
         return course;
