@@ -5,19 +5,16 @@ import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 public class StudentForm {
 
     /* When the student is created the docket is asigned by the database, not the user */
     private final static Integer EMPTY_DOCKET = 0;
-    @Digits(integer=8, fraction=0)
+
     @NotNull
-    @Min(1)
+    @Min(1000000)
     private Integer dni;
     //@NumberFormat(style = Style.NUMBER)
 
