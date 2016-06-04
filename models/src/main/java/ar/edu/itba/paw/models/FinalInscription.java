@@ -85,7 +85,7 @@ public class FinalInscription {
     }
 
     private FinalInscription(Builder builder){
-        //this.id = builder.id;
+        this.id = builder.id;
         this.maxVacancy = builder.maxVacancy;
         this.finalExamDate = builder.finalExamDate;
         this.vacancy = 0;
@@ -109,9 +109,10 @@ public class FinalInscription {
         public Builder(int id, int maxVacancy, LocalDateTime finalExamDate, Course course){
             this.id = id;
             this.maxVacancy = maxVacancy;
-            //this.finalExamDate = finalExamDate;
+            this.finalExamDate = finalExamDate;
+
             //TODO: Debug purposes only
-            this.finalExamDate = LocalDateTime.now();
+            //this.finalExamDate = LocalDateTime.now();
             this.course = course;
         }
 
