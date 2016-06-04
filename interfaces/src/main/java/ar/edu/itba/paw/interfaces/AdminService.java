@@ -87,15 +87,15 @@ public interface AdminService {
     Result resetPassword(int dni);
 
     /**
-     *
-     * @return
+     * Get all the procedures, despite their state
+     * @return all the existing procedures
      */
     List<Procedure> getAllProcedures();
 
     /**
-     *
+     * Answer an existing procedure
      * @param procedure
-     * @return
+     * @return if the procedure was successfully answered
      */
     boolean answerProcedure(Procedure procedure);
 }

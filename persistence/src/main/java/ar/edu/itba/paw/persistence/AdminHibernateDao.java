@@ -1,7 +1,9 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.AdminDao;
+import ar.edu.itba.paw.interfaces.ProcedureDao;
 import ar.edu.itba.paw.models.Authority;
+import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.RoleClass;
 import ar.edu.itba.paw.models.users.Admin;
@@ -9,6 +11,7 @@ import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -33,6 +36,9 @@ public class AdminHibernateDao implements AdminDao {
 	@PersistenceContext
 	private EntityManager em;
 
+	@Autowired
+	private ProcedureDao procedureDao;
+
 	@Override
 	public List<Admin> getAllAdmins() {
 		final TypedQuery<Admin> query = em.createQuery(GET_ALL_ADMINS, Admin.class);
@@ -51,6 +57,16 @@ public class AdminHibernateDao implements AdminDao {
 		em.merge(admin);
 		LOGGER.debug("[update] - {}", admin);
 		return Result.OK;
+	}
+
+	@Override
+	public List<Procedure> getAllProcedures() {
+		return procedureDao.getAllProcedures();
+	}
+
+	@Override
+	public boolean answerProcedure(final Procedure procedure) {
+		return procedureDao.updateProcedure(procedure);
 	}
 
 	@Override

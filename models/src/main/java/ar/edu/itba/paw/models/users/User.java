@@ -63,7 +63,7 @@ public class User implements Serializable {
 	@JoinColumn(name = "role", referencedColumnName = "role", nullable = false)
 	private RoleClass role;
 
-	@OneToMany(cascade= CascadeType.ALL, mappedBy = "id")
+	@OneToMany(cascade= CascadeType.ALL, mappedBy = "sender")
 	private List<Procedure> procedures;
 
 	protected User() {

@@ -3,6 +3,7 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.AdminDao;
 import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
@@ -102,5 +103,15 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Result resetPassword(final int dni) {
         return userService.resetPassword(dni);
+    }
+
+    @Override
+    public List<Procedure> getAllProcedures() {
+        return adminDao.getAllProcedures();
+    }
+
+    @Override
+    public boolean answerProcedure(final Procedure procedure) {
+        return adminDao.answerProcedure(procedure);
     }
 }

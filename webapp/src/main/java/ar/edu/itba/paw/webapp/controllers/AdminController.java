@@ -1,12 +1,14 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.AdminService;
+import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.AdminFilterForm;
 import ar.edu.itba.paw.webapp.forms.AdminForm;
+import ar.edu.itba.paw.webapp.forms.ProcedureForm;
 import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -251,7 +253,6 @@ public class AdminController {
 		return new ModelAndView("redirect:" + referrer);
 	}
 
-
 	@RequestMapping("/admins/{dni}/info")
 	public ModelAndView viewAdmin (
 			@PathVariable("dni") final int dni,
@@ -261,6 +262,29 @@ public class AdminController {
 			LOGGER.warn("The user {} is trying to view an admin's info and and doesn't have authority VIEW_ADMIN [GET]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
+
+		///////////////////////////////////////////TEST
+
+		final List<Procedure> procedures = adminService.getAllProcedures();
+
+		LOGGER.debug("PROCEDURES = {}", procedures);
+
+		final Procedure procedure = procedures.get(0);
+
+		LOGGER.debug("TITLE IS = " + procedure.getTitle());
+
+		final ProcedureForm procedureForm = new ProcedureForm();
+
+		procedureForm.loadFromProcedure(procedure);
+		procedureForm.setResponse("this is the response");
+		procedureForm.setState("ACCEPTED");
+		procedureForm.setReceptorId(dni);
+
+		final Procedure updatedProcedure = procedureForm.build();
+
+		adminService.answerProcedure(updatedProcedure);
+
+		///////////////////////////////////////////TEST
 
 		final Admin admin = adminService.getByDni(dni);
 

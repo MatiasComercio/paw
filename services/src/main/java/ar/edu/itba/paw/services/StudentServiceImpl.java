@@ -132,6 +132,7 @@ public class StudentServiceImpl implements StudentService {
 		return studentDao.createProcedure(procedure);
 	}
 
+	@Transactional
 	@Override
 	public List<Procedure> getProcedures(final int docket) {
 		final Student student = getByDocket(docket);

@@ -12,12 +12,17 @@ public class Procedure {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "procedure_procedureid_seq")
     @SequenceGenerator(sequenceName = "procedure_procedureid_seq", name = "procedure_procedureid_seq", allocationSize = 1)
+    @Column(name = "id")
     private int id;
+
+    @Basic
+    @Column(name = "title", nullable = false, length = 64)
+    private String title;
 
 //    @Column(name = "sender_id", nullable = false, updatable = false)
 //    private int sender;
     @ManyToOne
-    @JoinColumn(name = "sender_id", referencedColumnName = "dni")
+    @JoinColumn(name = "sender_id", referencedColumnName = "dni" /*, nullable = false makes it fail to add for constraint*/)
     private User sender;
 
     @Basic
@@ -42,6 +47,7 @@ public class Procedure {
     // Constructors //
 
     private Procedure(final Builder builder) {
+        this.title = builder.title;
         this.sender = builder.sender;
         this.message = builder.message;
         this.receptorId = builder.receptorId;
@@ -54,6 +60,11 @@ public class Procedure {
     }
 
     // Getters //
+
+
+    public String getTitle() {
+        return title;
+    }
 
     public Integer getId() {
         return id;
@@ -95,8 +106,6 @@ public class Procedure {
 
     // Equals and Hashcode //
 
-
-
     @Override
     public String toString() {
         return "Procedure{" +
@@ -111,6 +120,7 @@ public class Procedure {
     }
 
     public static class Builder {
+        private String title;
         private User sender;
         private String message;
         private Integer receptorId;
@@ -120,6 +130,11 @@ public class Procedure {
 
         public Builder() {
             this.date = LocalDateTime.now();
+        }
+
+        public Builder title(final String title) {
+            this.title = title;
+            return this;
         }
 
         public Builder sender(final User sender) {

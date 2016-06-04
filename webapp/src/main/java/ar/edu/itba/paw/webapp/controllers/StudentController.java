@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
@@ -115,6 +116,22 @@ public class StudentController {
 	@RequestMapping("/students/{docket}/info")
 	public ModelAndView getStudent(@PathVariable final int docket,
 	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		//////////////////////////////////TEST
+
+		final Student student1 = studentService.getByDocket(docket);
+		final Procedure procedure = new Procedure.Builder()
+				.procedureState("PENDING")
+				.title("this is the title")
+				.message("tramite 123")
+				.sender(student1)
+				.build();
+		studentService.createProcedure(procedure);
+
+		final List<Procedure> procedures = studentService.getProcedures(docket);
+		LOGGER.debug("PROCEDURES = " + procedures);
+
+		/////////////////////////////////TEST
 
 		if (!loggedUser.hasAuthority("VIEW_STUDENT")) {
 			LOGGER.warn("User {} tried to view student with docket {} and doesn't have VIEW_STUDENT authority [GET]", loggedUser.getDni(), docket);

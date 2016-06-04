@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Procedure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,7 +19,7 @@ public class ProcedureHibernateDao implements ProcedureDao {
     // Queries //
 
     private static final String GET_BY_SENDER =
-            "from Procedure as p where p.sender_id = :userId";
+            "from Procedure as p where p.sender_id = :userId"; //fixme
     private static final String GET_ALL =
             "from Procedure";
 
@@ -29,6 +30,8 @@ public class ProcedureHibernateDao implements ProcedureDao {
     @PersistenceContext
     private EntityManager em;
 
+    //TODO catch exception and return false
+    @Transactional
     @Override
     public boolean createProcedure(final Procedure procedure) {
         em.persist(procedure);
@@ -37,6 +40,7 @@ public class ProcedureHibernateDao implements ProcedureDao {
         return true;
     }
 
+    @Transactional
     @Override
     public boolean updateProcedure(final Procedure procedure) {
         /* +++xcheck that this is correct */

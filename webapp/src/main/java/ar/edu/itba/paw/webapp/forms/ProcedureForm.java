@@ -20,6 +20,10 @@ public class ProcedureForm {
     private int senderId;
 
     @NotNull
+    @Size(min=1, max=64)
+    private String title;
+
+    @NotNull
     @Size(min=1, max=255)
     private String message;
 
@@ -40,6 +44,7 @@ public class ProcedureForm {
 
     public Procedure build() {
         return new Procedure.Builder()
+                .title(title)
                 .sender(sender)
                 .message(message)
                 .receptorId(receptorId)
@@ -50,12 +55,21 @@ public class ProcedureForm {
     }
 
     public void loadFromProcedure(final Procedure procedure) {
+        this.title = procedure.getTitle();
         this.senderId = procedure.getSenderId();
         this.message = procedure.getMessage();
         this.receptorId = procedure.getReceptorId();
         this.response = procedure.getResponse();
         this.date = procedure.getDate();
         this.sender = procedure.getSender();
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public Integer getProcedureId() {

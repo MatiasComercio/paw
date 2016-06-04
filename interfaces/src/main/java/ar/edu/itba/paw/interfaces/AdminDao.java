@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 
+import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
@@ -85,4 +86,17 @@ public interface AdminDao {
      * @return The Result code of the operation
      */
     Result update(final Admin admin);
+
+    /**
+     * Get all the procedures, despite their state
+     * @return all the existing procedures
+     */
+    List<Procedure> getAllProcedures();
+
+    /**
+     * Answer an existing procedure
+     * @param procedure
+     * @return if the procedure was successfully answered
+     */
+    boolean answerProcedure(Procedure procedure);
 }
