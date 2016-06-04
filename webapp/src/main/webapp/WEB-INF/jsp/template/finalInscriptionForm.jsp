@@ -49,7 +49,7 @@
                             <form:errors path="vacancy" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
-                    <!--
+
                     <div class="form-group">
                         <form:label path="finalExamDate" class="col-xs-4 control-label"><spring:message code="final_date"/></form:label>
                         <div class="col-xs-8">
@@ -60,7 +60,7 @@
                             <form:errors path="finalExamDate" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
-                    -->
+
                     <div class="form-group">
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="hidden" path="courseId" readonly="true"/>

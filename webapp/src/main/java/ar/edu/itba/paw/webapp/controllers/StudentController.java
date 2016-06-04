@@ -705,8 +705,7 @@ public class StudentController {
 		//FinalInscription finalInscription = studentService.getFinalInscription(finalInscriptionForm.getId());
 
 		//TODO: check for vacancy
-		studentService.addStudentFinalInscription(docket, finalInscriptionForm.getId());
-		Result result = Result.OK;
+		Result result = studentService.addStudentFinalInscription(docket, finalInscriptionForm.getId());
 
 		if (result == null) {
 			result = Result.ERROR_UNKNOWN;

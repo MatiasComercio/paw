@@ -183,5 +183,5 @@ public interface StudentService {
 	 * Adds the given student to the Final Inscription instance
 	 * @param docket The student's docket
      */
-	void addStudentFinalInscription(int docket, int finalInscriptionId);
+	Result addStudentFinalInscription(int docket, int finalInscriptionId);
 }

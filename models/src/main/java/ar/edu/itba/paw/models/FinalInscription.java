@@ -18,6 +18,9 @@ public class FinalInscription {
     @Basic
     private int vacancy;
 
+    @Basic
+    private int maxVacancy;
+
     @ManyToMany(
             cascade = CascadeType.ALL
     )
@@ -47,6 +50,10 @@ public class FinalInscription {
 
     public void setVacancy(int vacancy) {
         this.vacancy = vacancy;
+    }
+
+    public void setMaxVacancy(int maxVacancy) {
+        this.maxVacancy = maxVacancy;
     }
 
     public Set<Student> getStudents() {
@@ -79,19 +86,29 @@ public class FinalInscription {
 
     private FinalInscription(Builder builder){
         //this.id = builder.id;
-        this.vacancy = builder.vacancy;
+        this.maxVacancy = builder.maxVacancy;
         this.finalExamDate = builder.finalExamDate;
+        this.vacancy = 0;
+    }
+
+    public void increaseVacancy() {
+        this.vacancy++;
+    }
+
+    public int getMaxVacancy() {
+        return this.maxVacancy;
     }
 
     public static class Builder{
         private int id;
         private int vacancy;
+        private int maxVacancy;
         private LocalDateTime finalExamDate;
         private Course course;
 
-        public Builder(int id, int vacancy, LocalDateTime finalExamDate, Course course){
+        public Builder(int id, int maxVacancy, LocalDateTime finalExamDate, Course course){
             this.id = id;
-            this.vacancy = vacancy;
+            this.maxVacancy = maxVacancy;
             //this.finalExamDate = finalExamDate;
             //TODO: Debug purposes only
             this.finalExamDate = LocalDateTime.now();
@@ -107,6 +124,20 @@ public class FinalInscription {
             return this;
         }
 
+        Builder maxVacancy(int maxVacancy){
+            this.maxVacancy = maxVacancy;
+            return this;
+        }
+
+        Builder finalExamDate (LocalDateTime finalExamDate){
+            this.finalExamDate = finalExamDate;
+            return this;
+        }
+
+        Builder course(Course course){
+            this.course = course;
+            return this;
+        }
 
     }
 

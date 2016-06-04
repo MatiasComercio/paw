@@ -3,10 +3,12 @@ package ar.edu.itba.paw.webapp.forms;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalInscription;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class FinalInscriptionForm {
 
@@ -26,6 +28,8 @@ public class FinalInscriptionForm {
     @NotNull
     private int vacancy;
 
+    //pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX"
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime finalExamDate;
 
 //    public FinalInscription build(){
@@ -72,4 +76,5 @@ public class FinalInscriptionForm {
     public void setFinalExamDate(LocalDateTime finalExamDate) {
         this.finalExamDate = finalExamDate;
     }
+
 }

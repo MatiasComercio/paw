@@ -62,7 +62,7 @@
                                 <td>${ inscription.id }</td>
                                 <td>${ inscription.course.name}</td>
                                 <td>${ inscription.finalExamDate}</td>
-                                <td>${ inscription.vacancy }</td>
+                                <td>${ inscription.vacancy } / ${ inscription.maxVacancy }</td>
                                 <td>
                                     <c:choose>
                                         <c:when test="${section eq 'students'}">
@@ -73,7 +73,8 @@
                                                             data-course_id="${inscription.course.id}"
                                                             data-vacancy="${ inscription.vacancy}" data-final_exam_date="${ inscription.finalExamDate}"
                                                             data-toggle="modal" data-target="#finalInscriptionFormConfirmationModal">
-                                                    <span class="fa fa-list-alt" aria-hidden="true"></span> Inscribirse
+                                                    <span class="fa fa-list-alt" aria-hidden="true"></span>
+                                                        <spring:message code="finalInscriptionButton"/></td>
                                                     </button>
                                                 </c:when>
                                             </c:choose>

@@ -322,11 +322,15 @@ public class StudentServiceImpl implements StudentService {
 
 		Student student = studentDao.getByDocket(docket);
 
-		//TODO: Check correlativity
+		//inscription.getVacancy() < inscription.getMaxVacancy() The inscription should be visible even when full
+		//TODO: Check correlativity with final exams and vacancy
 		for(FinalInscription inscription : studentDao.getAllFinalInscriptions()){
 			if(studentDao.isApproved(docket, inscription.getCourse().getId()) &&
+					//checks if student is not already included in the current final inscription.
 					!inscription.getStudents().contains(student)){
+
 				finalInscriptions.add(inscription);
+				//TODO: increasing the variable inside a transaction? Does this mean it gets saved in the db?(Because it should get saved)
 			}
 		}
 		return finalInscriptions;
@@ -340,9 +344,16 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public void addStudentFinalInscription(int docket, int finalInscriptionId) {
+	public Result addStudentFinalInscription(int docket, int finalInscriptionId) {
+
 		FinalInscription finalInscription = studentDao.getFinalInscription(finalInscriptionId);
+
+		if(finalInscription.getVacancy() >= finalInscription.getMaxVacancy()){
+			return Result.FINAL_INSCRIPTION_FULL;
+		}
 		finalInscription.getStudents().add(studentDao.getByDocket(docket));
+		finalInscription.increaseVacancy();
+		return Result.OK;
 
 	}
 }
