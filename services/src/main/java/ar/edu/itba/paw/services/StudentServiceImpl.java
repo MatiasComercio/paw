@@ -66,7 +66,7 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public Result create(final Student student) {
+	public boolean create(final Student student) {
 		student.setRole(Role.STUDENT);
 		if (student.getEmail() == null || Objects.equals(student.getEmail(), "")) {
 			student.setEmail(userService.createEmail(student));
@@ -76,36 +76,29 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public Result deleteStudent(final int docket) {
-		if(docket <= 0) {
-			return Result.ERROR_DOCKET_OUT_OF_BOUNDS;
-		}
+	public boolean deleteStudent(final int docket) {
 		return studentDao.deleteStudent(docket);
 	}
 
 	@Transactional
 	@Override
-	public Result addGrade(final Grade grade) {
-		if (grade == null) {
-			return null;
+	public boolean addGrade(final Grade grade) {
+		boolean done = studentDao.addGrade(grade);
+		if (done) {
+			done = studentDao.unenroll(grade.getStudentDocket(), grade.getCourseId());
 		}
-
-		Result result = studentDao.addGrade(grade);
-		if (result != null && result.equals(Result.OK)) {
-			result = studentDao.unenroll(grade.getStudentDocket(), grade.getCourseId());
-		}
-		return result;
+		return done;
 	}
 
 	@Transactional
 	@Override
-	public Result editGrade(final Grade newGrade, final BigDecimal oldGrade) {
+	public boolean editGrade(final Grade newGrade, final BigDecimal oldGrade) {
 		return studentDao.editGrade(newGrade, oldGrade);
 	}
 
 	@Transactional
 	@Override
-	public Result update(final int docket, final Student student) {
+	public boolean update(final int docket, final Student student) {
 		return studentDao.update(student);
 	}
 
@@ -174,31 +167,25 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public Result enroll(final int studentDocket, final int courseId) {
-		if (studentDocket <= 0 ) {
-			return Result.ERROR_DOCKET_OUT_OF_BOUNDS;
-		}
-		if (courseId <= 0) {
-			return Result.ERROR_ID_OUT_OF_BOUNDS;
-		}
-
-		Result result;
+	public boolean enroll(final int studentDocket, final int courseId) {
+		boolean result;
 
 		if (!checkCorrelatives(studentDocket, courseId)) {
-			return Result.ERROR_CORRELATIVE_NOT_APPROVED;
+//			return Result.ERROR_CORRELATIVE_NOT_APPROVED;
+			return false;
 		}
 
 		result = studentDao.enroll(studentDocket, courseId);
-		if (result == null) {
-			return Result.ERROR_UNKNOWN;
-		}
-		if (!result.equals(Result.OK)) {
-			return result;
-		}
-
-		/* notifyInscription(studentDocket, courseId); mail +++xtodo */
 
 		return result;
+//		if (result == null) {
+//			return Result.ERROR_UNKNOWN;
+//		}
+//		if (!result.equals(Result.OK)) {
+//			return result;
+//		}
+
+		/* notifyInscription(studentDocket, courseId); mail +++xtodo */
 	}
 
 	@Transactional
@@ -284,26 +271,12 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public Result unenroll(final int studentDocket, final int courseId) {
-		if (studentDocket <= 0 ) {
-			return Result.ERROR_DOCKET_OUT_OF_BOUNDS;
-		}
-		if (courseId <= 0) {
-			return Result.ERROR_ID_OUT_OF_BOUNDS;
-		}
-
-		Result result;
-
-		result = studentDao.unenroll(studentDocket, courseId);
-		if (result == null) {
-			return Result.ERROR_UNKNOWN;
-		}
-		if (!result.equals(Result.OK)) {
-			return result;
-		}
+	public boolean unenroll(final int studentDocket, final int courseId) {
+		final boolean done = studentDao.unenroll(studentDocket, courseId);
 
 		/* notifyUnenrollment(studentDocket, courseId); mail +++xtodo */
-		return result;
+
+		return done;
 	}
 
 	@Transactional

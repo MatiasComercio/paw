@@ -96,25 +96,28 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public Result create(final Student student) {
+	public boolean create(final Student student) {
 		em.persist(student);
 		LOGGER.debug("[create] - {}", student);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
-	public Result update(final Student student) {
+	public boolean update(final Student student) {
 		em.merge(student);
 		LOGGER.debug("[update] - {}", student);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
-	public Result deleteStudent(final int docket) {
+	public boolean deleteStudent(final int docket) {
 		final Student student = getByDocket(docket);
 		em.remove(student);
 		LOGGER.debug("[delete] - {}", student);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
@@ -130,14 +133,15 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public Result addGrade(final Grade grade) {
+	public boolean addGrade(final Grade grade) {
 		em.persist(grade);
 		LOGGER.debug("[addGrade] - {}", grade);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
-	public Result editGrade(final Grade newGrade, final BigDecimal oldGrade) {
+	public boolean editGrade(final Grade newGrade, final BigDecimal oldGrade) {
 		em.merge(newGrade);
 //		final CriteriaBuilder cb = em.getCriteriaBuilder();
 //		final CriteriaUpdate<Grade> query = cb.createCriteriaUpdate(Grade.class);
@@ -146,27 +150,30 @@ public class StudentHibernateDao implements StudentDao {
 //		final Predicate pCourseId = builder.equal(root.get("id"), id);
 
 		LOGGER.debug("[editGrade] - {}", newGrade);
-		return Result.OK;
+		return true;
 	}
 
 	@Override
-	public Result enroll(final int studentDocket, final int courseId) {
+	public boolean enroll(final int studentDocket, final int courseId) {
 		final Student student = getByDocket(studentDocket);
 		final Course course = courseDao.getById(courseId);
 		final List<Course> studentCourses = student.getStudentCourses();
+
 		studentCourses.add(course);
 		em.merge(student);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
-	public Result unenroll(final int studentDocket, final int courseId) {
+	public boolean unenroll(final int studentDocket, final int courseId) {
 		final Student student = getByDocket(studentDocket);
 		final Course course = courseDao.getById(courseId);
 		final List<Course> studentCourses = student.getStudentCourses();
+
 		studentCourses.remove(course);
 		em.merge(student);
-		return Result.OK;
+		return true;
 	}
 
 	@Override

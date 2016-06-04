@@ -53,7 +53,8 @@ public interface UserDao {
 	/**
 	 * Change the password of a given user
 	 * @param dni The user's dni.
-	 * @param prevPassword The user's previous password
+	 * @param prevPassword The user's previous password. If it is null, then the newPassword will step over the
+	 *                     previous password
 	 * @param newPassword The user's new password
      * @return 	true if the password was changed; else false
      */

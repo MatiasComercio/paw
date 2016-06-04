@@ -53,26 +53,24 @@ public interface StudentService {
 	/**
 	 *
 	 * @param student The student to be persisted in the database.
-	 * @return The Result code of the insertion
+	 * @return true if the student was inserted; else false
 	 */
-	Result create(Student student);
+	boolean create(Student student);
 
 	/**
 	 * Update student
 	 * @param docket  The docket of the old student
 	 * @param student The new student
-	 * @return The Result code of update
+	 * @return true if the student was updated; else false
 	 */
-	Result update(int docket, Student student);
+	boolean update(int docket, Student student);
 
 	/**
 	 * Delete the student that matches the given docket.
 	 * @param docket The student's docket
-	 * @return 	OK if the student was deleted;
-	 * 		ERROR_DOCKET_OUT_OF_BOUNDS if the docket is invalid;
-	 * 		ERROR_UNKNOWN else;
-     */
-	Result deleteStudent(int docket);
+	 * @return 	true if the student was deleted; false else
+	 */
+	boolean deleteStudent(int docket);
 
 	/**
 	 * Add the grade for a given student and course. If success, the student is unenrolled from the given course.
@@ -81,14 +79,15 @@ public interface StudentService {
 	 * 		INVALID_INPUT_PARAMETERS if one or more parameters are invalid;
 	 * 		ERROR_UNKNOWN else;
      */
-	Result addGrade(Grade grade);
+	boolean addGrade(Grade grade);
 
 	/**
 	 * @param newGrade The new grade values
 	 * @param oldGrade The grade to be updated
 	 * @return The result code of the Update
      */
-	Result editGrade(Grade newGrade, BigDecimal oldGrade);
+	boolean editGrade(Grade newGrade, BigDecimal oldGrade);
+
 	/**
 	 * Gets the list of the courses the student with the given docket can enroll in,
 	 * applying the specified courseFilter
@@ -107,16 +106,16 @@ public interface StudentService {
 	 * @param courseId The course id
 	 * @return a Result object containing information of the operation carried out
 	 */
-	Result enroll(int studentDocket, int courseId);
+	boolean enroll(int studentDocket, int courseId);
 
 	/**
 	 * Unenrolls the student with the given docket of the course with the specified id.
 	 *
 	 * @param studentDocket The student's docket
 	 * @param courseId The course id
-	 * @return a Result object containing information of the operation carried out
+	 * @return true if the student was unenrolled from a subject; else false
 	 */
-	Result unenroll(int studentDocket, int courseId);
+	boolean unenroll(int studentDocket, int courseId);
 
 	/**
 	 * Gets the collection of courses the student already approved.

@@ -112,7 +112,7 @@ public class UserController {
 			LOGGER.warn("User {} could not reset password, Result = {}", loggedUser.getDni(), done);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(
-					"invalid_password", null, Locale.getDefault()));
+					"INVALID_PASSWORD", null, Locale.getDefault()));
 		} else {
 			LOGGER.info("User {} reset password successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
@@ -164,7 +164,7 @@ public class UserController {
 		if (!done) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(
-					"invalid_password", null, Locale.getDefault()));
+					"INVALID_PASSWORD", null, Locale.getDefault()));
 			LOGGER.warn("User {} could not change Password, Result = {}", passwordForm.getDni(), done);
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
