@@ -84,7 +84,7 @@ public interface AdminService {
      *		INVALID_INPUT_PARAMETERS if the provided dni doesn't match to a user;
      *		else ERROR_UNKNOWN in other case;
      */
-    Result resetPassword(int dni);
+    boolean resetPassword(int dni);
 
     /**
      * Get all the procedures, despite their state

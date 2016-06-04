@@ -81,18 +81,23 @@ public class UserHibernateDao implements UserDao {
 	}
 
 	@Override
-	public Result changePassword(final int dni, final String prevPassword, final String newPassword) {
+	public boolean changePassword(final int dni, final String prevPassword, final String newPassword) {
 		final TypedQuery<User> query = em.createQuery(GET_BY_DNI, User.class);
 		query.setParameter(DNI_PARAM, dni);
 		query.setMaxResults(ONE);
 		final List<User> users = query.getResultList();
 		if (users.isEmpty()) {
-			return null;
+			return false;
 		}
 		final User user = users.get(FIRST);
+
+		if(prevPassword != null && !user.getPassword().equals(prevPassword)) {
+			return false;
+		}
 		user.setPassword(newPassword);
 		em.persist(user);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
@@ -103,7 +108,7 @@ public class UserHibernateDao implements UserDao {
 	}
 
 	@Override
-	public Result resetPassword(final int dni) {
+	public boolean resetPassword(final int dni) {
 		return changePassword(dni, null, User.DEFAULT_PASSWORD);
 	}
 

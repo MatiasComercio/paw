@@ -55,11 +55,9 @@ public interface UserDao {
 	 * @param dni The user's dni.
 	 * @param prevPassword The user's previous password
 	 * @param newPassword The user's new password
-     * @return 	OK if the password could be changed;
-	 * 			INVALID_INPUT_PARAMETERS if the DNI or the password are incorrect;
-	 * 			else ERROR_UNKNOWN for an unknown error;
+     * @return 	true if the password was changed; else false
      */
-	Result changePassword(int dni, String prevPassword, String newPassword);
+	boolean changePassword(int dni, String prevPassword, String newPassword);
 
 	/**
 	 * Update the user
@@ -74,9 +72,7 @@ public interface UserDao {
 	/**
 	 * Reset a user's password to it's default value;
 	 * @param dni the user's dni
-	 * @return OK if the password was reset;
-	 *		INVALID_INPUT_PARAMETERS if the provided dni doesn't match to a user;
-	 *		else ERROR_UNKNOWN in other case;
+	 * @return true if the password was reset; else false
 	 */
-	Result resetPassword(int dni);
+	boolean resetPassword(int dni);
 }

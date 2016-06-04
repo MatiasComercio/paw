@@ -72,53 +72,54 @@ public class UserController {
 
 	@RequestMapping(value = "/user/resetPassword", method = RequestMethod.POST)
 	public ModelAndView resetPassword(
-		@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm passwordForm,
-		final BindingResult errors,
-		final RedirectAttributes redirectAttributes,
-		@ModelAttribute("user") UserSessionDetails loggedUser) {
+			@Valid @ModelAttribute("resetPasswordForm") final ResetPasswordForm passwordForm,
+			final BindingResult errors,
+			final RedirectAttributes redirectAttributes,
+			@ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("RESET_PASSWORD")) {
 			LOGGER.warn("User {} tried to delete user doesn't have authority RESET_PASSWORD [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
-			if (errors.hasErrors()){
-				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.resetPasswordForm", errors);
-				redirectAttributes.addFlashAttribute("resetPasswordForm", passwordForm);
+		if (errors.hasErrors()){
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.resetPasswordForm", errors);
+			redirectAttributes.addFlashAttribute("resetPasswordForm", passwordForm);
 
-				final String referrer = request.getHeader("referer");
-				return new ModelAndView("redirect:" + referrer);
-			}
+			final String referrer = request.getHeader("referer");
+			return new ModelAndView("redirect:" + referrer);
+		}
 
-			final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			if (auth == null) {
-				LOGGER.warn("User {} tried to change a password and auth was null [POST]", loggedUser.getDni());
-				return new ModelAndView("redirect:/errors/401");
-			}
-			UserSessionDetails user = (UserSessionDetails) auth.getPrincipal();
+		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth == null) {
+			LOGGER.warn("User {} tried to change a password and auth was null [POST]", loggedUser.getDni());
+			return new ModelAndView("redirect:/errors/401");
+		}
+		UserSessionDetails user = (UserSessionDetails) auth.getPrincipal();
 
 		/* Check that the DNI is still valid and was not modified */
-			if (!String.valueOf(passwordForm.getDni()).equals(user.getUsername()) && !user.hasAuthority("ADMIN")) {
-				LOGGER.warn("Someone tried to reset a password from another user.");
-				LOGGER.warn("Logged user's dni: {}", user.getUsername());
-				LOGGER.warn("Victim's dni: {}", passwordForm.getDni());
+		if (!String.valueOf(passwordForm.getDni()).equals(user.getUsername()) && !user.hasAuthority("ADMIN")) {
+			LOGGER.warn("Someone tried to reset a password from another user.");
+			LOGGER.warn("Logged user's dni: {}", user.getUsername());
+			LOGGER.warn("Victim's dni: {}", passwordForm.getDni());
 
-				return new ModelAndView("redirect:/errors/401");
-			}
+			return new ModelAndView("redirect:/errors/401");
+		}
 
-			final Result result = userService.resetPassword(passwordForm.getDni());
+		final boolean done = userService.resetPassword(passwordForm.getDni());
 
-			if (!result.equals(Result.OK)) {
-				LOGGER.warn("User {} could not reset password, Result = {}", loggedUser.getDni(), result);
-				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
-			} else {
-				LOGGER.info("User {} reset password successfully", loggedUser.getDni());
-				redirectAttributes.addFlashAttribute("alert", "success");
-				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
-						null,
-						Locale.getDefault()));
-			}
+		if (!done) {
+			LOGGER.warn("User {} could not reset password, Result = {}", loggedUser.getDni(), done);
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(
+					"invalid_password", null, Locale.getDefault()));
+		} else {
+			LOGGER.info("User {} reset password successfully", loggedUser.getDni());
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
+					null,
+					Locale.getDefault()));
+		}
 
 		final String referrer = request.getHeader("referer");
 		return new ModelAndView("redirect:" + referrer);
@@ -154,16 +155,17 @@ public class UserController {
 			return new ModelAndView("redirect:/errors/401");
 		}
 
-		final Result result = userService.changePassword(
+		final boolean done = userService.changePassword(
 				passwordForm.getDni(),
 				passwordForm.getCurrentPassword(),
 				passwordForm.getNewPassword(),
 				passwordForm.getRepeatNewPassword());
 
-		if (!result.equals(Result.OK)) {
+		if (!done) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
-			LOGGER.warn("User {} could not change Password, Result = {}", passwordForm.getDni(), result);
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(
+					"invalid_password", null, Locale.getDefault()));
+			LOGGER.warn("User {} could not change Password, Result = {}", passwordForm.getDni(), done);
 		} else {
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",

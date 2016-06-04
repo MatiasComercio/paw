@@ -101,7 +101,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Result resetPassword(final int dni) {
+    public boolean resetPassword(final int dni) {
         return userService.resetPassword(dni);
     }
 
