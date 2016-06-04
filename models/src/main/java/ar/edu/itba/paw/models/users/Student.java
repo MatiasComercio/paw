@@ -21,13 +21,11 @@ public class Student extends User {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
 	private List<Grade> grades;
 
-	@ManyToMany(
-			cascade={CascadeType.PERSIST, CascadeType.MERGE}
-	)
+	@ManyToMany/*(cascade={CascadeType.PERSIST, CascadeType.MERGE})*/
 	@JoinTable(
 			name="inscription",
-			joinColumns=@JoinColumn(name="docket", referencedColumnName = "docket"),
-			inverseJoinColumns=@JoinColumn(name="course_id", referencedColumnName = "id")
+			joinColumns=@JoinColumn(name="student_id"),
+			inverseJoinColumns=@JoinColumn(name="course_id")
 	)
 	private List<Course> studentCourses;
 

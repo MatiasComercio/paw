@@ -6,8 +6,6 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "address")
-// Needs to implement Serializable because of the loadUserByUsername method.
-// (I assume that Spring Security serializes all the data it manages)
 public class Address implements Serializable {
 
 	@Id
