@@ -416,7 +416,7 @@ public class StudentController {
 			if(!done) {
 				LOGGER.warn("User {} could not add student with DNI {}, Result = {}", loggedUser.getDni(), student.getDni(), done);
 				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("user_exists_dni", null, Locale.getDefault()));
+				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("USER_EXISTS_DNI", null, Locale.getDefault()));
 				return addStudent(studentForm, redirectAttributes, loggedUser);
 			}
 			redirectAttributes.addFlashAttribute("alert", "success");

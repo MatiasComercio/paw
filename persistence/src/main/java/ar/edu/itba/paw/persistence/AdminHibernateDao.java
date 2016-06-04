@@ -46,17 +46,19 @@ public class AdminHibernateDao implements AdminDao {
 	}
 
 	@Override
-	public Result create(final Admin admin) {
+	public boolean create(final Admin admin) {
 		em.persist(admin);
 		LOGGER.debug("[create] - {}", admin);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
-	public Result update(final Admin admin) {
+	public boolean update(final Admin admin) {
 		em.merge(admin);
 		LOGGER.debug("[update] - {}", admin);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
@@ -70,12 +72,13 @@ public class AdminHibernateDao implements AdminDao {
 	}
 
 	@Override
-	public Result delete(final int dni) {
+	public boolean delete(final int dni) {
 		// +++xtodo: have to implement front end
 		final Admin admin = getByDni(dni);
 		em.remove(admin);
 		LOGGER.debug("[delete] - {}", admin);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
@@ -98,9 +101,8 @@ public class AdminHibernateDao implements AdminDao {
 		return em.createQuery(queryFilter.getQuery()).getResultList();
 	}
 
-/* +++xchange: all this logic should be on the service when authorities are migrated to runtime */
-	@Override
-	public Result disableAddInscriptions() {
+	/* +++xchange: all this logic should be on the service when authorities are migrated to runtime */
+	private boolean disableAddInscriptions() {
 		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
 		query.setParameter(ROLE_COLUMN, Role.STUDENT);
 		query.setMaxResults(ONE);
@@ -112,11 +114,10 @@ public class AdminHibernateDao implements AdminDao {
 
 		em.persist(role);
 
-		return Result.OK;
+		return true;
 	}
 
-	@Override
-	public Result disableDeleteInscriptions() {
+	private boolean disableDeleteInscriptions() {
 		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
 		query.setParameter(ROLE_COLUMN, Role.STUDENT);
 		query.setMaxResults(ONE);
@@ -128,11 +129,34 @@ public class AdminHibernateDao implements AdminDao {
 
 		em.persist(role);
 
-		return Result.OK;
+		return true;
 	}
 
 	@Override
-	public Result enableAddInscriptions() {
+	public boolean disableInscriptions() {
+		if(disableAddInscriptions()) {
+			if(!disableDeleteInscriptions()) {
+				enableAddInscriptions();
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean enableInscriptions() {
+		if(enableAddInscriptions()) {
+			if(!enableDeleteInscriptions()) {
+				disableAddInscriptions();
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean enableAddInscriptions() {
 		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
 		query.setParameter(ROLE_COLUMN, Role.STUDENT);
 		query.setMaxResults(ONE);
@@ -144,11 +168,10 @@ public class AdminHibernateDao implements AdminDao {
 
 		em.persist(role);
 
-		return Result.OK;
+		return true;
 	}
 
-	@Override
-	public Result enableDeleteInscriptions() {
+	private boolean enableDeleteInscriptions() {
 		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
 		query.setParameter(ROLE_COLUMN, Role.STUDENT);
 		query.setMaxResults(ONE);
@@ -160,7 +183,7 @@ public class AdminHibernateDao implements AdminDao {
 
 		em.persist(role);
 
-		return Result.OK;
+		return true;
 	}
 
 	@Override

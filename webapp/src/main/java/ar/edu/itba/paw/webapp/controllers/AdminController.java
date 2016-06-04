@@ -167,16 +167,16 @@ public class AdminController {
 			return adminsAddAdminG(adminForm, redirectAttributes, loggedUser);
 		}
 		Admin admin = adminForm.build();
-		Result result;
+		boolean done;
 		try {
-			result = adminService.create(admin);
+			done = adminService.create(admin);
 		} catch (final DataIntegrityViolationException e) {
-			result = Result.USER_EXISTS_DNI;
+			done = false;
 		}
-		if(!result.equals(Result.OK)){
+		if(!done){
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
-			LOGGER.warn("User {} could not add admin, Result = {}", adminForm.getDni(), result);
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("USER_EXISTS_DNI", null, Locale.getDefault()));
+			LOGGER.warn("User {} could not add admin, Result = {}", adminForm.getDni(), done);
 			return adminsAddAdminG(adminForm, redirectAttributes, loggedUser);
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
@@ -201,13 +201,12 @@ public class AdminController {
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
-		Result result = adminService.disableInscriptions();
-		if(!result.equals(Result.OK)){
+		boolean done = adminService.disableInscriptions();
+		if(!done){
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
-			LOGGER.warn("User {} could not disable inscriptions, Result = {}", loggedUser.getDni(), result);
-		}
-		else{
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKWOWN", null, Locale.getDefault()));
+			LOGGER.warn("User {} could not disable inscriptions, Result = {}", loggedUser.getDni(), done);
+		} else {
 			LOGGER.info("User {} disabled inscriptions successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("disable_inscriptions_success",
@@ -235,11 +234,12 @@ public class AdminController {
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
-		Result result = adminService.enableInscriptions();
-		if(!result.equals(Result.OK)){
-			LOGGER.warn("User {} could not enable inscriptions, Result = {}", loggedUser.getDni(), result);
+		boolean done = adminService.enableInscriptions();
+
+		if(!done){
+			LOGGER.warn("User {} could not enable inscriptions, Result = {}", loggedUser.getDni(), done);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
 		}
 		else{
 			LOGGER.info("User {} disabled inscriptions successfully", loggedUser.getDni());
@@ -369,22 +369,21 @@ public class AdminController {
 		adminForm.setEmail(originalAdmin.getEmail());
 
 		final Admin admin = adminForm.build();
-		final Result result = adminService.update(dni, admin);
+		final boolean done = adminService.update(dni, admin);
 
-		if(!result.equals(Result.OK)){
+		if(!done) {
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
-			LOGGER.warn("User {} could not edit admin, Result = {}", adminForm.getDni(), result);
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_COULD_NOT_DISABLE_INSCRIPTIONS", null, Locale.getDefault()));
+			LOGGER.warn("User {} could not edit admin, Result = {}", adminForm.getDni(), done);
 			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editAdmin(dni, adminForm, redirectAttributes, loggedUser);
 		} else {
 			LOGGER.info("User {} could edited admins, Result = {}", adminForm.getDni());
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editAdmin_success",
+					null,
+					Locale.getDefault()));
 		}
-
-		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editAdmin_success",
-				null,
-				Locale.getDefault()));
 
 		final String referrer = request.getHeader("referer");
 		return new ModelAndView("redirect:" + referrer);

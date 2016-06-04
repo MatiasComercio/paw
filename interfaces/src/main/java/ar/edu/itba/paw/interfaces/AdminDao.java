@@ -25,7 +25,7 @@ public interface AdminDao {
      *          ADMIN_EXISTS_DNI if there is an admin whose dni is equal to this new admin;
      *          ERROR_UNKNOWN else;
      */
-    Result create(Admin admin);
+    boolean create(Admin admin);
 
     /**
      * Gets all the data associated with the user that has the
@@ -49,31 +49,19 @@ public interface AdminDao {
      * @return 	OK if the dni was deleted;
      * 		ERROR_UNKNOWN else;
      */
-    Result delete(int dni);
+    boolean delete(int dni);
 
     /**
-     * Disables the Student's authority to add inscriptions
-     * @return The Result code of the operation
+     * Enable the student's authority to add and delete inscriptions
+     * @return true if the inscriptions were enabled properly; else false
      */
-    Result disableAddInscriptions();
+    boolean enableInscriptions();
 
     /**
-     * Disables the Student's authority to delete inscriptions
-     * @return The Result code of the operation
+     * Disable the student's authority to add and delete inscriptions
+     * @return true if the inscriptions were disabled properly; else false
      */
-    Result disableDeleteInscriptions();
-
-    /**
-     * Enables the Student's authority to add inscriptions
-     * @return The Result code of the operation
-     */
-    Result enableAddInscriptions();
-
-    /**
-     * Enables the Student's authority to delete inscriptions
-     * @return The Result code of the operation
-     */
-    Result enableDeleteInscriptions();
+    boolean disableInscriptions();
 
     /**
      * @return A boolean indicating whether the inscriptions are enabled
@@ -85,7 +73,7 @@ public interface AdminDao {
      * @param admin the admin to be updated, containing the updated values
      * @return The Result code of the operation
      */
-    Result update(final Admin admin);
+    boolean update(final Admin admin);
 
     /**
      * Get all the procedures, despite their state

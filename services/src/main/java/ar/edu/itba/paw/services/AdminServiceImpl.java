@@ -32,7 +32,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public Result create(final Admin admin) {
+    public boolean create(final Admin admin) {
         admin.setRole(Role.ADMIN);
         if (admin.getEmail() == null || Objects.equals(admin.getEmail(), "")) {
             admin.setEmail(userService.createEmail(admin));
@@ -42,13 +42,13 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public Result update(final int dni, final Admin admin) {
+    public boolean update(final int dni, final Admin admin) {
         return adminDao.update(admin);
     }
 
     @Transactional
     @Override
-    public Result deleteAdmin(final int dni) {
+    public boolean deleteAdmin(final int dni) {
         return adminDao.delete(dni);
     }
 
@@ -66,31 +66,35 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public Result disableInscriptions() {
-        Result result = adminDao.disableAddInscriptions();
-        if(!result.equals(Result.OK)){
-            return result;
-        }
-        return adminDao.disableDeleteInscriptions();
+    public boolean disableInscriptions() {
+        return adminDao.disableInscriptions();
+//        final boolean done = adminDao.disableAddInscriptions();
+//
+//        if(!done) {
+//            return false;
+//        }
+//        adminDao.disableDeleteInscriptions();
     }
 
     @Transactional
     @Override
-    public Result enableInscriptions() {
-        // +++ ximprove: this should be only one method.
-        Result enableAddResult = adminDao.enableAddInscriptions();
-        Result enableDeleteResult = adminDao.enableDeleteInscriptions();
-
-        if(enableAddResult.equals(Result.ERROR_UNKNOWN) || enableDeleteResult.equals(Result.ERROR_UNKNOWN)){
-            return Result.ERROR_UNKNOWN;
-        }
-
-        if(enableAddResult.equals(Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS) &&
-                enableDeleteResult.equals(Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS)){
-            return Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS;
-        }
-
-        return Result.OK;
+    public boolean enableInscriptions() {
+        return adminDao.enableInscriptions();
+//        // +++ ximprove: this should be only one method.
+//        boolean enableAddResult = adminDao.enableAddInscriptions();
+//        boolean enableDeleteResult = adminDao.enableDeleteInscriptions();
+//
+//        if(enableAddResult.equals(Result.ERROR_UNKNOWN) || enableDeleteResult.equals(Result.ERROR_UNKNOWN)){
+//            return false;
+//        }
+//
+////        if(enableAddResult.equals(Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS) &&
+////                enableDeleteResult.equals(Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS)){
+////            return Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS;
+////        }
+//
+////        return Result.OK;
+//        return true;
     }
 
     @Transactional

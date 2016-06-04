@@ -24,7 +24,7 @@ public interface AdminService {
      *          ADMIN_EXISTS_DNI if there is an admin whose dni is equal to this new admin;
      *          ERROR_UNKNOWN else;
      */
-    Result create(Admin admin);
+    boolean create(Admin admin);
 
     /**
      * Gets all the data associated with the user that has the
@@ -49,7 +49,7 @@ public interface AdminService {
      * 		ERROR_DNI_OUT_OF_BOUNDS if the dni is invalid;
      * 		ERROR_UNKNOWN else;
      */
-    Result deleteAdmin(int dni);
+    boolean deleteAdmin(int dni);
 
     /**
      * Update an admin
@@ -57,19 +57,19 @@ public interface AdminService {
      * @param admin The new student
      * @return The Result code of update
      */
-    Result update(int dni, Admin admin);
+    boolean update(int dni, Admin admin);
 
     /**
      * Disables inscription authority for Students
      * @return The Result code of the operation
      */
-    Result disableInscriptions();
+    boolean disableInscriptions();
 
     /**
      * Enables inscription authority for Students
      * @return The Result code of the operation
      */
-    Result enableInscriptions();
+    boolean enableInscriptions();
 
     /**
      * @return A boolean indicating whether the inscriptions are enabled
