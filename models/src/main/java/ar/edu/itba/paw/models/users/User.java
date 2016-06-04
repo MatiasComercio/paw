@@ -63,9 +63,7 @@ public class User implements Serializable {
 	@JoinColumn(name = "role", referencedColumnName = "role", nullable = false)
 	private RoleClass role;
 
-	@OneToMany(
-			cascade={CascadeType.PERSIST, CascadeType.MERGE}
-	)
+	@OneToMany(cascade= CascadeType.ALL, mappedBy = "id")
 	private List<Procedure> procedures;
 
 	protected User() {
@@ -150,6 +148,10 @@ public class User implements Serializable {
 
 	public Role getRole() {
 		return role == null ? null : role.getRole();
+	}
+
+	public List<Procedure> getProcedures() {
+		return procedures;
 	}
 
 	// +++ximprove

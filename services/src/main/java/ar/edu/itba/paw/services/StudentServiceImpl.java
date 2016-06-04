@@ -127,6 +127,18 @@ public class StudentServiceImpl implements StudentService {
         return amount;
     }
 
+	@Override
+	public boolean createProcedure(final Procedure procedure) {
+		return studentDao.createProcedure(procedure);
+	}
+
+	@Override
+	public List<Procedure> getProcedures(final int docket) {
+		final Student student = getByDocket(docket);
+
+		return student.getProcedures();
+	}
+
 	@Transactional
     @Override
 	public Student getGrades(final int docket) {

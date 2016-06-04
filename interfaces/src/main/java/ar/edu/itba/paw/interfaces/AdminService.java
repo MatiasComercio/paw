@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Admin;
-import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 
@@ -85,4 +85,17 @@ public interface AdminService {
      *		else ERROR_UNKNOWN in other case;
      */
     Result resetPassword(int dni);
+
+    /**
+     *
+     * @return
+     */
+    List<Procedure> getAllProcedures();
+
+    /**
+     *
+     * @param procedure
+     * @return
+     */
+    boolean answerProcedure(Procedure procedure);
 }

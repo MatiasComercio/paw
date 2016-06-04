@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Procedure;
-import ar.edu.itba.paw.models.ProcedureState;
 
 import java.util.List;
 

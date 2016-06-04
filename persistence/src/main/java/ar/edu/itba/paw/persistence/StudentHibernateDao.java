@@ -1,10 +1,11 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
+import ar.edu.itba.paw.interfaces.ProcedureDao;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
-import ar.edu.itba.paw.models.users.Admin;
+import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -17,9 +18,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,6 +46,9 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Autowired
 	private CourseDao courseDao;
+
+	@Autowired
+	private ProcedureDao procedureDao;
 
 	@Override
 	public Student getByDocket(final int docket) {
@@ -226,6 +228,11 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
+	public boolean createProcedure(final Procedure procedure) {
+		return procedureDao.createProcedure(procedure);
+	}
+
+	@Override
 	public Student getByDni(final int dni) {
 		return getBy(GET_BY_DNI, DNI_PARAM, dni);
 	}
@@ -237,4 +244,6 @@ public class StudentHibernateDao implements StudentDao {
 		final List<Student> students = query.getResultList();
 		return students.isEmpty() ? null : students.get(FIRST);
 	}
+
+
 }

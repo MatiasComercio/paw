@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.models;
 
+import ar.edu.itba.paw.models.users.User;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -12,10 +14,11 @@ public class Procedure {
     @SequenceGenerator(sequenceName = "procedure_procedureid_seq", name = "procedure_procedureid_seq", allocationSize = 1)
     private int id;
 
-    @Column(name = "sender_id", nullable = false, updatable = false)
-    private int senderId;
-//    @ManyToOne
-//    private User senderId;
+//    @Column(name = "sender_id", nullable = false, updatable = false)
+//    private int sender;
+    @ManyToOne
+    @JoinColumn(name = "sender_id", referencedColumnName = "dni")
+    private User sender;
 
     @Basic
     @Column(name = "message", nullable = false, length = 255)
@@ -39,7 +42,7 @@ public class Procedure {
     // Constructors //
 
     private Procedure(final Builder builder) {
-        this.senderId = builder.senderId;
+        this.sender = builder.sender;
         this.message = builder.message;
         this.receptorId = builder.receptorId;
         this.response = builder.response;
@@ -64,8 +67,12 @@ public class Procedure {
         return response;
     }
 
+    public User getSender() {
+        return sender;
+    }
+
     public int getSenderId() {
-        return senderId;
+        return sender.getDni();
     }
 
     public Integer getReceptorId() {
@@ -89,40 +96,12 @@ public class Procedure {
     // Equals and Hashcode //
 
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Procedure procedure = (Procedure) o;
-
-        if (id != procedure.id) return false;
-        if (senderId != procedure.senderId) return false;
-        if (!message.equals(procedure.message)) return false;
-        if (receptorId != null ? !receptorId.equals(procedure.receptorId) : procedure.receptorId != null) return false;
-        if (response != null ? !response.equals(procedure.response) : procedure.response != null) return false;
-        if (state != procedure.state) return false;
-        return date.equals(procedure.date);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id;
-        result = 31 * result + senderId;
-        result = 31 * result + message.hashCode();
-        result = 31 * result + (receptorId != null ? receptorId.hashCode() : 0);
-        result = 31 * result + (response != null ? response.hashCode() : 0);
-        result = 31 * result + (state != null ? state.hashCode() : 0);
-        result = 31 * result + date.hashCode();
-        return result;
-    }
 
     @Override
     public String toString() {
         return "Procedure{" +
                 "id=" + id +
-                ", senderId=" + senderId +
+                ", sender=" + sender +
                 ", message='" + message + '\'' +
                 ", receptorId=" + receptorId +
                 ", response='" + response + '\'' +
@@ -132,7 +111,7 @@ public class Procedure {
     }
 
     public static class Builder {
-        private int senderId;
+        private User sender;
         private String message;
         private Integer receptorId;
         private String response;
@@ -143,8 +122,8 @@ public class Procedure {
             this.date = LocalDateTime.now();
         }
 
-        public Builder senderId(final int senderId) {
-            this.senderId = senderId;
+        public Builder sender(final User sender) {
+            this.sender = sender;
             return this;
         }
 
@@ -161,8 +140,13 @@ public class Procedure {
             return this;
         }
 
-        public Builder procedureState(final ProcedureState state) {
-            this.state = state;
+        public Builder procedureState(final String state) {
+            try {
+                this.state = ProcedureState.valueOf(state);
+            } catch (IllegalArgumentException e) {
+                this.state = null; /* Let it explode in the persistence layer */
+            }
+
             return this;
         }
 

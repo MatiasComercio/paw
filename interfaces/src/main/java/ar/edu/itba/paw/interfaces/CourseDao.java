@@ -5,7 +5,6 @@ import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
-import java.util.Set;
 
 public interface CourseDao {
 

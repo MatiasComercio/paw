@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.models;
 
-import ar.edu.itba.paw.models.users.User;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;

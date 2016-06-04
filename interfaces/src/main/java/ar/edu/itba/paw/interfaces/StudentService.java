@@ -2,6 +2,7 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.TranscriptGrade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
@@ -162,4 +163,18 @@ public interface StudentService {
 	 * @return Integer indicating the amount of credits passed.
      */
 	Integer getPassedCredits(int docket);
+
+	/**
+	 *
+	 * @param procedure
+	 * @return
+     */
+	boolean createProcedure(Procedure procedure);
+
+	/**
+	 *
+	 * @param docket
+	 * @return
+     */
+	List<Procedure> getProcedures(int docket);
 }
