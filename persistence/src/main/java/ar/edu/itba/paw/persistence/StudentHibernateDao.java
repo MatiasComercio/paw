@@ -52,7 +52,6 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Student getGrades(final int docket) {
-
 		final Student student = getBy(GET_BY_DOCKET, DOCKET_PARAM, docket);
 		// call the grades list in case it is lazy initialized
 		if (student != null) {
@@ -63,7 +62,6 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public Student getGrades(final int docket, final int semesterIndex) {
-
 		final Student student = getBy(GET_BY_DOCKET, DOCKET_PARAM, docket);
 		// call the grades list in case it is lazy initialized
 		if (student != null) {
@@ -221,12 +219,12 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public List<Student> getStudentsPassed(final int id) {
-
-		final Course courseId = courseDao.getById(id);
 		final List<Student> studentsPassed = new LinkedList<>();
 
 		//TODO: Add a Student variable instead of a docket in Grade model
-		final TypedQuery<Integer> query = em.createQuery("select gr.studentDocket from Grade as gr where gr.course.id = :id and gr.grade >= 4", Integer.class);
+		final TypedQuery<Integer> query =
+				em.createQuery("select gr.student.docket from Grade as gr where gr.course.id = :id and gr.grade >= 4",
+						Integer.class);
 
 		query.setParameter("id", id);
 

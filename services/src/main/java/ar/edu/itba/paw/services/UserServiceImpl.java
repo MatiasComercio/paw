@@ -35,37 +35,6 @@ public class UserServiceImpl implements UserService {
 		return defaultEmailBuilder.toString();
 	}
 
-//	@Override
-//	public User getByDni(final String dniString) {
-//		int dni;
-//		try {
-//			dni = Integer.valueOf(dniString);
-//		} catch (final NumberFormatException e) {
-//			dni = -1;
-//		}
-//
-//		if (dni <= 0) {
-//			return null;
-//		}
-//
-//		List<Role> roles = userDao.getRole(dni);
-//
-//		if (roles == null) {
-//			return null;
-//		}
-//
-//		/* +++xcheck: should User know its subclasses? */
-//		if(roles.contains(Role.ADMIN)) {
-//			return adminService.getByDni(dni);
-//		}
-//
-//		if (roles.contains(Role.STUDENT)) {
-//			return studentService.getByDni(dni);
-//		}
-//
-//		return null;
-//	}
-
 	@Transactional
 	@Override
 	public Result changePassword(final int dni, final String prevPassword, final String newPassword, final String repeatNewPassword) {
@@ -85,24 +54,6 @@ public class UserServiceImpl implements UserService {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
 		}
 		return userDao.resetPassword(dni);
-	}
-
-	@Transactional
-	@Override
-	public Result update(final int dni, final User user) {
-		if(dni <= 0) {
-			return Result.ERROR_DNI_OUT_OF_BOUNDS;
-		}
-		return userDao.update(dni, user);
-	}
-
-	@Transactional
-	@Override /* +++xremove: not used */
-	public Result delete(final int dni) {
-		if(dni <= 0) {
-			return Result.ERROR_DNI_OUT_OF_BOUNDS;
-		}
-		return userDao.delete(dni);
 	}
 
 	/* Test purpose only */

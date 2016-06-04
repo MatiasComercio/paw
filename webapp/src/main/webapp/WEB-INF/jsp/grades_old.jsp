@@ -136,7 +136,7 @@
                                     <s:authorize access="hasAuthority('ROLE_EDIT_GRADE')">
                                     <c:if test="${grade.canEdit}">
                                         <button name="gradeButton" class="btn btn-info" type="button"
-                                                data-id="${grade.id}"
+                                                data-id="${grade.id}" data-docket="${grade.docket}"
                                                 data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
                                                 data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
                                                 data-target="#gradeFormConfirmationModal">

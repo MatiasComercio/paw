@@ -18,10 +18,10 @@ import java.util.Objects;
 public class AdminServiceImpl implements AdminService {
 
     @Autowired
-    AdminDao adminDao;
+    private AdminDao adminDao;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Transactional
     @Override
@@ -30,9 +30,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Transactional
-    @Override /*+++xtodo: @Gonza improve: you are not validating if the userService creates the admin */
+    @Override
     public Result create(final Admin admin) {
-        //TODO: add role to roles table which indicates (dni, role)
         admin.setRole(Role.ADMIN);
         if (admin.getEmail() == null || Objects.equals(admin.getEmail(), "")) {
             admin.setEmail(userService.createEmail(admin));
@@ -42,8 +41,14 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public Admin getByDni(final int dni) {
-        return adminDao.getByDni(dni);
+    public Result update(final int dni, final Admin admin) {
+        return adminDao.update(admin);
+    }
+
+    @Transactional
+    @Override
+    public Result deleteAdmin(final int dni) {
+        return adminDao.delete(dni);
     }
 
     @Transactional
@@ -54,22 +59,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public Result deleteAdmin(final int dni) {
-        if(dni <= 0) {
-            return Result.ERROR_DNI_OUT_OF_BOUNDS;
-        }
-        return adminDao.delete(dni);
-    }
-
-    @Transactional
-    @Override
-    public Result update(final int dni, final Admin admin) {
-        if(dni <= 0) {
-            return Result.ERROR_DNI_OUT_OF_BOUNDS;
-        }
-
-        return adminDao.update(admin);
-//        return userService.update(dni, admin);
+    public Admin getByDni(final int dni) {
+        return adminDao.getByDni(dni);
     }
 
     @Transactional
@@ -85,6 +76,7 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     @Override
     public Result enableInscriptions() {
+        // +++ ximprove: this should be only one method.
         Result enableAddResult = adminDao.enableAddInscriptions();
         Result enableDeleteResult = adminDao.enableDeleteInscriptions();
 
@@ -109,9 +101,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public Result resetPassword(final int dni) {
-        if(dni <= 0) {
-            return Result.ERROR_DNI_OUT_OF_BOUNDS;
-        }
         return userService.resetPassword(dni);
     }
 }

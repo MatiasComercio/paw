@@ -440,6 +440,8 @@ public class StudentController {
 			return new ModelAndView("redirect:/students/" + docket + "/grades");
 		}
 
+		gradeForm.setStudent(studentService.getByDocket(docket));
+
 		Grade newGrade = gradeForm.build();
 
 		Result result = studentService.editGrade(newGrade, gradeForm.getOldGrade());
@@ -485,6 +487,7 @@ public class StudentController {
 		/********************************/
 
 		/*gradeForm.setDocket(docket);*/
+		gradeForm.setStudent(studentService.getByDocket(docket));
 		Grade grade = gradeForm.build();
 		Result result = studentService.addGrade(grade);
 
