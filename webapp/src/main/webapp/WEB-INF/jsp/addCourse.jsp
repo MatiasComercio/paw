@@ -84,6 +84,12 @@
                         <form:errors path="id" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group col-xs-12">
+                        <form:label path="courseId"><spring:message code="id"/>
+                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)</form:label>
+                        <form:input type="text" class="form-control" path="courseId"/>
+                        <form:errors path="courseId" cssClass="text-danger bg-danger" element="div"/>
+                    </div>
+                    <div class="form-group col-xs-12">
                         <form:label path="name"><spring:message code="name"/>
                             (<span class="text-danger"><spring:message code="requiredIcon"/></span>)</form:label>
                         <form:input type="text" class="form-control" path="name"/>

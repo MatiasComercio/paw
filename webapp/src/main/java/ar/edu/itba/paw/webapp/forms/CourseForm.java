@@ -2,14 +2,14 @@ package ar.edu.itba.paw.webapp.forms;
 
 import ar.edu.itba.paw.models.Course;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 public class CourseForm {
     @Min(1)
     private Integer id;
+
+    @Pattern(regexp="\\d{2}\\.\\d{2}")
+    private String courseId;
 
     @NotNull
     @Size(min=2, max=50)
@@ -26,16 +26,29 @@ public class CourseForm {
 
     public CourseForm(){}
 
-    public Course build(){
-        return new Course.Builder(id).name(name).credits(credits).semester(semester).build();
+    public Course build() {
+        return new Course.Builder(id)
+                .courseId(courseId)
+                .name(name)
+                .credits(credits)
+                .semester(semester)
+                .build();
     }
 
     public Integer getId() {
         return id;
     }
 
+    public String getCourseId() {
+        return courseId;
+    }
+
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 
     public String getName() {
@@ -63,6 +76,7 @@ public class CourseForm {
     }
 
     public void loadFromCourse(final Course course){
+        this.courseId = course.getCourseId();
         this.id = course.getId();
         this.name = course.getName();
         this.credits = course.getCredits();

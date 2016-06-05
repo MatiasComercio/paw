@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -310,11 +311,17 @@ public class CourseController {
 			return addCourse(courseForm, redirectAttributes, loggedUser);
 		} else {
 			final Course course = courseForm.build();
-			boolean done = courseService.create(course);
+			boolean done;
+
+			try {
+				done = courseService.create(course);
+			} catch (final DataIntegrityViolationException e) {
+				done = false;
+			}
 			if(!done){
 				LOGGER.warn("User {} could not add course, Result = {}", loggedUser.getDni(), done);
 				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
+				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("COURSE_EXISTS_ID", null, Locale.getDefault()));
 				return addCourse(courseForm, redirectAttributes, loggedUser);
 			} else {
 				LOGGER.info("User {} added course {}", loggedUser.getDni(), courseForm.getId());

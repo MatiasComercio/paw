@@ -15,6 +15,9 @@ public class Course {
     @SequenceGenerator(sequenceName = "course_courseid_seq", name = "course_courseid_seq", allocationSize = 1)
     private Integer id;
 
+    @Column(name = "course_id", length = 5, unique = true)
+    private String courseId;
+
     //TODO: Add Basic annotation
     @Column(length = 100, nullable = false, unique = true)
     private String name;
@@ -74,6 +77,7 @@ public class Course {
 
     private Course(Builder builder) {
         this.id = builder.id;
+        this.courseId = builder.courseId;
         this.name = builder.name;
         this.credits = builder.credits;
         this.semester = builder.semester;
@@ -81,6 +85,10 @@ public class Course {
 
     public int getId() {
         return id;
+    }
+
+    public String getCourseId() {
+        return courseId;
     }
 
     public String getName() {
@@ -101,6 +109,10 @@ public class Course {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
     }
 
     public List<Student> getStudents() {
@@ -144,23 +156,43 @@ public class Course {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Course)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        final Course course = (Course) o;
+        Course course = (Course) o;
 
-        return id == course.id;
+        if (credits != course.credits) return false;
+        if (semester != course.semester) return false;
+        if (id != null ? !id.equals(course.id) : course.id != null) return false;
+        if (courseId != null ? !courseId.equals(course.courseId) : course.courseId != null) return false;
+        if (name != null ? !name.equals(course.name) : course.name != null) return false;
+        if (correlatives != null ? !correlatives.equals(course.correlatives) : course.correlatives != null)
+            return false;
+        if (upperCorrelatives != null ? !upperCorrelatives.equals(course.upperCorrelatives) : course.upperCorrelatives != null)
+            return false;
+        if (students != null ? !students.equals(course.students) : course.students != null) return false;
+        return approvedStudents != null ? approvedStudents.equals(course.approvedStudents) : course.approvedStudents == null;
 
     }
 
     @Override
     public int hashCode() {
-        return id;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (courseId != null ? courseId.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + credits;
+        result = 31 * result + semester;
+        result = 31 * result + (correlatives != null ? correlatives.hashCode() : 0);
+        result = 31 * result + (upperCorrelatives != null ? upperCorrelatives.hashCode() : 0);
+        result = 31 * result + (students != null ? students.hashCode() : 0);
+        result = 31 * result + (approvedStudents != null ? approvedStudents.hashCode() : 0);
+        return result;
     }
 
     public static class Builder {
         private Integer id;
+        private String courseId;
         private String name;
         private int credits;
         private int semester;
@@ -169,8 +201,14 @@ public class Course {
             this.id = id;
         }
 
-        public Builder id(int id) {
+        public Builder id(Integer id) {
             this.id = id;
+
+            return this;
+        }
+
+        public Builder courseId(String courseId) {
+            this.courseId = courseId;
             return this;
         }
 
@@ -209,8 +247,16 @@ public class Course {
             return id;
         }
 
+        public String getCourseId() {
+            return courseId;
+        }
+
         public void setId(int id) {
             this.id = id;
+        }
+
+        public void setCourseId(String courseId) {
+            this.courseId = courseId;
         }
 
         public Course build() {
