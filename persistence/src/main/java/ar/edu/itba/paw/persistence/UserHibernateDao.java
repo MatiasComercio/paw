@@ -91,8 +91,13 @@ public class UserHibernateDao implements UserDao {
 			return null;
 		}
 		final User user = users.get(FIRST);
+
+		if(prevPassword != null && !user.getPassword().equals(prevPassword)) {
+			return Result.INVALID_PASSWORD;
+		}
 		user.setPassword(newPassword);
 		em.persist(user);
+
 		return Result.OK;
 	}
 
