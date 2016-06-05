@@ -4,7 +4,6 @@ import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.User;
-import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

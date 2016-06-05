@@ -8,7 +8,6 @@ import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.RoleClass;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
-import ar.edu.itba.paw.shared.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

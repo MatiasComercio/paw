@@ -2,7 +2,6 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.User;
-import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
 

@@ -24,7 +24,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Repository
-@Primary // +++xremove this when UserJdbcDao is deleted
 public class UserHibernateDao implements UserDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserHibernateDao.class);
 

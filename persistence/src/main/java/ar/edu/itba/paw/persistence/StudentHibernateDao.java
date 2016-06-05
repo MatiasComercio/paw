@@ -7,7 +7,6 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +23,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Repository
-@Primary // +++xremove this when AdmindbcDao is deleted
 public class StudentHibernateDao implements StudentDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StudentHibernateDao.class);
 

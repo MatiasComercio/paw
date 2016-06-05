@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.PasswordForm;
 import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;

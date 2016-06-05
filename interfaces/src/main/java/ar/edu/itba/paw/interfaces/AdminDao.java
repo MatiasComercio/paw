@@ -4,7 +4,6 @@ package ar.edu.itba.paw.interfaces;
 import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
-import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
 

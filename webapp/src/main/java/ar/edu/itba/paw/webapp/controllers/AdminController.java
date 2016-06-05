@@ -4,7 +4,6 @@ import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
-import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.AdminFilterForm;
 import ar.edu.itba.paw.webapp.forms.AdminForm;
