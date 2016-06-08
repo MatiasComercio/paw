@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.models;
 
+import ar.edu.itba.paw.models.users.Student;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -132,21 +134,7 @@ public class Grade {
 		return result;
 	}
 
-    @Override
-    public String toString() {
-        return "Grade{" +
-                "course=" + course +
-                ", id=" + id +
-                ", studentDocket=" + studentDocket +
-                ", studentFirstName='" + studentFirstName + '\'' +
-                ", studentLastName='" + studentLastName + '\'' +
-                ", grade=" + grade +
-                ", modified=" + modified +
-                ", taking=" + taking +
-                '}';
-    }
-
-    public static class Builder {
+	public static class Builder {
 		private final Integer id;
 		private final int courseId;
 		private final BigDecimal grade;
@@ -196,6 +184,5 @@ public class Grade {
 		public Grade build() {
 			return new Grade(this);
 		}
-
 	}
 }
