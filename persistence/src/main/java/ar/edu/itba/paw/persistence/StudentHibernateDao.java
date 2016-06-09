@@ -253,7 +253,7 @@ public class StudentHibernateDao implements StudentDao {
 	@Override
 	public boolean isApproved(int docket, int courseId) {
 		//TODO: This is doing 1 query per loop: Improve eficiency. (Use student's grades??)
-		TypedQuery<Long> query = em.createQuery("select count(gr) from Grade as gr where gr.course.id=:id and gr.studentDocket = :docket" +
+		TypedQuery<Long> query = em.createQuery("select count(gr) from Grade as gr where gr.course.id=:id and gr.student.docket = :docket" +
 				" and gr.grade >= 4",
 				Long.class);
 		query.setParameter("id", courseId);
