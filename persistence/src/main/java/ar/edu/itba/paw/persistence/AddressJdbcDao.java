@@ -9,13 +9,12 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-@Repository
+@Deprecated
 public class AddressJdbcDao implements AddressDao {
 
     private static final String ADDRESS_TABLE = "address";

@@ -356,4 +356,20 @@ public class StudentServiceImpl implements StudentService {
 		return Result.OK;
 
 	}
+
+    @Transactional
+	@Override
+	public List<FinalInscription> getFinalInscriptionsTaken(int docket) {
+		final List<FinalInscription> finalInscriptionsTaken = new ArrayList<>();
+        final Student student = studentDao.getByDocket(docket);
+		final List<FinalInscription> finalInscriptions = studentDao.getAllFinalInscriptions();
+
+        for (FinalInscription inscription : finalInscriptions) {
+            if (inscription.getStudents().contains(student))
+                finalInscriptionsTaken.add(inscription);
+        }
+
+        return finalInscriptionsTaken;
+
+    }
 }

@@ -679,7 +679,11 @@ public class StudentController {
 		mav.addObject("finalInscriptions", studentService.getAvailableFinalInscriptions(docket));
 		mav.addObject("docket", docket);
 
-		return mav;
+		mav.addObject("finalInscriptionsTaken", studentService.getFinalInscriptionsTaken(docket));
+        for (FinalInscription inscription : studentService.getFinalInscriptionsTaken(docket)) {
+            LOGGER.info("TAKEN: {}", inscription);
+        }
+        return mav;
 	}
 
 	@RequestMapping(value = "/students/{docket}/final_inscription", method = RequestMethod.POST)

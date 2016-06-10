@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-//@Repository
+@Deprecated
 public class CourseJdbcDao implements CourseDao {
 
     private static final String TABLE_NAME = "course";

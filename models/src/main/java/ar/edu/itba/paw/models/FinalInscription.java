@@ -29,7 +29,6 @@ public class FinalInscription {
 //    )
     private Set<Student> students;
 
-    //TODO: Fetch EAGER?
     @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
     private Course course;
 

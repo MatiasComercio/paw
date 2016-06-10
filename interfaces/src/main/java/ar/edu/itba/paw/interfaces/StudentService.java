@@ -12,7 +12,6 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public interface StudentService {
 
@@ -167,7 +166,7 @@ public interface StudentService {
 
 	/**
 	 * Get the final exams inscriptions available for the given student
-	 * @param docket The studentś docket.
+	 * @param docket The student's docket.
 	 * @return The final inscriptions
      */
 	List<FinalInscription> getAvailableFinalInscriptions(int docket);
@@ -184,4 +183,11 @@ public interface StudentService {
 	 * @param docket The student's docket
      */
 	Result addStudentFinalInscription(int docket, int finalInscriptionId);
+
+	/**
+	 * Get the final exams inscriptions that a student is taking
+	 * @param docket The student's docket.
+	 * @return The final inscriptions
+	 */
+	List<FinalInscription> getFinalInscriptionsTaken(int docket);
 }
