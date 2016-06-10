@@ -36,6 +36,7 @@
       <org.hibernate-validator.version>5.2.4.Final</org.hibernate-validator.version>
       <maven-war-plugin.version>2.6</maven-war-plugin.version>
       <hibernate.jpa-api.version>1.0.0.Final</hibernate.jpa-api.version>
+      <org.jboss.logging>3.3.0.Final</org.jboss.logging>
 	</properties>
   <build>
     <plugins>
@@ -104,6 +105,13 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-entitymanager</artifactId>
         <version>${org.hibernate.version}</version>
+        <!-- Resolves deploy problem. See message-id: 2dff85f7-6327-477b-b929-c768f5d3bcb0@googlegroups.com -->
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <!--JPA Annotations for Models-->
@@ -158,6 +166,15 @@
       <!-- /Spring Security -->
 
       <!--Logging-->
+      <!-- Logging for Hibernate to use -->
+      <!-- Resolves deploy problem. See message-id: 2dff85f7-6327-477b-b929-c768f5d3bcb0@googlegroups.com -->
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>${org.jboss.logging}</version>
+      </dependency>
+      <!-- /Logging for Hibernate to use -->
+
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
