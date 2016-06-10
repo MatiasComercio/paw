@@ -347,11 +347,17 @@ public class StudentServiceImpl implements StudentService {
 	public Result addStudentFinalInscription(int docket, int finalInscriptionId) {
 
 		FinalInscription finalInscription = studentDao.getFinalInscription(finalInscriptionId);
+        Student student = studentDao.getByDocket(docket);
+
+        if (!checkFinalCorrelatives(docket, finalInscription.getCourse().getId())){
+            //TODO:Change
+            return Result.FINAL_INSCRIPTION_CORRELATIVITY_ERROR;
+        }
 
 		if(finalInscription.getVacancy() >= finalInscription.getMaxVacancy()){
 			return Result.FINAL_INSCRIPTION_FULL;
 		}
-		finalInscription.getStudents().add(studentDao.getByDocket(docket));
+		finalInscription.getStudents().add(student);
 		finalInscription.increaseVacancy();
 		return Result.OK;
 
@@ -370,6 +376,19 @@ public class StudentServiceImpl implements StudentService {
         }
 
         return finalInscriptionsTaken;
+
+    }
+
+    @Transactional
+    @Override
+    public boolean checkFinalCorrelatives(int docket, int courseId) {
+
+        final List<Course> correlatives = courseService.getCorrelativesByFilter(courseId, null);
+        final List<Course> approvedCourses = studentDao.getApprovedFinalCourses(docket);
+
+        if (approvedCourses.containsAll(correlatives))
+            return true;
+        return false;
 
     }
 }

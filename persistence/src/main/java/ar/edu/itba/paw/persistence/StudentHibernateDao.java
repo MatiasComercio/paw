@@ -266,14 +266,33 @@ public class StudentHibernateDao implements StudentDao {
 	@Override
 	public List<FinalInscription> getAllFinalInscriptions() {
 		final TypedQuery<FinalInscription> query = em.createQuery("select inscription from FinalInscription inscription", FinalInscription.class);
-		final List<FinalInscription> list = query.getResultList();
-
-
-		return list;
+		return query.getResultList();
 	}
 
 	@Override
 	public FinalInscription getFinalInscription(int id) {
 		return em.find(FinalInscription.class, id);
+	}
+
+	@Override
+	public List<Course> getApprovedFinalCourses(int docket) {
+		final Student student = getByDocket(docket);
+		final List<Course> courses = new LinkedList<>();
+
+		for (Grade grade : student.getGrades()) {
+            if (BigDecimal.valueOf(4).compareTo(grade.getGrade()) <= 0) {
+
+                //Course approved, check the final grade
+                for (FinalGrade finalGrade : grade.getFinalGrades()) {
+                    if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0) {
+                        //Subject entirely approved
+                        courses.add(grade.getCourse());
+                    }
+                }
+
+			}
+		}
+
+        return courses;
 	}
 }

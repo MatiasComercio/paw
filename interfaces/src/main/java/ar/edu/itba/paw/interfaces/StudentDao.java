@@ -11,7 +11,6 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public interface StudentDao {
 
@@ -126,11 +125,20 @@ public interface StudentDao {
 
 	/**
 	 * Gets the collection of courses the student already approved.
+	 * DOES NOT INCLUDE FINAL EXAM!
 	 * @param docket The student's docket
 	 * @return The collection of the courses the student with the given docket has already approved;
 	 *          an empty collection will be returned if no course was approved
 	 */
 	Collection<Course> getApprovedCourses(int docket);
+
+	/**
+	 * Get the collection of the courses the student approved including final exam
+	 * @param docket The student's docket
+	 * @return The List of the courses the student with the given docket has already approved;
+	 *          an empty collection will be returned if no course was approved
+     */
+	List<Course> getApprovedFinalCourses(int docket);
 
     /**
      * Gets the list of ids corresponding to the courses the student already approved.
