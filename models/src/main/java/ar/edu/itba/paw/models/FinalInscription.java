@@ -35,6 +35,23 @@ public class FinalInscription {
     @Column(nullable = false)
     private LocalDateTime finalExamDate;
 
+    @Enumerated(value = EnumType.STRING)
+    private FinalInscriptionState state = FinalInscriptionState.OPEN;
+
+
+    private enum FinalInscriptionState{
+        OPEN("OPEN"),
+        CLOSED("CLOSED");
+
+        private String state;
+
+        FinalInscriptionState(final String state) {
+            this.state = state;
+        }
+
+        public String getState() { return state; }
+    }
+
     public int getId() {
         return id;
     }
@@ -88,6 +105,10 @@ public class FinalInscription {
         this.maxVacancy = builder.maxVacancy;
         this.finalExamDate = builder.finalExamDate;
         this.vacancy = 0;
+    }
+
+    public boolean isOpen(){
+        return this.state == FinalInscriptionState.OPEN;
     }
 
     public void increaseVacancy() {

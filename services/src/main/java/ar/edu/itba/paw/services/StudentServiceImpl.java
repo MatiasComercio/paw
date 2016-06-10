@@ -323,11 +323,10 @@ public class StudentServiceImpl implements StudentService {
 		Student student = studentDao.getByDocket(docket);
 
 		//inscription.getVacancy() < inscription.getMaxVacancy() The inscription should be visible even when full
-		//TODO: Check correlativity with final exams and vacancy
 		for(FinalInscription inscription : studentDao.getAllFinalInscriptions()){
 			if(studentDao.isApproved(docket, inscription.getCourse().getId()) &&
 					//checks if student is not already included in the current final inscription.
-					!inscription.getStudents().contains(student)){
+					!inscription.getStudents().contains(student) && inscription.isOpen()){
 
 				finalInscriptions.add(inscription);
 				//TODO: increasing the variable inside a transaction? Does this mean it gets saved in the db?(Because it should get saved)
