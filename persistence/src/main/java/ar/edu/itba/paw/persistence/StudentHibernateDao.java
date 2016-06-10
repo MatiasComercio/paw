@@ -39,6 +39,8 @@ public class StudentHibernateDao implements StudentDao {
 	private static final String DNI_PARAM = "dni";
     private static final String GET_GRADES = "from Grade as g where g.studentDocket = :docket";
 
+    private static final Integer MAX_FINALS_CHANCES = 3;
+
 	@PersistenceContext
 	private EntityManager em;
 
@@ -178,6 +180,8 @@ public class StudentHibernateDao implements StudentDao {
 		return Result.OK;
 	}
 
+    //Modified to return courses that are approved and less than 3 finals are taken, or there's a final passed
+    //TODO:TEST
 	@Override
 	public Collection<Course> getApprovedCourses(final int docket) {
 		// +++xcheck why this does not work; figure it out, and replace the code below with this commented one
@@ -188,7 +192,6 @@ public class StudentHibernateDao implements StudentDao {
 //
 //		final List<Grade> approvedGrades = query.getResultList();
 //
-//		//TODO: Improve efficiency
 //		for (Grade grade : approvedGrades) {
 //			courses.add(grade.getCourse());
 //		}
@@ -198,20 +201,38 @@ public class StudentHibernateDao implements StudentDao {
 		final List<Course> courses = new LinkedList<>();
 		for (Grade grade : student.getGrades()) {
 			if (BigDecimal.valueOf(4).compareTo(grade.getGrade()) <= 0) {
-				courses.add(grade.getCourse());
+                if (grade.getFinalGrades().size() == MAX_FINALS_CHANCES){
+                    for (FinalGrade finalGrade : grade.getFinalGrades()) {
+                        if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0){
+                            courses.add(grade.getCourse());
+                        }
+                    }
+                } else {
+                    courses.add(grade.getCourse());
+                }
 			}
 		}
 
 		return courses;
 	}
 
+    //Modified to return courses that are approved and less than 3 finals are taken, or there's a final passed
+    //TODO:TEST
 	@Override
 	public List<Integer> getApprovedCoursesId(final int docket) {
 		final Student student = getByDocket(docket);
 		final List<Integer> coursesId = new LinkedList<>();
 		for (Grade grade : student.getGrades()) {
 			if (BigDecimal.valueOf(4).compareTo(grade.getGrade()) <= 0) {
-				coursesId.add(grade.getCourse().getId());
+                if (grade.getFinalGrades().size() == MAX_FINALS_CHANCES){
+                    for (FinalGrade finalGrade : grade.getFinalGrades()) {
+                        if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0){
+                            coursesId.add(grade.getCourse().getId());
+                        }
+                    }
+                } else {
+                    coursesId.add(grade.getCourse().getId());
+                }
 			}
 		}
 		return coursesId;
@@ -250,7 +271,7 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	//TODO: Test this
-	@Override
+	/*@Override
 	public boolean isApproved(int docket, int courseId) {
 		//TODO: This is doing 1 query per loop: Improve eficiency. (Use student's grades??)
 		TypedQuery<Long> query = em.createQuery("select count(gr) from Grade as gr where gr.course.id=:id and gr.student.docket = :docket" +
@@ -260,7 +281,39 @@ public class StudentHibernateDao implements StudentDao {
 		query.setParameter("docket", docket);
 		Long approvedGrades = query.getSingleResult();
 		return approvedGrades > 0;
-	}
+	}*/
+
+    @Override
+    public boolean isApproved(int docket, int courseId) {
+        //TODO: This is doing 1 query per loop: Improve eficiency. (Use student's grades??)
+        TypedQuery<Grade> query = em.createQuery("from Grade as gr where gr.course.id=:id and gr.student.docket = :docket" +
+                " and gr.grade >= 4", Grade.class);
+        query.setParameter("id", courseId);
+        query.setParameter("docket", docket);
+        List<Grade> approvedGrades = query.getResultList();
+
+        for (Grade grade : approvedGrades) {
+            if (grade.getCourse().getId() == 1) {
+                LOGGER.info("MOGUMBO: ApprovedGrades: {}",approvedGrades.size());
+                LOGGER.info("MOGUMBO: {}, size: {}", grade.getCourse().getName(), grade.getFinalGrades().size());
+                for (FinalGrade finalGrade : grade.getFinalGrades()) {
+                    LOGGER.info("MOGUMBO2: {}", finalGrade.getGrade());
+                }
+            }
+
+            if (grade.getFinalGrades().size() == MAX_FINALS_CHANCES){
+                for (FinalGrade finalGrade : grade.getFinalGrades()) {
+                    if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0) {
+                        return true;
+                    }
+                }
+            } else {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 	//TODO: Test this
 	@Override
