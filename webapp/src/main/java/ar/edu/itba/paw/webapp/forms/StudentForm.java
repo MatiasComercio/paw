@@ -14,7 +14,8 @@ public class StudentForm {
     private final static Integer EMPTY_DOCKET = 0;
 
     @NotNull
-    @Min(1000000)
+    @Max(99999999)
+    @Min(10000000)
     private Integer dni;
     //@NumberFormat(style = Style.NUMBER)
 
