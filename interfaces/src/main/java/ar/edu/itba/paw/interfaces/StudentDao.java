@@ -175,5 +175,12 @@ public interface StudentDao {
      */
 	List<FinalInscription> getAllFinalInscriptions();
 
+    /**
+     *
+     * @param id
+     * @return
+     */
 	FinalInscription getFinalInscription(int id);
+
+
 }

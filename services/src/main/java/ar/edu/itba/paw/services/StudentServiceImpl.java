@@ -350,7 +350,6 @@ public class StudentServiceImpl implements StudentService {
         Student student = studentDao.getByDocket(docket);
 
         if (!checkFinalCorrelatives(docket, finalInscription.getCourse().getId())){
-            //TODO:Change
             return Result.FINAL_INSCRIPTION_CORRELATIVITY_ERROR;
         }
 
@@ -377,6 +376,20 @@ public class StudentServiceImpl implements StudentService {
 
         return finalInscriptionsTaken;
 
+    }
+
+    @Transactional
+    @Override
+    public Result deleteStudentFinalInscription(int docket, int finalInscriptionId) {
+        FinalInscription finalInscription = studentDao.getFinalInscription(finalInscriptionId);
+        Student student = studentDao.getByDocket(docket);
+
+        if (finalInscription.getStudents().contains(student)) {
+            finalInscription.getStudents().remove(student);
+            finalInscription.decreaseVacancy();
+        }
+
+        return Result.OK;
     }
 
     @Transactional

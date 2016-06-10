@@ -94,6 +94,10 @@ public class FinalInscription {
         this.vacancy++;
     }
 
+    public void decreaseVacancy(){
+        this.vacancy--;
+    }
+
     public int getMaxVacancy() {
         return this.maxVacancy;
     }

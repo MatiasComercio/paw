@@ -674,6 +674,8 @@ public class StudentController {
 		mav.addObject("section2", "final_inscription");
 		//Don't use: mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
 		mav.addObject("finalInscriptionFormAction", "/students/" + docket + "/final_inscription");
+        mav.addObject("finalInscriptionDropFormAction", "/students/" + docket + "/drop_inscription");
+
 		//mav.addObject("subsection_enroll", true);
 		//mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
 		mav.addObject("finalInscriptions", studentService.getAvailableFinalInscriptions(docket));
@@ -732,7 +734,43 @@ public class StudentController {
 		return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
 	}
 
+    @RequestMapping(value = "/students/{docket}/drop_inscription", method = RequestMethod.POST)
+    public ModelAndView studentDropFinalInscription(@PathVariable final int docket,
+                                                @Valid @ModelAttribute("finalInscriptionForm") FinalInscriptionForm finalInscriptionForm,
+                                                final BindingResult errors,
+                                                final RedirectAttributes redirectAttributes,
+                                                @ModelAttribute("user") UserSessionDetails loggedUser) {
 
+        if (!loggedUser.hasAuthority("DELETE_FINAL_INSCRIPTION")
+                || (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+            LOGGER.warn("User {} tried to delete inscription for student {} and doesn't have DELETE_FINAL_INSCRIPTION authority [POST]", loggedUser.getDni(), docket);
+            return new ModelAndView(UNAUTHORIZED);
+        }
+        if (errors.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.finalInscriptionForm", errors);
+            redirectAttributes.addFlashAttribute("finalInscriptionForm", finalInscriptionForm);
+            return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
+        }
+
+
+        Result result = studentService.deleteStudentFinalInscription(docket, finalInscriptionForm.getId());
+
+        if (result == null) {
+            result = Result.ERROR_UNKNOWN;
+        }
+        if (!result.equals(Result.OK)) {
+            LOGGER.warn("User {} could not remove final inscription for student {}, Result = {}", loggedUser.getDni(), docket, result);
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+        } else {
+            LOGGER.info("User {} removed final inscription of student {} successfully", loggedUser.getDni(), docket);
+            redirectAttributes.addFlashAttribute("alert", "success");
+            redirectAttributes.addFlashAttribute("message",
+                    messageSource.getMessage("final_inscription_success", null, Locale.getDefault()));
+        }
+
+        return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
+    }
 
 
 //

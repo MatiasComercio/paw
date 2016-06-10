@@ -200,4 +200,12 @@ public interface StudentService {
 	 * @return The final inscriptions
 	 */
 	List<FinalInscription> getFinalInscriptionsTaken(int docket);
+
+    /**
+     * Remove the given student from the Final Inscription instance
+     * @param docket
+     * @param finalInscriptionId
+     * @return
+     */
+    Result deleteStudentFinalInscription(int docket, int finalInscriptionId);
 }
