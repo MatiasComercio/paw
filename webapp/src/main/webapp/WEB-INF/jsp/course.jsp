@@ -129,6 +129,61 @@
             </c:choose>
 
             <!-- Content -->
+
+            <!-- Final Exams -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="page-header"> <spring:message code="finalDates"/> </h3>
+                </div>
+            </div>
+
+            <%--@elvariable id="finalInscriptions" type="java.util.List"--%>
+            <c:choose>
+                <c:when test="${empty finalInscriptions}">
+                    <div class="alert alert-info text-center">
+                        <strong><spring:message code="noFinalInsctiptions"/></strong>
+                    </div>
+                </c:when>
+                <c:otherwise>
+                    <div class="table-responsive">
+                        <table class="table table-hover <%--table-bordered--%> <%--table-condensed--%>">
+                            <thead>
+                            <tr>
+                                <th class="col-xs-1"><spring:message code="id"/></th>
+                                <th class="col-xs-5"><spring:message code="final_vacancy"/></th>
+                                <th class="col-xs-2"><spring:message code="final_date"/></th>
+                                <th class="col-xs-2"><spring:message code="state"/></th>
+                                <th class="col-xs-4"><spring:message code="actions"/></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:forEach items="${finalInscriptions}" var="finalInscription">
+                                <tr>
+                                    <td>${ finalInscription.id }</td>
+                                    <td>${ finalInscription.vacancy }/${finalInscription.maxVacancy}</td>
+                                    <td>${ finalInscription.finalExamDate }</td>
+                                    <td><c:choose>
+                                        <c:when test="${finalInscription.state == 'OPEN'}">
+                                            <spring:message code="open"/>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <spring:message code="closed"/>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-default" href="<c:url value="#" />" role="button">
+                                            <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="information"/>
+                                        </a>
+                                    <td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+            <!-- /Final Exams -->
         </div>
     </div>
     <jsp:include page="base/footer.jsp" />

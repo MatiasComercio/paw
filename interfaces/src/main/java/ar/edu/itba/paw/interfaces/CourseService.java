@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
@@ -143,4 +144,11 @@ public interface CourseService {
     /* +++xtest */
     /* +++xdocument */
 	Course getStudentsThatPassedCourse(int id, StudentFilter studentFilter);
+
+    /**
+     * Get the open final inscriptions corresponding to a course.
+     * @param id The course's id
+     * @return The list containing all the final inscriptions.
+     */
+    List<FinalInscription> getOpenFinalInsciptions(Integer id);
 }

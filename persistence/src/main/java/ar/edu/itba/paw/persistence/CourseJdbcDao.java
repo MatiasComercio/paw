@@ -1,5 +1,5 @@
 package ar.edu.itba.paw.persistence;
-
+/*
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Course;
@@ -191,7 +191,7 @@ public class CourseJdbcDao implements CourseDao {
     @Override
     public List<Course> getAllCourses() {
         /* TODO: Replace `course` with TABLE_NAME identifier, but we can't use '?' because JDBC does not support it, so string concatenation seems the best choice */
-        List<Course> courses = jdbcTemplate.query("SELECT * FROM course", courseRowMapper);
+        /*List<Course> courses = jdbcTemplate.query("SELECT * FROM course", courseRowMapper);
 
         return courses;
     }
@@ -278,7 +278,7 @@ public class CourseJdbcDao implements CourseDao {
     /* +++xreference
                     http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
                  */
-    @Override
+  /*  @Override
     public Result deleteCourse(final int id) {
 // +++xcheck: branch login has this; transcript had it deleted
 //        Object[] idWrapped = new Object[]{id};
@@ -423,4 +423,4 @@ public class CourseJdbcDao implements CourseDao {
             return course_id == ((Correlativity)obj).course_id && correlative_id == ((Correlativity)obj).correlative_id;
         }
     }
-}
+}*/

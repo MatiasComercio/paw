@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
@@ -12,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -278,5 +278,10 @@ public class CourseServiceImpl implements CourseService {
         course.setStudents(st);
 
         return course;
+    }
+
+    @Override
+    public List<FinalInscription> getOpenFinalInsciptions(Integer id) {
+        return courseDao.getOpenFinalInsciptions(id);
     }
 }

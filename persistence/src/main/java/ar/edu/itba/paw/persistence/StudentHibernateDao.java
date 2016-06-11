@@ -293,14 +293,6 @@ public class StudentHibernateDao implements StudentDao {
         List<Grade> approvedGrades = query.getResultList();
 
         for (Grade grade : approvedGrades) {
-            if (grade.getCourse().getId() == 1) {
-                LOGGER.info("MOGUMBO: ApprovedGrades: {}",approvedGrades.size());
-                LOGGER.info("MOGUMBO: {}, size: {}", grade.getCourse().getName(), grade.getFinalGrades().size());
-                for (FinalGrade finalGrade : grade.getFinalGrades()) {
-                    LOGGER.info("MOGUMBO2: {}", finalGrade.getGrade());
-                }
-            }
-
             if (grade.getFinalGrades().size() == MAX_FINALS_CHANCES){
                 for (FinalGrade finalGrade : grade.getFinalGrades()) {
                     if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0) {

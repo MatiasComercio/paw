@@ -132,6 +132,7 @@ public class CourseController {
 		mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
 		mav.addObject("subsection_delete_correlative", true);
 		mav.addObject("correlatives", courseService.getCorrelativesByFilter(id, null));
+		mav.addObject("finalInscriptions", courseService.getOpenFinalInsciptions(id));
 		return mav;
 	}
 
@@ -529,5 +530,18 @@ public class CourseController {
 		redirectAttributes.addFlashAttribute("studentFilterForm", studentFilterForm);
 		return new ModelAndView("redirect:/courses/" + id + "/students_passed");
 	}
+
+    @RequestMapping(value = "/courses/final_inscription/{id}/info", method = RequestMethod.GET)
+    public ModelAndView viewFinalInscription(
+            @PathVariable("id") final int id,
+            final BindingResult errors,
+            final RedirectAttributes redirectAttributes,
+            @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+        final ModelAndView mav = new ModelAndView("viewFinalInscription");
+
+
+        return mav;
+    }
 
 }

@@ -39,7 +39,7 @@ public class FinalInscription {
     private FinalInscriptionState state = FinalInscriptionState.OPEN;
 
 
-    private enum FinalInscriptionState{
+    public enum FinalInscriptionState{
         OPEN("OPEN"),
         CLOSED("CLOSED");
 
@@ -94,6 +94,14 @@ public class FinalInscription {
 
     public void setFinalExamDate(LocalDateTime finalExamDate) {
         this.finalExamDate = finalExamDate;
+    }
+
+    public FinalInscriptionState getState() {
+        return state;
+    }
+
+    public void setState(FinalInscriptionState state) {
+        this.state = state;
     }
 
     protected FinalInscription(){

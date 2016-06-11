@@ -324,7 +324,6 @@ public class StudentServiceImpl implements StudentService {
 
 		//inscription.getVacancy() < inscription.getMaxVacancy() The inscription should be visible even when full
 		for(FinalInscription inscription : studentDao.getAllFinalInscriptions()){
-            System.out.println("MOGUMBO " + inscription.getCourse().getName() + ": " + studentDao.isApproved(docket, inscription.getCourse().getId()));
             if(studentDao.isApproved(docket, inscription.getCourse().getId()) &&
 					//checks if student is not already included in the current final inscription.
 					!inscription.getStudents().contains(student) && inscription.isOpen()){
