@@ -183,6 +183,9 @@ public class StudentHibernateDao implements StudentDao {
 //
 //		return courses;
 		final Student student = getByDocket(docket);
+		if (student == null) {
+			return null;
+		}
 		final List<Course> courses = new LinkedList<>();
 		for (Grade grade : student.getGrades()) {
 			if (BigDecimal.valueOf(4).compareTo(grade.getGrade()) <= 0) {

@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
@@ -35,6 +36,8 @@ public class StudentController {
 	private final static Logger LOGGER = LoggerFactory.getLogger(StudentController.class);
 	private static final String STUDENTS_SECTION = "students";
 	private static final String UNAUTHORIZED = "redirect:/errors/403";
+	private static final String NOT_FOUND = "404";
+	private static final ModelAndView NOT_FOUND_MAV = new ModelAndView(NOT_FOUND);
 
 	@Autowired
 	private MessageSource messageSource;
@@ -44,7 +47,6 @@ public class StudentController {
 
 	@Autowired
 	private HttpServletRequest request;
-	private Object semesters;
 
 	@ModelAttribute("section")
 	public String sectionManager(){
@@ -77,22 +79,10 @@ public class StudentController {
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
-		final ModelAndView mav = new ModelAndView("students");
-
-		if (errors.hasErrors()) {
-			/* Cancel current search */
-			studentFilterForm.empty();
-			LOGGER.warn("Could not get students due to {} [GET]", errors.getAllErrors());
-
-			mav.addObject("alert", "danger");
-			mav.addObject("message", messageSource.getMessage("search_fail",
-					null,
-					Locale.getDefault()));
-		}
-
 		if (!model.containsAttribute("deleteStudentForm")) {
 			model.addAttribute("deleteStudentForm", new StudentFilterForm()); /* +++xcheck: if it is necessary to create a new Form */
 		}
+
 
 		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
 				.docket(studentFilterForm.getDocket())
@@ -100,10 +90,12 @@ public class StudentController {
 				.lastName(studentFilterForm.getLastName())
 				.build();
 
-		// +++ximprove with Spring Security
-		final List<Student> students = studentService.getByFilter(studentFilter);
+		final ModelAndView mav = new ModelAndView("students");
+
+		final List<Student> students = loadStudentsByFilter(mav, errors, studentFilter);
+
 		if (students == null) {
-			return new ModelAndView("forward:/errors/404.html");
+			return NOT_FOUND_MAV;
 		}
 
 		mav.addObject("students", students);
@@ -115,7 +107,6 @@ public class StudentController {
 	@RequestMapping("/students/{docket}/info")
 	public ModelAndView getStudent(@PathVariable final int docket,
 	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
-
 		if (!loggedUser.hasAuthority("VIEW_STUDENT")) {
 			LOGGER.warn("User {} tried to view student with docket {} and doesn't have VIEW_STUDENT authority [GET]", loggedUser.getDni(), docket);
 			return new ModelAndView(UNAUTHORIZED);
@@ -126,7 +117,7 @@ public class StudentController {
 		final ModelAndView mav;
 
 		if (student == null) {
-			return new ModelAndView("forward:/errors/404.html");
+			return NOT_FOUND_MAV;
 		}
 
 		mav = new ModelAndView("student");
@@ -180,7 +171,10 @@ public class StudentController {
 
 	@RequestMapping(value = "/students/{docket}/courses", method = RequestMethod.GET)
 	public ModelAndView getStudentCourses(@PathVariable final int docket, final Model model,
-	                                      @ModelAttribute("user") UserSessionDetails loggedUser) {
+	                                      @ModelAttribute("user") UserSessionDetails loggedUser,
+	                                      @Valid @ModelAttribute("courseFilterForm")
+	                                          final CourseFilterForm courseFilterForm,
+	                                      final BindingResult errors) {
 
 		if (!loggedUser.hasAuthority("VIEW_COURSES")) {
 			LOGGER.warn("User {} tried to view all the courses the student with docket {} is enrolled in " +
@@ -188,9 +182,6 @@ public class StudentController {
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
-		if (!model.containsAttribute("courseFilterForm")) {
-			model.addAttribute("courseFilterForm", new CourseFilterForm());
-		}
 		if (!model.containsAttribute("inscriptionForm")) {
 			model.addAttribute("inscriptionForm", new InscriptionForm());
 		}
@@ -198,24 +189,28 @@ public class StudentController {
 			model.addAttribute("gradeForm", new GradeForm());
 		}
 
-		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
 		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
 				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
 
-		// +++ximprove with Spring Security
-		final Student student = studentService.getByDocket(docket);
-		if (student == null) {
-			return new ModelAndView("forward:/errors/404.html");
+		final ModelAndView mav = new ModelAndView("courses");
+
+		final List<Course> courses = loadCoursesForDocketByFilter(docket, mav, errors, courseFilter);
+		if (courses == null) {
+			return NOT_FOUND_MAV;
 		}
 
-		final ModelAndView mav = new ModelAndView("courses");
+		final Student student = studentService.getByDocket(docket);
+		if (student == null) {
+			return NOT_FOUND_MAV;
+		}
+
 		mav.addObject("student", student);
 		mav.addObject("section2", "courses");
-		mav.addObject("courseFilterFormAction", "/students/" + docket + "/courses/courseFilterForm"); /* only different line from /inscription */
+		mav.addObject("courseFilterFormAction", "/students/" + docket + "/courses");
 		mav.addObject("inscriptionFormAction", "/students/" + docket + "/courses/unenroll");
 		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/add");
 		mav.addObject("subsection_courses", true); /* only different line from /inscription */
-		mav.addObject("courses", studentService.getStudentCourses(docket, courseFilter));
+		mav.addObject("courses", courses);
 		mav.addObject("docket", docket);
 		return mav;
 	}
@@ -262,7 +257,10 @@ public class StudentController {
 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.GET)
 	public ModelAndView studentInscription(@PathVariable final int docket, final Model model,
-	                                       @ModelAttribute("user") UserSessionDetails loggedUser) {
+	                                       @ModelAttribute("user") UserSessionDetails loggedUser,
+	                                       @Valid @ModelAttribute("courseFilterForm")
+	                                           final CourseFilterForm courseFilterForm,
+	                                       final BindingResult errors) {
 
 		if (!loggedUser.hasAuthority("ADD_INSCRIPTION")
 				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
@@ -270,30 +268,31 @@ public class StudentController {
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
-		if (!model.containsAttribute("courseFilterForm")) {
-			model.addAttribute("courseFilterForm", new CourseFilterForm());
-		}
 		if (!model.containsAttribute("inscriptionForm")) {
 			model.addAttribute("inscriptionForm", new InscriptionForm());
 		}
 
-		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
+		final ModelAndView mav = new ModelAndView("courses");
+
 		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
 				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
 
-		// +++ximprove with Spring Security
-		final Student student = studentService.getByDocket(docket);
-		if (student == null) {
-			return new ModelAndView("forward:/errors/404.html");
+		final List<Course> courses = loadAvailableInscriptionsForDocketByFilter(docket, mav, errors, courseFilter);
+		if (courses == null) {
+			return NOT_FOUND_MAV;
 		}
 
-		final ModelAndView mav = new ModelAndView("courses");
+		final Student student = studentService.getByDocket(docket);
+		if (student == null) {
+			return NOT_FOUND_MAV;
+		}
+
 		mav.addObject("student", student);
 		mav.addObject("section2", "inscription");
-		mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
+		mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription");
 		mav.addObject("inscriptionFormAction", "/students/" + docket + "/inscription");
 		mav.addObject("subsection_enroll", true);
-		mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
+		mav.addObject("courses", courses);
 		mav.addObject("docket", docket);
 		return mav;
 	}
@@ -337,27 +336,6 @@ public class StudentController {
 		return new ModelAndView("redirect:/students/" + docket + "/inscription");
 	}
 
-	@RequestMapping(value = "/students/{docket}/inscription/courseFilterForm", method = RequestMethod.GET)
-	public ModelAndView studentInscriptionCourseFilter(@PathVariable final int docket,
-	                                                   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-	                                                   final BindingResult errors,
-	                                                   final RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
-		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
-		return new ModelAndView("redirect:/students/" + docket + "/inscription");
-	}
-
-	@RequestMapping(value = "/students/{docket}/courses/courseFilterForm", method = RequestMethod.GET)
-	public ModelAndView studentCoursesCourseFilter(@PathVariable final int docket,
-	                                               @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-	                                               final BindingResult errors,
-	                                               final RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
-		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
-		return new ModelAndView("redirect:/students/" + docket + "/courses");
-	}
-
-
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
 	                               RedirectAttributes redirectAttributes,
@@ -372,6 +350,7 @@ public class StudentController {
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 		return mav;
 	}
+
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
 	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
@@ -576,7 +555,6 @@ public class StudentController {
 		return mav;
 	}
 
-
 	@RequestMapping(value = "/students/{docket}/edit", method = RequestMethod.POST)
 	public ModelAndView editStudent(@PathVariable final Integer docket,
 	                                @Valid @ModelAttribute("studentForm") StudentForm studentForm,
@@ -641,19 +619,59 @@ public class StudentController {
 		return new ModelAndView("redirect:" + referrer);
 	}
 
-//	private List<List<GradeForm>> getSemesters(final int docket) {
-//		final List<List<GradeForm>> semesters = new LinkedList<>();
-//		for (List<GradeForm> semester : semesters) {
-//			semester = new ArrayList<>();
-//		}
-//
-//		final Student student = studentService.getGrades(docket);
-//
-//		final List<Grade> approvedCourses = student.getGrades();
-//		for (Grade g : approvedCourses) {
-//
-//		}
-//
-//		return semesters;
-//	}
+
+	/**************************************************************/
+	private List<Student> loadStudentsByFilter(final ModelAndView mav,
+	                                           final BindingResult errors,
+	                                           final StudentFilter studentFilter) {
+		final List<Student> students;
+		if (errors.hasErrors()) {
+			LOGGER.warn("Could not get students due to {} [GET]", errors.getAllErrors());
+
+			mav.addObject("alert", "danger");
+			mav.addObject("message", messageSource.getMessage("search_fail",
+					null,
+					Locale.getDefault()));
+			students = studentService.getByFilter(null);
+		} else {
+			students = studentService.getByFilter(studentFilter);
+		}
+		return students;
+	}
+
+
+	private List<Course> loadCoursesForDocketByFilter(final int docket, final ModelAndView mav, final BindingResult errors, final CourseFilter courseFilter) {
+		final List<Course> courses;
+		if (errors.hasErrors()) {
+			LOGGER.warn("Could not get available inscription courses due to {} [GET]", errors.getAllErrors());
+
+			mav.addObject("alert", "danger");
+			mav.addObject("message", messageSource.getMessage("search_fail",
+					null,
+					Locale.getDefault()));
+			courses = studentService.getStudentCourses(docket, null);
+		} else {
+			courses = studentService.getStudentCourses(docket, courseFilter);
+		}
+		return courses;
+	}
+
+	private List<Course> loadAvailableInscriptionsForDocketByFilter(final int docket,
+	                                                  final ModelAndView mav,
+	                                                  final BindingResult errors,
+	                                                  final CourseFilter courseFilter) {
+		final List<Course> courses;
+		if (errors.hasErrors()) {
+			LOGGER.warn("Could not get available inscription courses due to {} [GET]", errors.getAllErrors());
+
+			mav.addObject("alert", "danger");
+			mav.addObject("message", messageSource.getMessage("search_fail",
+					null,
+					Locale.getDefault()));
+			courses = studentService.getAvailableInscriptionCourses(docket, null);
+		} else {
+			courses = studentService.getAvailableInscriptionCourses(docket, courseFilter);
+		}
+		return courses;
+	}
 }
