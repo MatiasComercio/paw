@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,7 +23,6 @@ import java.util.List;
 public class AdminHibernateDao implements AdminDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(AdminHibernateDao.class);
 
-	private static final String GET_ALL_ADMINS = "from Admin";
 	private static final String GET_BY_ID = "from Admin as a where a.dni = :dni";
 	private static final String GET_ROLE = "from RoleClass as r where r.role = :role";
 	private static final String ROLE_COLUMN = "role";
@@ -36,7 +36,29 @@ public class AdminHibernateDao implements AdminDao {
 
 	@Override
 	public List<Admin> getAllAdmins() {
-		final TypedQuery<Admin> query = em.createQuery(GET_ALL_ADMINS, Admin.class);
+		/*
+		final CriteriaBuilder builder = em.getCriteriaBuilder();
+		final CriteriaQuery<String> query = builder.createQuery(String.class);
+		final Root<User> user = query.from(User.class);
+		final Predicate equalsPredicate = builder.equal(user.get("email"), email);
+
+		final List<String> emails = em.createQuery(query.select(user.get("email")).where(equalsPredicate))
+				.setMaxResults(1).getResultList();
+
+		return !emails.isEmpty();
+		 */
+
+		final CriteriaBuilder builder = em.getCriteriaBuilder();
+		final CriteriaQuery<Admin> queryForAdmins = builder.createQuery(Admin.class);
+		final Root<Admin> fromAdmins = queryForAdmins.from(Admin.class);
+		final CriteriaQuery<Admin> orderBy = queryForAdmins.orderBy(
+				builder.asc(fromAdmins.get("lastName")),
+				builder.asc(fromAdmins.get("firstName")),
+				builder.asc(fromAdmins.get("dni"))
+		);
+
+		final TypedQuery<Admin> query = em.createQuery(orderBy);
+
 		return query.getResultList();
 	}
 

@@ -94,10 +94,19 @@ public class CourseHibernateDao implements CourseDao {
 
     @Override
     public List<Course> getAllCourses() {
+        final CriteriaBuilder cb = em.getCriteriaBuilder();
+        final CriteriaQuery<Course> q = cb.createQuery(Course.class);
+        final Root<Course> r = q.from(Course.class);
 
-        final TypedQuery<Course> query = em.createQuery("select c from Course c", Course.class);
-        final List<Course> list = query.getResultList();
-        return list;
+        return em.createQuery(q.orderBy(
+                cb.asc(r.get("semester")),
+                cb.asc(r.get("credits")),
+                cb.asc(r.get("name")),
+                cb.asc(r.get("id"))
+        )).getResultList();
+
+//        final TypedQuery<Course> query = em.createQuery("select c from Course c", Course.class);
+//        return query.getResultList();
     }
 
     @Override
@@ -316,7 +325,12 @@ public class CourseHibernateDao implements CourseDao {
 
         public CriteriaQuery<Course> getQuery(){
 
-            return query.where(builder.and(predicates.toArray(new Predicate[] {})));
+            return query.where(builder.and(predicates.toArray(new Predicate[] {}))).orderBy(
+                    builder.asc(root.get("semester")),
+                    builder.asc(root.get("credits")),
+                    builder.asc(root.get("name")),
+                    builder.asc(root.get("id"))
+            );
         }
 
 

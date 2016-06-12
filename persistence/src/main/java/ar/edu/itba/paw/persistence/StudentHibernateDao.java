@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Repository
-@Primary // +++xremove this when AdmindbcDao is deleted
 public class StudentHibernateDao implements StudentDao {
 	private static final Logger LOGGER = LoggerFactory.getLogger(StudentHibernateDao.class);
 
@@ -208,9 +207,21 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public List<Student> getStudentsPassed(final int id) {
-		final List<Student> studentsPassed = new LinkedList<>();
+//      not working => +++xcheck
+//		final CriteriaBuilder cb = em.getCriteriaBuilder();
+//		final CriteriaQuery<Student> q = cb.createQuery(Student.class);
+//		final Root<Student> r = q.from(Student.class);
+//		final Join<Student, Grade> j = r.join("docket");
+//		Predicate eqCourseId = cb.equal(j.get("course_id"), id);
+//
+//		return em.createQuery(q.where(eqCourseId).orderBy(
+//				cb.asc(j.get("lastName")),
+//				cb.asc(j.get("firstName")),
+//				cb.asc(j.get("dni"))
+//		)).getResultList();
 
 		//TODO: Add a Student variable instead of a docket in Grade model
+		final List<Student> studentsPassed = new LinkedList<>();
 		final TypedQuery<Integer> query =
 				em.createQuery("select gr.student.docket from Grade as gr where gr.course.id = :id and gr.grade >= 4",
 						Integer.class);
@@ -218,6 +229,7 @@ public class StudentHibernateDao implements StudentDao {
 		query.setParameter("id", id);
 
 		List<Integer> docketList = query.getResultList();
+
 		for(Integer docket: docketList){
 			studentsPassed.add(getByDocket(docket));
 		}

@@ -154,7 +154,11 @@ public class UserHibernateDao implements UserDao {
 		}
 
 		/* package-private */ CriteriaQuery<T> getQuery() {
-			return query.where(builder.and(predicates.toArray(new Predicate[] {})));
+			return query.where(builder.and(predicates.toArray(new Predicate[] {}))).orderBy(
+					builder.asc(root.get("lastName")),
+					builder.asc(root.get("firstName")),
+					builder.asc(root.get("dni"))
+			);
 		}
 
 		private void filterById(final UserFilter userFilter) {
