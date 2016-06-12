@@ -2,15 +2,19 @@ package ar.edu.itba.paw.webapp.forms;
 
 
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.users.Student;
 import org.hibernate.validator.constraints.NotBlank;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class GradeForm {
+    private Integer id;
+
     @NotNull
     @Min(1)
     private Integer docket;
@@ -29,10 +33,14 @@ public class GradeForm {
 
     private BigDecimal oldGrade;
 
-    private Timestamp modified;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private LocalDateTime modified;
+
+
+    private Student student;
 
     public Grade build() {
-        return new Grade.Builder(docket, courseId, grade).modified(modified).build();
+        return new Grade.Builder(id, student, courseId, grade).modified(modified).build();
     }
 
     public Integer getDocket() {
@@ -67,18 +75,20 @@ public class GradeForm {
         this.grade = grade;
     }
 
-    public Timestamp getModified() {
+    public LocalDateTime getModified() {
         return modified;
     }
 
-    public void setModified(Timestamp modified) {
+    public void setModified(LocalDateTime modified) {
         this.modified = modified;
     }
 
     public void loadFromGrade(final Grade grade){
-        this.docket = grade.getStudentDocket();
+        this.id = grade.getId();
+        this.docket = grade.getStudent().getDocket();
         this.courseId = grade.getCourseId();
         this.grade = grade.getGrade();
+        this.student = grade.getStudent();
     }
 
     public BigDecimal getOldGrade() {
@@ -87,5 +97,21 @@ public class GradeForm {
 
     public void setOldGrade(BigDecimal oldGrade) {
         this.oldGrade = oldGrade;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(final Integer id) {
+        this.id = id;
+    }
+
+    public void setStudent(final Student student) {
+        this.student = student;
+    }
+
+    public Student getStudent() {
+        return student;
     }
 }

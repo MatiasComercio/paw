@@ -2,15 +2,76 @@ package ar.edu.itba.paw.models;
 
 import ar.edu.itba.paw.models.users.Student;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
+@Entity
+@Table(name = "course")
 public class Course {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_courseid_seq")
+    @SequenceGenerator(sequenceName = "course_courseid_seq", name = "course_courseid_seq", allocationSize = 1)
+    private Integer id;
+
+    //TODO: Add Basic annotation
+    @Column(length = 100, nullable = false, unique = true)
     private String name;
+
+    @Column(nullable = false)
     private int credits;
+
+    @Column(nullable = false)
     private int semester;
+
+    @ManyToMany(
+            cascade={CascadeType.PERSIST, CascadeType.MERGE},
+            //TODO: Delete targetEntity: Since Collection use generics (Set<Course>) it's not needed
+            targetEntity=Course.class
+    )
+    @JoinTable(
+            name="correlative",
+            joinColumns=@JoinColumn(name="course_id"),
+            inverseJoinColumns=@JoinColumn(name="correlative_id")
+    )
+    private Set<Course> correlatives;
+
+    @ManyToMany(
+            cascade={CascadeType.PERSIST, CascadeType.MERGE},
+            //TODO: Delete targetEntity: Since Collection use generics (Set<Course>) it's not needed
+            targetEntity=Course.class
+    )
+    @JoinTable(
+            name="correlative",
+            joinColumns=@JoinColumn(name="correlative_id"),
+            inverseJoinColumns=@JoinColumn(name="course_id")
+    )
+    private Set<Course> upperCorrelatives;
+
+
+    /*@Column(length=5, unique=true)
+    private String code;
+    */
+
+    //@Column(name = "code", length = 5, unique = true)
+    //private String code;
+
+//    @ManyToMany/*(cascade={CascadeType.PERSIST, CascadeType.MERGE})*/
+//    @JoinTable(
+//            name="inscription",
+//            joinColumns=@JoinColumn(referencedColumnName = "id", name="course_id"),
+//            inverseJoinColumns=@JoinColumn(name="docket", referencedColumnName = "docket")
+//    )
+    @ManyToMany(mappedBy = "studentCourses")
     private List<Student> students;
+
+    @Transient
+    private List<Student> approvedStudents;
+
+
+    protected Course(){}
 
     private Course(Builder builder) {
         this.id = builder.id;
@@ -39,7 +100,7 @@ public class Course {
         this.name = name;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -59,6 +120,30 @@ public class Course {
         return this.semester;
     }
 
+    public Set<Course> getCorrelatives() {
+        return correlatives;
+    }
+
+    public void setCorrelatives(Set<Course> correlatives) {
+        this.correlatives = correlatives;
+    }
+
+    public Set<Course> getUpperCorrelatives() {
+        return upperCorrelatives;
+    }
+
+    public void setUpperCorrelatives(Set<Course> upperCorrelatives) {
+        this.upperCorrelatives = upperCorrelatives;
+    }
+
+    public List<Student> getApprovedStudents() {
+        return approvedStudents;
+    }
+
+    public void setApprovedStudents(List<Student> approvedStudents) {
+        this.approvedStudents = approvedStudents;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
@@ -76,12 +161,12 @@ public class Course {
     }
 
     public static class Builder {
-        private int id;
+        private Integer id;
         private String name;
         private int credits;
         private int semester;
 
-        public Builder(int id) {
+        public Builder(Integer id) {
             this.id = id;
         }
 

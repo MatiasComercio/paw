@@ -1,7 +1,5 @@
 package ar.edu.itba.paw.webapp.forms;
 
-import org.hibernate.validator.constraints.Length;
-
 public class CourseFilterForm {
 	private Integer id;
 	private String name;

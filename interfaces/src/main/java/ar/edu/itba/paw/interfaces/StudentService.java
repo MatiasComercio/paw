@@ -2,8 +2,8 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.TranscriptGrade;
 import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -20,7 +20,7 @@ public interface StudentService {
 	 * @param docket The student's docket
 	 * @return The student with the given docket, if exists; null otherwise.
 	 */
-	Student getByDocket(final int docket);
+	Student getByDocket(int docket);
 
 	/**
 	 * Gets the student with the given docket containing all the grades of the courses they took.
@@ -28,7 +28,7 @@ public interface StudentService {
 	 * @param docket The student's docket
 	 * @return The student with the given docket, if exists; null otherwise.
 	 */
-	Student getGrades(final int docket);
+	Student getGrades(int docket);
 
 	/**
 	 * Gets the list of the courses the student with the given docket is enroll in,
@@ -38,7 +38,7 @@ public interface StudentService {
 	 * @return the list of courses, if the student exists. If the docket doesn't match to a student,
 	 * it returns null
      */
-	List<Course> getStudentCourses(final int docket, final CourseFilter courseFilter);
+	List<Course> getStudentCourses(int docket, CourseFilter courseFilter);
 
 	/**
 	 * Gets the students that comply to a list of filters
@@ -46,7 +46,7 @@ public interface StudentService {
 	 * @return the list of students that match the list of filters. If no student matches the filters, it returns
 	 * an empty list.
      */
-	List<Student> getByFilter(final StudentFilter studentFilter);
+	List<Student> getByFilter(StudentFilter studentFilter);
 
 
 	/**
@@ -62,7 +62,7 @@ public interface StudentService {
 	 * @param student The new student
 	 * @return The Result code of update
 	 */
-	Result update(final Integer docket, final Student student);
+	Result update(int docket, Student student);
 
 	/**
 	 * Delete the student that matches the given docket.
@@ -71,7 +71,7 @@ public interface StudentService {
 	 * 		ERROR_DOCKET_OUT_OF_BOUNDS if the docket is invalid;
 	 * 		ERROR_UNKNOWN else;
      */
-	Result deleteStudent(Integer docket);
+	Result deleteStudent(int docket);
 
 	/**
 	 * Add the grade for a given student and course. If success, the student is unenrolled from the given course.
@@ -96,7 +96,7 @@ public interface StudentService {
 	 * @return The list of the courses the student with the given docket can enroll in;
 	 *          an empty list will be returned if no course is available
 	 */
-	List<Course> getAvailableInscriptionCourses(final int docket, final CourseFilter courseFilter);
+	List<Course> getAvailableInscriptionCourses(int docket, CourseFilter courseFilter);
 
 	/**
 	 * Enrolls the student with the given docket into the course with the specified id,
@@ -106,7 +106,7 @@ public interface StudentService {
 	 * @param courseId The course id
 	 * @return a Result object containing information of the operation carried out
 	 */
-	Result enroll(final int studentDocket, final int courseId);
+	Result enroll(int studentDocket, int courseId);
 
 	/**
 	 * Unenrolls the student with the given docket of the course with the specified id.
@@ -115,7 +115,7 @@ public interface StudentService {
 	 * @param courseId The course id
 	 * @return a Result object containing information of the operation carried out
 	 */
-	Result unenroll(final Integer studentDocket, final Integer courseId);
+	Result unenroll(int studentDocket, int courseId);
 
 	/**
 	 * Gets the collection of courses the student already approved.
@@ -132,7 +132,7 @@ public interface StudentService {
 	 * @param dni The student's dni
 	 * @return The student with the given dni, if exists; null otherwise.
 	 */
-	Student getByDni(final int dni);
+	Student getByDni(int dni);
 
 	/**
 	 * Check if the student corresponding to docket has approved all the necessary
@@ -141,25 +141,25 @@ public interface StudentService {
 	 * @param courseId The id of the course
      * @return True if the student can take de course, False if not.
      */
-	boolean checkCorrelatives(final Integer docket, final Integer courseId);
+	boolean checkCorrelatives(int docket, int courseId);
 
 	/**
 	 * Get the representation of a student's transcript
 	 * @param docket
 	 * @return A list containing lists in which all the grades of a semester are placed
      */
-	List<List<Grade>> getTranscript(final Integer docket);
+	Collection<Collection<TranscriptGrade>> getTranscript(int docket);
 
 	/**
 	 * Get the total credits of the plan.
 	 * @return Integer indicating the total credits of the plan.
 	 */
-	Integer getTotalPlanCredits();
+	int getTotalPlanCredits();
 
 	/**
 	 * Get the total amount of passed credits given a student.
 	 * @param docket The student's docket.
 	 * @return Integer indicating the amount of credits passed.
      */
-	Integer getPassedCredits(final Integer docket);
+	Integer getPassedCredits(int docket);
 }

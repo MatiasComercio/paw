@@ -15,29 +15,8 @@ public interface UserService {
 	 */
 	List<Role> getRole(int dni);
 
-//
-//	/**
-//	 * Gets all the data associated with the user that has the
-//	 * given dni.
-//	 * @param dni The user's dni.
-//	 * @return The user that has the given dni; null if no user was found.
-//	 */
-//	User getByDni(final String dni);
-
-
-	/**
-	 * Gets all the roles the user with the given dni has associated.
-	 * @param dni The user's dni as a String
-	 * @return The user's roles; null if no user was found with the given dni.
-	 */
-//	List<Role> getRole(final String dni);
-
-	/**
-	 * Delete a user with the corresponding id
-	 * @param dni The user's dni
-	 * @return OK if the user was deleted.
-     */
-	Result delete(int dni);
+	/* +++xdocument +++xtest */
+	String createEmail(final User user);
 
 	/**
 	 * Change the password for a given user
@@ -62,13 +41,4 @@ public interface UserService {
 	 *		else ERROR_UNKNOWN in other case;
      */
 	Result resetPassword(int dni);
-
-	/**
-	 * Update the user
-	 * @param dni the user's dni
-	 * @param user the new user's details
-     * @return OK if the user's data was changed correctly
-	 * 		ERROR_DNI_OUT_OF_BOUNDS if the dni limit was out of bounds;
-     */
-	Result update(int dni, User user);
 }

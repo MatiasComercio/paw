@@ -6,6 +6,16 @@ public class AdminFilter extends UserFilter {
         super(builder);
     }
 
+    @Override
+    public Object getId() {
+        return getDni();
+    }
+
+    @Override
+    public String getAttributeId() {
+        return "dni";
+    }
+
     public static class AdminFilterBuilder extends UserFilter.UserFilterBuilder<AdminFilter, AdminFilterBuilder> {
         public AdminFilter build() {
             return new AdminFilter(this);

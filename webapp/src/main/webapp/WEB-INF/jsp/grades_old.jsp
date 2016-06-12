@@ -72,10 +72,8 @@
                     <table class="table table-hover <%--table-bordered--%> <%--table-condensed--%>">
                         <thead>
                         <tr>
-                            <th class="col-xs-5">
-                                <span class="col-xs-2"><spring:message code="id"/></span>
-                                <span class="col-xs-10"><spring:message code="course"/></span>
-                            </th>
+                            <th class="col-xs-1"><span><spring:message code="id"/></span>
+                            <th class="col-xs-4"><span><spring:message code="course"/></span></th>
                             <th class="col-xs-2"><spring:message code="grade"/></th>
                             <th class="col-xs-2"><spring:message code="modified"/></th>
                             <th class="col-xs-3"><spring:message code="actions"/></th>
@@ -84,10 +82,8 @@
                         <tbody>
                         <c:forEach items="${semester}" var="grade">
                             <tr>
-                                <td>
-                                    <span class="col-xs-2"> ${ grade.courseId }</span>
-                                    <span class="col-xs-10"> ${ grade.courseName }</span>
-                                </td>
+                                <td><span> ${ grade.courseId }</span></td>
+                                <td><span> ${ grade.courseName }</span></td>
                                 <td>
                                     <c:choose>
                                         <c:when test="${grade.taking}">
@@ -122,12 +118,15 @@
                                     </a>
                                     <c:if test="${grade.modified != null }">
                                     <s:authorize access="hasAuthority('ROLE_EDIT_GRADE')">
-                                    <button name="gradeButton" class="btn btn-info" type="button"
-                                            data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
-                                            data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
-                                            data-target="#gradeFormConfirmationModal">
-                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
-                                    </button>
+                                    <c:if test="${grade.canEdit}">
+                                        <button name="gradeButton" class="btn btn-info" type="button"
+                                                data-id="${grade.id}" data-docket="${grade.docket}"
+                                                data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
+                                                data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
+                                                data-target="#gradeFormConfirmationModal">
+                                            <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>
+                                        </button>
+                                    </c:if>
                                     </s:authorize>
                                     </c:if>
                                 <td>

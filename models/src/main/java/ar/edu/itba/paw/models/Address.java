@@ -1,17 +1,62 @@
 package ar.edu.itba.paw.models;
 
-public class Address {
-	private final String country;
-	private final String city;
-	private final String neighborhood;
-	private final String street;
-	private final Integer number;
-	private final Integer floor;
-	private final String door;
-	private final Long telephone;
-	private final Integer zipCode;
+import ar.edu.itba.paw.models.users.User;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Objects;
+
+@Entity
+@Table(name = "address")
+public class Address implements Serializable {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_id_seq_seq")
+	@SequenceGenerator(sequenceName = "address_id_seq_seq", name = "address_id_seq_seq", allocationSize = 1)
+	private Integer id_seq;
+
+	@Column(name = "dni", unique = true, updatable = false)
+	private Integer dni;
+
+	@Basic
+	@Column(name = "country", nullable = false, length = 50)
+	private String country;
+
+	@Basic
+	@Column(name = "city", nullable = false, length = 50)
+	private String city;
+
+	@Basic
+	@Column(name = "neighborhood", nullable = false, length = 50)
+	private String neighborhood;
+
+	@Basic
+	@Column(name = "street", nullable = false, length = 100)
+	private String street;
+
+	@Basic
+	@Column(name = "number", nullable = false)
+	private Integer number;
+
+	@Basic
+	@Column(name = "floor")
+	private Integer floor;
+
+	@Basic
+	@Column(name = "door", length = 10)
+	private String door;
+
+	@Basic
+	@Column(name = "telephone")
+	private Long telephone;
+
+	@Basic
+	@Column(name = "zip_code")
+	private Integer zipCode;
 
 	private Address(final Builder builder) {
+		this.id_seq = builder.id_seq;
+		this.dni = builder.dni;
 		this.country = builder.country;
 		this.city = builder.city;
 		this.neighborhood = builder.neighborhood;
@@ -21,6 +66,10 @@ public class Address {
 		this.door = builder.door;
 		this.telephone = builder.telephone;
 		this.zipCode = builder.zipCode;
+	}
+
+	protected Address() {
+		// Just for Hibernate
 	}
 
 	public String getCountry() {
@@ -59,7 +108,48 @@ public class Address {
 		return zipCode;
 	}
 
+	@Override
+	public boolean equals(final Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		final Address that = (Address) o;
+
+		if (!Objects.equals(number, that.number)) return false;
+		if (!Objects.equals(floor, that.floor)) return false;
+		if (!Objects.equals(telephone, that.telephone)) return false;
+		if (!Objects.equals(zipCode, that.zipCode)) return false;
+		if (country != null ? !country.equals(that.country) : that.country != null) return false;
+		if (city != null ? !city.equals(that.city) : that.city != null) return false;
+		if (neighborhood != null ? !neighborhood.equals(that.neighborhood) : that.neighborhood != null) return false;
+		if (street != null ? !street.equals(that.street) : that.street != null) return false;
+		if (door != null ? !door.equals(that.door) : that.door != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 0;
+		result = 31 * result + (country != null ? country.hashCode() : 0);
+		result = 31 * result + (city != null ? city.hashCode() : 0);
+		result = 31 * result + (neighborhood != null ? neighborhood.hashCode() : 0);
+		result = 31 * result + (street != null ? street.hashCode() : 0);
+		result = 31 * result + number;
+		result = 31 * result + floor;
+		result = 31 * result + (door != null ? door.hashCode() : 0);
+		result = 31 * result + (int) (telephone ^ (telephone >>> 32));
+		result = 31 * result + zipCode;
+		return result;
+	}
+
+	public Integer getId_seq() {
+		return id_seq;
+	}
+
 	public static class Builder {
+		private Integer id_seq;
+		private Integer dni;
 		private String country;
 		private String city;
 		private String neighborhood;
@@ -71,8 +161,10 @@ public class Address {
 		private Long telephone;
 		private Integer zipCode;
 
-		public Builder(final String country, final String city,
+		public Builder(final Integer id_seq, final Integer dni, final String country, final String city,
 		               final String neighborhood, final String street, final Integer number) {
+			this.id_seq = id_seq;
+			this.dni = dni;
 			this.country = country == null ? "" : country;
 			this.city = city == null ? "" : city;
 			this.neighborhood = neighborhood == null ? "" : neighborhood;

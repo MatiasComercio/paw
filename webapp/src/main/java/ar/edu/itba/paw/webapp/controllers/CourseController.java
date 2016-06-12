@@ -4,15 +4,11 @@ import ar.edu.itba.paw.interfaces.CourseService;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
-import ar.edu.itba.paw.webapp.forms.CorrelativeForm;
-import ar.edu.itba.paw.webapp.forms.CourseFilterForm;
-import ar.edu.itba.paw.webapp.forms.CourseForm;
+import ar.edu.itba.paw.webapp.forms.*;
 import ar.edu.itba.paw.shared.CourseFilter;
-import ar.edu.itba.paw.webapp.forms.StudentFilterForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 @Controller
 public class CourseController {
@@ -165,7 +160,9 @@ public class CourseController {
 			return new ModelAndView("redirect:/courses");
 		}
 
-		courseForm.loadFromCourse(course);
+		if (!redirectAttributes.getFlashAttributes().containsKey("justCalled")) {
+			courseForm.loadFromCourse(course);
+		}
 
 		mav.addObject("section2", "edit");
 		mav.addObject("course", course);
@@ -190,7 +187,11 @@ public class CourseController {
 			LOGGER.warn("User {} could not edit course {} due to {} [POST]", loggedUser.getDni(), courseId, errors.getAllErrors());
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseForm", errors);
 			redirectAttributes.addFlashAttribute("courseForm", courseForm);
-//			return new ModelAndView("redirect:/courses/" + courseId + "/edit");
+			/* set alert */
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+			/* --------- */
+			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editCourse(courseId, courseForm, redirectAttributes, loggedUser);
 		}
 
@@ -202,7 +203,7 @@ public class CourseController {
 			LOGGER.warn("User {} could not edit course, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
-//			return new ModelAndView("redirect:/courses/" + courseId + "/edit");
+			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editCourse(courseId, courseForm, redirectAttributes, loggedUser);
 		} else {
 			LOGGER.info("User {} edited course {} successfully", loggedUser.getDni(), courseId);
@@ -229,6 +230,9 @@ public class CourseController {
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
+		if (!model.containsAttribute("gradeForm")) {
+			model.addAttribute("gradeForm", new GradeForm());
+		}
 		if (!model.containsAttribute("studentFilterForm")) {
 			model.addAttribute("studentFilterForm", new StudentFilterForm());
 		}
@@ -298,7 +302,11 @@ public class CourseController {
 
 		if(errors.hasErrors()){
 			LOGGER.warn("User {} could not add course {} due to {} [POST]", loggedUser.getDni(), courseForm.getId(), errors.getAllErrors());
-			return addCourse(courseForm, null, loggedUser);
+			/* set alert */
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+			/* --------- */
+			return addCourse(courseForm, redirectAttributes, loggedUser);
 		}
 		else{
 			final Course course = courseForm.build();
@@ -504,7 +512,8 @@ public class CourseController {
 
 		final ModelAndView mav = new ModelAndView("courseStudents");
 		mav.addObject("course", course);
-		mav.addObject("students", course.getStudents());
+		//TODO: DELETE - mav.addObject("students", course.getStudents());
+		mav.addObject("students", course.getApprovedStudents());
 		mav.addObject("section2", "studentsPassed");
 		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students_passed/studentFilterForm");
 		return mav;

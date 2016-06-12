@@ -3,22 +3,19 @@ package ar.edu.itba.paw.webapp.forms;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 public class StudentForm {
 
     /* When the student is created the docket is asigned by the database, not the user */
     private final static Integer EMPTY_DOCKET = 0;
-    @Digits(integer=8, fraction=0)
+
     @NotNull
-    @Min(1)
+    @Max(99999999)
+    @Min(10000000)
     private Integer dni;
     //@NumberFormat(style = Style.NUMBER)
 
@@ -62,26 +59,37 @@ public class StudentForm {
     @Min(0)
     private Integer zipCode;
 
+    private Integer id_seq;
+    private int docket;
+    private String email;
+    private String password;
+    private Integer address_id_seq;
+
 
     public StudentForm(){}
 
     public Student build(){
 
-        this.address = new Address.Builder(country, city, neighborhood, street, number).floor(floor).
+        this.address = new Address.Builder(address_id_seq, dni, country, city, neighborhood, street, number).floor(floor).
                 door(door).telephone(telephone).zipCode(zipCode).build();
-        return new Student.Builder(EMPTY_DOCKET, dni).firstName(firstName).lastName(lastName).genre(genre).
-                birthday(birthday).address(address).build();
+        return new Student.Builder(EMPTY_DOCKET, dni).id_seq(id_seq).firstName(firstName).lastName(lastName).genre(genre). // +++xcheck: EMPTY_DOCKET
+                birthday(birthday).address(address).email(email).password(password).build();
     }
 
     public void loadFromStudent(Student student){
+        this.id_seq = student.getId_seq();
         this.dni = student.getDni();
+        this.docket = student.getDocket();
         this.firstName = student.getFirstName();
         this.lastName = student.getLastName();
 //        String genre = User.Genre.getGenre(student.getGenre()); /* +++xdoing */
 //        this.genre = genre == null ? null : genre.equals("M") ? User.Genre.M : genre.equals("F") ? User.Genre.F : null;
         this.genre = student.getGenre();
         this.birthday = student.getBirthday();
+        this.email = student.getEmail();
+        this.password = student.getPassword();
         this.address = student.getAddress();
+        this.address_id_seq = student.getAddress().getId_seq();
         this.country = student.getAddress().getCountry();
         this.city = student.getAddress().getCity();
         this.neighborhood = student.getAddress().getNeighborhood();
@@ -204,5 +212,37 @@ public class StudentForm {
 
     public void setZipCode(Integer zipCode) {
         this.zipCode = zipCode;
+    }
+
+    public Integer getId_seq() {
+        return id_seq;
+    }
+
+    public void setId_seq(final Integer id_seq) {
+        this.id_seq = id_seq;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(final String password) {
+        this.password = password;
+    }
+
+    public Integer getAddress_id_seq() {
+        return address_id_seq;
+    }
+
+    public void setAddress_id_seq(final Integer address_id_seq) {
+        this.address_id_seq = address_id_seq;
     }
 }

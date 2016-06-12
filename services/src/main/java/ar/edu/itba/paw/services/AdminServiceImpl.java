@@ -5,7 +5,6 @@ import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
-import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +12,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AdminServiceImpl implements AdminService {
 
     @Autowired
-    AdminDao adminDao;
+    private AdminDao adminDao;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Transactional
     @Override
@@ -30,44 +30,37 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Transactional
-    @Override /*+++xtodo: @Gonza improve: you are not validating if the userService creates the admin */
-    public Result create(Admin admin) {
-//        userService.create(admin);
-        Result result = adminDao.create(admin);
-
-        //TODO: add role to roles table which indicates (dni, role)
-
-        return result;
+    @Override
+    public Result create(final Admin admin) {
+        admin.setRole(Role.ADMIN);
+        if (admin.getEmail() == null || Objects.equals(admin.getEmail(), "")) {
+            admin.setEmail(userService.createEmail(admin));
+        }
+        return adminDao.create(admin);
     }
 
     @Transactional
     @Override
-    public Admin getByDni(int dni) {
-        return adminDao.getByDni(dni);
+    public Result update(final int dni, final Admin admin) {
+        return adminDao.update(admin);
     }
 
     @Transactional
     @Override
-    public List<Admin> getByFilter(AdminFilter adminFilter) {
+    public Result deleteAdmin(final int dni) {
+        return adminDao.delete(dni);
+    }
+
+    @Transactional
+    @Override
+    public List<Admin> getByFilter(final AdminFilter adminFilter) {
         return adminDao.getByFilter(adminFilter);
     }
 
     @Transactional
     @Override
-    public Result deleteAdmin(Integer dni) {
-        if(dni <= 0) {
-            return Result.ERROR_DNI_OUT_OF_BOUNDS;
-        }
-        return adminDao.deleteAdmin(dni);
-    }
-
-    @Override
-    public Result update(Integer dni, Admin admin) {
-        if(dni <= 0) {
-            return Result.ERROR_DNI_OUT_OF_BOUNDS;
-        }
-
-        return userService.update(dni, admin);
+    public Admin getByDni(final int dni) {
+        return adminDao.getByDni(dni);
     }
 
     @Transactional
@@ -83,6 +76,7 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     @Override
     public Result enableInscriptions() {
+        // +++ ximprove: this should be only one method.
         Result enableAddResult = adminDao.enableAddInscriptions();
         Result enableDeleteResult = adminDao.enableDeleteInscriptions();
 
@@ -106,10 +100,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Result resetPassword(final Integer dni) {
-        if(dni <= 0) {
-            return Result.ERROR_DNI_OUT_OF_BOUNDS;
-        }
+    public Result resetPassword(final int dni) {
         return userService.resetPassword(dni);
     }
 }

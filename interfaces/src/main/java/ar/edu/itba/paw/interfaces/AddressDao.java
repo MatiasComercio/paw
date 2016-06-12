@@ -12,7 +12,7 @@ public interface AddressDao {
      * @return true if the user has an address;
      *          false in other case
      */
-    boolean hasAddress(Integer dni);
+    boolean hasAddress(int dni);
 
     /**
      * Creates a given address mapped to a user's dni
@@ -22,7 +22,7 @@ public interface AddressDao {
      *          DNI_NOT_EXISTS if there is no address matched to the DNI;
      *          ERROR_UNKNOWN else;
      */
-    Result createAddress(Integer dni, Address address);
+    Result createAddress(int dni, Address address);
 
     /**
      * Update a given address mapped to a user's dni
@@ -31,5 +31,5 @@ public interface AddressDao {
      * @return OK if the operation was successful;
      *      ERROR_UNKNOWN else;
      */
-    Result updateAddress(Integer dni, Address address);
+    Result updateAddress(int dni, Address address);
 }

@@ -16,7 +16,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="input-group">
-                                <span class="input-group-addon"><spring:message code="docket"/></span>
+                                <span class="input-group-addon search-label"><spring:message code="docket"/></span>
                                 <spring:message code="docket" var="docketPlaceholder"/>
                                 <form:input path="docket"  type="text" class="form-control" placeholder="${docketPlaceholder}..."/>
                             </div>
@@ -30,7 +30,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="input-group">
-                                <span class="input-group-addon"><spring:message code="firstName"/></span>
+                                <span class="input-group-addon search-label"><spring:message code="firstName"/></span>
                                 <spring:message code="firstName" var="firstNamePlaceholder"/>
                                 <form:input path="firstName" type="text" class="form-control" placeholder="${firstNamePlaceholder}..."/>
                             </div>
@@ -44,7 +44,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="input-group">
-                                <span class="input-group-addon"><spring:message code="lastName"/></span>
+                                <span class="input-group-addon search-label"><spring:message code="lastName"/></span>
                                 <spring:message code="lastName" var="lastNamePlaceholder"/>
                                 <form:input path="lastName" type="text" class="form-control" placeholder="${lastNamePlaceholder}..."/>
                             </div>
@@ -103,18 +103,25 @@
                 <td>${ student.firstName }</td>
                 <td>${ student.lastName }</td>
                 <td>
-                    <c:choose>
-                        <c:when test="${subsection_courses}">
-                            <button name="gradeButton" class="btn btn-info btn-xs" type="button"
-                                    data-student_docket="${student.docket}"
-                                    data-toggle="modal" data-target="#gradeFormConfirmationModal">
-                                <span class="fa fa-graduation-cap" aria-hidden="true"></span> <spring:message code="rate"/>
-                            </button>
-                        </c:when>
-                    </c:choose>
-                    <a class="btn btn-default tableButton" href="<c:url value="/students/${student.docket}/info" />" role="button">
+                    <a class="btn btn-default" href="<c:url value="/students/${student.docket}/info" />" role="button">
                         <span class="fa fa-user" aria-hidden="true"></span> <spring:message code="profile"/>
                     </a>
+                    <c:choose>
+                        <%--@elvariable id="section" type="java.lang.String"--%>
+                        <%--@elvariable id="section2" type="java.lang.String"--%>
+                        <c:when test="${section eq 'courses' && section2 eq 'students'}">
+                            <c:url var="gradeFormAction" value="/students/${student.docket}/grades/add" />
+                            <sec:authorize access="hasAuthority('ROLE_ADD_GRADE')"><%--@elvariable id="course" type="ar.edu.itba.paw.models.Course"--%>
+                                <button name="gradeButton" class="btn btn-info" type="button"
+                                        data-url="${gradeFormAction}"
+                                        data-docket="${student.docket}"
+                                        data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                        data-toggle="modal" data-target="#gradeFormConfirmationModal">
+                                    <span class="fa fa-graduation-cap" aria-hidden="true"></span> <spring:message code="rate"/>
+                                </button>
+                            </sec:authorize>
+                        </c:when>
+                    </c:choose>
                 </td>
             </tr>
         </c:forEach>

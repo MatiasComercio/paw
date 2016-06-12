@@ -1,27 +1,77 @@
 package ar.edu.itba.paw.models.users;
 
 
-
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Authority;
 import ar.edu.itba.paw.models.Role;
+import ar.edu.itba.paw.models.RoleClass;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.*;
 
-public abstract class User {
-	private final int dni;
-	private final String firstName;
-	private final String lastName;
-	private final Genre genre;
-	private final LocalDate birthday;
-	private final String email;
-	private final Address address;
-	private final String password;
-	private final Collection<Role> roles;
-	private final Collection<Authority> authorities;
+import static javax.persistence.InheritanceType.JOINED;
+
+@Entity
+@Table(name = "users")
+@Inheritance(strategy=JOINED)
+// not abstract anymore just for Hibernate
+	/* +++xcheck
+	Entities inside Student are causing the need of java.io.Serializable.
+	When the error is found, this Serializable shoudl be removed.
+	 */
+public class User implements Serializable {
+
+	public static final String DEFAULT_PASSWORD = "pass";
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_seq_seq")
+	@SequenceGenerator(sequenceName = "users_id_seq_seq", name = "users_id_seq_seq", allocationSize = 1)
+	@Column(name = "id_seq")
+	private Integer id_seq;
+
+	@Column(name = "dni", unique = true, nullable = false, updatable = false)
+	private int dni;
+
+	@Basic
+	@Column(name = "first_name", nullable = false, length = 50)
+	private String firstName;
+
+	@Basic
+	@Column(name = "last_name", nullable = false, length = 50)
+	private String lastName;
+
+	@Enumerated(value = EnumType.STRING)
+	private Genre genre;
+
+	@Basic
+	@Column(name = "birthday")
+	private LocalDate birthday;
+
+	@Basic
+	@Column(name = "email", nullable = false, length = 100, unique = true, updatable = false)
+	private String email;
+
+	// Unidirectional Mapping
+	@OneToOne(cascade = CascadeType.ALL/*, fetch = FetchType.LAZY*/)
+	@JoinColumn(name = "dni", referencedColumnName = "dni", insertable = false, updatable = false)
+	private Address address;
+
+	@Basic
+	@Column(name = "password", length = 100)
+	private String password;
+
+	@ManyToOne
+	@JoinColumn(name = "role", referencedColumnName = "role", nullable = false)
+	private RoleClass role;
+
+	protected User() {
+		// Just for Hibernate, we love you too!
+	}
 
 	protected User(final Builder builder) {
+		this.id_seq = builder.id_seq;
 		this.dni = builder.dni;
 		this.firstName = builder.firstName;
 		this.lastName = builder.lastName;
@@ -30,9 +80,22 @@ public abstract class User {
 		this.email = builder.email;
 		this.address = builder.address;
 		this.password = builder.password;
-		this.roles = builder.roles;
-		this.authorities = builder.authorities;
+		this.role = new RoleClass(builder.role, null);
 	}
+
+//	public <T extends User, V extends Builder<T,V>> T merge(final T u, final Builder<T, V> builder) {
+//		final Integer id_seq = u.getId_seq() == null ? this.id_seq : u.getId_seq();
+//		final int dni = this.dni;
+//		final String firstName = u.getFirstName();
+//		final String lastName = u.getLastName();
+//		final Genre genre = u.getGenre() == null ? this.genre : u.getGenre();
+//		final LocalDate birthday = u.getBirthday() == null ? this.birthday : u.getBirthday();
+//		final String email = this.email;
+//		final Address address = this.address.merge(u.getAddress());
+//		final String password = u.getPassword() == null ? this.password : u.getPassword();
+//
+//		return
+//	}
 
 	public int getDni() {
 		return dni;
@@ -58,6 +121,14 @@ public abstract class User {
 		return birthday;
 	}
 
+	// +++ximprove:
+	public void setEmail(final String email) {
+		if (email != null) {
+			this.email = email;
+		}
+	}
+
+
 	public String getEmail() {
 		return email == null ? "" : email;
 	}
@@ -75,12 +146,18 @@ public abstract class User {
 		return password;
 	}
 
-	public Collection<Role> getRoles() {
-		return Collections.unmodifiableCollection(roles);
+	public Role getRole() {
+		return role == null ? null : role.getRole();
 	}
 
+	// +++ximprove
+	public void setRole(final Role role) {
+		this.role = role == null ? null : new RoleClass(role, null);
+	}
+
+
 	public Collection<Authority> getAuthorities() {
-		return Collections.unmodifiableCollection(authorities);
+		return role == null ? Collections.EMPTY_SET : role.getAuthorities();
 	}
 
 	@Override
@@ -111,25 +188,40 @@ public abstract class User {
 				'}';
 	}
 
-	public static abstract class Builder<V extends User, T extends Builder<V,T>> {
-		private int dni;
-		private T thisBuilder;
+	public Integer getId_seq() {
+		return id_seq;
+	}
 
+	public void setId_seq(final Integer id_seq) {
+		this.id_seq = id_seq;
+	}
+
+	public void setPassword(final String password) {
+		this.password = password;
+	}
+
+	public void resetPassword() {
+		this.password = DEFAULT_PASSWORD;
+	}
+
+	public static abstract class Builder<V extends User, T extends Builder<V,T>> {
+		private final int dni;
+		private final Role role;
+
+		private T thisBuilder;
+		private Integer id_seq;
 		private String firstName = null;
 		private String lastName = null;
 		private Genre genre = Genre.N;
 		private LocalDate birthday = null;
 		private String email = null;
 		private Address address = null;
-		private String password = null;
-		private Collection<Role> roles;
-		private Collection<Authority> authorities;
+		private String password = "pass";
 
-		public Builder(final int dni) {
+		public Builder(final int dni, final Role role) {
 			this.dni = dni;
+			this.role = role;
 			this.thisBuilder = thisBuilder();
-			this.roles = new HashSet<>();
-			this.authorities = new HashSet<>();
 		}
 
 		/* Each subclass should implement how a user should be build */
@@ -137,6 +229,11 @@ public abstract class User {
 
 		/* Each subclass should implement this method to return it's own builder */
 		public abstract T thisBuilder();
+
+		public T id_seq(final Integer id_seq) {
+			this.id_seq = id_seq;
+			return thisBuilder;
+		}
 
 		public T firstName(final String firstName) {
 			if (firstName != null) {
@@ -181,36 +278,8 @@ public abstract class User {
 		}
 
 		public T password(final String password) {
-			if (password != null) {
+			if (password != null && !Objects.equals(password, "")) {
 				this.password = password;
-			}
-			return thisBuilder;
-		}
-
-		public T role(final Role role) {
-			if (role != null) {
-				this.roles.add(role);
-			}
-			return thisBuilder;
-		}
-
-		public T roles(final Collection<? extends Role> roles) {
-			if (roles != null) {
-				this.roles.addAll(roles);
-			}
-			return thisBuilder;
-		}
-
-		public T authority(final Authority authority) {
-			if (authority != null) {
-				this.authorities.add(authority);
-			}
-			return thisBuilder;
-		}
-
-		public T authorities(final Collection<? extends Authority> authorities) {
-			if (authorities != null) {
-				this.authorities.addAll(authorities);
 			}
 			return thisBuilder;
 		}

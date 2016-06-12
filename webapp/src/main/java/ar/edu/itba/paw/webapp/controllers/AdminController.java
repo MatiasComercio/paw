@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.models.users.Admin;
-import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
@@ -13,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -158,10 +158,19 @@ public class AdminController {
 		}
 		if (errors.hasErrors()){
 			LOGGER.warn("The user {} is trying to add an admin and there was an error = {}", loggedUser, errors.getAllErrors());
-			return adminsAddAdminG(adminForm, null, loggedUser);
+			/* set alert */
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+			/* --------- */
+			return adminsAddAdminG(adminForm, redirectAttributes, loggedUser);
 		}
 		Admin admin = adminForm.build();
-		Result result = adminService.create(admin);
+		Result result;
+		try {
+			result = adminService.create(admin);
+		} catch (final DataIntegrityViolationException e) {
+			result = Result.USER_EXISTS_DNI;
+		}
 		if(!result.equals(Result.OK)){
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
@@ -287,7 +296,9 @@ public class AdminController {
 			return new ModelAndView(NOT_FOUND);
 		}
 
-		adminForm.loadFromAdmin(admin);
+		if (!redirectAttributes.getFlashAttributes().containsKey("justCalled")) {
+			adminForm.loadFromAdmin(admin);
+		}
 
 		final ModelAndView mav = new ModelAndView("addUser");
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
@@ -312,8 +323,26 @@ public class AdminController {
 
 		if (errors.hasErrors()){
 			LOGGER.warn("There were errors when User {} tried to edit an admin {}", loggedUser, errors.getAllErrors());
+			/* set alert */
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+			/* --------- */
+			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editAdmin(dni, adminForm, redirectAttributes, loggedUser);
 		}
+
+		final Admin originalAdmin = adminService.getByDni(dni);
+
+		if (originalAdmin == null) {
+			LOGGER.warn("User {} tried to access admin {} that does not exist", loggedUser.getUsername());
+			return new ModelAndView(NOT_FOUND);
+		}
+
+		// Write data that was hidden at the form --> not submitted
+		adminForm.setId_seq(originalAdmin.getId_seq());
+		adminForm.setAddress_id_seq(originalAdmin.getAddress().getId_seq());
+		adminForm.setPassword(originalAdmin.getPassword());
+		adminForm.setEmail(originalAdmin.getEmail());
 
 		final Admin admin = adminForm.build();
 		final Result result = adminService.update(dni, admin);
@@ -322,6 +351,7 @@ public class AdminController {
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
 			LOGGER.warn("User {} could not edit admin, Result = {}", adminForm.getDni(), result);
+			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editAdmin(dni, adminForm, redirectAttributes, loggedUser);
 		} else {
 			LOGGER.info("User {} could edited admins, Result = {}", adminForm.getDni());

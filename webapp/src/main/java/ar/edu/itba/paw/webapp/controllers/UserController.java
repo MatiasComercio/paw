@@ -5,7 +5,6 @@ import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.PasswordForm;
 import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
-import ar.edu.itba.paw.webapp.forms.UserForm;
 import ar.edu.itba.paw.webapp.forms.validators.PasswordValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,33 +178,33 @@ public class UserController {
 		return new ModelAndView("redirect:/user/changePassword");
 	}
 
-	@RequestMapping(value = "/user/delete_user", method = RequestMethod.POST)
-	public ModelAndView deleteUser(@Valid @ModelAttribute("userForm") UserForm userForm,
-	                               final BindingResult errors, final RedirectAttributes redirectAttributes,
-	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
-		LOGGER.info("Deleting User {}", userForm.getDni());
-		if (!loggedUser.hasAuthority("DELETE_USER")
-				&& !loggedUser.hasAuthority("ADMIN")) {
-			LOGGER.warn("User {} tried to delete user NOT ADMIN and doesn't have authority DELETE_USER [POST]", loggedUser);
-			return new ModelAndView(UNAUTHORIZED);
-		}
-		if (errors.hasErrors()){
-			//return deleteUser(userForm, null); //TODO: see where it returns
-		}
-		final Result result = userService.delete(userForm.getDni());
-
-		if(!result.equals(Result.OK)){
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
-			//return deleteUser(userForm, redirectAttributes); //TODO: See where it returns
-			LOGGER.warn("User {} could not be deleted, Result = {}", userForm.getDni(), result);
-		} else {
-			LOGGER.info("User {} was deleted successfully", userForm.getDni());
-		}
-		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addStudent_success",
-				null,
-				Locale.getDefault()));
-		return new ModelAndView("redirect:/students");
-	}
+//	@RequestMapping(value = "/user/delete_user", method = RequestMethod.POST)
+//	public ModelAndView deleteUser(@Valid @ModelAttribute("userForm") UserForm userForm,
+//	                               final BindingResult errors, final RedirectAttributes redirectAttributes,
+//	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+//		LOGGER.info("Deleting User {}", userForm.getDni());
+//		if (!loggedUser.hasAuthority("DELETE_USER")
+//				&& !loggedUser.hasAuthority("ADMIN")) {
+//			LOGGER.warn("User {} tried to delete user NOT ADMIN and doesn't have authority DELETE_USER [POST]", loggedUser);
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//		if (errors.hasErrors()){
+//			//return deleteUser(userForm, null); //TODO: see where it returns
+//		}
+//		final Result result = userService.delete(userForm.getDni());
+//
+//		if(!result.equals(Result.OK)){
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+//			//return deleteUser(userForm, redirectAttributes); //TODO: See where it returns
+//			LOGGER.warn("User {} could not be deleted, Result = {}", userForm.getDni(), result);
+//		} else {
+//			LOGGER.info("User {} was deleted successfully", userForm.getDni());
+//		}
+//		redirectAttributes.addFlashAttribute("alert", "success");
+//		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addStudent_success",
+//				null,
+//				Locale.getDefault()));
+//		return new ModelAndView("redirect:/students");
+//	}
 }

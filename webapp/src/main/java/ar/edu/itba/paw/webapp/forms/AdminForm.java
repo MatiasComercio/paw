@@ -5,16 +5,16 @@ import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 public class AdminForm {
-    @Digits(integer=8, fraction=0)
+
+    private Integer id_seq;
+
     @NotNull
-    @Min(1)
+    @Max(99999999)
+    @Min(10000000)
     private Integer dni;
 
     @NotNull
@@ -31,6 +31,9 @@ public class AdminForm {
     private LocalDate birthday;
 
     private Address address;
+
+    private Integer address_id_seq;
+
     @NotNull
     @Size(min=2, max=50)
     private String country;
@@ -40,6 +43,7 @@ public class AdminForm {
     @NotNull
     @Size(min=2, max=50)
     private String neighborhood;
+
     @NotNull
     @Size(min=2, max=100)
     private String street;
@@ -47,26 +51,31 @@ public class AdminForm {
     @NotNull
     @Min(0)
     private Integer number;
-
     @Min(0)
     private Integer floor;
     @Size(max=10)
     private String door;
     @Min(0)
     private Long telephone;
+
     @Min(0)
     private Integer zipCode;
+
+
+    private String email;
+    private String password;
 
     public AdminForm() {}
 
     public Admin build() {
-        this.address = new Address.Builder(country, city, neighborhood, street, number).floor(floor).
+        this.address = new Address.Builder(address_id_seq, dni, country, city, neighborhood, street, number).floor(floor).
                 door(door).telephone(telephone).zipCode(zipCode).build();
-        return new Admin.Builder(dni).firstName(firstName).lastName(lastName).genre(genre).
-                birthday(birthday).address(address).build();
+        return new Admin.Builder(dni).id_seq(id_seq).firstName(firstName).lastName(lastName).genre(genre).
+                birthday(birthday).address(address).email(email).password(password).build();
     }
 
     public void loadFromAdmin(Admin admin){
+        this.id_seq = admin.getId_seq();
         this.dni = admin.getDni();
         this.firstName = admin.getFirstName();
         this.lastName = admin.getLastName();
@@ -74,7 +83,10 @@ public class AdminForm {
 //        this.genre = genre == null ? null : genre.equals("M") ? User.Genre.M : genre.equals("F") ? User.Genre.F : null;
         this.genre = admin.getGenre();
         this.birthday = admin.getBirthday();
+        this.email = admin.getEmail();
+        this.password = admin.getPassword();
         this.address = admin.getAddress();
+        this.address_id_seq = admin.getAddress().getId_seq();
         this.country = admin.getAddress().getCountry();
         this.city = admin.getAddress().getCity();
         this.neighborhood = admin.getAddress().getNeighborhood();
@@ -197,5 +209,37 @@ public class AdminForm {
 
     public void setZipCode(Integer zipCode) {
         this.zipCode = zipCode;
+    }
+
+    public Integer getId_seq() {
+        return id_seq;
+    }
+
+    public void setId_seq(final Integer id_seq) {
+        this.id_seq = id_seq;
+    }
+
+    public Integer getAddress_id_seq() {
+        return address_id_seq;
+    }
+
+    public void setAddress_id_seq(final Integer address_id_seq) {
+        this.address_id_seq = address_id_seq;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(final String password) {
+        this.password = password;
     }
 }

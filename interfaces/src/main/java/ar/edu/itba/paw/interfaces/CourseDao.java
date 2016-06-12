@@ -22,7 +22,7 @@ public interface CourseDao {
      * @param course Modified course
      * @return The result code of the insertion
      */
-    Result update(final Integer id, final Course course);
+    Result update(int id, Course course);
 
     /**
      * Get the course identified by an ID
@@ -63,14 +63,14 @@ public interface CourseDao {
      *         INVALID_INPUT_PARAMETERS if the ID is invalid;
      *         ERROR_UNKNOWN else;
      */
-    Result deleteCourse(Integer id);
+    Result deleteCourse(int id);
 
     /**
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
      * given course)
      */
-    List<Integer> getCorrelatives(Integer courseId);
+    List<Integer> getCorrelatives(int courseId);
 
     /**
      * Check if a correlativity loop is formed
@@ -80,7 +80,7 @@ public interface CourseDao {
      * @return The boolean value indicating if the correlativity loop
      * is generated.
      */
-    boolean checkCorrelativityLoop(final Integer id, final Integer correlativeId);
+    boolean checkCorrelativityLoop(int id, int correlativeId);
 
     /**
      * Persist a correlativity
@@ -89,33 +89,33 @@ public interface CourseDao {
      * @param correlativeId The id of the course correlative course
      * @return The insertion result.
      */
-    Result addCorrelativity(final Integer id, final Integer correlativeId);
+    Result addCorrelativity(int id, int correlativeId);
 
     /**
      * Check whether a course exists or not
      * @param id The id of the course;
      * @return The boolean indicating if the course exists
      */
-    boolean courseExists(final Integer id);
+    boolean courseExists(int id);
 
     /**
      * @param courseId The id of the course.
      * @return The boolean indicating if the given course has any enrolled students.
      */
-    boolean inscriptionExists(final Integer courseId);
+    boolean inscriptionExists(int courseId);
 
     /**
      * @param courseId The id of the course.
      * @return The boolean indicating whether there are any students with grades of the given course.
      */
-    boolean gradeExists(final Integer courseId);
+    boolean gradeExists(int courseId);
 
     /**
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that require this course to enroll a student in the
      * given course)
      */
-    List<Integer> getUpperCorrelatives(Integer courseId);
+    List<Integer> getUpperCorrelatives(int courseId);
 
     /**
      *
@@ -123,7 +123,7 @@ public interface CourseDao {
      * @param correlativeId The id of the correlative for the given course.
      * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
      */
-    Result deleteCorrelative(Integer courseId, Integer correlativeId);
+    Result deleteCorrelative(int courseId, int correlativeId);
 
     /**
      * Get the number of semesters.
@@ -137,7 +137,7 @@ public interface CourseDao {
      * @return List of correlatives for the given course (i.d. The courses that are required to enroll a student in the
      * given course)
      */
-    List<Course> getCorrelativeCourses(Integer courseId);
+    List<Course> getCorrelativeCourses(int courseId);
 
     /**
      * Get the total credits of the plan.

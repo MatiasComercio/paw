@@ -2,15 +2,13 @@ package ar.edu.itba.paw.webapp.forms;
 
 import ar.edu.itba.paw.models.Course;
 
-
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class CourseForm {
-
     @Min(1)
-    @NotNull
     private Integer id;
 
     @NotNull
@@ -18,7 +16,8 @@ public class CourseForm {
     private String name;
 
     @NotNull
-    @Min(0)
+    @Min(1)
+    @Max(20)
     private Integer credits;
 
     @NotNull

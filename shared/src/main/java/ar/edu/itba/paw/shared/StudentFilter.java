@@ -12,6 +12,16 @@ public class StudentFilter extends UserFilter {
         return docket;
     }
 
+    @Override
+    public Object getId() {
+        return docket;
+    }
+
+    @Override
+    public String getAttributeId() {
+        return "docket";
+    }
+
     public static class StudentFilterBuilder extends UserFilter.UserFilterBuilder<StudentFilter, StudentFilterBuilder> {
         private Object docket;
 

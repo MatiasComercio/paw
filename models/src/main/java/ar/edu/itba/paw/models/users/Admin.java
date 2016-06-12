@@ -1,9 +1,19 @@
 package ar.edu.itba.paw.models.users;
 
 
+import ar.edu.itba.paw.models.Role;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "admin")
 public class Admin extends User {
     private Admin(final Builder builder) {
         super(builder);
+    }
+
+    protected Admin() {
+        // just for Hibernate
     }
 
     @Override
@@ -23,7 +33,7 @@ public class Admin extends User {
 
     public static class Builder extends User.Builder<Admin, Builder> {
         public Builder(int dni) {
-            super(dni);
+            super(dni, Role.ADMIN);
         }
 
         @Override

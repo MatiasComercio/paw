@@ -3,9 +3,8 @@ package ar.edu.itba.paw.services;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.interfaces.StudentService;
-import ar.edu.itba.paw.models.Address;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
@@ -15,15 +14,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class StudentServiceImpl implements StudentService {
 
 	@Autowired
 	private StudentDao studentDao;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private CourseService courseService;
@@ -47,26 +47,36 @@ public class StudentServiceImpl implements StudentService {
 		}
 
 		List<Course> coursesFiltered = courseService.getByFilter(courseFilter);
-		courses.retainAll(coursesFiltered);
 
-		return courses;
+		final List<Course> rCourses = new LinkedList<>();
+		for (Course c : coursesFiltered) {
+			if (courses.contains(c)) {
+				rCourses.add(c);
+			}
+		}
+
+		return rCourses;
 	}
 
 	@Transactional
 	@Override
-	public List<Student> getByFilter(StudentFilter studentFilter) {
+	public List<Student> getByFilter(final StudentFilter studentFilter) {
 		return studentDao.getByFilter(studentFilter);
 	}
 
 	@Transactional
 	@Override
-	public Result create(Student student) {
+	public Result create(final Student student) {
+		student.setRole(Role.STUDENT);
+		if (student.getEmail() == null || Objects.equals(student.getEmail(), "")) {
+			student.setEmail(userService.createEmail(student));
+		}
 		return studentDao.create(student);
 	}
 
 	@Transactional
 	@Override
-	public Result deleteStudent(Integer docket) {
+	public Result deleteStudent(final int docket) {
 		if(docket <= 0) {
 			return Result.ERROR_DOCKET_OUT_OF_BOUNDS;
 		}
@@ -89,34 +99,24 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public Result editGrade(Grade newGrade, BigDecimal oldGrade) {
+	public Result editGrade(final Grade newGrade, final BigDecimal oldGrade) {
 		return studentDao.editGrade(newGrade, oldGrade);
 	}
 
 	@Transactional
 	@Override
-	public Result update(Integer docket, Student student) {
-		final Integer dni = studentDao.getDniByDocket(docket);
-
-        if (dni == null)
-            return Result.STUDENT_NOT_EXISTS;
-
-		if (studentDao.hasAddress(dni)){
-            studentDao.updateAddress(dni, student);
-		} else {
-            studentDao.createAddress(dni, student);
-		}
-
-		return studentDao.update(docket, dni, student);
+	public Result update(final int docket, final Student student) {
+		return studentDao.update(student);
 	}
 
     @Override
-    public Integer getTotalPlanCredits() {
+    public int getTotalPlanCredits() {
         return courseService.getTotalPlanCredits();
     }
 
+	@Transactional
     @Override
-    public Integer getPassedCredits(Integer docket) {
+    public Integer getPassedCredits(final int docket) {
         final List<Course> list = (List<Course>) getApprovedCourses(docket);
 
         Integer amount = 0;
@@ -133,6 +133,7 @@ public class StudentServiceImpl implements StudentService {
 		return docket <= 0 ? null : studentDao.getGrades(docket);
 	}
 
+	@Transactional
 	@Override
 	public List<Course> getAvailableInscriptionCourses(final int docket, final CourseFilter courseFilter) {
 		if (docket <= 0) {
@@ -151,7 +152,7 @@ public class StudentServiceImpl implements StudentService {
 		}
 
 		Collection<Course> approvedCourses = getApprovedCourses(docket);
-		if (currentCourses != null) {
+		if (currentCourses != null && approvedCourses != null) {
 			courses.removeAll(approvedCourses);
 		}
 
@@ -189,7 +190,7 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean checkCorrelatives(Integer docket, Integer courseId) {
+	public boolean checkCorrelatives(final int docket, final int courseId) {
 		List<Integer> correlatives = courseService.getCorrelatives(courseId);
         List<Integer> approvedCourses = studentDao.getApprovedCoursesId(docket);
 
@@ -204,45 +205,73 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public List<List<Grade>> getTranscript(Integer docket) {
-		final List<List<Grade>> semesterList = new ArrayList<>();
-		final Integer totalSemesters = courseService.getTotalSemesters();
+	public Collection<Collection<TranscriptGrade>> getTranscript(final int docket) {
+		final List<Collection<TranscriptGrade>> semesters = new ArrayList<>();
+		final int tSemesters = courseService.getTotalSemesters();
+		int iSemester;
 
-
-		for (int i = 0; i < totalSemesters; i++) {
-            int semesterIndex = i + 1;
-
-            //Get all grades from that semester and add them
-            Student student = studentDao.getGrades(docket, semesterIndex);
-
-            semesterList.add(i, new ArrayList<>());
-
-            for (Grade grade : student.getGrades()) {
-                semesterList.get(i).add(grade);
-            }
+		// Load all semesters
+		for (int i = 0 ; i < tSemesters; i++) {
+			semesters.add(new LinkedList<>());
 		}
 
-        //Add courses that are being taken
-        final List<Course> coursesTaken = getStudentCourses(docket, null);
-        for (Course course : coursesTaken){
-            int semesterIndex = course.getSemester() - 1;
-            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).taking(true).build());
-        }
+		TranscriptGrade gradeForm;
 
-        //Complete with the rest of the courses that are not taken
-        final List<Course> availCourses = getAvailableInscriptionCourses(docket, null);
+		// add taken courses
+		final Student student = getGrades(docket);
+		final List<Grade> approved = student.getGrades();
+		Course course;
+		TranscriptGrade lastGrade;
+		Map<Integer, TranscriptGrade> lastGrades = new HashMap<>();
+		for (Grade g : approved) {
+			course = g.getCourse();
+			iSemester = course.getSemester() - 1;
+			gradeForm = new TranscriptGrade();
+			gradeForm.loadFromGrade(g);
+			if ((lastGrade = lastGrades.get(course.getId())) != null) {
+				if (lastGrade.getModified().compareTo(g.getModified()) < 0) {
+					// there is a new grade that can be edited
+					lastGrades.put(course.getId(), gradeForm);
+					gradeForm.setCanEdit(true);
+					lastGrade.setCanEdit(false);
+				}
+			} else {
+				// this is the first grade for this course
+				lastGrades.put(course.getId(), gradeForm);
+				gradeForm.setCanEdit(true);
+			}
+			semesters.get(iSemester).add(gradeForm);
+		}
 
-        for (Course course : availCourses){
-            int semesterIndex = course.getSemester() - 1;
-            semesterList.get(semesterIndex).add(new Grade.Builder(docket, course.getId(), null).courseName(course.getName()).build());
-        }
+		// add current courses
+		final List<Course> current = getStudentCourses(docket, null);
+		for (Course c : current) {
+			iSemester = c.getSemester() - 1;
+			gradeForm = new TranscriptGrade();
+			gradeForm.setDocket(docket);
+			gradeForm.setCourseId(c.getId());
+			gradeForm.setCourseName(c.getName());
+			gradeForm.setTaking(true);
+			semesters.get(iSemester).add(gradeForm);
+		}
 
-		return semesterList;
+		// add not taken courses
+		final List<Course> future = getAvailableInscriptionCourses(docket, null);
+		for (Course c : future) {
+			iSemester = c.getSemester() - 1;
+			gradeForm = new TranscriptGrade();
+			gradeForm.setDocket(docket);
+			gradeForm.setCourseId(c.getId());
+			gradeForm.setCourseName(c.getName());
+			semesters.get(iSemester).add(gradeForm);
+		}
+
+		return semesters;
 	}
 
 	@Transactional
 	@Override
-	public Result unenroll(final Integer studentDocket, final Integer courseId) {
+	public Result unenroll(final int studentDocket, final int courseId) {
 		if (studentDocket <= 0 ) {
 			return Result.ERROR_DOCKET_OUT_OF_BOUNDS;
 		}

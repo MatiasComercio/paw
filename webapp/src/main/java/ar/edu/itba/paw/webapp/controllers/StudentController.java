@@ -1,5 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
+import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
@@ -12,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Controller
 public class StudentController {
@@ -43,6 +44,7 @@ public class StudentController {
 
 	@Autowired
 	private HttpServletRequest request;
+	private Object semesters;
 
 	@ModelAttribute("section")
 	public String sectionManager(){
@@ -166,7 +168,7 @@ public class StudentController {
 
 		totalCredits = studentService.getTotalPlanCredits();
 		passedCredits = studentService.getPassedCredits(docket);
-		percentage = (!totalCredits.equals(0))? (passedCredits * 100)/totalCredits: 0;
+		percentage = (!totalCredits.equals(0)) ? (passedCredits * 100) / totalCredits : 0;
 
 		mav.addObject("section2", "grades");
 		mav.addObject("semesters", studentService.getTranscript(docket));
@@ -382,15 +384,27 @@ public class StudentController {
 		}
 		if (errors.hasErrors()){
 			LOGGER.warn("User {} could not add student due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
-			return addStudent(studentForm, null, loggedUser);
+			/* set alert */
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+			/* --------- */
+			return addStudent(studentForm, redirectAttributes, loggedUser);
 		}
 		else{
 			Student student = studentForm.build();
-			Result result = studentService.create(student);
-			if(!result.equals(Result.OK)){
+			Result result = null;
+			try {
+				result = studentService.create(student);
+			} catch (final DataIntegrityViolationException e) {
+				result = Result.USER_EXISTS_DNI;
+			}
+
+			if(result == null || !result.equals(Result.OK)){
 				LOGGER.warn("User {} could not add student with DNI {}, Result = {}", loggedUser.getDni(), student.getDni(), result);
 				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+				if (result != null) {
+					redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+				}
 				return addStudent(studentForm, redirectAttributes, loggedUser);
 			}
 			redirectAttributes.addFlashAttribute("alert", "success");
@@ -424,6 +438,8 @@ public class StudentController {
 
 			return new ModelAndView("redirect:/students/" + docket + "/grades");
 		}
+
+		gradeForm.setStudent(studentService.getByDocket(docket));
 
 		Grade newGrade = gradeForm.build();
 
@@ -470,6 +486,7 @@ public class StudentController {
 		/********************************/
 
 		/*gradeForm.setDocket(docket);*/
+		gradeForm.setStudent(studentService.getByDocket(docket));
 		Grade grade = gradeForm.build();
 		Result result = studentService.addGrade(grade);
 
@@ -490,7 +507,8 @@ public class StudentController {
 					Locale.getDefault()));
 		}
 
-		return new ModelAndView("redirect:/students/" + docket + "/courses");
+		final String referrer = request.getHeader("referer");
+		return new ModelAndView("redirect:" + referrer);
 	}
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
@@ -538,7 +556,9 @@ public class StudentController {
 			return new ModelAndView("redirect:/students");
 		}
 
-		studentForm.loadFromStudent(student);
+		if (!redirectAttributes.getFlashAttributes().containsKey("justCalled")) {
+			studentForm.loadFromStudent(student);
+		}
 
 		mav.addObject("docket", docket);
 		mav.addObject("student", student);
@@ -561,8 +581,21 @@ public class StudentController {
 		}
 		if (errors.hasErrors()){
 			LOGGER.warn("User {} could not edit student due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
+			/* set alert */
+			redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+			/* --------- */
+			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
 		}
+
+		final Student s = studentService.getByDocket(docket);
+
+		// Write data that was hidden at the form --> not submitted
+		studentForm.setId_seq(s.getId_seq());
+		studentForm.setAddress_id_seq(s.getAddress().getId_seq());
+		studentForm.setPassword(s.getPassword());
+		studentForm.setEmail(s.getEmail());
 
 		Student student = studentForm.build();
 		Result result = studentService.update(docket, student);
@@ -570,7 +603,9 @@ public class StudentController {
 		if(!result.equals(Result.OK)){
 			LOGGER.warn("User {} could not edit student, Result = {}", loggedUser.getDni(), result);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("message",
+					messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
 		}
 
@@ -582,4 +617,20 @@ public class StudentController {
 		final String referrer = request.getHeader("referer");
 		return new ModelAndView("redirect:" + referrer);
 	}
+
+//	private List<List<GradeForm>> getSemesters(final int docket) {
+//		final List<List<GradeForm>> semesters = new LinkedList<>();
+//		for (List<GradeForm> semester : semesters) {
+//			semester = new ArrayList<>();
+//		}
+//
+//		final Student student = studentService.getGrades(docket);
+//
+//		final List<Grade> approvedCourses = student.getGrades();
+//		for (Grade g : approvedCourses) {
+//
+//		}
+//
+//		return semesters;
+//	}
 }

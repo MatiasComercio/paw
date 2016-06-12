@@ -13,7 +13,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -21,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+//@Repository
 public class CourseJdbcDao implements CourseDao {
 
     private static final String TABLE_NAME = "course";
@@ -123,7 +122,7 @@ public class CourseJdbcDao implements CourseDao {
     }
 
     @Override
-    public Result update(Integer id, Course course) {
+    public Result update(final int id, final Course course) {
         try {
             jdbcTemplate.update("UPDATE course SET id = ?, name = ?, credits = ?, semester = ? WHERE id = ?;", course.getId(), course.getName(), course.getCredits(), course.getSemester(), id);
         } catch (DuplicateKeyException e){
@@ -139,14 +138,14 @@ public class CourseJdbcDao implements CourseDao {
 
 
     @Override
-    public List<Integer> getCorrelatives(Integer courseId){
+    public List<Integer> getCorrelatives(final int courseId){
         List<Integer> correlatives = jdbcTemplate.query("SELECT * FROM " + CORRELATIVE_TABLE_NAME + " WHERE " +
                 CORRELATIVE_COURSE_ID + " = ?", correlativeRowMapper, courseId);
         return correlatives;
     }
 
     @Override
-    public List<Course> getCorrelativeCourses(Integer courseId) {
+    public List<Course> getCorrelativeCourses(final int courseId) {
         String queryCorrelativeId = "SELECT " + CORRELATIVE_CORRELATIVE_ID + " FROM " +
                 CORRELATIVE_TABLE_NAME + " JOIN " + TABLE_NAME + " ON "
                 + CORRELATIVE_TABLE_NAME + "." + CORRELATIVE_COURSE_ID + " = " + TABLE_NAME + "." + ID_COLUMN + " WHERE "
@@ -161,14 +160,14 @@ public class CourseJdbcDao implements CourseDao {
     }
 
     @Override
-    public List<Integer> getUpperCorrelatives(Integer courseId){
+    public List<Integer> getUpperCorrelatives(final int courseId){
         List<Integer> correlatives = jdbcTemplate.query("SELECT * FROM " + CORRELATIVE_TABLE_NAME + " WHERE " +
                 CORRELATIVE_CORRELATIVE_ID + " = ?", upperCorrelativeRowMapper, courseId);
         return correlatives;
     }
 
     @Override
-    public Result deleteCorrelative(Integer courseId, Integer correlativeId) {
+    public Result deleteCorrelative(final int courseId, final int correlativeId) {
         try {
             int rowsAffected = jdbcTemplate.update("DELETE FROM " + CORRELATIVE_TABLE_NAME + " WHERE " + CORRELATIVE_COURSE_ID +
                     " = ? AND " + CORRELATIVE_CORRELATIVE_ID + " = ?" , courseId, correlativeId);
@@ -198,7 +197,7 @@ public class CourseJdbcDao implements CourseDao {
     }
 
     @Override
-    public Course getCourseStudents(int id) {
+    public Course getCourseStudents(final int id) {
 
         List<Course> courseList = jdbcTemplate.query("SELECT * FROM course WHERE id = ? LIMIT 1", courseRowMapper, id);
         Course course = courseList.isEmpty() ? null : courseList.get(0);
@@ -227,7 +226,7 @@ public class CourseJdbcDao implements CourseDao {
     }
 
     @Override
-    public boolean checkCorrelativityLoop(Integer id, Integer correlativeId) {
+    public boolean checkCorrelativityLoop(final int id, final int correlativeId) {
         //TODO: Change table columns name
         String query = "WITH RECURSIVE corr (cid, corrid) AS " +
                         "(SELECT course_id, correlative_id FROM correlative " +
@@ -252,7 +251,7 @@ public class CourseJdbcDao implements CourseDao {
     }
 
     @Override
-    public Result addCorrelativity(Integer id, Integer correlativeId) {
+    public Result addCorrelativity(final int id, final int correlativeId) {
         final Map<String, Object> args = new HashMap<>();
         args.put(CORRELATIVE_COURSE_ID, id);
         args.put(CORRELATIVE_CORRELATIVE_ID, correlativeId);
@@ -267,7 +266,7 @@ public class CourseJdbcDao implements CourseDao {
     }
 
     @Override
-    public boolean courseExists(Integer id) {
+    public boolean courseExists(final int id) {
         String query = "SELECT * FROM course WHERE id = ?";
         List<Integer> list = jdbcTemplate.query(query, (rs, rowNum) -> {
             return rs.getInt(ID_COLUMN);
@@ -280,7 +279,7 @@ public class CourseJdbcDao implements CourseDao {
                     http://docs.spring.io/spring/docs/current/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html#update-java.lang.String-java.lang.Object...-
                  */
     @Override
-    public Result deleteCourse(Integer id) {
+    public Result deleteCourse(final int id) {
 // +++xcheck: branch login has this; transcript had it deleted
 //        Object[] idWrapped = new Object[]{id};
 //        int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_INSCRIPTION, idWrapped, Integer.class);
@@ -305,7 +304,7 @@ public class CourseJdbcDao implements CourseDao {
     }
 
     @Override
-    public boolean inscriptionExists(Integer courseId){
+    public boolean inscriptionExists(final int courseId){
         Object[] idWrapped = new Object[]{courseId};
         int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_INSCRIPTION, idWrapped, Integer.class);
         if(courseNumber > 0) {
@@ -315,7 +314,7 @@ public class CourseJdbcDao implements CourseDao {
     }
 
     @Override
-    public boolean gradeExists(Integer courseId){
+    public boolean gradeExists(final int courseId){
         Object[] idWrapped = new Object[]{courseId};
         int courseNumber = jdbcTemplate.queryForObject(QUERY_COUNT_GRADES, idWrapped, Integer.class);
         if(courseNumber > 0) {
@@ -333,7 +332,7 @@ public class CourseJdbcDao implements CourseDao {
     }
 
     @Override
-    public Course getStudentsThatPassedCourse(int id) {
+    public Course getStudentsThatPassedCourse(final int id) {
         List<Course> courseList = jdbcTemplate.query(QUERY_GET_COURSE, courseRowMapper, id);
         Course course = courseList.isEmpty() ? null : courseList.get(0);
 

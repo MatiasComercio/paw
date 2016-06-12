@@ -1,19 +1,43 @@
 package ar.edu.itba.paw.models.users;
 
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.Role;
 
+import javax.persistence.*;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+@Entity
+@Table(name = "student")
 public class Student extends User {
-	private final int docket;
-	private final List<Grade> grades;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_docket_seq")
+	@SequenceGenerator(sequenceName = "student_docket_seq", name = "student_docket_seq", allocationSize = 1)
+	@Column(unique = true, insertable = false, updatable = false)
+	private int docket;
+
+	// TODO +++xcheck if grades are being delete on cascade
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
+	private List<Grade> grades;
+
+	@ManyToMany/*(cascade={CascadeType.PERSIST, CascadeType.MERGE})*/
+	@JoinTable(
+			name="inscription",
+			joinColumns=@JoinColumn(name="student_id"),
+			inverseJoinColumns=@JoinColumn(name="course_id")
+	)
+	private List<Course> studentCourses;
 
 	private Student(final Builder builder) {
 		super(builder);
 		this.docket = builder.docket;
 		this.grades = builder.grades;
+	}
+
+	protected Student() {
+		// just for Hibernate
 	}
 
 	public int getDocket() {
@@ -22,6 +46,10 @@ public class Student extends User {
 
 	public List<Grade> getGrades() {
 		return Collections.unmodifiableList(grades);
+	}
+
+	public List<Grade> getModifiableGrades() {
+		return grades;
 	}
 
 	@Override
@@ -50,13 +78,17 @@ public class Student extends User {
 				"} " + super.toString();
 	}
 
+	public List<Course> getStudentCourses() {
+		return studentCourses;
+	}
+
 	public static class Builder extends User.Builder<Student, Builder> {
 
 		private int docket;
 		private List<Grade> grades;
 
 		public Builder(final int docket, final int dni) {
-			super(dni);
+			super(dni, Role.STUDENT);
 			this.docket = docket;
 			this.grades = new LinkedList<>();
 		}
