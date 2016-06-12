@@ -418,15 +418,16 @@ public class StudentServiceImpl implements StudentService {
         final Student student = studentDao.getByDocket(docket);
 
         for (Grade grade1 : student.getGrades()) {
-            if (BigDecimal.valueOf(4).compareTo(grade1.getGrade()) <= 0 && grade1.getFinalGrades().size() < 3){
+            if (grade1.getCourse().equals(fi.getCourse()) && BigDecimal.valueOf(4).compareTo(grade1.getGrade()) <= 0 && grade1.getFinalGrades().size() < 3){
 
                 FinalGrade fg = new FinalGrade.Builder(null, grade).build();
                 studentDao.addFinalGrade(grade1, fg);
 
                 //Remove student inscription to final exam
                 fi.getStudents().remove(student);
+                return Result.OK;
             }
-            return Result.OK;
+
         }
 
         return Result.ERROR_UNKNOWN;
