@@ -79,4 +79,6 @@ public interface UserDao {
 	 *		else ERROR_UNKNOWN in other case;
 	 */
 	Result resetPassword(int dni);
+
+	boolean existsEmail(String email);
 }

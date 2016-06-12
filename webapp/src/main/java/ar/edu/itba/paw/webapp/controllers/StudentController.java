@@ -393,6 +393,16 @@ public class StudentController {
 		else{
 			Student student = studentForm.build();
 			Result result = null;
+
+//			for future use
+
+//			if (studentService.existsEmail(student.getEmail())) {
+//				LOGGER.warn("User {} could not add student with DNI {}", loggedUser.getDni(), student.getDni());
+//				redirectAttributes.addFlashAttribute("alert", "danger");
+//				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("USER_EXISTS_EMAIL", null, Locale.getDefault()));
+//				return addStudent(studentForm, redirectAttributes, loggedUser);
+//			}
+
 			try {
 				result = studentService.create(student);
 			} catch (final DataIntegrityViolationException e) {
@@ -591,6 +601,8 @@ public class StudentController {
 
 		final Student s = studentService.getByDocket(docket);
 
+
+
 		// Write data that was hidden at the form --> not submitted
 		studentForm.setId_seq(s.getId_seq());
 		studentForm.setAddress_id_seq(s.getAddress().getId_seq());
@@ -598,6 +610,17 @@ public class StudentController {
 		studentForm.setEmail(s.getEmail());
 
 		Student student = studentForm.build();
+
+//		for future use
+
+//		if (studentService.existsEmail(student.getEmail())) {
+//			LOGGER.warn("User {} could not add student with DNI {}", loggedUser.getDni(), student.getDni());
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("USER_EXISTS_EMAIL", null, Locale.getDefault()));
+//			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
+//		}
+
+
 		Result result = studentService.update(docket, student);
 
 		if(!result.equals(Result.OK)){

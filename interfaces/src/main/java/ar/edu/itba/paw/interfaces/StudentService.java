@@ -162,4 +162,6 @@ public interface StudentService {
 	 * @return Integer indicating the amount of credits passed.
      */
 	Integer getPassedCredits(int docket);
+
+	boolean existsEmail(String email);
 }

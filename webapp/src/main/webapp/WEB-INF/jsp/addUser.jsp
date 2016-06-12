@@ -121,121 +121,141 @@
                         (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
                     </div>
 
-                    <!-- User Data -->
-                    <div class="form-group col-xs-12">
-                        <form:label for="dni" path="dni">
-                            <span></span><spring:message code="dni"/>
-                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
-                        </form:label>
-                        <form:input type="text" class="form-control" id="dni" path="dni" readonly="${dniDisabled}"/>
-                        <form:errors path="dni" cssClass="text-danger bg-danger" element="div"/>
-                    </div>
-                    <div class="form-group col-xs-12">
-                        <form:label for="firstName" path="firstName">
-                            <spring:message code="firstName"/>
-                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
-                        </form:label>
-                        <form:input type="text" class="form-control" id="firstName" path="firstName"/>
-                        <form:errors path="firstName" cssClass="text-danger bg-danger" element="div"/>
-                    </div>
-                    <div class="form-group col-xs-12">
-                        <form:label for="lastName" path="lastName">
-                            <spring:message code="lastName"/>
-                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
-                        </form:label>
-                        <form:input type="text" class="form-control" id="lastName" path="lastName"/>
-                        <form:errors path="lastName" cssClass="text-danger bg-danger" element="div"/>
-                    </div>
-                    <div class ="form-group col-xs-12">
-                        <form:label path="genre"><spring:message code="genre"/></form:label>
-                        <div class="form-group">
-                            <label class="radio-inline">
-                                <form:radiobutton path="genre" value="M" /> <spring:message code="M"/>
-                            </label>
-                            <label class="radio-inline">
-                                <form:radiobutton path="genre" value="F" /> <spring:message code="F"/>
-                            </label>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="row">
+                            <!-- User Data -->
+                            <div class="form-group col-xs-12">
+                                <form:label for="dni" path="dni">
+                                    <span></span><spring:message code="dni"/>
+                                    (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
+                                </form:label>
+                                <form:input type="text" class="form-control" id="dni" path="dni" readonly="${dniDisabled}"/>
+                                <form:errors path="dni" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-6">
+                                <form:label for="firstName" path="firstName">
+                                    <spring:message code="firstName"/>
+                                    (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
+                                </form:label>
+                                <form:input type="text" class="form-control" id="firstName" path="firstName"/>
+                                <form:errors path="firstName" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-6">
+                                <form:label for="lastName" path="lastName">
+                                    <spring:message code="lastName"/>
+                                    (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
+                                </form:label>
+                                <form:input type="text" class="form-control" id="lastName" path="lastName"/>
+                                <form:errors path="lastName" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                            <div class="form-group col-xs-12">
+                                <form:label for="birthday" path="birthday">
+                                    <spring:message code="birthday"/>
+                                </form:label>
+                                <spring:message code="birthdayPlaceholder" var="birthdayPlaceholder"/>
+                                <form:input id="birthday" type="text" class="form-control" placeholder="${birthdayPlaceholder}" path="birthday"/>
+                                <form:errors path="birthday" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                            <%-- for future use --%>
+<%--                            <div class="form-group col-xs-12">
+                                <form:label for="email" path="email">
+                                    <spring:message code="email"/>
+                                </form:label>
+                                <form:input type="text" class="form-control" id="email" path="email"/>
+                                <form:errors path="email" cssClass="text-danger bg-danger" element="div"/>
+                            </div>--%>
+                            <div class ="form-group col-xs-12 col-sm-6">
+                                <form:label path="genre"><spring:message code="genre"/></form:label>
+                                <div class="form-group">
+                                    <label class="radio-inline">
+                                        <form:radiobutton path="genre" value="M" /> <spring:message code="M"/>
+                                    </label>
+                                    <label class="radio-inline">
+                                        <form:radiobutton path="genre" value="F" /> <spring:message code="F"/>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-6">
+                                <form:label for="telephone" path="telephone"><spring:message code="telephone"/></form:label>
+                                <form:input type="text" class="form-control" id="telephone" path="telephone"/>
+                                <form:errors path="telephone" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group col-xs-12">
-                        <form:label for="birthday" path="birthday">
-                            <spring:message code="birthday"/>
-                        </form:label>
-                        <spring:message code="birthdayPlaceholder" var="birthdayPlaceholder"/>
-                        <form:input id="birthday" type="text" class="form-control" placeholder="${birthdayPlaceholder}" path="birthday"/>
-                        <form:errors path="birthday" cssClass="text-danger bg-danger" element="div"/>
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="row">
+                            <!-- Address Data -->
+                            <div class="form-group col-xs-12">
+                                <form:label for="country" path="country">
+                                    <spring:message code="country"/>
+                                    (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
+                                </form:label>
+                                <form:input type="text" class="form-control" id="country" path="country"/>
+                                <form:errors path="country" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-6">
+                                <form:label for="city" path="city">
+                                    <spring:message code="city"/>
+                                    (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
+                                </form:label>
+                                <form:input type="text" class="form-control" id="city" path="city"/>
+                                <form:errors path="city" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-6">
+                                <form:label for="neighborhood" path="neighborhood">
+                                    <spring:message code="neighbourhood"/>
+                                    (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
+                                </form:label>
+                                <form:input type="text" class="form-control" id="neighborhood" path="neighborhood"/>
+                                <form:errors path="neighborhood" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-6">
+                                <form:label for="street" path="street">
+                                    <spring:message code="street"/>
+                                    (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
+                                </form:label>
+                                <form:input type="text" class="form-control" id="street" path="street"/>
+                                <form:errors path="street" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-6">
+                                <form:label for="number" path="number">
+                                    <spring:message code="number"/>
+                                    (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
+                                </form:label>
+                                <form:input type="text" class="form-control" id="number" path="number"/>
+                                <form:errors path="number" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-4">
+                                <form:label for="floor" path="floor"><spring:message code="floor"/></form:label>
+                                <form:input type="text" class="form-control" id="floor" path="floor"/>
+                                <form:errors path="floor" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-4">
+                                <form:label for="door" path="door"><spring:message code="door"/></form:label>
+                                <form:input type="text" class="form-control" id="door" path="door"/>
+                                <form:errors path="door" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-4">
+                                <form:label for="zipCode" path="zipCode"><spring:message code="zipCode"/></form:label>
+                                <form:input type="text" class="form-control" id="zipCode" path="zipCode"/>
+                                <form:errors path="zipCode" cssClass="text-danger bg-danger" element="div"/>
+                            </div>
+                        </div>
                     </div>
-                    <!-- Address Data -->
-                    <div class="form-group col-xs-12">
-                        <form:label for="country" path="country">
-                            <spring:message code="country"/>
-                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
-                        </form:label>
-                        <form:input type="text" class="form-control" id="country" path="country"/>
-                        <form:errors path="country" cssClass="text-danger bg-danger" element="div"/>
-                    </div>
-                    <div class="form-group col-xs-12">
-                        <form:label for="city" path="city">
-                            <spring:message code="city"/>
-                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
-                        </form:label>
-                        <form:input type="text" class="form-control" id="city" path="city"/>
-                        <form:errors path="city" cssClass="text-danger bg-danger" element="div"/>
-                    </div>
-                    <div class="form-group col-xs-12">
-                        <form:label for="neighborhood" path="neighborhood">
-                            <spring:message code="neighbourhood"/>
-                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
-                        </form:label>
-                        <form:input type="text" class="form-control" id="neighborhood" path="neighborhood"/>
-                        <form:errors path="neighborhood" cssClass="text-danger bg-danger" element="div"/>
-                    </div>
-                    <div class="form-group col-xs-12">
-                        <form:label for="street" path="street">
-                            <spring:message code="street"/>
-                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
-                        </form:label>
-                        <form:input type="text" class="form-control" id="street" path="street"/>
-                        <form:errors path="street" cssClass="text-danger bg-danger" element="div"/>
-                    </div>
-                    <div class="form-group col-xs-12">
-                        <form:label for="number" path="number">
-                            <spring:message code="number"/>
-                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)
-                        </form:label>
-                        <form:input type="text" class="form-control" id="number" path="number"/>
-                        <form:errors path="number" cssClass="text-danger bg-danger" element="div"/>
-                    </div>
-                    <div class="form-group col-xs-12">
-                        <form:label for="floor" path="floor"><spring:message code="floor"/></form:label>
-                        <form:input type="text" class="form-control" id="floor" path="floor"/>
-                        <form:errors path="floor" cssClass="text-danger bg-danger" element="div"/>
-                    </div>
-                    <div class="form-group col-xs-12">
-                        <form:label for="door" path="door"><spring:message code="door"/></form:label>
-                        <form:input type="text" class="form-control" id="door" path="door"/>
-                        <form:errors path="door" cssClass="text-danger bg-danger" element="div"/>
-                    </div>
-                    <div class="form-group col-xs-12">
-                        <form:label for="telephone" path="telephone"><spring:message code="telephone"/></form:label>
-                        <form:input type="text" class="form-control" id="telephone" path="telephone"/>
-                        <form:errors path="telephone" cssClass="text-danger bg-danger" element="div"/>
-                    </div>
-                    <div class="form-group col-xs-12">
-                        <form:label for="zipCode" path="zipCode"><spring:message code="zipCode"/></form:label>
-                        <form:input type="text" class="form-control" id="zipCode" path="zipCode"/>
-                        <form:errors path="zipCode" cssClass="text-danger bg-danger" element="div"/>
-                    </div>
-                    <div class="col-sm-4 hidden-xs"></div>
-                    <div class="col-xs-6 col-sm-2 text-center">
-                        <button id="cancelButton" class="btn btn-default center-block" role="button">
-                            <spring:message code="cancel"/>
-                        </button>
-                    </div>
-                    <div class="col-xs-6 col-sm-2 text-center">
-                        <button type="submit" class="btn btn-info center-block">
-                                ${formButton}
-                        </button>
+                    <div class="col-sm-6 hidden-xs"></div>
+                    <div class="col-xs-12 col-sm-6 addAdminFormButtons">
+                        <div class="row">
+                            <div class="col-xs-6 text-center">
+                                <button type="submit" class="btn btn-info center-block fullWidthButton">
+                                        ${formButton}
+                                </button>
+                            </div>
+                            <div class="col-xs-6 text-center">
+                                <button id="cancelButton" class="btn btn-default center-block fullWidthButton" role="button">
+                                    <spring:message code="cancel"/>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <!-- End Data Input -->
                 </form:form>
