@@ -172,7 +172,7 @@
                                     </c:choose>
                                     </td>
                                     <td>
-                                        <a class="btn btn-default" href="<c:url value="#" />" role="button">
+                                        <a class="btn btn-default" href="<c:url value="/courses/final_inscription/${finalInscription.id}/info" />" role="button">
                                             <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="information"/>
                                         </a>
                                     <td>

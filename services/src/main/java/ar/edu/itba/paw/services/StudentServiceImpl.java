@@ -402,4 +402,12 @@ public class StudentServiceImpl implements StudentService {
         return false;
 
     }
+
+    @Transactional
+    @Override
+    public Set<Student> getFinalStudents(int id) {
+        Set<Student> set = new HashSet<>();
+        set.addAll(studentDao.getFinalInscription(id).getStudents());
+        return set;
+    }
 }

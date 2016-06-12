@@ -534,12 +534,13 @@ public class CourseController {
     @RequestMapping(value = "/courses/final_inscription/{id}/info", method = RequestMethod.GET)
     public ModelAndView viewFinalInscription(
             @PathVariable("id") final int id,
-            final BindingResult errors,
             final RedirectAttributes redirectAttributes,
             @ModelAttribute("user") UserSessionDetails loggedUser) {
 
         final ModelAndView mav = new ModelAndView("viewFinalInscription");
 
+        mav.addObject("studentsTakingFinal", courseService.getFinalStudents(id));
+        mav.addObject("finalInscription", courseService.getFinalInscription(id));
 
         return mav;
     }

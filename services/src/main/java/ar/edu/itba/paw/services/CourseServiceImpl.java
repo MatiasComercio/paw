@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -283,5 +284,15 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<FinalInscription> getOpenFinalInsciptions(Integer id) {
         return courseDao.getOpenFinalInsciptions(id);
+    }
+
+    @Override
+    public Set<Student> getFinalStudents(int id) {
+        return  studentService.getFinalStudents(id);
+    }
+
+    @Override
+    public FinalInscription getFinalInscription(int id) {
+        return studentService.getFinalInscription(id);
     }
 }

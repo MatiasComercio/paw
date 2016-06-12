@@ -12,6 +12,7 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface StudentService {
 
@@ -208,4 +209,11 @@ public interface StudentService {
      * @return
      */
     Result deleteStudentFinalInscription(int docket, int finalInscriptionId);
+
+    /**
+     * Get the student's inscribed in a FinalInscription
+     * @param id The FinalInscription's id
+     * @return The list of students
+     */
+    Set<Student> getFinalStudents(int id);
 }
