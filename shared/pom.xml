@@ -5,9 +5,8 @@
   <parent>
     <groupId>ar.edu.itba.paw</groupId>
     <artifactId>paw</artifactId>
-    <version>1.1.0.RELEASE</version>
+    <version>1.2.0.RELEASE</version>
   </parent>
-  <groupId>ar.edu.itba.paw</groupId>
   <artifactId>shared</artifactId>
   <name>shared</name>
   <url>http://maven.apache.org</url>
