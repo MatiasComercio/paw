@@ -17,8 +17,8 @@
             </form:form>
             <%-- /Confirmation Form--%>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="cancel"/></button>
                 <button id="enableInscriptionsConfirmAction" type="button" class="btn btn-info"><spring:message code="confirm"/></button>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="cancel"/></button>
             </div>
         </div>
     </div>

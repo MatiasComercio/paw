@@ -56,10 +56,10 @@
                 <%-- /Inscription Form--%>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="cancel"/></button>
                 <c:if test="${subsection_enroll}">
                     <button id="enrollFormConfirmAction" type="button" class="btn btn-info"><spring:message code="confirm"/></button>
                 </c:if>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="cancel"/></button>
                 <c:if test="${subsection_courses}">
                     <button id="enrollFormConfirmAction" type="button" class="btn btn-danger"><spring:message code="confirm"/></button>
                 </c:if>

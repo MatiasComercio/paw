@@ -59,15 +59,15 @@
 						<form:input type="password" path="repeatNewPassword" class="form-control"/>
 						<form:errors path="repeatNewPassword" cssClass="text-danger bg-danger" element="div"/>
 					</div>
-					<div class="col-sm-4 hidden-xs"></div>
-					<div class="col-xs-6 col-sm-2 text-center">
-						<button id="cancelButton" class="btn btn-default center-block">
-							<spring:message code="cancel"/>
+					<div class="col-sm-2 hidden-xs"></div>
+					<div class="col-xs-6 col-sm-4 text-center">
+						<button type="submit" class="btn btn-info center-block fullWidthButton">
+							<spring:message code="changePassword"/>
 						</button>
 					</div>
-					<div class="col-xs-6 col-sm-2 text-center">
-						<button type="submit" class="btn btn-info center-block">
-							<spring:message code="changePassword"/>
+					<div class="col-xs-6 col-sm-4 text-center">
+						<button id="cancelButton" class="btn btn-default center-block fullWidthButton">
+							<spring:message code="cancel"/>
 						</button>
 					</div>
 				</form:form>
