@@ -27,4 +27,10 @@ public class IndexController {
 	public ModelAndView logout() {
 		return new ModelAndView("login?logout");
 	}
+
+	// for maintenance
+//	@RequestMapping("/inMaintenance")
+//	public ModelAndView inMaintenance() {
+//		return new ModelAndView("inMaintenance");
+//	}
 }
