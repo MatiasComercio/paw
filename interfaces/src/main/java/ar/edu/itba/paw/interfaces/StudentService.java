@@ -216,4 +216,13 @@ public interface StudentService {
      * @return The list of students
      */
     Set<Student> getFinalStudents(int id);
+
+    /**
+     * Add a final grade
+     * @param id The FinalInscriptionId
+     * @param docket The student's docket
+     * @param grade The grade
+     * @return
+     */
+    Result addFinalGrade(Integer id, Integer docket, BigDecimal grade);
 }

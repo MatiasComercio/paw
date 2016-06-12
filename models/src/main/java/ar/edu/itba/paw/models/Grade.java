@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.users.Student;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -90,7 +89,7 @@ public class Grade {
 
 
     public List<FinalGrade> getFinalGrades() {
-        return Collections.unmodifiableList(finalGrades);
+        return finalGrades;
     }
 
     public void setFinalGrades(List<FinalGrade> finalGrades) {

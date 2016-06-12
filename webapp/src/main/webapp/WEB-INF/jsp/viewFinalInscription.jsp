@@ -13,6 +13,7 @@
 
     <jsp:include page="base/sections.jsp" />
     <jsp:include page="base/nav.jsp" />
+    <jsp:include page="template/finalGradeForm.jsp" />
 
     <div id="page-wrapper">
         <div class="container-fluid">
@@ -115,6 +116,8 @@
                                         data-finalInscriptionId="${ finalInscription.id }"
                                         data-firstName="${student.firstName}"
                                         data-lastName="${student.lastName}"
+                                        data-course_id="${finalInscription.course.id}"
+                                        data-course_name="${finalInscription.course.name }"
                                         data-toggle="modal"
                                         data-target="#finalGradeFormConfirmationModal">
                                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="rate"/>
@@ -137,6 +140,43 @@
 </div>
 <!-- Scripts -->
 <jsp:include page="base/scripts.jsp" />
+<script>
+    $(document).ready(function() {
+        function loadFinalGradeForm(nameAttr) {
+            /* Grade Form Action Sequence */
+            var gradeFormButton = $("[name='" + nameAttr + "']");
+
+            gradeFormButton.on("click", function () {
+                var docket = $(this).data("docket");
+                var courseId = $(this).data("course_id");
+                var courseName = $(this).data("course_name");
+                var url = $(this).data("url");
+                var gradeForm = $("#final_grade_form");
+                gradeForm.find("input[name='docket']").val(docket);
+                gradeForm.find("input[name='courseId']").val(courseId);
+                gradeForm.find("input[name='courseName']").val(courseName);
+                gradeForm.attr("action", url);
+
+
+            });
+
+            $("#finalGradeFormConfirmAction").on("click", function () {
+                $('#finalGradeFormConfirmationModal').modal('hide');
+                $("#final_grade_form").submit();
+            });
+
+            /* Remove focus on the modal trigger button */
+            $('#finalGradeFormConfirmationModal').on('show.bs.modal', function (e) {
+                gradeFormButton.one('focus', function (e) {
+                    $(this).blur();
+                });
+            });
+            /* /Grade Form Action Sequence */
+        }
+
+        loadFinalGradeForm("finalGradeButton");
+    });
+</script>
 
 </body>
 </html>

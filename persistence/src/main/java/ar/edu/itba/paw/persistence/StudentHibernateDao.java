@@ -136,13 +136,12 @@ public class StudentHibernateDao implements StudentDao {
 	@Override
 	public Result addFinalGrade(final Grade grade, final FinalGrade finalGrade) {
 		//TODO: Test this
+        LOGGER.info("Will try to persist {}", finalGrade);
 		em.persist(finalGrade);
 		LOGGER.debug("[addFinalGrade] - {} - {}", grade, finalGrade);
 
-		List<FinalGrade> list = new ArrayList<>();
-		list.addAll(grade.getFinalGrades());
-		list.add(finalGrade);
-		em.merge(grade);
+		grade.getFinalGrades().add(finalGrade);
+		//em.merge(grade);
 
 		return Result.OK;
 	}
