@@ -283,6 +283,7 @@ public class StudentHibernateDao implements StudentDao {
 	}*/
 
     @Override
+    //Return if the docket's student can take a final exam;
     public boolean isApproved(int docket, int courseId) {
         //TODO: This is doing 1 query per loop: Improve eficiency. (Use student's grades??)
         TypedQuery<Grade> query = em.createQuery("from Grade as gr where gr.course.id=:id and gr.student.docket = :docket" +
@@ -291,14 +292,23 @@ public class StudentHibernateDao implements StudentDao {
         query.setParameter("docket", docket);
         List<Grade> approvedGrades = query.getResultList();
 
+        //TODO:Improve this
         for (Grade grade : approvedGrades) {
             if (grade.getFinalGrades().size() == MAX_FINALS_CHANCES){
+
+                //for (FinalGrade finalGrade : grade.getFinalGrades()) {
+                //    if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0) {
+                //        return true;
+                //    }
+                //}
+                //return false;
+
+            } else {
                 for (FinalGrade finalGrade : grade.getFinalGrades()) {
                     if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0) {
-                        return true;
-                    }
+                            return false;
+                        }
                 }
-            } else {
                 return true;
             }
         }
