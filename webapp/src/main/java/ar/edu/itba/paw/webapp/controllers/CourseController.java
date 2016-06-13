@@ -1,15 +1,16 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.CourseService;
-
+import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.*;
-import ar.edu.itba.paw.shared.CourseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -48,6 +52,10 @@ public class CourseController {
 
 	@Autowired
 	private CourseService courseService;
+
+    //TODO:Change
+    @Autowired
+    private StudentService studentService;
 
 	@ModelAttribute("section")
 	public String sectionManager(){
@@ -125,6 +133,7 @@ public class CourseController {
 		mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
 		mav.addObject("subsection_delete_correlative", true);
 		mav.addObject("correlatives", courseService.getCorrelativesByFilter(id, null));
+		mav.addObject("finalInscriptions", courseService.getOpenFinalInsciptions(id));
 		return mav;
 	}
 
@@ -575,5 +584,69 @@ public class CourseController {
 		}
 		return course;
 	}
+
+    @RequestMapping(value = "/courses/final_inscription/{id}/info", method = RequestMethod.GET)
+    public ModelAndView viewFinalInscription(
+            @PathVariable("id") final int id, Model model,
+            final RedirectAttributes redirectAttributes,
+            @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+        final ModelAndView mav = new ModelAndView("viewFinalInscription");
+
+        if (!model.containsAttribute("gradeForm")) {
+            model.addAttribute("gradeForm", new GradeForm());
+        }
+
+        mav.addObject("studentsTakingFinal", courseService.getFinalStudents(id));
+        mav.addObject("finalInscription", courseService.getFinalInscription(id));
+        mav.addObject("finalGradeFormAction", "/courses/final_inscription/" + id + "/info");
+        return mav;
+    }
+
+    @RequestMapping(value = "/courses/final_inscription/{id}/info", method = RequestMethod.POST)
+    public ModelAndView qualifyFinalInscription(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
+                                  @PathVariable Integer id, RedirectAttributes redirectAttributes,
+                                  @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+        if (!loggedUser.hasAuthority("ADD_GRADE")
+                || !loggedUser.hasAuthority("ADMIN")) {
+            LOGGER.warn("User {} tried to ADD ginal grades of student with DNI {} and doesn't have ADD_GRADE authority [POST]", loggedUser.getDni());
+            return new ModelAndView(UNAUTHORIZED);
+        }
+
+        if (errors.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
+            redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            //TODO:Change this
+            redirectAttributes.addFlashAttribute("message",
+                    messageSource.getMessage("editGrade_fail",
+                            new Object[] {},
+                            Locale.getDefault()));
+
+
+            return new ModelAndView("/courses/final_inscription/" + id + "/info");
+        }
+
+       // gradeForm.setStudent(studentService.getByDocket(docket));
+
+        Grade newGrade = gradeForm.build();
+
+        Result result = studentService.addFinalGrade(id, gradeForm.getDocket(), gradeForm.getGrade());
+        if(!result.equals(Result.OK)){
+            LOGGER.warn("User {} could not add final grade, Result = {}", loggedUser.getDni(), result);
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+            return new ModelAndView("redirect:/courses/final_inscription/" + id + "/info");
+        }
+
+        redirectAttributes.addFlashAttribute("alert", "success");
+        redirectAttributes.addFlashAttribute("message",
+                messageSource.getMessage("editGrade_success",
+                        new Object[] {},
+                        Locale.getDefault()));
+
+        return new ModelAndView("redirect:/courses/final_inscription/" + id + "/info");
+    }
 
 }

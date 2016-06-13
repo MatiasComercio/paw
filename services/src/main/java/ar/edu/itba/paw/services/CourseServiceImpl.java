@@ -4,6 +4,7 @@ import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
@@ -12,9 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,9 +38,17 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Result update(final int id, final Course course){
 
-        List<Course> correlatives = getCorrelativesByFilter(id, null);
+        final List<Course> correlatives = getCorrelativesByFilter(id, null);
+        final Course c = courseDao.getById(id);
+
         for (Course correlative : correlatives){
             if (correlative.getSemester() >= course.getSemester()) {
+                return Result.CORRELATIVE_SEMESTER_INCOMPATIBILITY;
+            }
+        }
+
+        for (Course course1 : c.getUpperCorrelatives()) {
+            if (course1.getSemester() <= course.getSemester()){
                 return Result.CORRELATIVE_SEMESTER_INCOMPATIBILITY;
             }
         }
@@ -278,5 +287,20 @@ public class CourseServiceImpl implements CourseService {
         course.setApprovedStudents(st);
 
         return course;
+    }
+
+    @Override
+    public List<FinalInscription> getOpenFinalInsciptions(Integer id) {
+        return courseDao.getOpenFinalInsciptions(id);
+    }
+
+    @Override
+    public Set<Student> getFinalStudents(int id) {
+        return  studentService.getFinalStudents(id);
+    }
+
+    @Override
+    public FinalInscription getFinalInscription(int id) {
+        return studentService.getFinalInscription(id);
     }
 }

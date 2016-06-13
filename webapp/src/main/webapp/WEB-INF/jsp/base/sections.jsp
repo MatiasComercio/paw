@@ -142,6 +142,7 @@ That's why we are usig <%@include ...%>--%>
                 </c:set>
             </c:when>
 
+
             <c:otherwise>
                 <jsp:include page="../template/studentActionsPanel.jsp" />
                 <jsp:include page="../template/resetPasswordForm.jsp" />
@@ -166,6 +167,7 @@ That's why we are usig <%@include ...%>--%>
 
         <c:if test="${not empty section2}">
             <c:choose>
+
                 <c:when test="${section2 eq 'info'}">
                     <c:set var="infoActive" value="active" scope="request"/>
                 </c:when>
@@ -186,6 +188,10 @@ That's why we are usig <%@include ...%>--%>
                     <c:set var="coursesStudentActive" value="active" scope="request"/>
 
 
+                </c:when>
+
+                <c:when test="${section2 eq 'final_inscription'}">
+                    <c:set var="finalInscriptionActive" value="active" scope="request"/>
                 </c:when>
 
                 <c:when test="${section2 eq 'grades'}">

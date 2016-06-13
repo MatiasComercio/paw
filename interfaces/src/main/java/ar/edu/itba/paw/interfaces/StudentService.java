@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.TranscriptGrade;
 import ar.edu.itba.paw.models.users.Student;
@@ -11,6 +12,7 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface StudentService {
 
@@ -143,6 +145,16 @@ public interface StudentService {
      */
 	boolean checkCorrelatives(int docket, int courseId);
 
+    /**
+     * Check if the student corresponding to docket has approved all the necessary
+     * courses and finals to take the final exame of the course corresponding to
+     * the courseId
+     * @param docket The docket of the student
+     * @param courseId The id of the course
+     * @return True if the student can take de course, False if not.
+     */
+    boolean checkFinalCorrelatives(int docket, int courseId);
+
 	/**
 	 * Get the representation of a student's transcript
 	 * @param docket
@@ -163,5 +175,58 @@ public interface StudentService {
      */
 	Integer getPassedCredits(int docket);
 
+	/**
+	 * Get the final exams inscriptions available for the given student
+	 * @param docket The student's docket.
+	 * @return The final inscriptions
+     */
+	List<FinalInscription> getAvailableFinalInscriptions(int docket);
+
+	/**
+	 * Get a final inscription by it's id
+	 * @param id The given's final inscription's id
+	 * @return The Final Inscription
+     */
+	FinalInscription getFinalInscription(int id);
+
+	/**
+	 * Adds the given student to the Final Inscription instance
+	 * @param docket The student's docket
+     */
+	Result addStudentFinalInscription(int docket, int finalInscriptionId);
+
+	/**
+	 * Get the final exams inscriptions that a student is taking
+	 * @param docket The student's docket.
+	 * @return The final inscriptions
+	 */
+	List<FinalInscription> getFinalInscriptionsTaken(int docket);
+
+    /**
+     * Remove the given student from the Final Inscription instance
+     * @param docket
+     * @param finalInscriptionId
+     * @return
+     */
+    Result deleteStudentFinalInscription(int docket, int finalInscriptionId);
+
+    /**
+     * Get the student's inscribed in a FinalInscription
+     * @param id The FinalInscription's id
+     * @return The list of students
+     */
+    Set<Student> getFinalStudents(int id);
+
+    /**
+     * Add a final grade
+     * @param id The FinalInscriptionId
+     * @param docket The student's docket
+     * @param grade The grade
+     * @return
+     */
+    Result addFinalGrade(Integer id, Integer docket, BigDecimal grade);
+
+
 	boolean existsEmail(String email);
+
 }

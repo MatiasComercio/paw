@@ -3,8 +3,9 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalGrade;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Grade;
-import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -17,17 +18,13 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Repository
 public class StudentHibernateDao implements StudentDao {
-	private static final Logger LOGGER = LoggerFactory.getLogger(StudentHibernateDao.class);
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(StudentHibernateDao.class);
 	private static final String GET_ALL_STUDENTS = "from Student";
 	private static final String GET_BY_DOCKET = "from Student as s where s.docket = :docket";
 	private static final String GET_BY_DNI = "from Student as s where s.dni = :dni";
@@ -39,13 +36,15 @@ public class StudentHibernateDao implements StudentDao {
 	private static final int ONE = 1;
 	private static final String DOCKET_PARAM = "docket";
 	private static final String DNI_PARAM = "dni";
-//	private static final String GET_GRADES = "from Grade as g where g.studentDocket = :docket";
+    private static final String GET_GRADES = "from Grade as g where g.studentDocket = :docket";
+
+    private static final Integer MAX_FINALS_CHANCES = 3;
 
 	@PersistenceContext
 	private EntityManager em;
 
-	@Autowired
-	private CourseDao courseDao;
+    @Autowired
+    private CourseDao courseDao;
 
 	@Override
 	public Student getByDocket(final int docket) {
@@ -134,6 +133,19 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
+	public Result addFinalGrade(final Grade grade, final FinalGrade finalGrade) {
+		//TODO: Test this
+        LOGGER.info("Will try to persist {}", finalGrade);
+		em.persist(finalGrade);
+		LOGGER.debug("[addFinalGrade] - {} - {}", grade, finalGrade);
+
+		grade.getFinalGrades().add(finalGrade);
+		//em.merge(grade);
+
+		return Result.OK;
+	}
+
+	@Override
 	public Result editGrade(final Grade newGrade, final BigDecimal oldGrade) {
 		em.merge(newGrade);
 //		final CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -166,6 +178,8 @@ public class StudentHibernateDao implements StudentDao {
 		return Result.OK;
 	}
 
+    //Modified to return courses that are approved and less than 3 finals are taken, or there's a final passed
+    //TODO:TEST
 	@Override
 	public Collection<Course> getApprovedCourses(final int docket) {
 		// +++xcheck why this does not work; figure it out, and replace the code below with this commented one
@@ -176,7 +190,6 @@ public class StudentHibernateDao implements StudentDao {
 //
 //		final List<Grade> approvedGrades = query.getResultList();
 //
-//		//TODO: Improve efficiency
 //		for (Grade grade : approvedGrades) {
 //			courses.add(grade.getCourse());
 //		}
@@ -189,20 +202,38 @@ public class StudentHibernateDao implements StudentDao {
 		final List<Course> courses = new LinkedList<>();
 		for (Grade grade : student.getGrades()) {
 			if (BigDecimal.valueOf(4).compareTo(grade.getGrade()) <= 0) {
-				courses.add(grade.getCourse());
+                if (grade.getFinalGrades().size() == MAX_FINALS_CHANCES){
+                    for (FinalGrade finalGrade : grade.getFinalGrades()) {
+                        if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0){
+                            courses.add(grade.getCourse());
+                        }
+                    }
+                } else {
+                    courses.add(grade.getCourse());
+                }
 			}
 		}
 
 		return courses;
 	}
 
+    //Modified to return courses that are approved and less than 3 finals are taken, or there's a final passed
+    //TODO:TEST
 	@Override
 	public List<Integer> getApprovedCoursesId(final int docket) {
 		final Student student = getByDocket(docket);
 		final List<Integer> coursesId = new LinkedList<>();
 		for (Grade grade : student.getGrades()) {
 			if (BigDecimal.valueOf(4).compareTo(grade.getGrade()) <= 0) {
-				coursesId.add(grade.getCourse().getId());
+                if (grade.getFinalGrades().size() == MAX_FINALS_CHANCES){
+                    for (FinalGrade finalGrade : grade.getFinalGrades()) {
+                        if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0){
+                            coursesId.add(grade.getCourse().getId());
+                        }
+                    }
+                } else {
+                    coursesId.add(grade.getCourse().getId());
+                }
 			}
 		}
 		return coursesId;
@@ -251,5 +282,86 @@ public class StudentHibernateDao implements StudentDao {
 		query.setMaxResults(ONE);
 		final List<Student> students = query.getResultList();
 		return students.isEmpty() ? null : students.get(FIRST);
+	}
+
+	//TODO: Test this
+	/*@Override
+	public boolean isApproved(int docket, int courseId) {
+		//TODO: This is doing 1 query per loop: Improve eficiency. (Use student's grades??)
+		TypedQuery<Long> query = em.createQuery("select count(gr) from Grade as gr where gr.course.id=:id and gr.student.docket = :docket" +
+				" and gr.grade >= 4",
+				Long.class);
+		query.setParameter("id", courseId);
+		query.setParameter("docket", docket);
+		Long approvedGrades = query.getSingleResult();
+		return approvedGrades > 0;
+	}*/
+
+    @Override
+    //Return if the docket's student can take a final exam;
+    public boolean isApproved(int docket, int courseId) {
+        //TODO: This is doing 1 query per loop: Improve eficiency. (Use student's grades??)
+        TypedQuery<Grade> query = em.createQuery("from Grade as gr where gr.course.id=:id and gr.student.docket = :docket" +
+                " and gr.grade >= 4", Grade.class);
+        query.setParameter("id", courseId);
+        query.setParameter("docket", docket);
+        List<Grade> approvedGrades = query.getResultList();
+
+        //TODO:Improve this
+        for (Grade grade : approvedGrades) {
+            if (grade.getFinalGrades().size() == MAX_FINALS_CHANCES){
+
+                //for (FinalGrade finalGrade : grade.getFinalGrades()) {
+                //    if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0) {
+                //        return true;
+                //    }
+                //}
+                //return false;
+
+            } else {
+                for (FinalGrade finalGrade : grade.getFinalGrades()) {
+                    if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0) {
+                            return false;
+                        }
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+	//TODO: Test this
+	@Override
+	public List<FinalInscription> getAllFinalInscriptions() {
+		final TypedQuery<FinalInscription> query = em.createQuery("select inscription from FinalInscription inscription", FinalInscription.class);
+		return query.getResultList();
+	}
+
+	@Override
+	public FinalInscription getFinalInscription(int id) {
+		return em.find(FinalInscription.class, id);
+	}
+
+	@Override
+	public List<Course> getApprovedFinalCourses(int docket) {
+		final Student student = getByDocket(docket);
+		final List<Course> courses = new LinkedList<>();
+
+		for (Grade grade : student.getGrades()) {
+            if (BigDecimal.valueOf(4).compareTo(grade.getGrade()) <= 0) {
+
+                //Course approved, check the final grade
+                for (FinalGrade finalGrade : grade.getFinalGrades()) {
+                    if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0) {
+                        //Subject entirely approved
+                        courses.add(grade.getCourse());
+                    }
+                }
+
+			}
+		}
+
+        return courses;
 	}
 }

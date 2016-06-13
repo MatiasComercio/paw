@@ -48,6 +48,14 @@ public class Student extends User {
 		return Collections.unmodifiableList(grades);
 	}
 
+	public void setStudentCourses(List<Course> studentCourses) {
+		this.studentCourses = studentCourses;
+	}
+
+	public void setGrades(List<Grade> grades) {
+		this.grades = grades;
+	}
+
 	public List<Grade> getModifiableGrades() {
 		return grades;
 	}

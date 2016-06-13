@@ -1,12 +1,14 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CourseService {
     /**
@@ -143,4 +145,26 @@ public interface CourseService {
     /* +++xtest */
     /* +++xdocument */
 	Course getStudentsThatPassedCourse(int id, StudentFilter studentFilter);
+
+    /**
+     * Get the open final inscriptions corresponding to a course.
+     * @param id The course's id
+     * @return The list containing all the final inscriptions.
+     */
+    List<FinalInscription> getOpenFinalInsciptions(Integer id);
+
+    /**
+     * Get the student's inscribed in a FinalInscription
+     * @param id The FinalInscription's id
+     * @return The list of students
+     */
+    Set<Student> getFinalStudents(int id);
+
+
+    /**
+     * Get a final inscription by it's id
+     * @param id The given's final inscription's id
+     * @return The Final Inscription
+     */
+    FinalInscription getFinalInscription(int id);
 }

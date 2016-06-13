@@ -8,6 +8,7 @@
 <%--@elvariable id="changePasswordActive" type="java.lang.String"--%>
 <%--@elvariable id="resetPasswordActive" type="java.lang.String"--%>
 <%--@elvariable id="coursesStudentActive" type="java.lang.String"--%>
+<%--@elvariable id="finalInscriptionActive" type"java.lang.String"--%>
 <%--@elvariable id="gradesActive" type="java.lang.String"--%>
 <%--@elvariable id="inscriptionActive" type="java.lang.String"--%>
 <sec:authorize access="hasAuthority('ROLE_VIEW_STUDENT')">
@@ -67,6 +68,15 @@
         </li>
     </c:set>
 </sec:authorize>
+<%--<sec:authorize access="hasAuthority('ADD_FINAL_INSCRIPTION')">--%>
+    <c:set var="finalInscription">
+        <li class="${finalInscriptionActive}">
+            <a href="<c:url value="/students/${student.docket}/final_inscription"/>" class="pushy-link">
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="final_inscription"/>
+            </a>
+        </li>
+    </c:set>
+<%--</sec:authorize>--%>
 <sec:authorize access="hasAuthority('ROLE_VIEW_COURSES')">
     <c:set var="viewCourses">
         <li class="${coursesStudentActive}">
@@ -141,7 +151,7 @@
     <c:out value="${student.fullName}" />
 </c:set>
 <c:set var="currentActions" scope="request">
-    ${viewStudent}, ${editStudent}, <%--${changePassword},--%> ${resetPassword}, ${viewCourses},
+    ${finalInscription}, ${viewStudent}, ${editStudent}, <%--${changePassword},--%> ${resetPassword}, ${viewCourses},
     ${viewGrades}, ${viewInscription}, ${deleteStudent}
 </c:set>
 <!-- /Student Action Panel definition -->

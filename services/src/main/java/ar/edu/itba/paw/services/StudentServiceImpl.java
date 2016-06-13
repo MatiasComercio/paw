@@ -318,4 +318,123 @@ public class StudentServiceImpl implements StudentService {
 	/* default */ void setCourseService(final CourseService courseService) {
 		this.courseService = courseService;
 	}
+
+	@Transactional
+	@Override
+	public List<FinalInscription> getAvailableFinalInscriptions(int docket) {
+
+		List<FinalInscription> finalInscriptions = new ArrayList<>();
+
+		Student student = studentDao.getByDocket(docket);
+
+		//inscription.getVacancy() < inscription.getMaxVacancy() The inscription should be visible even when full
+		for(FinalInscription inscription : studentDao.getAllFinalInscriptions()){
+            if(studentDao.isApproved(docket, inscription.getCourse().getId()) &&
+					//checks if student is not already included in the current final inscription.
+					!inscription.getStudents().contains(student) && inscription.isOpen()){
+                finalInscriptions.add(inscription);
+				//TODO: increasing the variable inside a transaction? Does this mean it gets saved in the db?(Because it should get saved)
+			}
+		}
+		return finalInscriptions;
+	}
+
+	@Transactional
+	@Override
+	public FinalInscription getFinalInscription(int id) {
+		return studentDao.getFinalInscription(id);
+	}
+
+	@Transactional
+	@Override
+	public Result addStudentFinalInscription(int docket, int finalInscriptionId) {
+
+		FinalInscription finalInscription = studentDao.getFinalInscription(finalInscriptionId);
+        Student student = studentDao.getByDocket(docket);
+
+        if (!checkFinalCorrelatives(docket, finalInscription.getCourse().getId())){
+            return Result.FINAL_INSCRIPTION_CORRELATIVITY_ERROR;
+        }
+
+		if(finalInscription.getVacancy() >= finalInscription.getMaxVacancy()){
+			return Result.FINAL_INSCRIPTION_FULL;
+		}
+		finalInscription.getStudents().add(student);
+		finalInscription.increaseVacancy();
+		return Result.OK;
+
+	}
+
+    @Transactional
+	@Override
+	public List<FinalInscription> getFinalInscriptionsTaken(int docket) {
+		final List<FinalInscription> finalInscriptionsTaken = new ArrayList<>();
+        final Student student = studentDao.getByDocket(docket);
+		final List<FinalInscription> finalInscriptions = studentDao.getAllFinalInscriptions();
+
+        for (FinalInscription inscription : finalInscriptions) {
+            if (inscription.getStudents().contains(student))
+                finalInscriptionsTaken.add(inscription);
+        }
+
+        return finalInscriptionsTaken;
+
+    }
+
+    @Transactional
+    @Override
+    public Result deleteStudentFinalInscription(int docket, int finalInscriptionId) {
+        FinalInscription finalInscription = studentDao.getFinalInscription(finalInscriptionId);
+        Student student = studentDao.getByDocket(docket);
+
+        if (finalInscription.getStudents().contains(student)) {
+            finalInscription.getStudents().remove(student);
+            finalInscription.decreaseVacancy();
+        }
+
+        return Result.OK;
+    }
+
+    @Transactional
+    @Override
+    public boolean checkFinalCorrelatives(int docket, int courseId) {
+
+        final List<Course> correlatives = courseService.getCorrelativesByFilter(courseId, null);
+        final List<Course> approvedCourses = studentDao.getApprovedFinalCourses(docket);
+
+        if (approvedCourses.containsAll(correlatives))
+            return true;
+        return false;
+
+    }
+
+    @Transactional
+    @Override
+    public Set<Student> getFinalStudents(int id) {
+        Set<Student> set = new HashSet<>();
+        set.addAll(studentDao.getFinalInscription(id).getStudents());
+        return set;
+    }
+
+    @Transactional
+    @Override
+    public Result addFinalGrade(Integer id, Integer docket, BigDecimal grade) {
+        final FinalInscription fi = studentDao.getFinalInscription(id);
+        final Student student = studentDao.getByDocket(docket);
+
+        for (Grade grade1 : student.getGrades()) {
+            if (grade1.getCourse().equals(fi.getCourse()) && BigDecimal.valueOf(4).compareTo(grade1.getGrade()) <= 0 && grade1.getFinalGrades().size() < 3){
+
+                FinalGrade fg = new FinalGrade.Builder(null, grade).build();
+                studentDao.addFinalGrade(grade1, fg);
+
+                //Remove student inscription to final exam
+                fi.getStudents().remove(student);
+                return Result.OK;
+            }
+
+        }
+
+        return Result.ERROR_UNKNOWN;
+    }
 }

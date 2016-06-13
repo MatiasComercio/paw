@@ -1,11 +1,11 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
-import java.util.Set;
 
 public interface CourseDao {
 
@@ -148,4 +148,12 @@ public interface CourseDao {
     /* +++ xtest */
     /* +++ xdocument */
     Course getStudentsThatPassedCourse(int id);
+
+
+    /**
+     * Get the open final inscriptions corresponding to a course.
+     * @param id The course's id
+     * @return The list containing all the final inscriptions.
+     */
+    List<FinalInscription> getOpenFinalInsciptions(Integer id);
 }

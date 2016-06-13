@@ -4,6 +4,7 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.Result;
@@ -201,8 +202,6 @@ public class CourseHibernateDao implements CourseDao {
         return true;
     }
 
-    //TODO: Requires students
-    //TODO: Test this
     @Override
     public boolean gradeExists(int courseId) {
 
@@ -266,6 +265,15 @@ public class CourseHibernateDao implements CourseDao {
         List<Student> approvedStudents = studentDao.getStudentsPassed(id);
         course.setApprovedStudents(approvedStudents);
         return course;
+    }
+
+    @Override
+    public List<FinalInscription> getOpenFinalInsciptions(Integer id) {
+        final TypedQuery<FinalInscription> query = em.createQuery("from FinalInscription as fi where fi.course.id = :id and fi.state = :state", FinalInscription.class);
+        query.setParameter("id", id);
+        query.setParameter("state", FinalInscription.FinalInscriptionState.OPEN);
+
+        return query.getResultList();
     }
 
     //QueryFilter
