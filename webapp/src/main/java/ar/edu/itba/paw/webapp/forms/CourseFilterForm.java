@@ -1,14 +1,16 @@
 package ar.edu.itba.paw.webapp.forms;
 
+import javax.validation.constraints.Pattern;
+
 public class CourseFilterForm {
-	private Integer id;
+	private String id;
 	private String name;
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(final Integer id) {
+	public void setId(final String id) {
 		this.id = id;
 	}
 

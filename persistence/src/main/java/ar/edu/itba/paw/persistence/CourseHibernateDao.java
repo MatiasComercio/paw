@@ -326,7 +326,7 @@ public class CourseHibernateDao implements CourseDao {
             if (id != null){
                 p = builder.like(
                         root.get(
-                                type.getSingularAttribute("id", Integer.class)
+                                type.getSingularAttribute("courseId", String.class)
                         ).as(String.class),
                         "%" + escapeFilter(id) + "%"
                 );
@@ -340,7 +340,7 @@ public class CourseHibernateDao implements CourseDao {
                     builder.asc(root.get("semester")),
                     builder.asc(root.get("credits")),
                     builder.asc(root.get("name")),
-                    builder.asc(root.get("id"))
+                    builder.asc(root.get("courseId"))
             );
         }
 

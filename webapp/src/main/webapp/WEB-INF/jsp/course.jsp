@@ -35,46 +35,24 @@
 
             <!-- Content -->
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="well">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="row">
-                                    <div class="col-xs-3 right-effect">
-                                        <strong><spring:message code="id"/></strong>
-                                    </div>
-                                    <div class="col-xs-9">
-                                        ${course.id}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-3 right-effect">
-                                        <strong><spring:message code="name"/></strong>
-                                    </div>
-                                    <div class="col-xs-9">
-                                        ${course.name}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-3 right-effect">
-                                        <strong><spring:message code="credits"/></strong>
-                                    </div>
-                                    <div class="col-xs-9">
-                                        ${course.credits}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-3 right-effect">
-                                        <strong><spring:message code="semester"/></strong>
-                                    </div>
-                                    <div class="col-xs-9">
-                                        ${course.semester}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <form>
+                    <div class="form-group col-xs-2">
+                        <label for="courseId"><spring:message code="id"/></label>
+                        <input type="text" class="form-control" id="courseId" value="${course.courseId}" readonly>
                     </div>
-                </div>
+                    <div class="form-group col-xs-6">
+                        <label for="name"><spring:message code="name"/></label>
+                        <input type="text" class="form-control" id="name" value="${course.name}" readonly>
+                    </div>
+                    <div class="form-group col-xs-2">
+                        <label for="credits"><spring:message code="credits"/></label>
+                        <input type="text" class="form-control" id="credits" value="${course.credits}" readonly>
+                    </div>
+                    <div class="form-group col-xs-2">
+                        <label for="semester"><spring:message code="semester"/></label>
+                        <input type="text" class="form-control" id="semester" value="${course.semester}" readonly>
+                    </div>
+                </form>
             </div>
 
             <%-- Correlatives --%>
