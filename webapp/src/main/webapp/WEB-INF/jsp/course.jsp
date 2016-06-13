@@ -37,20 +37,36 @@
             <div class="row">
                 <form>
                     <div class="form-group col-xs-2">
-                        <label for="courseId"><spring:message code="id"/></label>
-                        <input type="text" class="form-control" id="courseId" value="${course.courseId}" readonly>
+                        <label class="control-label">
+                            <span></span><spring:message code="id"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${course.courseId}</p>
+                        <%--<label for="courseId"><spring:message code="id"/></label>--%>
+                        <%--<input type="text" class="form-control" id="courseId" value="${course.courseId}" readonly>--%>
                     </div>
                     <div class="form-group col-xs-6">
-                        <label for="name"><spring:message code="name"/></label>
-                        <input type="text" class="form-control" id="name" value="${course.name}" readonly>
+                        <label class="control-label">
+                            <span></span><spring:message code="name"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${course.name}</p>
+                        <%--<label for="name"><spring:message code="name"/></label>--%>
+                        <%--<input type="text" class="form-control" id="name" value="${course.name}" readonly>--%>
                     </div>
                     <div class="form-group col-xs-2">
-                        <label for="credits"><spring:message code="credits"/></label>
-                        <input type="text" class="form-control" id="credits" value="${course.credits}" readonly>
+                        <label class="control-label">
+                            <span></span><spring:message code="credits"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${course.credits}</p>
+                        <%--<label for="credits"><spring:message code="credits"/></label>--%>
+                        <%--<input type="text" class="form-control" id="credits" value="${course.credits}" readonly>--%>
                     </div>
                     <div class="form-group col-xs-2">
-                        <label for="semester"><spring:message code="semester"/></label>
-                        <input type="text" class="form-control" id="semester" value="${course.semester}" readonly>
+                        <label class="control-label">
+                            <span></span><spring:message code="semester"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${course.semester}</p>
+                        <%--<label for="semester"><spring:message code="semester"/></label>--%>
+                        <%--<input type="text" class="form-control" id="semester" value="${course.semester}" readonly>--%>
                     </div>
                 </form>
             </div>

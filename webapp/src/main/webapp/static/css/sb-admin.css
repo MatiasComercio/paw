@@ -359,6 +359,10 @@ a.btn.fullWidthButton {
     overflow-x: auto;
 }
 
+.active-overflow {
+    overflow: auto;
+}
+
 li.spaced {
     padding-bottom: 9px;
 }
