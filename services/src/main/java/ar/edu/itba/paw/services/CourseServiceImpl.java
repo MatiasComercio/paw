@@ -42,14 +42,13 @@ public class CourseServiceImpl implements CourseService {
 
         for (Course correlative : correlatives){
             if (correlative.getSemester() >= course.getSemester()) {
-//                return Result.CORRELATIVE_SEMESTER_INCOMPATIBILITY;
                 return false;
             }
         }
 
         for (Course course1 : c.getUpperCorrelatives()) {
             if (course1.getSemester() <= course.getSemester()){
-                return Result.CORRELATIVE_SEMESTER_INCOMPATIBILITY;
+                return false;
             }
         }
 
