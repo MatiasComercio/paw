@@ -7,7 +7,6 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
-import ar.edu.itba.paw.shared.Result;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -35,15 +34,16 @@ public class CourseHibernateDao implements CourseDao {
     private StudentDao studentDao;
 
     @Override
-    public Result create(Course course){
+    public boolean create(Course course){
         Session session = em.unwrap(Session.class);
         session.save(course);
-        return Result.OK;
+
+        return true;
     }
 
 
     @Override
-    public Result update(int id, Course course){
+    public boolean update(int id, Course course){
 
         //NOTE: In this case if the id is changed an exception is thrown. In the future we shouldn't allow a user to modify the seq_id!
         Session session = em.unwrap(Session.class);
@@ -51,7 +51,7 @@ public class CourseHibernateDao implements CourseDao {
         em.detach(oldCourse);
         session.update(course);
 
-        return Result.OK;
+        return true;
     }
 
 /*  TODO: Delete (Backup purposes only)
@@ -123,10 +123,11 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public Result deleteCourse(int id) {
+    public boolean deleteCourse(int id) {
         Course course = getById(id);
         em.remove(course);
-        return Result.OK;
+
+        return true;
     }
 
     @Override
@@ -176,14 +177,15 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public Result addCorrelativity(int id, int correlativeId) {
+    public boolean addCorrelativity(int id, int correlativeId) {
         Course course = getById(id);
         Course correlative = getById(correlativeId);
         course.getCorrelatives().add(correlative);
 
         Session session = em.unwrap(Session.class);
         session.save(course);
-        return Result.OK;
+
+        return true;
     }
 
     @Override
@@ -224,13 +226,14 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public Result deleteCorrelative(int courseId, int correlativeId) {
+    public boolean deleteCorrelative(int courseId, int correlativeId) { //fixme is ok that always returrs true?
         Course course = getById(courseId);
         Course correlative = getById(correlativeId);
         course.getCorrelatives().remove(correlative);
         Session session = em.unwrap(Session.class);
         session.save(course);
-        return Result.OK;
+
+        return true;
     }
 
 

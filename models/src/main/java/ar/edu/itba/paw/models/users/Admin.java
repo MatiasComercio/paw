@@ -3,7 +3,8 @@ package ar.edu.itba.paw.models.users;
 
 import ar.edu.itba.paw.models.Role;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "admin")
