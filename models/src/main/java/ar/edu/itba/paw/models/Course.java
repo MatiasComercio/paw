@@ -183,8 +183,9 @@ public class Course {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + credits;
         result = 31 * result + semester;
-        result = 31 * result + (correlatives != null ? correlatives.hashCode() : 0);
-        result = 31 * result + (upperCorrelatives != null ? upperCorrelatives.hashCode() : 0);
+        //TODO:Removed due to SO firing
+        //result = 31 * result + (correlatives != null ? correlatives.hashCode() : 0);
+        //result = 31 * result + (upperCorrelatives != null ? upperCorrelatives.hashCode() : 0);
         result = 31 * result + (students != null ? students.hashCode() : 0);
         result = 31 * result + (approvedStudents != null ? approvedStudents.hashCode() : 0);
         return result;
