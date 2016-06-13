@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Role;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
