@@ -21,6 +21,12 @@ import java.util.function.BiConsumer;
 public class ExceptionHandlerController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandlerController.class);
 
+	@ExceptionHandler(MethodArgumentTypeMismatchException.class)
+	public ModelAndView typeMismatchException(final MethodArgumentTypeMismatchException e) {
+		LOGGER.warn("Exception: ", (Object[]) e.getStackTrace());
+		return new ModelAndView("404");
+	}
+
 	@ExceptionHandler(DataAccessException.class)
 	public ModelAndView dataAccessException(final DataAccessException e) {
 		LOGGER.warn("Exception: {}", (Object[]) e.getStackTrace());
