@@ -111,13 +111,13 @@
     <jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchCourses.js"%></script>
+<script type="text/javascript" charset="UTF-8" src="<c:url value="/static/js/template/searchCourses.js" />"></script>
 
 <c:choose>
     <c:when test="${section=='students'}">
-        <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/enrollForm.js"%></script>
+        <script type="text/javascript" charset="UTF-8"  src="<c:url value="/static/js/template/enrollForm.js"/>"></script>
         <c:if test="${subsection_courses}">
-            <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/gradeForm.js"%></script>
+            <script type="text/javascript" charset="UTF-8"  src="<c:url value="/static/js/template/gradeForm.js"/>"></script>
         </c:if>
     </c:when>
 </c:choose>

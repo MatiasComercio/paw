@@ -136,11 +136,11 @@
 <!-- Scripts -->
 <%--<sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
     <script type="text/javascript" charset="UTF-8">
-        <%@include file="../js/template/deleteCourseForm.js"%>
+        <%@include file="/static/js/template/deleteCourseForm.js"%>
     </script>
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_ADD_CORRELATIVE')">
-    <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/CorrelativeForm.js"%></script>
+    <script type="text/javascript" charset="UTF-8"><%@include file="/static/js/template/CorrelativeForm.js"%></script>
 </sec:authorize>
 <script>
     $( document ).ready(function() {
