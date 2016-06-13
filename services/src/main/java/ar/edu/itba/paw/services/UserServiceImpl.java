@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -54,6 +55,12 @@ public class UserServiceImpl implements UserService {
 			return Result.ERROR_DNI_OUT_OF_BOUNDS;
 		}
 		return userDao.resetPassword(dni);
+	}
+
+	@Transactional
+	@Override
+	public boolean existsEmail(final String email) {
+		return userDao.existsEmail(email);
 	}
 
 	/* Test purpose only */

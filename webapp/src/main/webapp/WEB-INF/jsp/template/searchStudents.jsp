@@ -103,25 +103,32 @@
                 <td>${ student.firstName }</td>
                 <td>${ student.lastName }</td>
                 <td>
-                    <a class="btn btn-default" href="<c:url value="/students/${student.docket}/info" />" role="button">
-                        <span class="fa fa-user" aria-hidden="true"></span> <spring:message code="profile"/>
-                    </a>
                     <c:choose>
                         <%--@elvariable id="section" type="java.lang.String"--%>
                         <%--@elvariable id="section2" type="java.lang.String"--%>
                         <c:when test="${section eq 'courses' && section2 eq 'students'}">
                             <c:url var="gradeFormAction" value="/students/${student.docket}/grades/add" />
                             <sec:authorize access="hasAuthority('ROLE_ADD_GRADE')"><%--@elvariable id="course" type="ar.edu.itba.paw.models.Course"--%>
-                                <button name="gradeButton" class="btn btn-info" type="button"
-                                        data-url="${gradeFormAction}"
-                                        data-docket="${student.docket}"
-                                        data-course_id="${ course.id }" data-course_name="${ course.name }"
-                                        data-toggle="modal" data-target="#gradeFormConfirmationModal">
-                                    <span class="fa fa-graduation-cap" aria-hidden="true"></span> <spring:message code="rate"/>
-                                </button>
+                                <c:set var="gradeButtonDef">
+                                    <button name="gradeButton" class="btn btn-info" type="button"
+                                            data-url="${gradeFormAction}"
+                                            data-docket="${student.docket}"
+                                            data-course_id="${ course.id }" data-course_name="${ course.name }"
+                                            data-toggle="modal" data-target="#gradeFormConfirmationModal">
+                                        <span class="fa fa-graduation-cap" aria-hidden="true"></span> <spring:message code="rate"/>
+                                    </button>
+                                </c:set>
+                                <c:set var="buttonClass" value="" />
                             </sec:authorize>
                         </c:when>
+                        <c:otherwise>
+                            <c:set var="buttonClass" value="fullWidthButton" />
+                        </c:otherwise>
                     </c:choose>
+                    <a class="btn btn-default ${buttonClass}" href="<c:url value="/students/${student.docket}/info" />" role="button">
+                        <span class="fa fa-user" aria-hidden="true"></span> <spring:message code="profile"/>
+                    </a>
+                    ${gradeButtonDef}
                 </td>
             </tr>
         </c:forEach>

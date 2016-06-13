@@ -39,6 +39,7 @@ public class AdminController {
 	private static final String ADMINS_SECTION = "admins";
 	private static final String UNAUTHORIZED = "redirect:/errors/403";
 	private static final String NOT_FOUND = "404";
+	private static final ModelAndView NOT_FOUND_MAV = new ModelAndView(NOT_FOUND);
 
 	@Autowired
 	private MessageSource messageSource;
@@ -74,27 +75,15 @@ public class AdminController {
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
-		final ModelAndView mav = new ModelAndView("admins");
-
-		if (errors.hasErrors()) {
-			/* Cancel current search */
-			LOGGER.warn("There were errors when User {} tried to list the admins {}", loggedUser, errors.getAllErrors());
-			adminFilterForm.empty();
-
-			mav.addObject("alert", "danger");
-			mav.addObject("message", messageSource.getMessage("search_fail",
-					null,
-					Locale.getDefault()));
-		}
-
 		final AdminFilter adminFilter = new AdminFilter.AdminFilterBuilder()
 				.dni(adminFilterForm.getDni())
 				.firstName(adminFilterForm.getFirstName())
 				.lastName(adminFilterForm.getLastName())
 				.build();
 
-		// +++ximprove with Spring Security
-		final List<Admin> admins = adminService.getByFilter(adminFilter);
+		final ModelAndView mav = new ModelAndView("admins");
+
+		final List<Admin> admins = loadAdminsByFilter(mav, errors, adminFilter);
 		if (admins == null) {
 			return new ModelAndView(NOT_FOUND);
 		}
@@ -364,6 +353,26 @@ public class AdminController {
 
 		final String referrer = request.getHeader("referer");
 		return new ModelAndView("redirect:" + referrer);
+	}
+
+	/************************************************************/
+	private List<Admin> loadAdminsByFilter(final ModelAndView mav,
+	                                       final BindingResult errors,
+	                                       final AdminFilter adminFilter) {
+		final List<Admin> admins;
+		if (errors.hasErrors()) {
+			LOGGER.warn("Could not get admins due to {} [GET]", errors.getAllErrors());
+
+			mav.addObject("alert", "danger");
+			mav.addObject("message", messageSource.getMessage("search_fail",
+					null,
+					Locale.getDefault()));
+			admins = adminService.getByFilter(null);
+		} else {
+			admins = adminService.getByFilter(adminFilter);
+		}
+
+		return admins;
 	}
 
 }

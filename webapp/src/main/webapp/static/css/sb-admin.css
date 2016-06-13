@@ -333,8 +333,8 @@ button.navbar-toggle.menu-btn.pull-left {
 }
 
 button.btn.pageFormButton,
-button.btn.tableButton,
-a.btn.tableButton {
+button.btn.fullWidthButton,
+a.btn.fullWidthButton {
     display: block;
     width: 100%;
     white-space: normal;
@@ -365,4 +365,8 @@ li.spaced {
 
 .search-label {
     min-width: 76px;
+}
+
+.addAdminFormButtons {
+    padding-top: 24px;
 }

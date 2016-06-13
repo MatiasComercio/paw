@@ -225,4 +225,8 @@ public interface StudentService {
      * @return
      */
     Result addFinalGrade(Integer id, Integer docket, BigDecimal grade);
+
+
+	boolean existsEmail(String email);
+
 }

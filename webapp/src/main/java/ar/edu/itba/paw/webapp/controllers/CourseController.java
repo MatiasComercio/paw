@@ -6,6 +6,7 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
+import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
@@ -40,6 +41,8 @@ public class CourseController {
 	private static final String TASK_FORM_EDIT = "edit";
 	private static final String UNAUTHORIZED = "redirect:/errors/403";
 	private static final String NOT_FOUND = "404";
+	private static final ModelAndView NOT_FOUND_MAV = new ModelAndView(NOT_FOUND);
+
 
 	@Autowired
 	private MessageSource messageSource;
@@ -71,45 +74,35 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses", method = RequestMethod.GET)
 	public ModelAndView getCourses(final Model model,
-	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+	                               @ModelAttribute("user") UserSessionDetails loggedUser,
+	                               @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+	                               final BindingResult errors) {
 
 		if (!loggedUser.hasAuthority("VIEW_COURSES")) {
 			LOGGER.warn("User {} tried to view all courses and doesn't have VIEW_COURSES authority [GET]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
-		if (!model.containsAttribute("courseFilterForm")) {
-			model.addAttribute("courseFilterForm", new CourseFilterForm());
-		}
 		if (!model.containsAttribute("deleteCourseForm")) {
 			model.addAttribute("deleteCourseForm", new CourseFilterForm());  /*+++xcheck: if it is necessary to create a new Form*/
 		}
 
-		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
-		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
-				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
-
-		// +++ximprove with Spring Security
-		final List<Course> courses = courseService.getByFilter(courseFilter);
-		if (courses == null) {
-			LOGGER.warn("There were no courses to return"); /* It is logged because this situation is strange */
-			return new ModelAndView("forward:/errors/404.html");
-		}
+		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder()
+				.id(courseFilterForm.getId())
+				.keyword(courseFilterForm.getName())
+				.build();
 
 		final ModelAndView mav = new ModelAndView("courses");
+
+		final List<Course> courses = loadCoursesByFilter(mav, errors, courseFilter);
+		if (courses == null) {
+			return NOT_FOUND_MAV;
+		}
+
 		mav.addObject("courses", courses);
 		mav.addObject("subsection_get_courses", true);
-		mav.addObject("courseFilterFormAction", "/courses/courseFilterForm");
+		mav.addObject("courseFilterFormAction", "/courses");
 		return mav;
-	}
-
-	@RequestMapping(value = "/courses/courseFilterForm", method = RequestMethod.GET)
-	public ModelAndView studentFilterForm(             @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-	                                                   final BindingResult errors,
-	                                                   final RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
-		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
-		return new ModelAndView("redirect:/courses");
 	}
 
 	@RequestMapping("/courses/{id}/info")
@@ -231,7 +224,9 @@ public class CourseController {
 	@RequestMapping(value = "/courses/{id}/students", method = RequestMethod.GET)
 	public ModelAndView getCourseStudents(@PathVariable("id") final Integer id,
 	                                      final Model model, final RedirectAttributes redirectAttributes,
-	                                      @ModelAttribute("user") UserSessionDetails loggedUser) {
+	                                      @ModelAttribute("user") UserSessionDetails loggedUser,
+	                                      @Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
+	                                      final BindingResult errors) {
 
 		if (!loggedUser.hasAuthority("VIEW_STUDENTS")) {
 			LOGGER.warn("User {} tried to view all students that are enrolled at course {} " +
@@ -242,44 +237,34 @@ public class CourseController {
 		if (!model.containsAttribute("gradeForm")) {
 			model.addAttribute("gradeForm", new GradeForm());
 		}
-		if (!model.containsAttribute("studentFilterForm")) {
-			model.addAttribute("studentFilterForm", new StudentFilterForm());
-		}
 
-		final StudentFilterForm studentFilterForm = (StudentFilterForm) model.asMap().get("studentFilterForm");
 		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
 				.docket(studentFilterForm.getDocket())
 				.firstName(studentFilterForm.getFirstName())
 				.lastName(studentFilterForm.getLastName())
 				.build();
 
-		// +++ximprove with Spring Security
 		final Course course = courseService.getById(id);
+
 		if (course == null) {
 			LOGGER.warn("User {} tried to view all enrolled students from course {} that does not exist", loggedUser.getUsername(), id);
 			return new ModelAndView(NOT_FOUND);
 		}
-		final List<Student> students = courseService.getCourseStudents(id, studentFilter);
-
 
 		final ModelAndView mav = new ModelAndView("courseStudents");
+
+		final List<Student> students = loadStudentsForCourseIdByFilter(id, mav, errors, studentFilter);
+		if (students == null) {
+			return NOT_FOUND_MAV;
+		}
+
+
 		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 		mav.addObject("section2", "students");
 		mav.addObject("course", course);
 		mav.addObject("students", students);
-		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students/studentFilterForm");
+		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students");
 		return mav;
-	}
-
-	@RequestMapping(value = "/courses/{id}/students/studentFilterForm", method = RequestMethod.GET)
-	public ModelAndView courseStudentsStudentFilterForm(
-			@PathVariable("id") final int id,
-			@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
-			final BindingResult errors,
-			final RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.studentFilterForm", errors);
-		redirectAttributes.addFlashAttribute("studentFilterForm", studentFilterForm);
-		return new ModelAndView("redirect:/courses/" + id + "/students");
 	}
 
 	@RequestMapping(value = "/courses/add_course", method = RequestMethod.GET)
@@ -367,49 +352,48 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)
 	public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model,
-	                                   @ModelAttribute("user") UserSessionDetails loggedUser) {
+	                                   @ModelAttribute("user") UserSessionDetails loggedUser,
+	                                   // the order (1- @Valid ; 2- BindingResult) is very important; if not like this,
+	                                   // it does not work
+	                                   @Valid @ModelAttribute("courseFilterForm")
+	                                       final CourseFilterForm courseFilterForm,
+	                                   final BindingResult errors) {
 
 		if (!loggedUser.hasAuthority("ADD_CORRELATIVE")) {
 			LOGGER.warn("User {} tried to add a correlative and doesn't have ADD_CORRELATIVE authority [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
-		if (!model.containsAttribute("courseFilterForm")) {
-			model.addAttribute("courseFilterForm", new CourseFilterForm());
-		}
 		if (!model.containsAttribute("correlativeForm")) {
 			model.addAttribute("correlativeForm", new CorrelativeForm());
 		}
 
-		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
-		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
-				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
-
-		//Check the course exists (in case the url is modified)
+		// check the course exists (in case the url is modified)
 		final Course course = courseService.getById(course_id);
 		if (course == null) {
 			LOGGER.warn("User {} tried to access course {} that does not exist", loggedUser.getDni(), course_id);
-			return new ModelAndView(NOT_FOUND);
+			return NOT_FOUND_MAV;
 		}
 
 		final ModelAndView mav = new ModelAndView("courses");
+		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder()
+				.id(courseFilterForm.getId())
+				.keyword(courseFilterForm.getName())
+				.build();
+
+		final List<Course> availableAddCorrelativesCourses =
+				loadAddCorrelativeCoursesForCourseIdByFilter(course_id, mav, errors, courseFilter);
+		if (availableAddCorrelativesCourses == null) {
+			return NOT_FOUND_MAV;
+		}
+
 		mav.addObject("course", course);
 		mav.addObject("section2", "addCorrelative");
-		mav.addObject("courseFilterFormAction", "/courses/" + course_id + "/add_correlative/courseFilterForm");
+		mav.addObject("courseFilterFormAction", "/courses/" + course_id + "/add_correlative");
 		mav.addObject("correlativeFormAction", "/courses/" + course_id + "/add_correlative");
 		mav.addObject("subsection_add_correlative", true);
-		mav.addObject("courses", courseService.getAvailableAddCorrelatives(course_id, courseFilter));
+		mav.addObject("courses", availableAddCorrelativesCourses);
 		return mav;
-	}
-
-	@RequestMapping(value = "/courses/{course_id}/add_correlative/courseFilterForm", method = RequestMethod.GET)
-	public ModelAndView studentInscriptionCourseFilter(@PathVariable final int course_id,
-	                                                   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-	                                                   final BindingResult errors,
-	                                                   final RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
-		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
-		return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
 	}
 
 	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.POST)
@@ -493,50 +477,112 @@ public class CourseController {
 
 	@RequestMapping(value = "/courses/{id}/students_passed", method = RequestMethod.GET)
 	public ModelAndView getCourseStudentsThatPassed(@PathVariable("id") final Integer id, final Model model,
-	                                                @ModelAttribute("user") UserSessionDetails loggedUser) {
+	                                                @ModelAttribute("user") UserSessionDetails loggedUser,
+	                                                @Valid @ModelAttribute("studentFilterForm")
+	                                                    final StudentFilterForm studentFilterForm,
+	                                                final BindingResult errors) {
 
 		if (!loggedUser.hasAuthority("VIEW_STUDENTS_APPROVED")) {
 			LOGGER.warn("User {} tried to get the students that passed course {} and doesn't have VIEW_STUDENTS_APPROVED authority [POST]", loggedUser, id);
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
-		if (!model.containsAttribute("studentFilterForm")) {
-			model.addAttribute("studentFilterForm", new StudentFilterForm());
-		}
-
-		final StudentFilterForm studentFilterForm = (StudentFilterForm) model.asMap().get("studentFilterForm");
 		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
 				.docket(studentFilterForm.getDocket())
 				.firstName(studentFilterForm.getFirstName())
 				.lastName(studentFilterForm.getLastName())
 				.build();
 
-		// +++ximprove with Spring Security
-		final Course course = courseService.getStudentsThatPassedCourse(id, studentFilter);
+		final ModelAndView mav = new ModelAndView("courseStudents");
+
+		final Course course = loadCourseWithStudentThatPassedByFilter(id, mav, errors, studentFilter);
 		if (course == null) {
 			LOGGER.warn("User {} tried to access course {} that does not exist", loggedUser.getDni(), id);
-			return new ModelAndView(NOT_FOUND);
+			return NOT_FOUND_MAV;
 		}
 
-
-		final ModelAndView mav = new ModelAndView("courseStudents");
 		mav.addObject("course", course);
 		//TODO: DELETE - mav.addObject("students", course.getStudents());
 		mav.addObject("students", course.getApprovedStudents());
 		mav.addObject("section2", "studentsPassed");
-		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students_passed/studentFilterForm");
+		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students_passed");
 		return mav;
 	}
 
-	@RequestMapping(value = "/courses/{id}/students_passed/studentFilterForm", method = RequestMethod.GET)
-	public ModelAndView getCourseStudentsThatPassedFilterForm(
-			@PathVariable("id") final int id,
-			@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
-			final BindingResult errors,
-			final RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.studentFilterForm", errors);
-		redirectAttributes.addFlashAttribute("studentFilterForm", studentFilterForm);
-		return new ModelAndView("redirect:/courses/" + id + "/students_passed");
+	/******************************************/
+	private List<Course> loadCoursesByFilter(final ModelAndView mav,
+	                                         final BindingResult errors,
+	                                         final CourseFilter courseFilter) {
+		final List<Course> courses;
+		if (errors.hasErrors()) {
+			LOGGER.warn("Could not get courses due to {} [GET]", errors.getAllErrors());
+
+			mav.addObject("alert", "danger");
+			mav.addObject("message", messageSource.getMessage("search_fail",
+					null,
+					Locale.getDefault()));
+			courses = courseService.getByFilter(null);
+		} else {
+			courses = courseService.getByFilter(courseFilter);
+		}
+		return courses;
+	}
+
+	private List<Student> loadStudentsForCourseIdByFilter(final int id,
+	                                                      final ModelAndView mav,
+	                                                      final BindingResult errors,
+	                                                      final StudentFilter studentFilter) {
+		final List<Student> students;
+		if (errors.hasErrors()) {
+			LOGGER.warn("Could not get students for the given course due to {} [GET]", errors.getAllErrors());
+
+			mav.addObject("alert", "danger");
+			mav.addObject("message", messageSource.getMessage("search_fail",
+					null,
+					Locale.getDefault()));
+			students = courseService.getCourseStudents(id, null);
+		} else {
+			students = courseService.getCourseStudents(id, studentFilter);
+		}
+		return students;
+	}
+
+	private List<Course> loadAddCorrelativeCoursesForCourseIdByFilter(final Integer course_id,
+	                                                                  final ModelAndView mav,
+	                                                                  final BindingResult errors,
+	                                                                  final CourseFilter courseFilter) {
+		final List<Course> courses;
+		if (errors.hasErrors()) {
+			LOGGER.warn("Could not get courses due to {} [GET]", errors.getAllErrors());
+
+			mav.addObject("alert", "danger");
+			mav.addObject("message", messageSource.getMessage("search_fail",
+					null,
+					Locale.getDefault()));
+			courses = courseService.getAvailableAddCorrelatives(course_id, null);
+		} else {
+			courses = courseService.getAvailableAddCorrelatives(course_id, courseFilter);
+		}
+		return courses;
+	}
+
+	private Course loadCourseWithStudentThatPassedByFilter(final Integer id,
+	                                                       final ModelAndView mav,
+	                                                       final BindingResult errors,
+	                                                       final StudentFilter studentFilter) {
+		final Course course;
+		if (errors.hasErrors()) {
+			LOGGER.warn("Could not get students that passed a course due to {} [GET]", errors.getAllErrors());
+
+			mav.addObject("alert", "danger");
+			mav.addObject("message", messageSource.getMessage("search_fail",
+					null,
+					Locale.getDefault()));
+			course = courseService.getStudentsThatPassedCourse(id, null);
+		} else {
+			course = courseService.getStudentsThatPassedCourse(id, studentFilter);
+		}
+		return course;
 	}
 
     @RequestMapping(value = "/courses/final_inscription/{id}/info", method = RequestMethod.GET)

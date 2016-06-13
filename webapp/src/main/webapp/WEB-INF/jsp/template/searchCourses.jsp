@@ -143,7 +143,7 @@
                                     </a>
                                 </c:when>
                                 <c:otherwise>
-                                    <a class="btn btn-default tableButton" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
+                                    <a class="btn btn-default fullWidthButton" href="<c:url value="/courses/${eachCourse.id}/info" />" role="button">
                                         <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="information"/>
                                     </a>
                                 </c:otherwise>

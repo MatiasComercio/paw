@@ -1,20 +1,21 @@
-<!-- Example of configuration: 
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example of configuration:
  http://docs.spring.io/spring/docs/3.1.x/spring-framework-reference/htmlsingle/spring-framework-reference.html#beans-java-instantiating-container-web
- 
+
  Pay attention to the last web.xml configuration on the end of the section of the following link:
  http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html#mvc-servlet
  Notice that the <param-value/> inside the <init-param> of the servlet declaration should be empty
  in order to not initialize the @Beans declared at WebConfig twice.
  -->
-
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+<web-app metadata-complete="true"
+         xmlns="http://java.sun.com/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
-	      http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-         version="2.4">
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
 
     <!-- Specifies what type of application is -->
-    <display-name>Servlet 2.4 Web Application</display-name>
+    <display-name>Servlet 3.0 Web Application</display-name>
 
     <!-- Configure ContextLoaderListener to use AnnotationConfigWebApplicationContext
          instead of the default XmlWebApplicationContext -->

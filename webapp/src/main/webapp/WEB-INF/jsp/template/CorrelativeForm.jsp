@@ -69,10 +69,10 @@
                 <%-- /Correlative Form--%>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="cancel"/></button>
                 <c:if test="${subsection_add_correlative}">
                     <button id="correlativeFormConfirmAction" type="button" class="btn btn-info"><spring:message code="confirm"/></button>
                 </c:if>
+                <button type="button" class="btn btn-default" data-dismiss="modal"><spring:message code="cancel"/></button>
                 <c:if test="${subsection_delete_correlative}">
                     <button id="correlativeFormConfirmAction" type="button" class="btn btn-danger"><spring:message code="confirm"/></button>
                 </c:if>

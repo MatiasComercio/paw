@@ -5,19 +5,16 @@ import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.User;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 public class AdminForm {
 
     private Integer id_seq;
 
-    @Digits(integer=8, fraction=0)
     @NotNull
-    @Min(1)
+    @Max(99999999)
+    @Min(10000000)
     private Integer dni;
 
     @NotNull

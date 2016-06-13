@@ -55,12 +55,18 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 				.userDetailsService(userDetailsService)
 				.sessionManagement()
 				.invalidSessionUrl("/login")
+				// for maintenance
+//				.invalidSessionUrl("/inMaintenance")
 
 				.and().authorizeRequests()
 				.antMatchers("/login/**").anonymous()
 				.antMatchers("/admin/**").hasRole("VIEW_ADMIN")
 				.antMatchers("/admins/**").hasRole("VIEW_ADMINS")
 				.antMatchers("/**").authenticated()
+
+				// configuration when updating database; // for maintenance
+//				.antMatchers("/inMaintenance").anonymous()
+//				.antMatchers("/**").denyAll()
 
 				.and().formLogin()
 				.usernameParameter("j_dni")
@@ -69,6 +75,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 //				.successHandler(authSuccessHandler)
 				.failureUrl("/login?error")
 				.loginPage("/login")
+				// for maintenance
+//				.loginPage("/inMaintenance")
 				.loginProcessingUrl("/login")
 
 				.and().rememberMe()

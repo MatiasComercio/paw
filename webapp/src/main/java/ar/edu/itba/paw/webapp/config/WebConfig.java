@@ -79,27 +79,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 			dataSource.setPassword("OoLuej2w");
 		}
 
+//		dataSource.setUrl("jdbc:postgresql://localhost:5432/paw");
+//		dataSource.setUsername("paw");
+//		dataSource.setPassword("paw01");
+
 		return dataSource;
 	}
 	/* /Database Connection */
-
-	/* JDBC Beans */ // +++xremove
-//	@Value("classpath:schema.sql")
-//	private Resource schemaSql;
-//	@Bean
-//	public DataSourceInitializer dataSourceInitializer(final DataSource dataSource) {
-//		final DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
-//		dataSourceInitializer.setDataSource(dataSource);
-////		dataSourceInitializer.setDatabasePopulator(databasePopulator());
-//		return dataSourceInitializer;
-//	}
-
-//	private DatabasePopulator databasePopulator() {
-//		final ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator();
-//		databasePopulator.addScript(schemaSql);
-//		return databasePopulator;
-//	}
-	/* /JDBC Beans */
 
 	/* JPA Beans */
 	@Bean
@@ -145,12 +131,17 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		final ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
 		messageSource.setBasename("classpath:i18n/messages");
 		messageSource.setDefaultEncoding(StandardCharsets.UTF_8.displayName());
-		messageSource.setCacheSeconds(5); // +++xchange
+		// for production environment, it is not necessary to set this, as:
+		/*
+			"Default is "-1", indicating to cache forever (just like java.util.ResourceBundle)."
+		 */
+		if (isDevelopmentMode()) {
+			messageSource.setCacheSeconds(5);
+		}
 		return messageSource;
 	}
 
 	private static boolean isDevelopmentMode() {
-		// +++xcheck both on development & production mode
 		// use LOGGER debug mode for switching this on/off development/production mode respectively
 		return LOGGER.isDebugEnabled();
 	}

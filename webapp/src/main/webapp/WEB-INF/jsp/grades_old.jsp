@@ -129,13 +129,13 @@
                                     </c:choose>
                                 </td>
                                 <td>
-                                    <a class="btn btn-default" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">
+                                    <a class="btn btn-default btn-sm" href="<c:url value="/courses/${grade.courseId}/info" />" role="button">
                                         <span class="fa fa-info-circle" aria-hidden="true"></span> <spring:message code="courseInformation"/>
                                     </a>
                                     <c:if test="${grade.modified != null }">
                                     <s:authorize access="hasAuthority('ROLE_EDIT_GRADE')">
                                     <c:if test="${grade.canEdit}">
-                                        <button name="gradeButton" class="btn btn-info" type="button"
+                                        <button name="gradeButton" class="btn btn-info btn-sm" type="button"
                                                 data-id="${grade.id}" data-docket="${grade.docket}"
                                                 data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
                                                 data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"

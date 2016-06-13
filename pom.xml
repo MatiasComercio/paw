@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ar.edu.itba.paw</groupId>
   <artifactId>paw</artifactId>
-  <version>1.1.0.RELEASE</version>
+  <version>1.2.0.RELEASE</version>
   <modules>
     <module>webapp</module>
     <module>interfaces</module>
@@ -22,7 +22,7 @@
 	  <org.springframework.version>4.2.6.RELEASE</org.springframework.version>
       <spring.security.version>4.0.4.RELEASE</spring.security.version>
       <org.hibernate.version>5.1.0.Final</org.hibernate.version>
-	  <servlet-api.version>2.5</servlet-api.version>
+	  <servlet-api.version>3.1.0</servlet-api.version>
       <org.slf4j.version>1.7.21</org.slf4j.version>
       <ch.qos.logback.version>1.1.7</ch.qos.logback.version>
       <org.logback.extensions.version>0.1.4</org.logback.extensions.version>
@@ -36,6 +36,7 @@
       <org.hibernate-validator.version>5.2.4.Final</org.hibernate-validator.version>
       <maven-war-plugin.version>2.6</maven-war-plugin.version>
       <hibernate.jpa-api.version>1.0.0.Final</hibernate.jpa-api.version>
+      <org.jboss.logging>3.3.0.Final</org.jboss.logging>
 	</properties>
   <build>
     <plugins>
@@ -60,6 +61,13 @@
   </build>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>${servlet-api.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
       <dependency>
         <groupId>javax.servlet</groupId>
         <artifactId>jstl</artifactId>
@@ -104,6 +112,13 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-entitymanager</artifactId>
         <version>${org.hibernate.version}</version>
+        <!-- Resolves deploy problem. See message-id: 2dff85f7-6327-477b-b929-c768f5d3bcb0@googlegroups.com -->
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <!--JPA Annotations for Models-->
@@ -158,6 +173,15 @@
       <!-- /Spring Security -->
 
       <!--Logging-->
+      <!-- Logging for Hibernate to use -->
+      <!-- Resolves deploy problem. See message-id: 2dff85f7-6327-477b-b929-c768f5d3bcb0@googlegroups.com -->
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>${org.jboss.logging}</version>
+      </dependency>
+      <!-- /Logging for Hibernate to use -->
+
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>

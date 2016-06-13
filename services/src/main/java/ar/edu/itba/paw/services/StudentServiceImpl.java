@@ -127,6 +127,11 @@ public class StudentServiceImpl implements StudentService {
         return amount;
     }
 
+	@Override
+	public boolean existsEmail(final String email) {
+		return userService.existsEmail(email);
+	}
+
 	@Transactional
     @Override
 	public Student getGrades(final int docket) {

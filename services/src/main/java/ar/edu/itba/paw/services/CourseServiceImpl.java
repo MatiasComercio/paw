@@ -284,7 +284,7 @@ public class CourseServiceImpl implements CourseService {
         }
         // Care with this! if the method or class is annotated with @Transactional, this could
         // be updating course students, and data could be lost
-        course.setStudents(st);
+        course.setApprovedStudents(st);
 
         return course;
     }

@@ -3,7 +3,7 @@
     <parent>
         <artifactId>paw</artifactId>
         <groupId>ar.edu.itba.paw</groupId>
-        <version>1.1.0.RELEASE</version>
+        <version>1.2.0.RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>webapp</artifactId>
@@ -26,7 +26,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-            <version>${org.springframework.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -91,8 +90,7 @@
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
+            <artifactId>javax.servlet-api</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>

@@ -14,10 +14,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import javax.persistence.metamodel.EntityType;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -113,6 +110,19 @@ public class UserHibernateDao implements UserDao {
 		return changePassword(dni, null, User.DEFAULT_PASSWORD);
 	}
 
+	@Override
+	public boolean existsEmail(final String email) {
+		final CriteriaBuilder builder = em.getCriteriaBuilder();
+		final CriteriaQuery<String> query = builder.createQuery(String.class);
+		final Root<User> user = query.from(User.class);
+		final Predicate equalsPredicate = builder.equal(user.get("email"), email);
+
+		final List<String> emails = em.createQuery(query.select(user.get("email")).where(equalsPredicate))
+				.setMaxResults(1).getResultList();
+
+		return !emails.isEmpty();
+	}
+
 	// QueryFilter
 	/* package-private */static class QueryFilter<T extends User> {
 
@@ -144,7 +154,11 @@ public class UserHibernateDao implements UserDao {
 		}
 
 		/* package-private */ CriteriaQuery<T> getQuery() {
-			return query.where(builder.and(predicates.toArray(new Predicate[] {})));
+			return query.where(builder.and(predicates.toArray(new Predicate[] {}))).orderBy(
+					builder.asc(root.get("lastName")),
+					builder.asc(root.get("firstName")),
+					builder.asc(root.get("dni"))
+			);
 		}
 
 		private void filterById(final UserFilter userFilter) {
