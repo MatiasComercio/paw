@@ -110,17 +110,17 @@ public class StudentController {
 
 		//////////////////////////////////TEST
 
-		final Student student1 = studentService.getByDocket(docket);
-		final Procedure procedure = new Procedure.Builder()
-				.procedureState("PENDING")
-				.title("this is the title")
-				.message("tramite 123")
-				.sender(student1)
-				.build();
-		studentService.createProcedure(procedure);
-
-		final List<Procedure> procedures = studentService.getProcedures(docket);
-//		LOGGER.debug("PROCEDURES = " + procedures);
+//		final Student student1 = studentService.getByDocket(docket);
+//		final Procedure procedure = new Procedure.Builder()
+//				.procedureState("PENDING")
+//				.title("this is the title")
+//				.message("tramite 123")
+//				.sender(student1)
+//				.build();
+//		studentService.createProcedure(procedure);
+//
+//		final List<Procedure> procedures = studentService.getProcedures(docket);
+////		LOGGER.debug("PROCEDURES = " + procedures);
 
 		/////////////////////////////////TEST
 
@@ -409,11 +409,11 @@ public class StudentController {
 			try {
 				done = studentService.create(student);
 			} catch (final DataIntegrityViolationException e) {
+				LOGGER.warn("User {} could not add student with DNI {}. Reason: ", loggedUser.getDni(), student.getDni(), e);
 				done = false;
 			}
 
 			if(!done) {
-				LOGGER.warn("User {} could not add student with DNI {}, Result = {}", loggedUser.getDni(), student.getDni(), done);
 				redirectAttributes.addFlashAttribute("alert", "danger");
 				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("USER_EXISTS_DNI", null, Locale.getDefault()));
 				return addStudent(studentForm, redirectAttributes, loggedUser);

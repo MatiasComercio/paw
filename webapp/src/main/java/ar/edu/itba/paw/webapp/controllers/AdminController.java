@@ -253,24 +253,26 @@ public class AdminController {
 
 		///////////////////////////////////////////TEST
 
-		final List<Procedure> procedures = adminService.getAllProcedures();
-
-		LOGGER.debug("PROCEDURES = {}", procedures);
-
-		final Procedure procedure = procedures.get(0);
-
-		LOGGER.debug("TITLE IS = " + procedure.getTitle());
-
-		final ProcedureForm procedureForm = new ProcedureForm();
-
-		procedureForm.loadFromProcedure(procedure);
-		procedureForm.setResponse("this is the response");
-		procedureForm.setState("ACCEPTED");
-		procedureForm.setReceptorId(dni);
-
-		final Procedure updatedProcedure = procedureForm.build();
-
-		adminService.answerProcedure(updatedProcedure);
+//		final List<Procedure> procedures = adminService.getAllProcedures();
+//
+//		LOGGER.debug("PROCEDURES = {}", procedures);
+//
+//		if (procedures != null && !procedures.isEmpty()) {
+//			final Procedure procedure = procedures.get(0);
+//
+//			LOGGER.debug("TITLE IS = " + procedure.getTitle());
+//
+//			final ProcedureForm procedureForm = new ProcedureForm();
+//
+//			procedureForm.loadFromProcedure(procedure);
+//			procedureForm.setResponse("this is the response");
+//			procedureForm.setState("ACCEPTED");
+//			procedureForm.setReceptorId(dni);
+//
+//			final Procedure updatedProcedure = procedureForm.build();
+//
+//			adminService.answerProcedure(updatedProcedure);
+//		}
 
 		///////////////////////////////////////////TEST
 

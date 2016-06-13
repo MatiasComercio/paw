@@ -45,7 +45,7 @@
             <c:set var="formAction">
                 <c:url value="/courses/${course.id}/edit" />
             </c:set>
-            <c:set var="hidden" value="" />
+            <c:set var="hidden" value="hidden" />
             <c:set var="readonly" value="true" />
             <spring:message var="formButton" code="saveChanges"/>
         </c:when>

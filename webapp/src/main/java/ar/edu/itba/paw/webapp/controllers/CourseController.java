@@ -196,13 +196,18 @@ public class CourseController {
 		}
 
 		Course course = courseForm.build();
-		boolean done = courseService.update(courseId, course);
+		boolean done;
+		try {
+			done = courseService.update(courseId, course);
+		} catch (final DataIntegrityViolationException e) {
+			LOGGER.warn("User {} could not add course. Result: ", loggedUser.getDni(), e);
+			done = false;
+		}
 
 		/* If no course with 'courseId' exists, !result.equals(Result.OK) will be true */
 		if(!done){
-			LOGGER.warn("User {} could not edit course, Result = {}", loggedUser.getDni(), done);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("CORRELATIVE_SEMESTER_INCOMPATIBILITY", null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("course_persist_fail", null, Locale.getDefault()));
 			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editCourse(courseId, courseForm, redirectAttributes, loggedUser);
 		} else {
@@ -306,10 +311,10 @@ public class CourseController {
 			try {
 				done = courseService.create(course);
 			} catch (final DataIntegrityViolationException e) {
+				LOGGER.warn("User {} could not add course. Result: ", loggedUser.getDni(), e);
 				done = false;
 			}
 			if(!done){
-				LOGGER.warn("User {} could not add course, Result = {}", loggedUser.getDni(), done);
 				redirectAttributes.addFlashAttribute("alert", "danger");
 				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("COURSE_EXISTS_ID", null, Locale.getDefault()));
 				return addCourse(courseForm, redirectAttributes, loggedUser);
