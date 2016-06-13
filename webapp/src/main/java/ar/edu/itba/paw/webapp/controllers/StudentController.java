@@ -83,7 +83,6 @@ public class StudentController {
 			model.addAttribute("deleteStudentForm", new StudentFilterForm()); /* +++xcheck: if it is necessary to create a new Form */
 		}
 
-
 		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
 				.docket(studentFilterForm.getDocket())
 				.firstName(studentFilterForm.getFirstName())
