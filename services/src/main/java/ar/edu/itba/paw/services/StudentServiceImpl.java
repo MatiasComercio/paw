@@ -253,6 +253,7 @@ public class StudentServiceImpl implements StudentService {
 			gradeForm = new TranscriptGrade();
 			gradeForm.setDocket(docket);
 			gradeForm.setCourseId(c.getId());
+			gradeForm.setCourseCodId(c.getCourseId());
 			gradeForm.setCourseName(c.getName());
 			gradeForm.setTaking(true);
 			semesters.get(iSemester).add(gradeForm);
@@ -265,6 +266,7 @@ public class StudentServiceImpl implements StudentService {
 			gradeForm = new TranscriptGrade();
 			gradeForm.setDocket(docket);
 			gradeForm.setCourseId(c.getId());
+			gradeForm.setCourseCodId(c.getCourseId());
 			gradeForm.setCourseName(c.getName());
 			semesters.get(iSemester).add(gradeForm);
 		}

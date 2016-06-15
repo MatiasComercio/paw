@@ -83,7 +83,7 @@
                         <tbody>
                         <c:forEach items="${semester}" var="grade">
                             <tr>
-                                <td><span> ${ grade.courseId }</span></td>
+                                <td><span> ${ grade.courseCodId }</span></td>
                                 <td><span> ${ grade.courseName }</span></td>
                                 <td>
                                     <c:choose>
@@ -137,7 +137,9 @@
                                     <c:if test="${grade.canEdit}">
                                         <button name="gradeButton" class="btn btn-info btn-sm" type="button"
                                                 data-id="${grade.id}" data-docket="${grade.docket}"
-                                                data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
+                                                data-course_id="${ grade.courseId }"
+                                                data-course_cod_id="${grade.courseCodId}"
+                                                data-course_name="${ grade.courseName }"
                                                 data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
                                                 data-target="#gradeFormConfirmationModal">
                                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>

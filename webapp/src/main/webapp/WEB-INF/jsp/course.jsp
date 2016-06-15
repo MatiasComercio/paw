@@ -98,7 +98,7 @@
                             <tbody>
                             <c:forEach items="${correlatives}" var="correlative">
                                 <tr>
-                                    <td>${ correlative.id }</td>
+                                    <td>${ correlative.courseId }</td>
                                     <td>${ correlative.name }</td>
                                     <td>${ correlative.credits }</td>
                                     <td>
