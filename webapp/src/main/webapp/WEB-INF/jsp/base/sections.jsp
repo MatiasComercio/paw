@@ -192,6 +192,17 @@ That's why we are usig <%@include ...%>--%>
 
                 <c:when test="${section2 eq 'final_inscription'}">
                     <c:set var="finalInscriptionActive" value="active" scope="request"/>
+
+                    <c:set var="includeScripts" >
+                        ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/finalInscriptionForm.js"/>"></script>
+                        ` <script charset="UTF-8" src="<c:url value="/static/js/template/finalInscriptionDropForm.js"/>"></script>
+                    </c:set>
+                    <c:set var="loadScripts">
+                        ${loadScripts} `
+                        loadfinalInscriptionForm("final_inscription");
+                        loadfinalInscriptionDropForm("final_inscription_drop");
+                    </c:set>
+
                 </c:when>
 
                 <c:when test="${section2 eq 'grades'}">
