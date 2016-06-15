@@ -69,13 +69,26 @@
     </c:set>
 </sec:authorize>
 <%--<sec:authorize access="hasAuthority('ADD_FINAL_INSCRIPTION')">--%>
-    <c:set var="finalInscription">
+    <c:set var="tmpFinalInscription">
         <li class="${finalInscriptionActive}">
             <a href="<c:url value="/students/${student.docket}/final_inscription"/>" class="pushy-link">
                 <i class="fa fa-pencil" aria-hidden="true"></i> <spring:message code="final_inscription"/>
             </a>
         </li>
     </c:set>
+
+    <%-- if (student.docket == logged.id || logged.hasAuthority(admin)) --> can edit --%>
+    <c:choose>
+        <c:when test="${student.docket eq user.id}">
+            <c:set var="finalInscription" value="${tmpFinalInscription}" />
+        </c:when>
+        <c:otherwise>
+            <c:set var="finalInscription" value="" />
+            <sec:authorize access="hasAuthority('ROLE_ADMIN')">
+                <c:set var="finalInscription" value="${tmpFinalInscription}" />
+            </sec:authorize>
+        </c:otherwise>
+    </c:choose>
 <%--</sec:authorize>--%>
 <sec:authorize access="hasAuthority('ROLE_VIEW_COURSES')">
     <c:set var="viewCourses">
