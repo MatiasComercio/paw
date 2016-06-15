@@ -282,6 +282,16 @@ That's why we are usig <%@include ...%>--%>
                     </c:set>
                 </c:when>
 
+                <c:when test="${section2 eq 'final_inscription_view'}">
+                    <c:set var="includeScripts" >
+                        ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/finalGradeForm.js"/>"></script>
+                    </c:set>
+                    <c:set var="loadScripts">
+                        ${loadScripts} `
+                        loadFinalGradeForm("finalGradeButton");
+                    </c:set>
+                </c:when>
+
                 <c:when test="${section2=='edit'}">
                     <c:set var="editActive" value="active" scope="request"/>
                     <c:set var="includeScripts" >

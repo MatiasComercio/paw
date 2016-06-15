@@ -604,6 +604,7 @@ public class CourseController {
         mav.addObject("studentsTakingFinal", courseService.getFinalStudents(id));
         mav.addObject("finalInscription", courseService.getFinalInscription(id));
         mav.addObject("finalGradeFormAction", "/courses/final_inscription/" + id + "/info");
+		mav.addObject("section2", "final_inscription_view");
         return mav;
     }
 
