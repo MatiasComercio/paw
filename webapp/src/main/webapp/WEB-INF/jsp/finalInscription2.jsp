@@ -61,7 +61,7 @@
                             <td>${ inscription.course.courseId }</td>
                             <td>${ inscription.course.name}</td>
                             <td>${ inscription.finalExamDate}</td>
-                            <td>${ inscription.maxVacancy - inscription.vacancy } / ${ inscription.maxVacancy }</td>
+                            <td>${ inscription.vacancy } / ${ inscription.maxVacancy }</td>
                             <td>
                                 <c:choose>
                                     <c:when test="${section eq 'students'}">
@@ -120,7 +120,7 @@
                             <td>${ inscription.course.courseId }</td>
                             <td>${ inscription.course.name}</td>
                             <td>${ inscription.finalExamDate}</td>
-                            <td>${ inscription.maxVacancy - inscription.vacancy } / ${ inscription.maxVacancy }</td>
+                            <td>${ inscription.vacancy } / ${ inscription.maxVacancy }</td>
                             <td>
                                 <c:choose>
                                     <c:when test="${section eq 'students'}">

@@ -26,63 +26,36 @@
                 </div>
             </div>
 
-            <jsp:include page="base/alerts.jsp" />
-
-            <!-- Details -->
+            <!-- New details -->
             <div class="row">
-                <div class="col-xs-12 col-md-5">
-                    <div class="well">
-                        <div class="row">
-
-                            <div class="col-xs-12">
-                                <div class="row">
-                                    <div class="col-xs-9">
-                                        <strong><spring:message code="id" /></strong>
-                                    </div>
-                                    <div class="col-xs-3 right-effect">
-                                        ${ finalInscription.course.courseId }
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12">
-                                <div class="row">
-                                    <div class="col-xs-9">
-                                        <strong><spring:message code="course" /></strong>
-                                    </div>
-                                    <div class="col-xs-3 right-effect">
-                                        ${ finalInscription.course.name }
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12">
-                                <div class="row">
-                                    <div class="col-xs-7">
-                                        <strong><spring:message code="final_date" /></strong>
-                                    </div>
-                                    <div class="col-xs-5 right-effect">
-                                        ${ finalInscription.finalExamDate }
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12">
-                                <div class="row">
-                                    <div class="col-xs-9">
-                                        <strong><spring:message code="final_vacancy" /></strong>
-                                    </div>
-                                    <div class="col-xs-3 right-effect">
-                                        ${ finalInscription.vacancy } / ${ finalInscription.maxVacancy }
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
+                <form>
+                    <div class="form-group col-xs-2">
+                        <label class="control-label">
+                            <span></span><spring:message code="id"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${ finalInscription.course.courseId }</p>
                     </div>
-                </div>
+                    <div class="form-group col-xs-6">
+                        <label class="control-label">
+                            <span></span><spring:message code="course"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${finalInscription.course.name}</p>
+                    </div>
+                    <div class="form-group col-xs-2">
+                        <label class="control-label">
+                            <span></span><spring:message code="final_date"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${finalInscription.finalExamDate}</p>
+                    </div>
+                    <div class="form-group col-xs-2">
+                        <label class="control-label">
+                            <span></span><spring:message code="final_vacancy"/>
+                        </label>
+                        <p class="form-control-static active-overflow"> ${ finalInscription.vacancy } / ${ finalInscription.maxVacancy }</p>
+                    </div>
+                </form>
             </div>
-            <!-- /Details -->
+            <!-- /New details -->
 
             <!-- content -->
             <h2><spring:message code="inscribed" /></h2>
