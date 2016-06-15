@@ -22,7 +22,7 @@
                     <div class="form-group">
                         <form:label path="docket" class="col-xs-4 control-label"><spring:message code="studentDocket"/></form:label>
                         <div class="col-xs-8">
-                            <form:input class="form-control" id="disabledInput" type="text" path="docket" value="" readonly="true"/>
+                            <form:input class="form-control" id="disabledInput" type="text" path="docket" readonly="true"/>
                         </div>
                         <div class="col-xs-4"></div>
                         <div class="col-xs-8">
