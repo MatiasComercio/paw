@@ -47,14 +47,16 @@ public class CourseHibernateDao implements CourseDao {
 
         //NOTE: In this case if the id is changed an exception is thrown. In the future we shouldn't allow a user to modify the seq_id!
         final List<Course> correlatives = getCorrelativeCourses(id);
-        final List<Course> upperCorrelatives = getCorrelativeCourses(id);
 
         final Set<Course> setCorrelatives = new HashSet<>(correlatives);
-        final Set<Course> setUpperCorrelatives = new HashSet<>(upperCorrelatives);
+
         course.setCorrelatives(setCorrelatives);
-        course.setUpperCorrelatives(setUpperCorrelatives);
+
         Session session = em.unwrap(Session.class);
         Course oldCourse = em.getReference(Course.class, id);
+
+        course.setUpperCorrelatives(oldCourse.getUpperCorrelatives());
+
         em.detach(oldCourse);
         session.update(course);
 
