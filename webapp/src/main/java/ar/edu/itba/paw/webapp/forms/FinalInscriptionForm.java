@@ -18,7 +18,6 @@ public class FinalInscriptionForm {
     @NotBlank
     private String courseName;
 
-    @NotBlank
     private String courseCode;
 
     //finalInscriptionId

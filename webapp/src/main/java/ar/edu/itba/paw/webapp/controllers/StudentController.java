@@ -481,6 +481,13 @@ public class StudentController {
 			LOGGER.warn("User {} tried to add a grade and doesn't have ADD_GRADE authority [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
+
+		final Integer c = gradeForm.getCourseId();
+		if (c == null) {
+			final String referrer = request.getHeader("referer");
+			return new ModelAndView("redirect:" + referrer);
+		}
+
 		if (errors.hasErrors()) {
 			LOGGER.warn("User {} could not add a grade due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
 			redirectAttributes.addFlashAttribute("alert", "danger");
@@ -490,7 +497,8 @@ public class StudentController {
 							Locale.getDefault()));
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
 			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
-			return new ModelAndView("redirect:/students/" + docket + "/courses");
+
+			return new ModelAndView("redirect:/courses/" + c + "/students");
 		}
 
 		/********************************/
@@ -512,8 +520,7 @@ public class StudentController {
 					Locale.getDefault()));
 		}
 
-		final String referrer = request.getHeader("referer");
-		return new ModelAndView("redirect:" + referrer);
+		return new ModelAndView("redirect:/courses/" + c + "/students");
 	}
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
@@ -725,16 +732,15 @@ public class StudentController {
 
 
 		if (!result) {
-			LOGGER.warn("User {} could not add final inscription for student {}, Result = {}", loggedUser.getDni(), docket, result);
-			//TODO: Ver que hacemos aca
-            //redirectAttributes.addFlashAttribute("alert", "danger");
-			//redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			LOGGER.warn("User {} could not add final inscription for student {}", loggedUser.getDni(), docket);
+            redirectAttributes.addFlashAttribute("alert", "danger");
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("final_inscription_fail", null, Locale.getDefault()));
 
 		} else {
 			LOGGER.info("User {} added final inscription of student {} successfully", loggedUser.getDni(), docket);
-			//redirectAttributes.addFlashAttribute("alert", "success");
-			//redirectAttributes.addFlashAttribute("message",
-					messageSource.getMessage("final_inscription_success", null, Locale.getDefault());
+			redirectAttributes.addFlashAttribute("alert", "success");
+			redirectAttributes.addFlashAttribute("message",
+					messageSource.getMessage("final_inscription_success", null, Locale.getDefault()));
 		}
 
 		return new ModelAndView("redirect:/students/" + docket + "/final_inscription");

@@ -23,7 +23,6 @@ public class GradeForm {
     @Min(1)
     private Integer courseId;
 
-    @NotBlank
     private String courseCodId;
 
     @NotBlank
