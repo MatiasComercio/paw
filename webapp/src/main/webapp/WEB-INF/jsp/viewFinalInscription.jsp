@@ -26,6 +26,8 @@
                 </div>
             </div>
 
+            <jsp:include page="base/alerts.jsp" />
+
             <!-- New details -->
             <div class="row">
                 <form>

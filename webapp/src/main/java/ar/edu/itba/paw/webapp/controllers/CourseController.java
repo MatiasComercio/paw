@@ -607,6 +607,7 @@ public class CourseController {
 		    return NOT_FOUND_MAV;
 	    }
 
+	    HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
 	    mav.addObject("course", finalInscription.getCourse());
         mav.addObject("studentsTakingFinal", courseService.getFinalStudents(id));
         mav.addObject("finalInscription", finalInscription);
@@ -617,7 +618,7 @@ public class CourseController {
 
     @RequestMapping(value = "/courses/final_inscription/{id}/info", method = RequestMethod.POST)
     public ModelAndView qualifyFinalInscription(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
-                                  @PathVariable Integer id, RedirectAttributes redirectAttributes,
+                                  @PathVariable final Integer id, RedirectAttributes redirectAttributes,
                                   @ModelAttribute("user") UserSessionDetails loggedUser) {
 
         if (!loggedUser.hasAuthority("ADD_GRADE")
@@ -637,7 +638,7 @@ public class CourseController {
                             Locale.getDefault()));
 
 
-            return new ModelAndView("/courses/final_inscription/" + id + "/info");
+	        return new ModelAndView("redirect:/courses/final_inscription/" + id + "/info");
         }
 
        // gradeForm.setStudent(studentService.getByDocket(docket));
