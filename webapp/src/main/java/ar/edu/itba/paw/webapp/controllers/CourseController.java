@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
@@ -601,8 +602,14 @@ public class CourseController {
             model.addAttribute("gradeForm", new GradeForm());
         }
 
+	    final FinalInscription finalInscription = courseService.getFinalInscription(id);
+	    if (finalInscription == null) {
+		    return NOT_FOUND_MAV;
+	    }
+
+	    mav.addObject("course", finalInscription.getCourse());
         mav.addObject("studentsTakingFinal", courseService.getFinalStudents(id));
-        mav.addObject("finalInscription", courseService.getFinalInscription(id));
+        mav.addObject("finalInscription", finalInscription);
         mav.addObject("finalGradeFormAction", "/courses/final_inscription/" + id + "/info");
 		mav.addObject("section2", "final_inscription_view");
         return mav;

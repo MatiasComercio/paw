@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <title>
-        <spring:message code="webAbbreviation"/> | ${student.fullName} | <spring:message code="grades"/>
+        <spring:message code="webAbbreviation"/> | <spring:message code="finalInscriptionDetail"/>  | ${finalInscription.id}
     </title>
     <jsp:include page="base/head.jsp" />
 </head>
