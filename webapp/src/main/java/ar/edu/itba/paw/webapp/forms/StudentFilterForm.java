@@ -1,9 +1,13 @@
 package ar.edu.itba.paw.webapp.forms;
 
+import javax.validation.constraints.Size;
+
 public class StudentFilterForm {
 
 	private Integer docket;
+	@Size(max=50)
 	private String firstName;
+	@Size(max=50)
 	private String lastName;
 
 	public Integer getDocket() {

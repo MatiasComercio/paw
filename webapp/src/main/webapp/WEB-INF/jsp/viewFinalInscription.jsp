@@ -26,63 +26,36 @@
                 </div>
             </div>
 
-            <jsp:include page="base/alerts.jsp" />
-
-            <!-- Details -->
+            <!-- New details -->
             <div class="row">
-                <div class="col-xs-12 col-md-5">
-                    <div class="well">
-                        <div class="row">
-
-                            <div class="col-xs-12">
-                                <div class="row">
-                                    <div class="col-xs-9">
-                                        <strong><spring:message code="id" /></strong>
-                                    </div>
-                                    <div class="col-xs-3 right-effect">
-                                        ${ finalInscription.id }
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12">
-                                <div class="row">
-                                    <div class="col-xs-9">
-                                        <strong><spring:message code="course" /></strong>
-                                    </div>
-                                    <div class="col-xs-3 right-effect">
-                                        ${ finalInscription.course.name }
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12">
-                                <div class="row">
-                                    <div class="col-xs-7">
-                                        <strong><spring:message code="final_date" /></strong>
-                                    </div>
-                                    <div class="col-xs-5 right-effect">
-                                        ${ finalInscription.finalExamDate }
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12">
-                                <div class="row">
-                                    <div class="col-xs-9">
-                                        <strong><spring:message code="final_vacancy" /></strong>
-                                    </div>
-                                    <div class="col-xs-3 right-effect">
-                                        ${ finalInscription.vacancy } / ${ finalInscription.maxVacancy }
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
+                <form>
+                    <div class="form-group col-xs-2">
+                        <label class="control-label">
+                            <span></span><spring:message code="id"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${ finalInscription.course.courseId }</p>
                     </div>
-                </div>
+                    <div class="form-group col-xs-6">
+                        <label class="control-label">
+                            <span></span><spring:message code="course"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${finalInscription.course.name}</p>
+                    </div>
+                    <div class="form-group col-xs-2">
+                        <label class="control-label">
+                            <span></span><spring:message code="final_date"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${finalInscription.finalExamDate}</p>
+                    </div>
+                    <div class="form-group col-xs-2">
+                        <label class="control-label">
+                            <span></span><spring:message code="final_vacancy"/>
+                        </label>
+                        <p class="form-control-static active-overflow"> ${ finalInscription.vacancy } / ${ finalInscription.maxVacancy }</p>
+                    </div>
+                </form>
             </div>
-            <!-- /Details -->
+            <!-- /New details -->
 
             <!-- content -->
             <h2><spring:message code="inscribed" /></h2>
@@ -116,6 +89,7 @@
                                         data-finalInscriptionId="${ finalInscription.id }"
                                         data-firstName="${student.firstName}"
                                         data-lastName="${student.lastName}"
+                                        data-course_code="${finalInscription.course.courseId}"
                                         data-course_id="${finalInscription.course.id}"
                                         data-course_name="${finalInscription.course.name }"
                                         data-toggle="modal"
@@ -140,43 +114,6 @@
 </div>
 <!-- Scripts -->
 <jsp:include page="base/scripts.jsp" />
-<script>
-    $(document).ready(function() {
-        function loadFinalGradeForm(nameAttr) {
-            /* Grade Form Action Sequence */
-            var gradeFormButton = $("[name='" + nameAttr + "']");
-
-            gradeFormButton.on("click", function () {
-                var docket = $(this).data("docket");
-                var courseId = $(this).data("course_id");
-                var courseName = $(this).data("course_name");
-                var url = $(this).data("url");
-                var gradeForm = $("#final_grade_form");
-                gradeForm.find("input[name='docket']").val(docket);
-                gradeForm.find("input[name='courseId']").val(courseId);
-                gradeForm.find("input[name='courseName']").val(courseName);
-                gradeForm.attr("action", url);
-
-
-            });
-
-            $("#finalGradeFormConfirmAction").on("click", function () {
-                $('#finalGradeFormConfirmationModal').modal('hide');
-                $("#final_grade_form").submit();
-            });
-
-            /* Remove focus on the modal trigger button */
-            $('#finalGradeFormConfirmationModal').on('show.bs.modal', function (e) {
-                gradeFormButton.one('focus', function (e) {
-                    $(this).blur();
-                });
-            });
-            /* /Grade Form Action Sequence */
-        }
-
-        loadFinalGradeForm("finalGradeButton");
-    });
-</script>
 
 </body>
 </html>

@@ -19,7 +19,7 @@
                 <c:url var="finalInscriptionFormAction" value="${finalInscriptionFormAction}" />
                 <form:form class="form-horizontal" id="final_inscription_form" modelAttribute="finalInscriptionForm" action="${finalInscriptionFormAction}" method="post" enctype="application/x-www-form-urlencoded">
                     <%-- Seq id = Acta --%>
-                    <div class="form-group">
+                    <div class="form-group hidden">
                         <form:label path="id" class="col-xs-4 control-label"><spring:message code="inscriptionCode"/></form:label>
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="id" value="${id}" readonly="true"/>
@@ -29,6 +29,18 @@
                             <form:errors path="id" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <form:label path="courseCode" class="col-xs-4 control-label"><spring:message code="inscriptionCode"/></form:label>
+                        <div class="col-xs-8">
+                            <form:input class="form-control" id="disabledInput" type="text" path="courseCode" value="${courseCode}" readonly="true"/>
+                        </div>
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-8">
+                            <form:errors path="courseCode" cssClass="text-danger bg-danger" element="div"/>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <form:label path="courseName" class="col-xs-4 control-label"><spring:message code="course"/></form:label>
                         <div class="col-xs-8">

@@ -83,8 +83,7 @@
 	<jsp:include page="base/footer.jsp" />
 </div>
 <!-- Scripts -->
-<script charset="UTF-8">
-	<%@include file='/WEB-INF/js/cancelButton.js'%>
+<script charset="UTF-8" src="<c:url value="/static/js/cancelButton.js"/>">
 </script>
 <script>
 	$(document).ready(function() {

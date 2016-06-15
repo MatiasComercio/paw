@@ -35,46 +35,40 @@
 
             <!-- Content -->
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="well">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="row">
-                                    <div class="col-xs-3 right-effect">
-                                        <strong><spring:message code="id"/></strong>
-                                    </div>
-                                    <div class="col-xs-9">
-                                        ${course.id}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-3 right-effect">
-                                        <strong><spring:message code="name"/></strong>
-                                    </div>
-                                    <div class="col-xs-9">
-                                        ${course.name}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-3 right-effect">
-                                        <strong><spring:message code="credits"/></strong>
-                                    </div>
-                                    <div class="col-xs-9">
-                                        ${course.credits}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-3 right-effect">
-                                        <strong><spring:message code="semester"/></strong>
-                                    </div>
-                                    <div class="col-xs-9">
-                                        ${course.semester}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                <form>
+                    <div class="form-group col-xs-2">
+                        <label class="control-label">
+                            <span></span><spring:message code="id"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${course.courseId}</p>
+                        <%--<label for="courseId"><spring:message code="id"/></label>--%>
+                        <%--<input type="text" class="form-control" id="courseId" value="${course.courseId}" readonly>--%>
                     </div>
-                </div>
+                    <div class="form-group col-xs-6">
+                        <label class="control-label">
+                            <span></span><spring:message code="name"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${course.name}</p>
+                        <%--<label for="name"><spring:message code="name"/></label>--%>
+                        <%--<input type="text" class="form-control" id="name" value="${course.name}" readonly>--%>
+                    </div>
+                    <div class="form-group col-xs-2">
+                        <label class="control-label">
+                            <span></span><spring:message code="credits"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${course.credits}</p>
+                        <%--<label for="credits"><spring:message code="credits"/></label>--%>
+                        <%--<input type="text" class="form-control" id="credits" value="${course.credits}" readonly>--%>
+                    </div>
+                    <div class="form-group col-xs-2">
+                        <label class="control-label">
+                            <span></span><spring:message code="semester"/>
+                        </label>
+                        <p class="form-control-static active-overflow">${course.semester}</p>
+                        <%--<label for="semester"><spring:message code="semester"/></label>--%>
+                        <%--<input type="text" class="form-control" id="semester" value="${course.semester}" readonly>--%>
+                    </div>
+                </form>
             </div>
 
             <%-- Correlatives --%>
@@ -104,7 +98,7 @@
                             <tbody>
                             <c:forEach items="${correlatives}" var="correlative">
                                 <tr>
-                                    <td>${ correlative.id }</td>
+                                    <td>${ correlative.courseId }</td>
                                     <td>${ correlative.name }</td>
                                     <td>${ correlative.credits }</td>
                                     <td>
@@ -159,7 +153,7 @@
                             <tbody>
                             <c:forEach items="${finalInscriptions}" var="finalInscription">
                                 <tr>
-                                    <td>${ finalInscription.id }</td>
+                                    <td>${ finalInscription.course.courseId }</td>
                                     <td>${ finalInscription.vacancy }/${finalInscription.maxVacancy}</td>
                                     <td>${ finalInscription.finalExamDate }</td>
                                     <td><c:choose>
@@ -191,11 +185,11 @@
 <!-- Scripts -->
 <%--<sec:authorize access="hasAuthority('ROLE_DELETE_COURSE')">
     <script type="text/javascript" charset="UTF-8">
-        <%@include file="../js/template/deleteCourseForm.js"%>
+        <%@include file="/static/js/template/deleteCourseForm.js"%>
     </script>
 </sec:authorize>
 <sec:authorize access="hasAuthority('ROLE_ADD_CORRELATIVE')">
-    <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/CorrelativeForm.js"%></script>
+    <script type="text/javascript" charset="UTF-8"><%@include file="/static/js/template/CorrelativeForm.js"%></script>
 </sec:authorize>
 <script>
     $( document ).ready(function() {

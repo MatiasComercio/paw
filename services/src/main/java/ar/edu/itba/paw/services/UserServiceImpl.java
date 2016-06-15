@@ -1,9 +1,9 @@
 package ar.edu.itba.paw.services;
 
-import ar.edu.itba.paw.interfaces.*;
+import ar.edu.itba.paw.interfaces.UserDao;
+import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.User;
-import ar.edu.itba.paw.shared.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,22 +38,16 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	@Override
-	public Result changePassword(final int dni, final String prevPassword, final String newPassword, final String repeatNewPassword) {
-		if (!newPassword.equals(repeatNewPassword)) {
-			return Result.PASSWORDS_DO_NOT_MATCH;
-		}
-		if(dni < 0) {
-			return Result.ERROR_DNI_OUT_OF_BOUNDS;
-		}
+	public boolean changePassword(final int dni, final String prevPassword, final String newPassword, final String repeatNewPassword) {
+//		if (!newPassword.equals(repeatNewPassword)) {
+//			return Result.PASSWORDS_DO_NOT_MATCH;
+//		}
 		return userDao.changePassword(dni, prevPassword, newPassword);
 	}
 
 	@Transactional
 	@Override
-	public Result resetPassword(final int dni) {
-		if(dni <= 0) {
-			return Result.ERROR_DNI_OUT_OF_BOUNDS;
-		}
+	public boolean resetPassword(final int dni) {
 		return userDao.resetPassword(dni);
 	}
 

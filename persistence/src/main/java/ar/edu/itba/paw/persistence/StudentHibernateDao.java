@@ -1,13 +1,14 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.CourseDao;
+import ar.edu.itba.paw.interfaces.ProcedureDao;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalGrade;
 import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 @Repository
 public class StudentHibernateDao implements StudentDao {
@@ -45,6 +48,9 @@ public class StudentHibernateDao implements StudentDao {
 
     @Autowired
     private CourseDao courseDao;
+
+	@Autowired
+	private ProcedureDao procedureDao;
 
 	@Override
 	public Student getByDocket(final int docket) {
@@ -92,25 +98,28 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public Result create(final Student student) {
+	public boolean create(final Student student) {
 		em.persist(student);
 		LOGGER.debug("[create] - {}", student);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
-	public Result update(final Student student) {
+	public boolean update(final Student student) {
 		em.merge(student);
 		LOGGER.debug("[update] - {}", student);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
-	public Result deleteStudent(final int docket) {
+	public boolean deleteStudent(final int docket) {
 		final Student student = getByDocket(docket);
 		em.remove(student);
 		LOGGER.debug("[delete] - {}", student);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
@@ -126,14 +135,15 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public Result addGrade(final Grade grade) {
+	public boolean addGrade(final Grade grade) {
 		em.persist(grade);
 		LOGGER.debug("[addGrade] - {}", grade);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
-	public Result addFinalGrade(final Grade grade, final FinalGrade finalGrade) {
+	public boolean addFinalGrade(final Grade grade, final FinalGrade finalGrade) {
 		//TODO: Test this
         LOGGER.info("Will try to persist {}", finalGrade);
 		em.persist(finalGrade);
@@ -142,11 +152,11 @@ public class StudentHibernateDao implements StudentDao {
 		grade.getFinalGrades().add(finalGrade);
 		//em.merge(grade);
 
-		return Result.OK;
+		return true;
 	}
 
 	@Override
-	public Result editGrade(final Grade newGrade, final BigDecimal oldGrade) {
+	public boolean editGrade(final Grade newGrade, final BigDecimal oldGrade) {
 		em.merge(newGrade);
 //		final CriteriaBuilder cb = em.getCriteriaBuilder();
 //		final CriteriaUpdate<Grade> query = cb.createCriteriaUpdate(Grade.class);
@@ -155,27 +165,30 @@ public class StudentHibernateDao implements StudentDao {
 //		final Predicate pCourseId = builder.equal(root.get("id"), id);
 
 		LOGGER.debug("[editGrade] - {}", newGrade);
-		return Result.OK;
+		return true;
 	}
 
 	@Override
-	public Result enroll(final int studentDocket, final int courseId) {
+	public boolean enroll(final int studentDocket, final int courseId) {
 		final Student student = getByDocket(studentDocket);
 		final Course course = courseDao.getById(courseId);
 		final List<Course> studentCourses = student.getStudentCourses();
+
 		studentCourses.add(course);
 		em.merge(student);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
-	public Result unenroll(final int studentDocket, final int courseId) {
+	public boolean unenroll(final int studentDocket, final int courseId) {
 		final Student student = getByDocket(studentDocket);
 		final Course course = courseDao.getById(courseId);
 		final List<Course> studentCourses = student.getStudentCourses();
+
 		studentCourses.remove(course);
 		em.merge(student);
-		return Result.OK;
+		return true;
 	}
 
     //Modified to return courses that are approved and less than 3 finals are taken, or there's a final passed
@@ -272,6 +285,11 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
+	public boolean createProcedure(final Procedure procedure) {
+		return procedureDao.createProcedure(procedure);
+	}
+
+	@Override
 	public Student getByDni(final int dni) {
 		return getBy(GET_BY_DNI, DNI_PARAM, dni);
 	}
@@ -283,6 +301,7 @@ public class StudentHibernateDao implements StudentDao {
 		final List<Student> students = query.getResultList();
 		return students.isEmpty() ? null : students.get(FIRST);
 	}
+
 
 	//TODO: Test this
 	/*@Override
@@ -364,4 +383,5 @@ public class StudentHibernateDao implements StudentDao {
 
         return courses;
 	}
+
 }

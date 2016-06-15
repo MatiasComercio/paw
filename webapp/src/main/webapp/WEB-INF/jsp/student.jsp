@@ -32,144 +32,155 @@
 
             <!-- Content -->
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="well">
+                <form>
+                    <div class="col-xs-12 col-md-6">
                         <div class="row">
-                            <div class="col-xs-12 col-md-6">
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="docket"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.docket}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="dni"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.dni}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="firstName"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.firstName}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="lastName"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.lastName}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="genre"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        <spring:message code="${student.genre}"/>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="birthday"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.birthday}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="email"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.email}
-                                    </div>
-                                </div>
+                            <div class="form-group col-xs-6">
+                                <label class="control-label">
+                                    <span></span><spring:message code="docket"/>
+                                </label>
+                                <p class="form-control-static">${student.docket}</p>
                             </div>
-                            <div class="col-xs-12 col-md-6">
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="country"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.address.country}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="city"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.address.city}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="neighbourhood"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.address.neighborhood}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="street"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.address.street}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="number"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.address.number}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="floor"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.address.floor}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="door"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.address.door}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="telephone"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.address.telephone}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-xs-6 ">
-                                        <strong><spring:message code="zipCode"/></strong>
-                                    </div>
-                                    <div class="col-xs-6">
-                                        ${student.address.zipCode}
-                                    </div>
-                                </div>
+                            <!-- User Data -->
+                            <div class="form-group col-xs-6">
+                                <%--<label for="dni">--%>
+                                <label class="control-label">
+                                    <span></span><spring:message code="dni"/>
+                                </label>
+                                <p class="form-control-static active-overflow">${student.dni}</p>
+                                <%--<input type="text" class="form-control" id="dni" value="${student.dni}" readonly/>--%>
+                            </div>
+                            <div class="form-group col-xs-6">
+                                <%--<label for="firstName">--%>
+                                <label class="control-label">
+                                    <spring:message code="firstName"/>
+                                </label>
+                                <%--<input type="text" class="form-control" id="firstName" value="${student.firstName}" readonly/>--%>
+                                <p class="form-control-static active-overflow">${student.firstName}</p>
+                            </div>
+                            <div class="form-group col-xs-6">
+                                <%--<label for="lastName">--%>
+                                <label class="control-label">
+                                    <spring:message code="lastName"/>
+                                </label>
+                                <%--<input type="text" class="form-control" id="lastName"  value="${student.lastName}" readonly/>--%>
+                                <p class="form-control-static active-overflow">${student.lastName}</p>
+                            </div>
+                            <div class="form-group col-xs-6">
+                                <%--<label for="birthday">--%>
+                                <label class="control-label">
+                                    <spring:message code="birthday"/>
+                                </label>
+                                <spring:message code="birthdayPlaceholder" var="birthdayPlaceholder"/>
+                                <%--<input id="birthday" type="text" class="form-control"  value="${student.birthday}" readonly/>--%>
+                                <p class="form-control-static active-overflow">${student.birthday}</p>
+                            </div>
+                            <%-- for future use --%>
+                            <div class="form-group col-xs-6">
+                                <%--<label for="email">--%>
+                                <label class="control-label">
+                                    <spring:message code="email"/>
+                                </label>
+                                <%--<input type="text" class="form-control" id="email" value="${student.email}" readonly/>--%>
+                                <p class="form-control-static active-overflow">${student.email}</p>
+                            </div>
+                            <div class ="form-group col-xs-12 col-md-6">
+                                <%--<label for="genre">--%>
+                                <label class="control-label">
+                                    <spring:message code="genre"/>
+                                </label>
+                                <p class="form-control-static active-overflow"><spring:message code="${student.genre}"/></p>
+                                <%--<input type="text" class="form-control" id="genre" value="<spring:message code="${student.genre}"/>" readonly/>--%>
+                            </div>
+                            <div class="form-group col-xs-12 col-md-6">
+                                <%--<label for="telephone">--%>
+                                <label class="control-label">
+                                    <spring:message code="telephone"/>
+                                </label>
+                                <p class="form-control-static active-overflow">${student.address.telephone}</p>
+                                <%--<input type="text" class="form-control" id="telephone"  value="${student.address.telephone}" readonly/>--%>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="col-xs-12 col-md-6">
+                        <div class="row">
+                            <!-- Address Data -->
+                            <div class="form-group col-xs-12">
+                                <%--<label for="country">--%>
+                                <label class="control-label">
+                                    <spring:message code="country"/>
+                                </label>
+                                <p class="form-control-static active-overflow">${student.address.country}</p>
+
+                                <%--<input type="text" class="form-control" id="country"  value="${student.address.country}" readonly/>--%>
+                            </div>
+                            <div class="form-group col-xs-6">
+                                <%--<label for="city">--%>
+                                <label class="control-label">
+                                    <spring:message code="city"/>
+                                </label>
+                                <p class="form-control-static active-overflow">${student.address.city}</p>
+
+                                <%--<input type="text" class="form-control" id="city"  value="${student.address.city}" readonly/>--%>
+                            </div>
+                            <div class="form-group col-xs-6">
+                                <%--<label for="neighborhood">--%>
+                                <label class="control-label">
+                                    <spring:message code="neighbourhood"/>
+                                </label>
+                                <p class="form-control-static active-overflow">${student.address.neighborhood}</p>
+
+                                <%--<input type="text" class="form-control" id="neighborhood"  value="${student.address.neighborhood}" readonly/>--%>
+                            </div>
+                            <div class="form-group col-xs-6">
+                                <%--<label for="street">--%>
+                                <label class="control-label">
+                                    <spring:message code="street"/>
+                                </label>
+                                <p class="form-control-static active-overflow">${student.address.street}</p>
+
+                                <%--<input type="text" class="form-control" id="street"  value="${student.address.street}" readonly/>--%>
+                            </div>
+                            <div class="form-group col-xs-6">
+                                <%--<label for="number">--%>
+                                <label class="control-label">
+                                    <spring:message code="number"/>
+                                </label>
+                                <p class="form-control-static active-overflow">${student.address.number}</p>
+
+                                <%--<input type="text" class="form-control" id="number"  value="${student.address.number}" readonly/>--%>
+                            </div>
+                            <div class="form-group col-xs-4">
+                                <%--<label for="floor">--%>
+                                <label class="control-label">
+                                    <spring:message code="floor"/>
+                                </label>
+                                <p class="form-control-static active-overflow">${student.address.floor}</p>
+
+                                <%--<input type="text" class="form-control" id="floor"  value="${student.address.floor}" readonly/>--%>
+                            </div>
+                            <div class="form-group col-xs-4">
+                                <%--<label for="door">--%>
+                                <label class="control-label">
+                                    <spring:message code="door"/>
+                                </label>
+                                <p class="form-control-static active-overflow">${student.address.door}</p>
+
+                                <%--<input type="text" class="form-control" id="door"  value="${student.address.door}" readonly/>--%>
+                            </div>
+                            <div class="form-group col-xs-4">
+                                <%--<label for="zipCode">--%>
+                                <label class="control-label">
+                                    <spring:message code="zipCode"/>
+                                </label>
+                                <p class="form-control-static active-overflow">${student.address.zipCode}</p>
+
+                                <%--<input type="text" class="form-control" id="zipCode"  value="${student.address.zipCode}" readonly/>--%>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Data Input -->
+                </form>
             </div>
             <!-- Content -->
         </div>

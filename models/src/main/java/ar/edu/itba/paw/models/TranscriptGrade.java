@@ -14,11 +14,13 @@ public class TranscriptGrade {
 	private boolean taking;
 	private boolean canEdit = false;
 	private List<FinalGrade> finalGrades;
+	private String courseCodId;
 
 	public void loadFromGrade(final Grade grade){
 		this.id = grade.getId();
 		this.docket = grade.getStudentDocket();
 		this.courseId = grade.getCourseId();
+		this.courseCodId = grade.getCourseCodId();
 		this.courseName = grade.getCourseName();
 		this.grade = grade.getGrade();
 		this.modified = grade.getModified();
@@ -95,5 +97,13 @@ public class TranscriptGrade {
 
 	public void setFinalGrades(List<FinalGrade> finalGrades) {
 		this.finalGrades = finalGrades;
+	}
+
+	public String getCourseCodId() {
+		return courseCodId;
+	}
+
+	public void setCourseCodId(final String courseCodId) {
+		this.courseCodId = courseCodId;
 	}
 }

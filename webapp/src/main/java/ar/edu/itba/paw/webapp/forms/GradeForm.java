@@ -24,6 +24,9 @@ public class GradeForm {
     private Integer courseId;
 
     @NotBlank
+    private String courseCodId;
+
+    @NotBlank
     private String courseName;
 
     @NotNull
@@ -40,7 +43,7 @@ public class GradeForm {
     private Student student;
 
     public Grade build() {
-        return new Grade.Builder(id, student, courseId, grade).modified(modified).build();
+        return new Grade.Builder(id, student, courseId, courseCodId, grade).modified(modified).build();
     }
 
     public Integer getDocket() {
@@ -87,6 +90,7 @@ public class GradeForm {
         this.id = grade.getId();
         this.docket = grade.getStudent().getDocket();
         this.courseId = grade.getCourseId();
+        this.courseCodId = grade.getCourseCodId();
         this.grade = grade.getGrade();
         this.student = grade.getStudent();
     }
@@ -113,5 +117,13 @@ public class GradeForm {
 
     public Student getStudent() {
         return student;
+    }
+
+    public String getCourseCodId() {
+        return courseCodId;
+    }
+
+    public void setCourseCodId(final String courseCodId) {
+        this.courseCodId = courseCodId;
     }
 }

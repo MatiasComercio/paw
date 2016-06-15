@@ -57,9 +57,9 @@
 </div>
 <!-- Scripts -->
 <jsp:include page="base/scripts.jsp" />
-<%--<script type="text/javascript" charset="UTF-8"><%@include file="../js/template/searchStudents.js"%></script>--%>
+<%--<script type="text/javascript" charset="UTF-8"><%@include file="/static/js/template/searchStudents.js"%></script>--%>
 <%--<c:if test="${subsection_students}">
-    <script type="text/javascript" charset="UTF-8"><%@include file="../js/template/deleteStudentForm.js"%></script>
+    <script type="text/javascript" charset="UTF-8"><%@include file="/static/js/template/deleteStudentForm.js"%></script>
 </c:if>--%>
 <%--<script>
     $( document ).ready(function() {

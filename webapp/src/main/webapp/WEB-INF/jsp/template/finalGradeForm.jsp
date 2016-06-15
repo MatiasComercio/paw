@@ -30,7 +30,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group hidden">
                         <form:label path="courseId" class="col-xs-4 control-label"><spring:message code="courseId"/></form:label>
                         <div class="col-xs-8">
                             <form:input class="form-control" id="disabledInput" type="text" path="courseId" readonly="true"/>
@@ -38,6 +38,17 @@
                         <div class="col-xs-4"></div>
                         <div class="col-xs-8">
                             <form:errors path="courseId" cssClass="text-danger bg-danger" element="div"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <form:label path="courseCodId" class="col-xs-4 control-label"><spring:message code="courseId"/></form:label>
+                        <div class="col-xs-8">
+                            <form:input class="form-control" id="disabledInput" type="text" path="courseCodId" readonly="true"/>
+                        </div>
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-8">
+                            <form:errors path="courseCodId" cssClass="text-danger bg-danger" element="div"/>
                         </div>
                     </div>
 

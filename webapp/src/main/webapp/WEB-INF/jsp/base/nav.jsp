@@ -48,10 +48,15 @@
             <a href="<c:url value="/students/${user.id}/grades" />"><i class="fa fa-fw fa-graduation-cap"></i> <spring:message code="grades"/></a>
         </li>
         <sec:authorize access="hasAuthority('ROLE_ADD_INSCRIPTION')" >
-            <li>
+            <li class="spaced">
                 <a href="<c:url value="/students/${user.id}/inscription" />"><i class="fa fa-fw fa-list-alt"></i> <spring:message code="inscriptions"/></a>
             </li>
         </sec:authorize>
+        <li>
+            <a href="<c:url value="/students/${user.id}/final_inscription"/>">
+                <i class="fa fa-pencil" aria-hidden="true"></i> <spring:message code="final_inscription"/>
+            </a>
+        </li>
     </c:set>
 </sec:authorize>
 

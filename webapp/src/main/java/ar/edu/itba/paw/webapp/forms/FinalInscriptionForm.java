@@ -1,14 +1,11 @@
 package ar.edu.itba.paw.webapp.forms;
 
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.FinalInscription;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class FinalInscriptionForm {
 
@@ -20,6 +17,9 @@ public class FinalInscriptionForm {
 
     @NotBlank
     private String courseName;
+
+    @NotBlank
+    private String courseCode;
 
     //finalInscriptionId
     @NotNull
@@ -77,4 +77,11 @@ public class FinalInscriptionForm {
         this.finalExamDate = finalExamDate;
     }
 
+    public String getCourseCode() {
+        return courseCode;
+    }
+
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
 }

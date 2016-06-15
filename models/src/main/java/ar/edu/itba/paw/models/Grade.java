@@ -43,7 +43,10 @@ public class Grade {
 	private Grade(final Builder builder) {
 		this.id = builder.id;
 		this.student = builder.student;
-		this.course = new Course.Builder(builder.courseId).name(builder.courseName).build();
+		this.course = new Course.Builder(builder.courseId)
+				.name(builder.courseName)
+				.courseId(builder.courseCodId)
+				.build();
 		this.grade = builder.grade;
 		this.modified = builder.modified;
         this.taking = builder.taking;
@@ -75,6 +78,10 @@ public class Grade {
 
 	public int getCourseId() {
 		return course.getId();
+	}
+
+	public String getCourseCodId() {
+		return course.getCourseId();
 	}
 
 	public String getCourseName() {
@@ -133,22 +140,29 @@ public class Grade {
 		return result;
 	}
 
+	public void setCourse(final Course course) {
+		this.course = course;
+	}
+
 	public static class Builder {
 		private final Integer id;
 		private final int courseId;
+		private final String courseCodId;
 		private final BigDecimal grade;
 
 		private String studentFirstName = "";
 		private String studentLastName = "";
 		private Student student;
+		private Course course;
 		private String courseName = "";
 		private LocalDateTime modified;
         private Boolean taking = false;
 
-		public Builder(final Integer id, final Student student, final int courseId, final BigDecimal grade) {
+		public Builder(final Integer id, final Student student, final int courseId, final String courseCodId, final BigDecimal grade) {
 			this.id = id;
 			this.student = student;
 			this.courseId = courseId;
+			this.courseCodId = courseCodId;
 			this.grade = grade;
 			this.modified = LocalDateTime.now();
 		}

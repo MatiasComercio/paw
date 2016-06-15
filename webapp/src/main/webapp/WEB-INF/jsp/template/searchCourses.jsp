@@ -78,7 +78,7 @@
         </c:if>
         <c:forEach items="${courses}" var="eachCourse">
             <tr>
-                <td>${ eachCourse.id }</td>
+                <td>${ eachCourse.courseId }</td>
                 <td>${ eachCourse.name }</td>
                 <td>${ eachCourse.credits }</td>
                 <td>${ eachCourse.semester }</td>

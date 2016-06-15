@@ -1,15 +1,16 @@
 package ar.edu.itba.paw.persistence;
 
 import ar.edu.itba.paw.interfaces.AdminDao;
+import ar.edu.itba.paw.interfaces.ProcedureDao;
 import ar.edu.itba.paw.models.Authority;
+import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.RoleClass;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
-import ar.edu.itba.paw.shared.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -33,6 +34,9 @@ public class AdminHibernateDao implements AdminDao {
 
 	@PersistenceContext
 	private EntityManager em;
+
+	@Autowired
+	private ProcedureDao procedureDao;
 
 	@Override
 	public List<Admin> getAllAdmins() {
@@ -63,26 +67,39 @@ public class AdminHibernateDao implements AdminDao {
 	}
 
 	@Override
-	public Result create(final Admin admin) {
+	public boolean create(final Admin admin) {
 		em.persist(admin);
 		LOGGER.debug("[create] - {}", admin);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
-	public Result update(final Admin admin) {
+	public boolean update(final Admin admin) {
 		em.merge(admin);
 		LOGGER.debug("[update] - {}", admin);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
-	public Result delete(final int dni) {
+	public List<Procedure> getAllProcedures() {
+		return procedureDao.getAllProcedures();
+	}
+
+	@Override
+	public boolean answerProcedure(final Procedure procedure) {
+		return procedureDao.updateProcedure(procedure);
+	}
+
+	@Override
+	public boolean delete(final int dni) {
 		// +++xtodo: have to implement front end
 		final Admin admin = getByDni(dni);
 		em.remove(admin);
 		LOGGER.debug("[delete] - {}", admin);
-		return Result.OK;
+
+		return true;
 	}
 
 	@Override
@@ -105,9 +122,8 @@ public class AdminHibernateDao implements AdminDao {
 		return em.createQuery(queryFilter.getQuery()).getResultList();
 	}
 
-/* +++xchange: all this logic should be on the service when authorities are migrated to runtime */
-	@Override
-	public Result disableAddInscriptions() {
+	/* +++xchange: all this logic should be on the service when authorities are migrated to runtime */
+	private boolean disableAddInscriptions() {
 		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
 		query.setParameter(ROLE_COLUMN, Role.STUDENT);
 		query.setMaxResults(ONE);
@@ -119,11 +135,10 @@ public class AdminHibernateDao implements AdminDao {
 
 		em.persist(role);
 
-		return Result.OK;
+		return true;
 	}
 
-	@Override
-	public Result disableDeleteInscriptions() {
+	private boolean disableDeleteInscriptions() {
 		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
 		query.setParameter(ROLE_COLUMN, Role.STUDENT);
 		query.setMaxResults(ONE);
@@ -135,11 +150,34 @@ public class AdminHibernateDao implements AdminDao {
 
 		em.persist(role);
 
-		return Result.OK;
+		return true;
 	}
 
 	@Override
-	public Result enableAddInscriptions() {
+	public boolean disableInscriptions() {
+		if(disableAddInscriptions()) {
+			if(!disableDeleteInscriptions()) {
+				enableAddInscriptions();
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean enableInscriptions() {
+		if(enableAddInscriptions()) {
+			if(!enableDeleteInscriptions()) {
+				disableAddInscriptions();
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean enableAddInscriptions() {
 		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
 		query.setParameter(ROLE_COLUMN, Role.STUDENT);
 		query.setMaxResults(ONE);
@@ -151,11 +189,10 @@ public class AdminHibernateDao implements AdminDao {
 
 		em.persist(role);
 
-		return Result.OK;
+		return true;
 	}
 
-	@Override
-	public Result enableDeleteInscriptions() {
+	private boolean enableDeleteInscriptions() {
 		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
 		query.setParameter(ROLE_COLUMN, Role.STUDENT);
 		query.setMaxResults(ONE);
@@ -167,7 +204,7 @@ public class AdminHibernateDao implements AdminDao {
 
 		em.persist(role);
 
-		return Result.OK;
+		return true;
 	}
 
 	@Override

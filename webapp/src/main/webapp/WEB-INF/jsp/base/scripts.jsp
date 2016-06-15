@@ -2,9 +2,7 @@
 
 <%--@elvariable id="includeScripts" type="java.util.List"--%>
 <c:forTokens items="${includeScripts}" var="script" delims="`">
-    <script type="text/javascript" charset="UTF-8">
-        ${script}
-    </script>
+    ${script}
 </c:forTokens>
 
 <script>
