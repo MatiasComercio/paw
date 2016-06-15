@@ -153,7 +153,7 @@
                             <tbody>
                             <c:forEach items="${finalInscriptions}" var="finalInscription">
                                 <tr>
-                                    <td>${ finalInscription.id }</td>
+                                    <td>${ finalInscription.course.courseId }</td>
                                     <td>${ finalInscription.vacancy }/${finalInscription.maxVacancy}</td>
                                     <td>${ finalInscription.finalExamDate }</td>
                                     <td><c:choose>

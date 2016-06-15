@@ -58,10 +58,10 @@
                     </c:if>
                     <c:forEach items="${finalInscriptions}" var="inscription">
                         <tr>
-                            <td>${ inscription.id }</td>
+                            <td>${ inscription.course.courseId }</td>
                             <td>${ inscription.course.name}</td>
                             <td>${ inscription.finalExamDate}</td>
-                            <td>${ inscription.vacancy } / ${ inscription.maxVacancy }</td>
+                            <td>${ inscription.maxVacancy - inscription.vacancy } / ${ inscription.maxVacancy }</td>
                             <td>
                                 <c:choose>
                                     <c:when test="${section eq 'students'}">
@@ -70,6 +70,7 @@
                                                 <button name="final_inscription" class="btn btn-info" type="button"
                                                         data-inscription_id="${ inscription.id }" data-course_name="${ inscription.course.name }"
                                                         data-course_id="${inscription.course.id}"
+                                                        data-course_code="${inscription.course.courseId}"
                                                         data-vacancy="${ inscription.vacancy}" data-final_exam_date="${ inscription.finalExamDate}"
                                                         data-toggle="modal" data-target="#finalInscriptionFormConfirmationModal">
                                                     <span class="fa fa-list-alt" aria-hidden="true"></span>
@@ -116,10 +117,10 @@
                     </c:if>
                     <c:forEach items="${finalInscriptionsTaken}" var="inscription">
                         <tr>
-                            <td>${ inscription.id }</td>
+                            <td>${ inscription.course.courseId }</td>
                             <td>${ inscription.course.name}</td>
                             <td>${ inscription.finalExamDate}</td>
-                            <td>${ inscription.vacancy } / ${ inscription.maxVacancy }</td>
+                            <td>${ inscription.maxVacancy - inscription.vacancy } / ${ inscription.maxVacancy }</td>
                             <td>
                                 <c:choose>
                                     <c:when test="${section eq 'students'}">
@@ -128,6 +129,7 @@
                                                 <button name="final_inscription_drop" class="btn btn-danger" type="button"
                                                         data-inscription_id="${ inscription.id }" data-course_name="${ inscription.course.name }"
                                                         data-course_id="${inscription.course.id}"
+                                                        data-course_code="${inscription.course.courseId}"
                                                         data-vacancy="${ inscription.vacancy}" data-final_exam_date="${ inscription.finalExamDate}"
                                                         data-toggle="modal" data-target="#finalInscriptionFormDropModal">
                                                     <span class="fa fa-list-alt" aria-hidden="true"></span>
@@ -166,12 +168,14 @@
                 var courseName = $(this).data("course_name");
                 var finalExamDate = $(this).data("final_exam_date");
                 var vacancy = $(this).data("vacancy");
+                var courseCode = $(this).data("course_code");
 
                 var inscriptionForm = $("#final_inscription_form");
                 inscriptionForm.find("input[name='id']").val(inscriptionId);
                 inscriptionForm.find("input[name='courseName']").val(courseName);
                 inscriptionForm.find("input[name='vacancy']").val(vacancy);
                 inscriptionForm.find("input[name='finalExamDate']").val(finalExamDate);
+                inscriptionForm.find("input[name='courseCode']").val(courseCode);
             });
 
             $("#finalInscriptionFormConfirmAction").on("click", function() {
@@ -195,12 +199,14 @@
                 var courseName = $(this).data("course_name");
                 var finalExamDate = $(this).data("final_exam_date");
                 var vacancy = $(this).data("vacancy");
+                var courseCode = $(this).data("course_code");
 
                 var inscriptionForm = $("#final_inscription_drop_form");
                 inscriptionForm.find("input[name='id']").val(inscriptionId);
                 inscriptionForm.find("input[name='courseName']").val(courseName);
                 inscriptionForm.find("input[name='vacancy']").val(vacancy);
                 inscriptionForm.find("input[name='finalExamDate']").val(finalExamDate);
+                inscriptionForm.find("input[name='courseCode']").val(courseCode);
             });
 
             $("#finalInscriptionFormDropAction").on("click", function() {

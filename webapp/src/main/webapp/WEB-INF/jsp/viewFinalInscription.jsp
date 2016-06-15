@@ -40,7 +40,7 @@
                                         <strong><spring:message code="id" /></strong>
                                     </div>
                                     <div class="col-xs-3 right-effect">
-                                        ${ finalInscription.id }
+                                        ${ finalInscription.course.courseId }
                                     </div>
                                 </div>
                             </div>
@@ -116,6 +116,7 @@
                                         data-finalInscriptionId="${ finalInscription.id }"
                                         data-firstName="${student.firstName}"
                                         data-lastName="${student.lastName}"
+                                        data-course_code="${finalInscription.course.courseId}"
                                         data-course_id="${finalInscription.course.id}"
                                         data-course_name="${finalInscription.course.name }"
                                         data-toggle="modal"
@@ -150,11 +151,13 @@
                 var docket = $(this).data("docket");
                 var courseId = $(this).data("course_id");
                 var courseName = $(this).data("course_name");
+                var courseCodId = $(this).data("course_code");
                 var url = $(this).data("url");
                 var gradeForm = $("#final_grade_form");
                 gradeForm.find("input[name='docket']").val(docket);
                 gradeForm.find("input[name='courseId']").val(courseId);
                 gradeForm.find("input[name='courseName']").val(courseName);
+                gradeForm.find("input[name='courseCodId']").val(courseCodId);
                 gradeForm.attr("action", url);
 
 
