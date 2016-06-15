@@ -268,6 +268,7 @@ public class CourseServiceImpl implements CourseService {
         return courses;
     }
 
+    @Transactional
     @Override
     public Course getStudentsThatPassedCourse(final int id, final StudentFilter studentFilter) {
         final Course course = courseDao.getStudentsThatPassedCourse(id);
@@ -282,6 +283,7 @@ public class CourseServiceImpl implements CourseService {
             final List<Student> studentsFilter = studentService.getByFilter(studentFilter);
             for (Student s : studentsFilter) {
                 if (students.contains(s)) {
+                    s.setGrades(s.getGrades());
                     st.add(s);
                 }
             }

@@ -87,6 +87,9 @@
             <th><spring:message code="firstName"/></th>
             <th><spring:message code="lastName"/></th>
             <%--<th><spring:message code="email"/></th>--%>
+            <c:if test="${section eq 'courses' and section2 eq 'studentsPassed'}">
+                <th><spring:message code="grade" /></th>
+            </c:if>
             <th><spring:message code="actions"/></th>
         </tr>
         </thead>
@@ -102,6 +105,10 @@
                 <td>${ student.docket }</td>
                 <td>${ student.firstName }</td>
                 <td>${ student.lastName }</td>
+                    <%--@elvariable id="course" type="ar.edu.itba.paw.models.Course"--%>
+                <c:if test="${section eq 'courses' and section2 eq 'studentsPassed'}">
+                    <td>${ student.getCourseGrade(course.id) }</td>
+                </c:if>
                 <td>
                     <c:choose>
                         <%--@elvariable id="section" type="java.lang.String"--%>
@@ -128,7 +135,7 @@
                     <a class="btn btn-default ${buttonClass}" href="<c:url value="/students/${student.docket}/info" />" role="button">
                         <span class="fa fa-user" aria-hidden="true"></span> <spring:message code="profile"/>
                     </a>
-                    ${gradeButtonDef}
+                        ${gradeButtonDef}
                 </td>
             </tr>
         </c:forEach>

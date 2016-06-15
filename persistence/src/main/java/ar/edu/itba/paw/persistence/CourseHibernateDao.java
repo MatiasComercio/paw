@@ -263,6 +263,7 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     //TODO: TEST THIS
+    @Override
     public Course getStudentsThatPassedCourse(int id) {
         Course course = getById(id);
         List<Student> approvedStudents = studentDao.getStudentsPassed(id);
