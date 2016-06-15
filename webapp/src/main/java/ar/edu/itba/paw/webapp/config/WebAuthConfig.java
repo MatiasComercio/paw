@@ -59,7 +59,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 //				.invalidSessionUrl("/inMaintenance")
 
 				.and().authorizeRequests()
-				.antMatchers("/login/**").anonymous()
+				.antMatchers("/login").anonymous()
 				.antMatchers("/admin/**").hasRole("VIEW_ADMIN")
 				.antMatchers("/admins/**").hasRole("VIEW_ADMINS")
 				.antMatchers("/**").authenticated()
@@ -99,6 +99,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(final WebSecurity web) throws Exception {
 		web.ignoring()
-				.antMatchers("/static/**", "/jsp/base/**", "/favicon.ico", "/errors/403");
+				.antMatchers("/static/**", "/WEB-INF/jsp/base/**", "/favicon.ico", "/errors/403");
 	}
 }

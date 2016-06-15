@@ -4,17 +4,17 @@ import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
-import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,18 +29,26 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Result create(Course course) {
+    public boolean create(Course course) {
         return courseDao.create(course);
     }
 
     @Transactional
     @Override
-    public Result update(final int id, final Course course){
+    public boolean update(final int id, final Course course){
 
-        List<Course> correlatives = getCorrelativesByFilter(id, null);
+        final List<Course> correlatives = getCorrelativesByFilter(id, null);
+        final Course c = courseDao.getById(id);
+
         for (Course correlative : correlatives){
             if (correlative.getSemester() >= course.getSemester()) {
-                return Result.CORRELATIVE_SEMESTER_INCOMPATIBILITY;
+                return false;
+            }
+        }
+
+        for (Course course1 : c.getUpperCorrelatives()) {
+            if (course1.getSemester() <= course.getSemester()){
+                return false;
             }
         }
 
@@ -78,15 +86,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Result deleteCourse(final int courseId) {
-
-        //TODO: Change order
-        if(courseDao.gradeExists(courseId)){
-            return Result.COURSE_EXISTS_GRADE;
+    public boolean deleteCourse(final int courseId) {
+        if(courseDao.inscriptionExists(courseId)){
+//            return Result.COURSE_EXISTS_INSCRIPTION;
+            return false;
         }
 
-        if(courseDao.inscriptionExists(courseId)){
-            return Result.COURSE_EXISTS_INSCRIPTION;
+        if(courseDao.gradeExists(courseId)){
+//            return Result.COURSE_EXISTS_GRADE;
+            return false;
         }
 
         deleteCourseCorrelatives(courseId);
@@ -124,28 +132,32 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Result addCorrelative(final int id, final int correlativeId) {
+    public boolean addCorrelative(final int id, final int correlativeId) {
 
         if(id == correlativeId){
-            return Result.CORRELATIVE_SAME_COURSE;
+//            return Result.CORRELATIVE_SAME_COURSE;
+            return false;
         }
 
         //Check courses exists
         if (!courseDao.courseExists(id) || !courseDao.courseExists(correlativeId)){
-            return Result.COURSE_NOT_EXISTS;
+//            return Result.COURSE_NOT_EXISTS;
+            return false;
         }
 
         //Check correlativity loop
         if (courseDao.checkCorrelativityLoop(id, correlativeId)){
-            return Result.CORRELATIVE_CORRELATIVITY_LOOP;
+//            return Result.CORRELATIVE_CORRELATIVITY_LOOP;
+            return false;
         }
 
         //Check semester
-        Course course = getById(id);
-        Course correlativeCourse = getById(correlativeId);
+        final Course course = getById(id);
+        final Course correlativeCourse = getById(correlativeId);
 
         if (course.getSemester() <= correlativeCourse.getSemester()){
-            return Result.CORRELATIVE_SEMESTER_INCOMPATIBILITY;
+//            return Result.CORRELATIVE_SEMESTER_INCOMPATIBILITY;
+            return false;
         }
 
         return courseDao.addCorrelativity(id, correlativeId);
@@ -179,13 +191,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Result deleteCorrelative(final int courseId, final int correlativeId) {
+    public boolean deleteCorrelative(final int courseId, final int correlativeId) {
         return courseDao.deleteCorrelative(courseId, correlativeId);
     }
 
     @Transactional
     @Override
-    public Result deleteCourseCorrelatives(final int courseId) {
+    public boolean deleteCourseCorrelatives(final int courseId) {
         List<Integer> correlatives = getCorrelatives(courseId);
         List<Integer> upperCorrelatives = getUpperCorrelatives(courseId);
 
@@ -210,7 +222,8 @@ public class CourseServiceImpl implements CourseService {
                 deleteCorrelative(upperCorrelative, courseId);
             }
         }
-        return Result.OK;
+//        return Result.OK;
+        return true;
     }
 
     @Transactional
@@ -255,6 +268,7 @@ public class CourseServiceImpl implements CourseService {
         return courses;
     }
 
+    @Transactional
     @Override
     public Course getStudentsThatPassedCourse(final int id, final StudentFilter studentFilter) {
         final Course course = courseDao.getStudentsThatPassedCourse(id);
@@ -269,6 +283,7 @@ public class CourseServiceImpl implements CourseService {
             final List<Student> studentsFilter = studentService.getByFilter(studentFilter);
             for (Student s : studentsFilter) {
                 if (students.contains(s)) {
+                    s.setGrades(s.getGrades());
                     st.add(s);
                 }
             }
@@ -278,5 +293,20 @@ public class CourseServiceImpl implements CourseService {
         course.setApprovedStudents(st);
 
         return course;
+    }
+
+    @Override
+    public List<FinalInscription> getOpenFinalInsciptions(Integer id) {
+        return courseDao.getOpenFinalInsciptions(id);
+    }
+
+    @Override
+    public Set<Student> getFinalStudents(int id) {
+        return  studentService.getFinalStudents(id);
+    }
+
+    @Override
+    public FinalInscription getFinalInscription(int id) {
+        return studentService.getFinalInscription(id);
     }
 }

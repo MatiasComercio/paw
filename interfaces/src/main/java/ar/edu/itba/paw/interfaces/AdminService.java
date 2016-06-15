@@ -1,9 +1,8 @@
 package ar.edu.itba.paw.interfaces;
 
+import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Admin;
-import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.AdminFilter;
-import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ public interface AdminService {
      *          ADMIN_EXISTS_DNI if there is an admin whose dni is equal to this new admin;
      *          ERROR_UNKNOWN else;
      */
-    Result create(Admin admin);
+    boolean create(Admin admin);
 
     /**
      * Gets all the data associated with the user that has the
@@ -49,7 +48,7 @@ public interface AdminService {
      * 		ERROR_DNI_OUT_OF_BOUNDS if the dni is invalid;
      * 		ERROR_UNKNOWN else;
      */
-    Result deleteAdmin(int dni);
+    boolean deleteAdmin(int dni);
 
     /**
      * Update an admin
@@ -57,19 +56,19 @@ public interface AdminService {
      * @param admin The new student
      * @return The Result code of update
      */
-    Result update(int dni, Admin admin);
+    boolean update(int dni, Admin admin);
 
     /**
      * Disables inscription authority for Students
      * @return The Result code of the operation
      */
-    Result disableInscriptions();
+    boolean disableInscriptions();
 
     /**
      * Enables inscription authority for Students
      * @return The Result code of the operation
      */
-    Result enableInscriptions();
+    boolean enableInscriptions();
 
     /**
      * @return A boolean indicating whether the inscriptions are enabled
@@ -84,5 +83,18 @@ public interface AdminService {
      *		INVALID_INPUT_PARAMETERS if the provided dni doesn't match to a user;
      *		else ERROR_UNKNOWN in other case;
      */
-    Result resetPassword(int dni);
+    boolean resetPassword(int dni);
+
+    /**
+     * Get all the procedures, despite their state
+     * @return all the existing procedures
+     */
+    List<Procedure> getAllProcedures();
+
+    /**
+     * Answer an existing procedure
+     * @param procedure
+     * @return if the procedure was successfully answered
+     */
+    boolean answerProcedure(Procedure procedure);
 }

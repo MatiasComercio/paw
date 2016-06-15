@@ -6,6 +6,7 @@ function loadGradeForm(nameAttr) {
         var id = $(this).data("id");
         var docket = $(this).data("docket");
         var courseId = $(this).data("course_id");
+        var courseCodId = $(this).data("course_cod_id");
         var courseName = $(this).data("course_name");
         var modified = $(this).data("modified");
         var url = $(this).data("url");
@@ -13,6 +14,7 @@ function loadGradeForm(nameAttr) {
         gradeForm.find("input[name='id']").val(id);
         gradeForm.find("input[name='docket']").val(docket);
         gradeForm.find("input[name='courseId']").val(courseId);
+        gradeForm.find("input[name='courseCodId']").val(courseCodId);
         gradeForm.find("input[name='courseName']").val(courseName);
         gradeForm.find("input[name='modified']").val(modified);
         gradeForm.attr("action", url);

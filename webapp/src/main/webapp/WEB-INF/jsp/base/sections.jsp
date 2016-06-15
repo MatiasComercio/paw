@@ -22,7 +22,7 @@ That's why we are usig <%@include ...%>--%>
                 <jsp:include page="../template/enableInscriptionsForm.jsp" />
 
                 <c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/searchAdmins.js"%>
+                    ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/searchAdmins.js"/>"></script>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} `
@@ -30,7 +30,7 @@ That's why we are usig <%@include ...%>--%>
                 </c:set>
 
                 <c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/enableInscriptionsForm.js"%>
+                    ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/enableInscriptionsForm.js"/>"></script>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} `
@@ -44,7 +44,7 @@ That's why we are usig <%@include ...%>--%>
                 <jsp:include page="../template/enableInscriptionsForm.jsp" />
 
                 <c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/searchAdmins.js"%>
+                    ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/searchAdmins.js"/>"></script>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} `
@@ -52,7 +52,7 @@ That's why we are usig <%@include ...%>--%>
                 </c:set>
 
                 <c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/enableInscriptionsForm.js"%>
+                    ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/enableInscriptionsForm.js"/>"></script>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} `
@@ -60,7 +60,7 @@ That's why we are usig <%@include ...%>--%>
                 </c:set>
 
                 <c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file='/WEB-INF/js/cancelButton.js'%>
+                    ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/cancelButton.js"/>"></script>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} `
@@ -73,7 +73,7 @@ That's why we are usig <%@include ...%>--%>
                 <%--<jsp:include page="../template/deleteAdminForm.jsp" /> +++xtodo --%>
 
                 <c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/resetPasswordForm.js"%>
+                    ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/resetPasswordForm.js"/>"></script>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} `
@@ -81,7 +81,7 @@ That's why we are usig <%@include ...%>--%>
                 </c:set>
 
                 <%--<c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file='/WEB-INF/js/template/deleteStudentForm.js'%>
+                    ${includeScripts} ` <%@include file='/static/js/template/deleteStudentForm.js'%>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} ` loadDeleteStudentForm("deleteStudentButton");
@@ -94,7 +94,7 @@ That's why we are usig <%@include ...%>--%>
                         <c:set var="editActive" value="active" scope="request"/>
 
                         <c:set var="includeScripts" >
-                            ${includeScripts} ` <%@include file='/WEB-INF/js/cancelButton.js'%>
+                            ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/cancelButton.js"/>"></script>
                         </c:set>
                         <c:set var="loadScripts">
                             ${loadScripts} `
@@ -120,7 +120,7 @@ That's why we are usig <%@include ...%>--%>
                 <jsp:include page="../template/studentsActionsPanel.jsp" />
 
                 <c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/searchStudents.js"%>
+                    ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/searchStudents.js"/>"></script>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} `
@@ -134,7 +134,7 @@ That's why we are usig <%@include ...%>--%>
                 <jsp:include page="../template/studentsActionsPanel.jsp" />
 
                 <c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file='/WEB-INF/js/cancelButton.js'%>
+                    ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/cancelButton.js"/>"></script>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} `
@@ -142,13 +142,14 @@ That's why we are usig <%@include ...%>--%>
                 </c:set>
             </c:when>
 
+
             <c:otherwise>
                 <jsp:include page="../template/studentActionsPanel.jsp" />
                 <jsp:include page="../template/resetPasswordForm.jsp" />
                 <jsp:include page="../template/deleteStudentForm.jsp" />
 
                 <c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file="/WEB-INF/js/template/resetPasswordForm.js"%>
+                    ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/resetPasswordForm.js"/>"></script>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} `
@@ -156,7 +157,7 @@ That's why we are usig <%@include ...%>--%>
                 </c:set>
 
                 <c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file='/WEB-INF/js/template/deleteStudentForm.js'%>
+                    ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/deleteStudentForm.js"/>"></script>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} ` loadDeleteStudentForm("deleteStudentButton");
@@ -166,6 +167,7 @@ That's why we are usig <%@include ...%>--%>
 
         <c:if test="${not empty section2}">
             <c:choose>
+
                 <c:when test="${section2 eq 'info'}">
                     <c:set var="infoActive" value="active" scope="request"/>
                 </c:when>
@@ -174,7 +176,7 @@ That's why we are usig <%@include ...%>--%>
                     <c:set var="editActive" value="active" scope="request"/>
 
                     <c:set var="includeScripts" >
-                        ${includeScripts} ` <%@include file='/WEB-INF/js/cancelButton.js'%>
+                        ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/cancelButton.js"/>"></script>
                     </c:set>
                     <c:set var="loadScripts">
                         ${loadScripts} `
@@ -188,10 +190,25 @@ That's why we are usig <%@include ...%>--%>
 
                 </c:when>
 
+                <c:when test="${section2 eq 'final_inscription'}">
+                    <c:set var="finalInscriptionActive" value="active" scope="request"/>
+
+                    <c:set var="includeScripts" >
+                        ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/finalInscriptionForm.js"/>"></script>
+                        ` <script charset="UTF-8" src="<c:url value="/static/js/template/finalInscriptionDropForm.js"/>"></script>
+                    </c:set>
+                    <c:set var="loadScripts">
+                        ${loadScripts} `
+                        loadfinalInscriptionForm("final_inscription");
+                        loadfinalInscriptionDropForm("final_inscription_drop");
+                    </c:set>
+
+                </c:when>
+
                 <c:when test="${section2 eq 'grades'}">
                     <c:set var="gradesActive" value="active" scope="request"/>
                     <c:set var="includeScripts" >
-                        ${includeScripts} ` <%@include file="/WEB-INF/js/template/gradeForm.js"%>
+                        ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/gradeForm.js"/>"></script>
                     </c:set>
                     <c:set var="loadScripts">
                         ${loadScripts} `
@@ -231,7 +248,7 @@ That's why we are usig <%@include ...%>--%>
                 <jsp:include page="../template/coursesActionsPanel.jsp" />
 
                 <c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file='/WEB-INF/js/cancelButton.js'%>
+                    ${includeScripts} ` <script charset="UTF-8" src='<c:url value="/static/js/cancelButton.js"/>'></script>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} `
@@ -244,7 +261,7 @@ That's why we are usig <%@include ...%>--%>
 
                 <jsp:include page="../template/deleteCourseForm.jsp" />
                 <c:set var="includeScripts" >
-                    ${includeScripts} ` <%@include file='/WEB-INF/js/template/deleteCourseForm.js'%>
+                    ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/deleteCourseForm.js"/>"></script>
                 </c:set>
                 <c:set var="loadScripts">
                     ${loadScripts} ` loadDeleteCourseForm("deleteCourseButton");
@@ -258,17 +275,27 @@ That's why we are usig <%@include ...%>--%>
                     <c:set var="infoActive" value="active" scope="request"/>
                     <jsp:include page="../template/CorrelativeForm.jsp" />
                     <c:set var="includeScripts" >
-                        ${includeScripts} ` <%@include file='/WEB-INF/js/template/CorrelativeForm.js'%>
+                        ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/CorrelativeForm.js"/>"></script>
                     </c:set>
                     <c:set var="loadScripts">
                         ${loadScripts} ` loadCorrelativeForm("deleteCorrelativeButton");
                     </c:set>
                 </c:when>
 
+                <c:when test="${section2 eq 'final_inscription_view'}">
+                    <c:set var="includeScripts" >
+                        ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/finalGradeForm.js"/>"></script>
+                    </c:set>
+                    <c:set var="loadScripts">
+                        ${loadScripts} `
+                        loadFinalGradeForm("finalGradeButton");
+                    </c:set>
+                </c:when>
+
                 <c:when test="${section2=='edit'}">
                     <c:set var="editActive" value="active" scope="request"/>
                     <c:set var="includeScripts" >
-                        ${includeScripts} ` <%@include file='/WEB-INF/js/cancelButton.js'%>
+                        ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/cancelButton.js"/>"></script>
                     </c:set>
                     <c:set var="loadScripts">
                         ${loadScripts} `
@@ -280,14 +307,14 @@ That's why we are usig <%@include ...%>--%>
                     <c:set var="courseStudentsActive" value="active" scope="request"/>
 
                     <c:set var="includeScripts" >
-                        ${includeScripts} ` <%@include file="../../js/template/searchStudents.js"%>
+                        ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/searchStudents.js"/>"></script>
                     </c:set>
                     <c:set var="loadScripts">
                         ${loadScripts} ` loadSearchStudents();
                     </c:set>
 
                     <c:set var="includeScripts" >
-                        ${includeScripts} ` <%@include file="../../js/template/gradeForm.js"%>
+                        ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/gradeForm.js"/>"></script>
                     </c:set>
                     <c:set var="loadScripts">
                         ${loadScripts} ` loadGradeForm("gradeButton");
@@ -299,7 +326,7 @@ That's why we are usig <%@include ...%>--%>
                     <c:set var="courseStudentsApprovedActive" value="active" scope="request"/>
 
                     <c:set var="includeScripts" >
-                        ${includeScripts} ` <%@include file="../../js/template/searchStudents.js"%>
+                        ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/searchStudents.js"/>"></script>
                     </c:set>
                     <c:set var="loadScripts">
                         ${loadScripts} ` loadSearchStudents();
@@ -311,7 +338,7 @@ That's why we are usig <%@include ...%>--%>
 
                     <jsp:include page="../template/CorrelativeForm.jsp" />
                     <c:set var="includeScripts" >
-                        ${includeScripts} ` <%@include file='/WEB-INF/js/template/CorrelativeForm.js'%>
+                        ${includeScripts} ` <script charset="UTF-8" src="<c:url value="/static/js/template/CorrelativeForm.js"/>"></script>
                     </c:set>
                     <c:set var="loadScripts">
                         ${loadScripts} ` loadCorrelativeForm("correlativeButton");

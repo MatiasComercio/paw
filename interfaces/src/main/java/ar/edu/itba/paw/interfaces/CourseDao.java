@@ -1,11 +1,10 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.shared.CourseFilter;
-import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
-import java.util.Set;
 
 public interface CourseDao {
 
@@ -14,7 +13,7 @@ public interface CourseDao {
      * @param course The course to be persisted in the database.
      * @return The Result code of the insertion
      */
-    Result create(Course course);
+    boolean create(Course course);
 
     /**
      * Update a course
@@ -22,7 +21,7 @@ public interface CourseDao {
      * @param course Modified course
      * @return The result code of the insertion
      */
-    Result update(int id, Course course);
+    boolean update(int id, Course course);
 
     /**
      * Get the course identified by an ID
@@ -63,7 +62,7 @@ public interface CourseDao {
      *         INVALID_INPUT_PARAMETERS if the ID is invalid;
      *         ERROR_UNKNOWN else;
      */
-    Result deleteCourse(int id);
+    boolean deleteCourse(int id);
 
     /**
      * @param courseId The id of the course.
@@ -89,7 +88,7 @@ public interface CourseDao {
      * @param correlativeId The id of the course correlative course
      * @return The insertion result.
      */
-    Result addCorrelativity(int id, int correlativeId);
+    boolean addCorrelativity(int id, int correlativeId);
 
     /**
      * Check whether a course exists or not
@@ -123,7 +122,7 @@ public interface CourseDao {
      * @param correlativeId The id of the correlative for the given course.
      * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
      */
-    Result deleteCorrelative(int courseId, int correlativeId);
+    boolean deleteCorrelative(int courseId, int correlativeId);
 
     /**
      * Get the number of semesters.
@@ -148,4 +147,12 @@ public interface CourseDao {
     /* +++ xtest */
     /* +++ xdocument */
     Course getStudentsThatPassedCourse(int id);
+
+
+    /**
+     * Get the open final inscriptions corresponding to a course.
+     * @param id The course's id
+     * @return The list containing all the final inscriptions.
+     */
+    List<FinalInscription> getOpenFinalInsciptions(Integer id);
 }

@@ -1,24 +1,27 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.CourseService;
-
+import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.shared.AdminFilter;
-import ar.edu.itba.paw.shared.Result;
+import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.*;
-import ar.edu.itba.paw.shared.CourseFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -48,6 +51,9 @@ public class CourseController {
 
 	@Autowired
 	private CourseService courseService;
+
+    @Autowired
+    private StudentService studentService;
 
 	@ModelAttribute("section")
 	public String sectionManager(){
@@ -125,6 +131,7 @@ public class CourseController {
 		mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
 		mav.addObject("subsection_delete_correlative", true);
 		mav.addObject("correlatives", courseService.getCorrelativesByFilter(id, null));
+		mav.addObject("finalInscriptions", courseService.getOpenFinalInsciptions(id));
 		return mav;
 	}
 
@@ -189,13 +196,18 @@ public class CourseController {
 		}
 
 		Course course = courseForm.build();
-		Result result = courseService.update(courseId, course);
+		boolean done;
+		try {
+			done = courseService.update(courseId, course);
+		} catch (final DataIntegrityViolationException e) {
+			LOGGER.warn("User {} could not add course. Result: ", loggedUser.getDni(), e);
+			done = false;
+		}
 
 		/* If no course with 'courseId' exists, !result.equals(Result.OK) will be true */
-		if(!result.equals(Result.OK)){
-			LOGGER.warn("User {} could not edit course, Result = {}", loggedUser.getDni(), result);
+		if(!done){
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("course_persist_fail", null, Locale.getDefault()));
 			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editCourse(courseId, courseForm, redirectAttributes, loggedUser);
 		} else {
@@ -292,14 +304,19 @@ public class CourseController {
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
 			/* --------- */
 			return addCourse(courseForm, redirectAttributes, loggedUser);
-		}
-		else{
+		} else {
 			final Course course = courseForm.build();
-			Result result = courseService.create(course);
-			if(!result.equals(Result.OK)){
-				LOGGER.warn("User {} could not add course, Result = {}", loggedUser.getDni(), result);
+			boolean done;
+
+			try {
+				done = courseService.create(course);
+			} catch (final DataIntegrityViolationException e) {
+				LOGGER.warn("User {} could not add course. Result: ", loggedUser.getDni(), e);
+				done = false;
+			}
+			if(!done){
 				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("COURSE_EXISTS_ID", null, Locale.getDefault()));
 				return addCourse(courseForm, redirectAttributes, loggedUser);
 			} else {
 				LOGGER.info("User {} added course {}", loggedUser.getDni(), courseForm.getId());
@@ -322,9 +339,9 @@ public class CourseController {
 			return new ModelAndView(UNAUTHORIZED);
 		}
 
-		final Result result = courseService.deleteCourse(id);
+		final boolean done = courseService.deleteCourse(id);
 		final String urlRedirect;
-		if(result.equals(Result.OK)) {
+		if(done) {
 			LOGGER.info("User {} deleted a course successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteCourse_success",
@@ -332,9 +349,9 @@ public class CourseController {
 					Locale.getDefault()));
 			urlRedirect = "/courses";
 		} else { // if course with the specified id does not exist, it will enter here
-			LOGGER.warn("User {} could not delete course, Result = {}", loggedUser.getDni(), result);
+			LOGGER.warn("User {} could not delete course, Result = {}", loggedUser.getDni(), done);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("COURSE_EXISTS_INSCRIPTION_OR_GRADE", null, Locale.getDefault()));
 			urlRedirect = request.getHeader("referer");
 		}
 
@@ -405,14 +422,12 @@ public class CourseController {
 			return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
 		}
 
-		Result result = courseService.addCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
-		if (result == null) {
-			result = Result.ERROR_UNKNOWN;
-		}
-		if (!result.equals(Result.OK)) {
-			LOGGER.warn("User {} could not add correlative, Result = {}", loggedUser.getDni(), result);
+		boolean done = courseService.addCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
+
+		if (!done) {
+			LOGGER.warn("User {} could not add correlative, Result = {}", loggedUser.getDni(), done);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("CORRELATIVE_LOGIC_INCORRECT", null, Locale.getDefault()));
 
 		} else { // if course with the specified id does not exist, it will enter here
 			LOGGER.info("User {} added correlative successfully", loggedUser.getDni());
@@ -444,14 +459,12 @@ public class CourseController {
 			return new ModelAndView("redirect:/courses/" + course_id + "/info");
 		}
 
-		Result result = courseService.deleteCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
-		if (result == null) {
-			result = Result.ERROR_UNKNOWN;
-		}
-		if (!result.equals(Result.OK)) {
-			LOGGER.warn("User {} could not delete correlative, Result = {}", loggedUser.getDni(), result);
+		boolean done = courseService.deleteCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
+
+		if (!done) {
+			LOGGER.warn("User {} could not delete correlative, Result = {}", loggedUser.getDni(), done);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
 
 		} else { // if course with the specified id does not exist, it will enter here
 			LOGGER.info("User {} deleted correlative successfully", loggedUser.getDni());
@@ -575,5 +588,71 @@ public class CourseController {
 		}
 		return course;
 	}
+
+    @RequestMapping(value = "/courses/final_inscription/{id}/info", method = RequestMethod.GET)
+    public ModelAndView viewFinalInscription(
+            @PathVariable("id") final int id, Model model,
+            final RedirectAttributes redirectAttributes,
+            @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+        final ModelAndView mav = new ModelAndView("viewFinalInscription");
+
+        if (!model.containsAttribute("gradeForm")) {
+            model.addAttribute("gradeForm", new GradeForm());
+        }
+
+        mav.addObject("studentsTakingFinal", courseService.getFinalStudents(id));
+        mav.addObject("finalInscription", courseService.getFinalInscription(id));
+        mav.addObject("finalGradeFormAction", "/courses/final_inscription/" + id + "/info");
+		mav.addObject("section2", "final_inscription_view");
+        return mav;
+    }
+
+    @RequestMapping(value = "/courses/final_inscription/{id}/info", method = RequestMethod.POST)
+    public ModelAndView qualifyFinalInscription(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
+                                  @PathVariable Integer id, RedirectAttributes redirectAttributes,
+                                  @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+        if (!loggedUser.hasAuthority("ADD_GRADE")
+                || !loggedUser.hasAuthority("ADMIN")) {
+            LOGGER.warn("User {} tried to ADD ginal grades of student with DNI {} and doesn't have ADD_GRADE authority [POST]", loggedUser.getDni());
+            return new ModelAndView(UNAUTHORIZED);
+        }
+
+        if (errors.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
+            redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
+            redirectAttributes.addFlashAttribute("alert", "danger");
+            //TODO:Change this
+            redirectAttributes.addFlashAttribute("message",
+                    messageSource.getMessage("editGrade_fail",
+                            new Object[] {},
+                            Locale.getDefault()));
+
+
+            return new ModelAndView("/courses/final_inscription/" + id + "/info");
+        }
+
+       // gradeForm.setStudent(studentService.getByDocket(docket));
+
+        Grade newGrade = gradeForm.build();
+
+        boolean result = studentService.addFinalGrade(id, gradeForm.getDocket(), gradeForm.getGrade());
+        if(!result){
+            LOGGER.warn("User {} could not add final grade, Result = {}", loggedUser.getDni(), result);
+            //TODO: Ver que hacemos aca
+            //redirectAttributes.addFlashAttribute("alert", "danger");
+            //redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+            return new ModelAndView("redirect:/courses/final_inscription/" + id + "/info");
+        }
+
+        redirectAttributes.addFlashAttribute("alert", "success");
+        redirectAttributes.addFlashAttribute("message",
+                messageSource.getMessage("editGrade_success",
+                        new Object[] {},
+                        Locale.getDefault()));
+
+        return new ModelAndView("redirect:/courses/final_inscription/" + id + "/info");
+    }
 
 }

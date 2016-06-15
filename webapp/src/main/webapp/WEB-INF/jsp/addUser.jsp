@@ -156,23 +156,30 @@
                                 <form:input id="birthday" type="text" class="form-control" placeholder="${birthdayPlaceholder}" path="birthday"/>
                                 <form:errors path="birthday" cssClass="text-danger bg-danger" element="div"/>
                             </div>
-                            <%-- for future use --%>
-<%--                            <div class="form-group col-xs-12">
-                                <form:label for="email" path="email">
-                                    <spring:message code="email"/>
-                                </form:label>
-                                <form:input type="text" class="form-control" id="email" path="email"/>
-                                <form:errors path="email" cssClass="text-danger bg-danger" element="div"/>
-                            </div>--%>
+                                <%-- for future use --%>
+                                <%--                            <div class="form-group col-xs-12">
+                                                                <form:label for="email" path="email">
+                                                                    <spring:message code="email"/>
+                                                                </form:label>
+                                                                <form:input type="text" class="form-control" id="email" path="email"/>
+                                                                <form:errors path="email" cssClass="text-danger bg-danger" element="div"/>
+                                                            </div>--%>
                             <div class ="form-group col-xs-12 col-md-6">
                                 <form:label path="genre"><spring:message code="genre"/></form:label>
-                                <div class="form-group">
-                                    <label class="radio-inline">
-                                        <form:radiobutton path="genre" value="M" /> <spring:message code="M"/>
-                                    </label>
-                                    <label class="radio-inline">
-                                        <form:radiobutton path="genre" value="F" /> <spring:message code="F"/>
-                                    </label>
+                                <div class="row">
+
+                                    <div class="form-group">
+                                        <div class="col-xs-12 col-sm-6">
+                                            <label class="radio-inline">
+                                                <form:radiobutton path="genre" value="M" /> <spring:message code="M"/>
+                                            </label>
+                                        </div>
+                                        <div class="col-xs-12 col-sm-6">
+                                            <label class="radio-inline">
+                                                <form:radiobutton path="genre" value="F" /> <spring:message code="F"/>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group col-xs-12 col-md-6">
@@ -225,20 +232,24 @@
                                 <form:input type="text" class="form-control" id="number" path="number"/>
                                 <form:errors path="number" cssClass="text-danger bg-danger" element="div"/>
                             </div>
-                            <div class="form-group col-xs-4">
-                                <form:label for="floor" path="floor"><spring:message code="floor"/></form:label>
-                                <form:input type="text" class="form-control" id="floor" path="floor"/>
-                                <form:errors path="floor" cssClass="text-danger bg-danger" element="div"/>
-                            </div>
-                            <div class="form-group col-xs-4">
-                                <form:label for="door" path="door"><spring:message code="door"/></form:label>
-                                <form:input type="text" class="form-control" id="door" path="door"/>
-                                <form:errors path="door" cssClass="text-danger bg-danger" element="div"/>
-                            </div>
-                            <div class="form-group col-xs-4">
-                                <form:label for="zipCode" path="zipCode"><spring:message code="zipCode"/></form:label>
-                                <form:input type="text" class="form-control" id="zipCode" path="zipCode"/>
-                                <form:errors path="zipCode" cssClass="text-danger bg-danger" element="div"/>
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="form-group col-xs-4">
+                                        <form:label for="floor" path="floor"><spring:message code="floor"/></form:label>
+                                        <form:input type="text" class="form-control" id="floor" path="floor"/>
+                                        <form:errors path="floor" cssClass="text-danger bg-danger" element="div"/>
+                                    </div>
+                                    <div class="form-group col-xs-4">
+                                        <form:label for="door" path="door"><spring:message code="door"/></form:label>
+                                        <form:input type="text" class="form-control" id="door" path="door"/>
+                                        <form:errors path="door" cssClass="text-danger bg-danger" element="div"/>
+                                    </div>
+                                    <div class="form-group col-xs-4">
+                                        <form:label for="zipCode" path="zipCode"><spring:message code="zipCode"/></form:label>
+                                        <form:input type="text" class="form-control" id="zipCode" path="zipCode"/>
+                                        <form:errors path="zipCode" cssClass="text-danger bg-danger" element="div"/>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

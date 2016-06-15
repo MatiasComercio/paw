@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.users.Student;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "grade")
@@ -28,6 +29,9 @@ public class Grade {
 	@Transient
     private Boolean taking;
 
+    @OneToMany(fetch = FetchType.EAGER)
+	private List<FinalGrade> finalGrades;
+
 	public void setTaking(final Boolean taking) {
 		this.taking = taking;
 	}
@@ -39,7 +43,10 @@ public class Grade {
 	private Grade(final Builder builder) {
 		this.id = builder.id;
 		this.student = builder.student;
-		this.course = new Course.Builder(builder.courseId).name(builder.courseName).build();
+		this.course = new Course.Builder(builder.courseId)
+				.name(builder.courseName)
+				.courseId(builder.courseCodId)
+				.build();
 		this.grade = builder.grade;
 		this.modified = builder.modified;
         this.taking = builder.taking;
@@ -73,6 +80,10 @@ public class Grade {
 		return course.getId();
 	}
 
+	public String getCourseCodId() {
+		return course.getCourseId();
+	}
+
 	public String getCourseName() {
 		return course.getName();
 	}
@@ -82,6 +93,15 @@ public class Grade {
 	}
 
 	public LocalDateTime getModified() { return modified; }
+
+
+    public List<FinalGrade> getFinalGrades() {
+        return finalGrades;
+    }
+
+    public void setFinalGrades(List<FinalGrade> finalGrades) {
+        this.finalGrades = finalGrades;
+    }
 
     public Boolean getTaking() {
         return taking;
@@ -120,22 +140,29 @@ public class Grade {
 		return result;
 	}
 
+	public void setCourse(final Course course) {
+		this.course = course;
+	}
+
 	public static class Builder {
 		private final Integer id;
 		private final int courseId;
+		private final String courseCodId;
 		private final BigDecimal grade;
 
 		private String studentFirstName = "";
 		private String studentLastName = "";
 		private Student student;
+		private Course course;
 		private String courseName = "";
 		private LocalDateTime modified;
         private Boolean taking = false;
 
-		public Builder(final Integer id, final Student student, final int courseId, final BigDecimal grade) {
+		public Builder(final Integer id, final Student student, final int courseId, final String courseCodId, final BigDecimal grade) {
 			this.id = id;
 			this.student = student;
 			this.courseId = courseId;
+			this.courseCodId = courseCodId;
 			this.grade = grade;
 			this.modified = LocalDateTime.now();
 		}

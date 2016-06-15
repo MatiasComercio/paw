@@ -74,7 +74,8 @@
                         <tr>
                             <th class="col-xs-1"><span><spring:message code="id"/></span>
                             <th class="col-xs-4"><span><spring:message code="course"/></span></th>
-                            <th class="col-xs-2"><spring:message code="grade"/></th>
+                            <th class="col-xs-1"><spring:message code="grade"/></th>
+                            <th class="col-xs-1"><spring:message code="finalGrade"/></th>
                             <th class="col-xs-2"><spring:message code="modified"/></th>
                             <th class="col-xs-3"><spring:message code="actions"/></th>
                         </tr>
@@ -82,7 +83,7 @@
                         <tbody>
                         <c:forEach items="${semester}" var="grade">
                             <tr>
-                                <td><span> ${ grade.courseId }</span></td>
+                                <td><span> ${ grade.courseCodId }</span></td>
                                 <td><span> ${ grade.courseName }</span></td>
                                 <td>
                                     <c:choose>
@@ -103,6 +104,21 @@
                                     </c:choose>
                                 </td>
                                 <td>
+                                    <c:forEach items="${grade.finalGrades}" var="finalGrade">
+                                        <div class="row">
+                                        <c:choose>
+                                            <c:when test="${finalGrade.grade >= 4}">
+                                                <c:set var="gradeColorClass" value="text-success" />
+                                            </c:when>
+                                            <c:otherwise>
+                                                <c:set var="gradeColorClass" value="text-danger" />
+                                            </c:otherwise>
+                                        </c:choose>
+                                        <span class="${gradeColorClass}">${ finalGrade.grade }</span>
+                                        </div>
+                                    </c:forEach>
+                                </td>
+                                <td>
                                     <c:choose>
                                         <c:when test="${grade.modified eq null}">
                                             -
@@ -121,7 +137,9 @@
                                     <c:if test="${grade.canEdit}">
                                         <button name="gradeButton" class="btn btn-info btn-sm" type="button"
                                                 data-id="${grade.id}" data-docket="${grade.docket}"
-                                                data-course_id="${ grade.courseId }" data-course_name="${ grade.courseName }"
+                                                data-course_id="${ grade.courseId }"
+                                                data-course_cod_id="${grade.courseCodId}"
+                                                data-course_name="${ grade.courseName }"
                                                 data-grade="${grade.grade}" data-modified="${grade.modified}" data-toggle="modal"
                                                 data-target="#gradeFormConfirmationModal">
                                             <i class="fa fa-pencil-square-o" aria-hidden="true"></i> <spring:message code="edit"/>

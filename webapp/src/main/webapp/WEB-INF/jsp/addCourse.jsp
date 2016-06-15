@@ -45,7 +45,7 @@
             <c:set var="formAction">
                 <c:url value="/courses/${course.id}/edit" />
             </c:set>
-            <c:set var="hidden" value="" />
+            <c:set var="hidden" value="hidden" />
             <c:set var="readonly" value="true" />
             <spring:message var="formButton" code="saveChanges"/>
         </c:when>
@@ -82,6 +82,12 @@
                             (<span class="text-danger"><spring:message code="requiredIcon"/></span>)</form:label>
                         <form:input path="id" type="text" class="form-control" readonly="${readonly}"/>
                         <form:errors path="id" cssClass="text-danger bg-danger" element="div"/>
+                    </div>
+                    <div class="form-group col-xs-12">
+                        <form:label path="courseId"><spring:message code="id"/>
+                            (<span class="text-danger"><spring:message code="requiredIcon"/></span>)</form:label>
+                        <form:input type="text" class="form-control" path="courseId"/>
+                        <form:errors path="courseId" cssClass="text-danger bg-danger" element="div"/>
                     </div>
                     <div class="form-group col-xs-12">
                         <form:label path="name"><spring:message code="name"/>

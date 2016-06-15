@@ -1,8 +1,12 @@
 package ar.edu.itba.paw.webapp.forms;
 
+import javax.validation.constraints.Size;
+
 public class AdminFilterForm {
 	private Integer dni;
+	@Size(max=50)
 	private String firstName;
+	@Size(max=50)
 	private String lastName;
 
 	public Integer getDni() {

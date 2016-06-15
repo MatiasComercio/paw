@@ -1,12 +1,12 @@
 package ar.edu.itba.paw.webapp.controllers;
 
-import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
-import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.*;
@@ -28,7 +28,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class StudentController {
@@ -70,9 +71,9 @@ public class StudentController {
 
 	@RequestMapping(value = "/students", method = RequestMethod.GET)
 	public ModelAndView getStudents(@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
-	                                final BindingResult errors,
-	                                final Model model,
-	                                @ModelAttribute("user") UserSessionDetails loggedUser) {
+									final BindingResult errors,
+									final Model model,
+									@ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("VIEW_STUDENTS")) {
 			LOGGER.warn("User {} tried to view all students and doesn't have VIEW_STUDENTS authority [GET]", loggedUser.getDni());
@@ -105,7 +106,24 @@ public class StudentController {
 
 	@RequestMapping("/students/{docket}/info")
 	public ModelAndView getStudent(@PathVariable final int docket,
-	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+								   @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		//////////////////////////////////TEST
+
+//		final Student student1 = studentService.getByDocket(docket);
+//		final Procedure procedure = new Procedure.Builder()
+//				.procedureState("PENDING")
+//				.title("this is the title")
+//				.message("tramite 123")
+//				.sender(student1)
+//				.build();
+//		studentService.createProcedure(procedure);
+//
+//		final List<Procedure> procedures = studentService.getProcedures(docket);
+////		LOGGER.debug("PROCEDURES = " + procedures);
+
+		/////////////////////////////////TEST
+
 		if (!loggedUser.hasAuthority("VIEW_STUDENT")) {
 			LOGGER.warn("User {} tried to view student with docket {} and doesn't have VIEW_STUDENT authority [GET]", loggedUser.getDni(), docket);
 			return new ModelAndView(UNAUTHORIZED);
@@ -127,8 +145,8 @@ public class StudentController {
 
 	@RequestMapping("/students/{docket}/grades")
 	public ModelAndView getStudentGrades(@PathVariable final int docket, Model model,
-	                                     RedirectAttributes redirectAttributes,
-	                                     @ModelAttribute("user") UserSessionDetails loggedUser) {
+										 RedirectAttributes redirectAttributes,
+										 @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("VIEW_GRADES")
 				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
@@ -216,10 +234,10 @@ public class StudentController {
 
 	@RequestMapping(value = "/students/{docket}/courses/unenroll", method = RequestMethod.POST)
 	public ModelAndView unenroll(@PathVariable final Integer docket,
-	                             @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
-	                             final BindingResult errors,
-	                             final RedirectAttributes redirectAttributes,
-	                             @ModelAttribute("user") UserSessionDetails loggedUser) {
+								 @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
+								 final BindingResult errors,
+								 final RedirectAttributes redirectAttributes,
+								 @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("DELETE_INSCRIPTION")
 				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
@@ -233,15 +251,12 @@ public class StudentController {
 			return new ModelAndView("redirect:/students/" + docket + "/courses");
 		}
 
-		Result result = studentService.unenroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
+		final boolean done = studentService.unenroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
 
-		if (result == null) {
-			result = Result.ERROR_UNKNOWN;
-		}
-		if (!result.equals(Result.OK)) {
-			LOGGER.warn("User {} could not unenroll a student {}, Result = {}", loggedUser.getDni(), docket, result);
+		if (!done) {
+			LOGGER.warn("User {} could not unenroll a student {}, Result = {}", loggedUser.getDni(), docket, done);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
 		} else {
 			LOGGER.info("User {} unenrolled student {} successfully", loggedUser.getDni(), docket);
 			redirectAttributes.addFlashAttribute("alert", "success");
@@ -298,10 +313,10 @@ public class StudentController {
 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.POST)
 	public ModelAndView studentInscription(@PathVariable final int docket,
-	                                       @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
-	                                       final BindingResult errors,
-	                                       final RedirectAttributes redirectAttributes,
-	                                       @ModelAttribute("user") UserSessionDetails loggedUser) {
+										   @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
+										   final BindingResult errors,
+										   final RedirectAttributes redirectAttributes,
+										   @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("ADD_INSCRIPTION")
 				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
@@ -314,14 +329,14 @@ public class StudentController {
 			return new ModelAndView("redirect:/students/" + docket + "/inscription");
 		}
 
-		Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
-		if (result == null) {
-			result = Result.ERROR_UNKNOWN;
-		}
-		if (!result.equals(Result.OK)) {
-			LOGGER.warn("User {} could not add inscription for student {}, Result = {}", loggedUser.getDni(), docket, result);
+		boolean done = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
+//		if (done == null) {
+//			done = Result.ERROR_UNKNOWN;
+//		}
+		if (!done) {
+			LOGGER.warn("User {} could not add inscription for student {}, Result = {}", loggedUser.getDni(), docket, done);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_CORRELATIVE_NOT_APPROVED", null, Locale.getDefault()));
 
 		} else {
 			LOGGER.info("User {} added inscription of student {} successfully", loggedUser.getDni(), docket);
@@ -335,10 +350,30 @@ public class StudentController {
 		return new ModelAndView("redirect:/students/" + docket + "/inscription");
 	}
 
+	@RequestMapping(value = "/students/{docket}/inscription/courseFilterForm", method = RequestMethod.GET)
+	public ModelAndView studentInscriptionCourseFilter(@PathVariable final int docket,
+													   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+													   final BindingResult errors,
+													   final RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
+		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
+		return new ModelAndView("redirect:/students/" + docket + "/inscription");
+	}
+
+	@RequestMapping(value = "/students/{docket}/courses/courseFilterForm", method = RequestMethod.GET)
+	public ModelAndView studentCoursesCourseFilter(@PathVariable final int docket,
+												   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+												   final BindingResult errors,
+												   final RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
+		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
+		return new ModelAndView("redirect:/students/" + docket + "/courses");
+	}
+
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
 	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
-	                               RedirectAttributes redirectAttributes,
-	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+								   RedirectAttributes redirectAttributes,
+								   @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("ADD_STUDENT")) {
 			LOGGER.warn("User {} tried to add student with DNI {} and doesn't have ADD_STUDENT authority [GET]", loggedUser.getDni(), studentForm.getDni());
@@ -353,8 +388,8 @@ public class StudentController {
 
 	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
 	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
-	                               final BindingResult errors, RedirectAttributes redirectAttributes,
-	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+								   final BindingResult errors, RedirectAttributes redirectAttributes,
+								   @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("ADD_STUDENT")) {
 			LOGGER.warn("User {} tried to add student with DNI {} and doesn't have ADD_STUDENT authority [POST]", loggedUser.getDni(), studentForm.getDni());
@@ -367,32 +402,20 @@ public class StudentController {
 			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
 			/* --------- */
 			return addStudent(studentForm, redirectAttributes, loggedUser);
-		}
-		else{
-			Student student = studentForm.build();
-			Result result = null;
-
-//			for future use
-
-//			if (studentService.existsEmail(student.getEmail())) {
-//				LOGGER.warn("User {} could not add student with DNI {}", loggedUser.getDni(), student.getDni());
-//				redirectAttributes.addFlashAttribute("alert", "danger");
-//				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("USER_EXISTS_EMAIL", null, Locale.getDefault()));
-//				return addStudent(studentForm, redirectAttributes, loggedUser);
-//			}
+		} else {
+			final Student student = studentForm.build();
+			boolean done;
 
 			try {
-				result = studentService.create(student);
+				done = studentService.create(student);
 			} catch (final DataIntegrityViolationException e) {
-				result = Result.USER_EXISTS_DNI;
+				LOGGER.warn("User {} could not add student with DNI {}. Reason: ", loggedUser.getDni(), student.getDni(), e);
+				done = false;
 			}
 
-			if(result == null || !result.equals(Result.OK)){
-				LOGGER.warn("User {} could not add student with DNI {}, Result = {}", loggedUser.getDni(), student.getDni(), result);
+			if(!done) {
 				redirectAttributes.addFlashAttribute("alert", "danger");
-				if (result != null) {
-					redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
-				}
+				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("USER_EXISTS_DNI", null, Locale.getDefault()));
 				return addStudent(studentForm, redirectAttributes, loggedUser);
 			}
 			redirectAttributes.addFlashAttribute("alert", "success");
@@ -405,8 +428,8 @@ public class StudentController {
 
 	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.POST)
 	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
-	                              @PathVariable Integer docket, RedirectAttributes redirectAttributes,
-	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
+								  @PathVariable Integer docket, RedirectAttributes redirectAttributes,
+								  @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("EDIT_GRADE")
 				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
@@ -431,11 +454,11 @@ public class StudentController {
 
 		Grade newGrade = gradeForm.build();
 
-		Result result = studentService.editGrade(newGrade, gradeForm.getOldGrade());
-		if(!result.equals(Result.OK)){
-			LOGGER.warn("User {} could not edit grades, Result = {}", loggedUser.getDni(), result);
+		boolean done = studentService.editGrade(newGrade, gradeForm.getOldGrade());
+		if(!done){
+			LOGGER.warn("User {} could not edit grades, Result = {}", loggedUser.getDni(), done);
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
 			return new ModelAndView("redirect:/students/" + docket + "/grades");
 		}
 		redirectAttributes.addFlashAttribute("alert", "success");
@@ -444,15 +467,14 @@ public class StudentController {
 						new Object[] {},
 						Locale.getDefault()));
 		return new ModelAndView("redirect:/students/" + docket + "/grades");
-
 	}
 
 	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.POST)
 	public ModelAndView addGrade(@PathVariable Integer docket,
-	                             @Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
-	                             final BindingResult errors,
-	                             RedirectAttributes redirectAttributes,
-	                             @ModelAttribute("user") UserSessionDetails loggedUser) {
+								 @Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
+								 final BindingResult errors,
+								 RedirectAttributes redirectAttributes,
+								 @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("ADD_GRADE")
 				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
@@ -476,17 +498,12 @@ public class StudentController {
 		/*gradeForm.setDocket(docket);*/
 		gradeForm.setStudent(studentService.getByDocket(docket));
 		Grade grade = gradeForm.build();
-		Result result = studentService.addGrade(grade);
+		boolean done = studentService.addGrade(grade);
 
-		if (result == null) {
+		if (!done) {
 			LOGGER.warn("User {} could not add a grade, Result is NULL", loggedUser.getDni());
-			result = Result.ERROR_UNKNOWN;
 			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
-		} else if (!result.equals(Result.OK)) {
-			LOGGER.warn("User {} could not add a grade, Result = {}", loggedUser.getDni(), result);
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
 		} else {
 			LOGGER.info("User {} added a grade successfully", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "success");
@@ -501,14 +518,14 @@ public class StudentController {
 
 	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
 	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes,
-	                                  @ModelAttribute("user") UserSessionDetails loggedUser) {
+									  @ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("DELETE_STUDENT")
 				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
 			LOGGER.warn("User {} tried to delete a student and doesn't have DELETE_STUDENT authority [POST]", loggedUser.getDni());
 			return new ModelAndView(UNAUTHORIZED);
 		}
-		final Result result = studentService.deleteStudent(docket);
+		studentService.deleteStudent(docket);
 //		ModelAndView mav = new ModelAndView("studentsSearch");
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteStudent_success",
@@ -556,10 +573,10 @@ public class StudentController {
 
 	@RequestMapping(value = "/students/{docket}/edit", method = RequestMethod.POST)
 	public ModelAndView editStudent(@PathVariable final Integer docket,
-	                                @Valid @ModelAttribute("studentForm") StudentForm studentForm,
-	                                final BindingResult errors,
-	                                RedirectAttributes redirectAttributes,
-	                                @ModelAttribute("user") UserSessionDetails loggedUser) {
+									@Valid @ModelAttribute("studentForm") StudentForm studentForm,
+									final BindingResult errors,
+									RedirectAttributes redirectAttributes,
+									@ModelAttribute("user") UserSessionDetails loggedUser) {
 
 		if (!loggedUser.hasAuthority("EDIT_STUDENT")
 				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
@@ -588,23 +605,13 @@ public class StudentController {
 
 		Student student = studentForm.build();
 
-//		for future use
+		final boolean done = studentService.update(docket, student);
 
-//		if (studentService.existsEmail(student.getEmail())) {
-//			LOGGER.warn("User {} could not add student with DNI {}", loggedUser.getDni(), student.getDni());
-//			redirectAttributes.addFlashAttribute("alert", "danger");
-//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("USER_EXISTS_EMAIL", null, Locale.getDefault()));
-//			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
-//		}
-
-
-		Result result = studentService.update(docket, student);
-
-		if(!result.equals(Result.OK)){
-			LOGGER.warn("User {} could not edit student, Result = {}", loggedUser.getDni(), result);
+		if(!done) {
+			LOGGER.warn("User {} could not edit student, Result = {}", loggedUser.getDni());
 			redirectAttributes.addFlashAttribute("alert", "danger");
 			redirectAttributes.addFlashAttribute("message",
-					messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+					messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
 			redirectAttributes.addFlashAttribute("justCalled", true);
 			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
 		}
@@ -617,6 +624,171 @@ public class StudentController {
 		final String referrer = request.getHeader("referer");
 		return new ModelAndView("redirect:" + referrer);
 	}
+
+
+//	private List<List<GradeForm>> getSemesters(final int docket) {
+//		final List<List<GradeForm>> semesters = new LinkedList<>();
+//		for (List<GradeForm> semester : semesters) {
+//			semester = new ArrayList<>();
+//		}
+//
+//		final Student student = studentService.getGrades(docket);
+//
+//		final List<Grade> approvedCourses = student.getGrades();
+//		for (Grade g : approvedCourses) {
+//
+//		}
+//
+//		return semesters;
+//	}
+
+	@RequestMapping(value = "/students/{docket}/final_inscription", method = RequestMethod.GET)
+	public ModelAndView studentFinalInscription(@PathVariable final int docket, final Model model,
+										   @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_FINAL_INSCRIPTION")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			LOGGER.warn("User {} tried to add inscription for student {} and doesn't have ADD_FINAL_INSCRIPTION authority [GET]", loggedUser.getDni(), docket);
+			return new ModelAndView(UNAUTHORIZED);
+		}
+
+
+		if (!model.containsAttribute("finalInscriptionForm")) {
+			model.addAttribute("finalInscriptionForm", new FinalInscriptionForm());
+		}
+
+//		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
+//		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
+//				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
+
+		// +++ximprove with Spring Security
+		final Student student = studentService.getByDocket(docket);
+		if (student == null) {
+			return new ModelAndView("forward:/errors/404.html");
+		}
+
+//		final ModelAndView mav = new ModelAndView("courses");
+//		mav.addObject("student", student);
+//		mav.addObject("section2", "inscription");
+//		mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
+//		mav.addObject("inscriptionFormAction", "/students/" + docket + "/inscription");
+//		mav.addObject("subsection_enroll", true);
+//		mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
+//		mav.addObject("docket", docket);
+
+		final ModelAndView mav = new ModelAndView("finalInscription2");
+		mav.addObject("student", student);
+		mav.addObject("section2", "final_inscription");
+		//Don't use: mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
+		mav.addObject("finalInscriptionFormAction", "/students/" + docket + "/final_inscription");
+        mav.addObject("finalInscriptionDropFormAction", "/students/" + docket + "/drop_inscription");
+
+		//mav.addObject("subsection_enroll", true);
+		//mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
+		mav.addObject("finalInscriptions", studentService.getAvailableFinalInscriptions(docket));
+		mav.addObject("docket", docket);
+
+		mav.addObject("finalInscriptionsTaken", studentService.getFinalInscriptionsTaken(docket));
+        for (FinalInscription inscription : studentService.getFinalInscriptionsTaken(docket)) {
+            LOGGER.info("TAKEN: {}", inscription);
+        }
+        return mav;
+	}
+
+	@RequestMapping(value = "/students/{docket}/final_inscription", method = RequestMethod.POST)
+	public ModelAndView studentFinalInscription(@PathVariable final int docket,
+										   @Valid @ModelAttribute("finalInscriptionForm") FinalInscriptionForm finalInscriptionForm,
+										   final BindingResult errors,
+										   final RedirectAttributes redirectAttributes,
+										   @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+		if (!loggedUser.hasAuthority("ADD_FINAL_INSCRIPTION")
+				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+			LOGGER.warn("User {} tried to add inscription for student {} and doesn't have ADD_FINAL_INSCRIPTION authority [POST]", loggedUser.getDni(), docket);
+			return new ModelAndView(UNAUTHORIZED);
+		}
+		if (errors.hasErrors()){
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.finalInscriptionForm", errors);
+			redirectAttributes.addFlashAttribute("finalInscriptionForm", finalInscriptionForm);
+			return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
+		}
+
+		//Result result = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
+		//TODO: Create a method for creating finalInscription
+		//Result result = studentService.enroll(finalInscriptionForm.getStudentDocket(), finalInscriptionForm.getCourseId());
+		//TODO: Implement this: FinalInscription finalInscription = finalInscriptionForm.build();
+
+		//FinalInscription finalInscription = studentService.getFinalInscription(finalInscriptionForm.getId());
+
+		//TODO: check for vacancy
+		boolean result = studentService.addStudentFinalInscription(docket, finalInscriptionForm.getId());
+
+
+		if (!result) {
+			LOGGER.warn("User {} could not add final inscription for student {}, Result = {}", loggedUser.getDni(), docket, result);
+			//TODO: Ver que hacemos aca
+            //redirectAttributes.addFlashAttribute("alert", "danger");
+			//redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+
+		} else {
+			LOGGER.info("User {} added final inscription of student {} successfully", loggedUser.getDni(), docket);
+			//redirectAttributes.addFlashAttribute("alert", "success");
+			//redirectAttributes.addFlashAttribute("message",
+					messageSource.getMessage("final_inscription_success", null, Locale.getDefault());
+		}
+
+		return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
+	}
+
+    @RequestMapping(value = "/students/{docket}/drop_inscription", method = RequestMethod.POST)
+    public ModelAndView studentDropFinalInscription(@PathVariable final int docket,
+                                                @Valid @ModelAttribute("finalInscriptionForm") FinalInscriptionForm finalInscriptionForm,
+                                                final BindingResult errors,
+                                                final RedirectAttributes redirectAttributes,
+                                                @ModelAttribute("user") UserSessionDetails loggedUser) {
+
+        if (!loggedUser.hasAuthority("DELETE_FINAL_INSCRIPTION")
+                || (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+            LOGGER.warn("User {} tried to delete inscription for student {} and doesn't have DELETE_FINAL_INSCRIPTION authority [POST]", loggedUser.getDni(), docket);
+            return new ModelAndView(UNAUTHORIZED);
+        }
+        if (errors.hasErrors()){
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.finalInscriptionForm", errors);
+            redirectAttributes.addFlashAttribute("finalInscriptionForm", finalInscriptionForm);
+            return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
+        }
+
+
+        boolean result = studentService.deleteStudentFinalInscription(docket, finalInscriptionForm.getId());
+
+
+        if (!result) {
+            //TODO: Ver que hacemos aca
+            LOGGER.warn("User {} could not remove final inscription for student {}, Result = {}", loggedUser.getDni(), docket, result);
+           // redirectAttributes.addFlashAttribute("alert", "danger");
+            //redirectAttributes.addFlashAttribute("message", messageSource.getMessage(result.toString(), null, Locale.getDefault()));
+        } else {
+            LOGGER.info("User {} removed final inscription of student {} successfully", loggedUser.getDni(), docket);
+            //redirectAttributes.addFlashAttribute("alert", "success");
+            //redirectAttributes.addFlashAttribute("message",
+            messageSource.getMessage("final_inscription_success", null, Locale.getDefault());
+        }
+
+        return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
+    }
+
+
+//
+//	@RequestMapping(value = "/students/{docket}/inscription/courseFilterForm", method = RequestMethod.GET)
+//	public ModelAndView studentInscriptionCourseFilter(@PathVariable final int docket,
+//													   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+//													   final BindingResult errors,
+//													   final RedirectAttributes redirectAttributes) {
+//		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
+//		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
+//		return new ModelAndView("redirect:/students/" + docket + "/inscription");
+//	}
+
 
 
 	/**************************************************************/
@@ -659,18 +831,18 @@ public class StudentController {
 	                                                  final ModelAndView mav,
 	                                                  final BindingResult errors,
 	                                                  final CourseFilter courseFilter) {
-		final List<Course> courses;
-		if (errors.hasErrors()) {
-			LOGGER.warn("Could not get available inscription courses due to {} [GET]", errors.getAllErrors());
+        final List<Course> courses;
+        if (errors.hasErrors()) {
+            LOGGER.warn("Could not get available inscription courses due to {} [GET]", errors.getAllErrors());
 
-			mav.addObject("alert", "danger");
-			mav.addObject("message", messageSource.getMessage("search_fail",
-					null,
-					Locale.getDefault()));
-			courses = studentService.getAvailableInscriptionCourses(docket, null);
-		} else {
-			courses = studentService.getAvailableInscriptionCourses(docket, courseFilter);
-		}
-		return courses;
-	}
+            mav.addObject("alert", "danger");
+            mav.addObject("message", messageSource.getMessage("search_fail",
+                    null,
+                    Locale.getDefault()));
+            courses = studentService.getAvailableInscriptionCourses(docket, null);
+        } else {
+            courses = studentService.getAvailableInscriptionCourses(docket, courseFilter);
+        }
+        return courses;
+    }
 }

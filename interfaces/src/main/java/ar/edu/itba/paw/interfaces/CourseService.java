@@ -1,12 +1,13 @@
 package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
-import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.StudentFilter;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CourseService {
     /**
@@ -14,7 +15,7 @@ public interface CourseService {
      * @param course The course to be persisted in the database.
      * @return The Result code of the insertion.
      */
-    Result create(Course course);
+    boolean create(Course course);
 
     /**
      * Update a course
@@ -22,7 +23,7 @@ public interface CourseService {
      * @param course Modified course.
      * @return The result code of the insertion.
      */
-    Result update(int id, Course course);
+    boolean update(int id, Course course);
 
 	/**
      * Get all the current available courses
@@ -62,7 +63,7 @@ public interface CourseService {
      *         INVALID_INPUT_PARAMETERS if the ID is invalid;
      *         ERROR_UNKNOWN else;
      */
-    Result deleteCourse(int id);
+    boolean deleteCourse(int id);
 
     /**
      * Gets the desired course by the identifier with the inscribed students,
@@ -89,7 +90,7 @@ public interface CourseService {
      * @param correlativeId The id of the correlative course
      * @return The result indicating if the action could be done.
      */
-    Result addCorrelative(int id, int correlativeId);
+    boolean addCorrelative(int id, int correlativeId);
 
     /**
      * @param courseId The id of the course.
@@ -104,14 +105,14 @@ public interface CourseService {
      * @param correlativeId The id of the correlative for the given course.
      * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
      */
-    Result deleteCorrelative(int courseId, int correlativeId);
+    boolean deleteCorrelative(int courseId, int correlativeId);
 
     /**
      *
      * @param courseId Given the id of a course, delete all the correlative
      * @return The result code of the operation
      */
-    Result deleteCourseCorrelatives(int courseId);
+    boolean deleteCourseCorrelatives(int courseId);
 
     /**
      * Get the number of semesters.
@@ -143,4 +144,26 @@ public interface CourseService {
     /* +++xtest */
     /* +++xdocument */
 	Course getStudentsThatPassedCourse(int id, StudentFilter studentFilter);
+
+    /**
+     * Get the open final inscriptions corresponding to a course.
+     * @param id The course's id
+     * @return The list containing all the final inscriptions.
+     */
+    List<FinalInscription> getOpenFinalInsciptions(Integer id);
+
+    /**
+     * Get the student's inscribed in a FinalInscription
+     * @param id The FinalInscription's id
+     * @return The list of students
+     */
+    Set<Student> getFinalStudents(int id);
+
+
+    /**
+     * Get a final inscription by it's id
+     * @param id The given's final inscription's id
+     * @return The Final Inscription
+     */
+    FinalInscription getFinalInscription(int id);
 }

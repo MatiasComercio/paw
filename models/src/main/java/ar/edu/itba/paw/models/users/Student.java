@@ -5,7 +5,7 @@ import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.Role;
 
 import javax.persistence.*;
-import java.util.Collection;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -48,8 +48,31 @@ public class Student extends User {
 		return Collections.unmodifiableList(grades);
 	}
 
+	public void setStudentCourses(List<Course> studentCourses) {
+		this.studentCourses = studentCourses;
+	}
+
+	public void setGrades(List<Grade> grades) {
+		this.grades = grades;
+	}
+
 	public List<Grade> getModifiableGrades() {
 		return grades;
+	}
+
+	public BigDecimal getCourseGrade(final Integer i) {
+		if (grades != null) {
+			for (Grade g : grades) {
+				final Course c = g.getCourse();
+				if (c != null && c.getId() == i) {
+					final BigDecimal grade = g.getGrade();
+					if (grade.compareTo(BigDecimal.valueOf(4)) >= 0) {
+						return grade;
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	@Override
