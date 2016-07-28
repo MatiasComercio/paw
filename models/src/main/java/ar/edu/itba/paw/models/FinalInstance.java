@@ -24,7 +24,7 @@ public class FinalInstance {
 
     @Enumerated(value = EnumType.STRING)
     private FinalInscriptionState state = FinalInscriptionState.OPEN;
-    
+
     public FinalInstance(){
         //Just for Hibernate
     }
@@ -54,7 +54,6 @@ public class FinalInstance {
     }
 
     public int getId() {
-
         return id;
     }
 

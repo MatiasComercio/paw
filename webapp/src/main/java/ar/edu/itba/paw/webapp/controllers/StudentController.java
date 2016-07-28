@@ -1,10 +1,9 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
-import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Grade;
-import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -664,9 +663,6 @@ public class StudentController {
 			model.addAttribute("finalInscriptionForm", new FinalInscriptionForm());
 		}
 
-//		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
-//		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
-//				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
 
 		// +++ximprove with Spring Security
 		final Student student = studentService.getByDocket(docket);
@@ -674,24 +670,12 @@ public class StudentController {
 			return new ModelAndView("forward:/errors/404.html");
 		}
 
-//		final ModelAndView mav = new ModelAndView("courses");
-//		mav.addObject("student", student);
-//		mav.addObject("section2", "inscription");
-//		mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
-//		mav.addObject("inscriptionFormAction", "/students/" + docket + "/inscription");
-//		mav.addObject("subsection_enroll", true);
-//		mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
-//		mav.addObject("docket", docket);
-
 		final ModelAndView mav = new ModelAndView("finalInscription2");
 		mav.addObject("student", student);
 		mav.addObject("section2", "final_inscription");
-		//Don't use: mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
 		mav.addObject("finalInscriptionFormAction", "/students/" + docket + "/final_inscription");
         mav.addObject("finalInscriptionDropFormAction", "/students/" + docket + "/drop_inscription");
 
-		//mav.addObject("subsection_enroll", true);
-		//mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
 		mav.addObject("finalInscriptions", studentService.getAvailableFinalInscriptions(docket));
 		mav.addObject("docket", docket);
 
