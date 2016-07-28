@@ -24,14 +24,18 @@ public class FinalInstance {
 
     @Enumerated(value = EnumType.STRING)
     private FinalInscriptionState state = FinalInscriptionState.OPEN;
+    
+    public FinalInstance(){
+        //Just for Hibernate
+    }
 
-    //public List<FinalInscription> getFinalInscriptions() {
-    //    return finalInscriptions;
-    //}
+    public List<FinalInscription> getFinalInscriptions() {
+        return finalInscriptions;
+    }
 
-    //public void setFinalInscriptions(List<FinalInscription> finalInscriptions) {
-    //    this.finalInscriptions = finalInscriptions;
-    //}
+    public void setFinalInscriptions(List<FinalInscription> finalInscriptions) {
+        this.finalInscriptions = finalInscriptions;
+    }
 
     public String getDesc() {
         return description;
