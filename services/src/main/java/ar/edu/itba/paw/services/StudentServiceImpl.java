@@ -355,7 +355,7 @@ public class StudentServiceImpl implements StudentService {
 	public List<FinalInscription> getFinalInscriptionsTaken(int docket) {
 		final List<FinalInscription> finalInscriptionsTaken = new ArrayList<>();
         final Student student = studentDao.getByDocket(docket);
-		final List<FinalInscription> finalInscriptions = studentDao.getAllFinalInscriptions();
+		final List<FinalInscription> finalInscriptions = studentDao.getAllFinalInscriptionsFromOpenInstance();
 
         for (FinalInscription inscription : finalInscriptions) {
             if (inscription.getStudents().contains(student))
