@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class StudentHibernateDao implements StudentDao {
@@ -337,6 +338,11 @@ public class StudentHibernateDao implements StudentDao {
         final FinalInstance instance = query.getSingleResult();
 
         return instance.getFinalInscriptions();
+    }
+
+    @Override
+    public List<FinalInscription> getOpenFinalInscriptionsByCourse(Course course){
+        return getAllFinalInscriptionsFromOpenInstance().stream().filter(inscription -> inscription.getCourse().equals(course)).collect(Collectors.toList());
     }
 
 	@Override

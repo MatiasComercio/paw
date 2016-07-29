@@ -205,4 +205,11 @@ public interface StudentDao {
 	 */
 	boolean createProcedure(Procedure procedure);
 
+    /**
+     * Gets the final inscriptions for a course corresponding to the open final instance.
+     *
+     * @param course The course corresponding to de final inscriptions
+     * @return
+     */
+    List<FinalInscription> getOpenFinalInscriptionsByCourse(Course course);
 }

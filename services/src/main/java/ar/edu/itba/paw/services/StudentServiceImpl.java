@@ -342,10 +342,21 @@ public class StudentServiceImpl implements StudentService {
             return false;
         }
 
-		if(finalInscription.getVacancy() >= finalInscription.getMaxVacancy()){
+		if (finalInscription.getVacancy() >= finalInscription.getMaxVacancy()){
 			return false;
 		}
+
+		//Checks that the student was not in this inscription or another for this course
+		List<FinalInscription> finalInscriptionsForCourse = studentDao.getOpenFinalInscriptionsByCourse(finalInscription.getCourse());
+
+		for (FinalInscription inscription : finalInscriptionsForCourse) {
+			if (inscription.getHistory().contains(student))
+					return false;
+		}
+
+
 		finalInscription.getStudents().add(student);
+		finalInscription.getHistory().add(student);
 		finalInscription.increaseVacancy();
 		return true;
 	}
@@ -374,6 +385,7 @@ public class StudentServiceImpl implements StudentService {
 
         if (finalInscription.getStudents().contains(student)) {
             finalInscription.getStudents().remove(student);
+			finalInscription.getHistory().remove(student);
             finalInscription.decreaseVacancy();
         }
 
