@@ -409,7 +409,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Set<Student> getFinalStudents(int id) {
         Set<Student> set = new HashSet<>();
-        set.addAll(studentDao.getFinalInscription(id).getStudents());
+        set.addAll(studentDao.getFinalInscription(id).getHistory());
         return set;
     }
 
