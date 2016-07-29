@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
@@ -644,9 +643,7 @@ public class StudentController {
 		mav.addObject("docket", docket);
 
 		mav.addObject("finalInscriptionsTaken", studentService.getFinalInscriptionsTaken(docket));
-        for (FinalInscription inscription : studentService.getFinalInscriptionsTaken(docket)) {
-            LOGGER.info("TAKEN: {}", inscription);
-        }
+
         return mav;
 	}
 
