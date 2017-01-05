@@ -3,17 +3,12 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.ProcedureDao;
 import ar.edu.itba.paw.interfaces.StudentDao;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.FinalGrade;
-import ar.edu.itba.paw.models.FinalInscription;
-import ar.edu.itba.paw.models.Grade;
-import ar.edu.itba.paw.models.Procedure;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -23,6 +18,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class StudentHibernateDao implements StudentDao {
@@ -153,7 +149,6 @@ public class StudentHibernateDao implements StudentDao {
 		LOGGER.debug("[addFinalGrade] - {} - {}", grade, finalGrade);
 
 		grade.getFinalGrades().add(finalGrade);
-		//em.merge(grade);
 
 		return true;
 	}
@@ -257,18 +252,6 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public List<Student> getStudentsPassed(final int id) {
-//      not working => +++xcheck
-//		final CriteriaBuilder cb = em.getCriteriaBuilder();
-//		final CriteriaQuery<Student> q = cb.createQuery(Student.class);
-//		final Root<Student> r = q.from(Student.class);
-//		final Join<Student, Grade> j = r.join("docket");
-//		Predicate eqCourseId = cb.equal(j.get("course_id"), id);
-//
-//		return em.createQuery(q.where(eqCourseId).orderBy(
-//				cb.asc(j.get("lastName")),
-//				cb.asc(j.get("firstName")),
-//				cb.asc(j.get("dni"))
-//		)).getResultList();
 
 		//TODO: Add a Student variable instead of a docket in Grade model
 		final List<Student> studentsPassed = new LinkedList<>();
@@ -306,19 +289,6 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 
-	//TODO: Test this
-	/*@Override
-	public boolean isApproved(int docket, int courseId) {
-		//TODO: This is doing 1 query per loop: Improve eficiency. (Use student's grades??)
-		TypedQuery<Long> query = em.createQuery("select count(gr) from Grade as gr where gr.course.id=:id and gr.student.docket = :docket" +
-				" and gr.grade >= 4",
-				Long.class);
-		query.setParameter("id", courseId);
-		query.setParameter("docket", docket);
-		Long approvedGrades = query.getSingleResult();
-		return approvedGrades > 0;
-	}*/
-
     @Override
     //Return if the docket's student can take a final exam;
     public boolean isApproved(int docket, int courseId) {
@@ -353,12 +323,27 @@ public class StudentHibernateDao implements StudentDao {
         return false;
     }
 
-	//TODO: Test this
+	@Deprecated
 	@Override
 	public List<FinalInscription> getAllFinalInscriptions() {
 		final TypedQuery<FinalInscription> query = em.createQuery("select inscription from FinalInscription inscription", FinalInscription.class);
 		return query.getResultList();
 	}
+
+	@Override
+    public List<FinalInscription> getAllFinalInscriptionsFromOpenInstance(){
+        final TypedQuery<FinalInstance> query = em.createQuery("select instance from FinalInstance instance where instance.state = :state", FinalInstance.class);
+        query.setParameter("state", FinalInscription.FinalInscriptionState.OPEN);
+
+        final FinalInstance instance = query.getSingleResult();
+
+        return instance.getFinalInscriptions();
+    }
+
+    @Override
+    public List<FinalInscription> getOpenFinalInscriptionsByCourse(Course course){
+        return getAllFinalInscriptionsFromOpenInstance().stream().filter(inscription -> inscription.getCourse().equals(course)).collect(Collectors.toList());
+    }
 
 	@Override
 	public FinalInscription getFinalInscription(int id) {

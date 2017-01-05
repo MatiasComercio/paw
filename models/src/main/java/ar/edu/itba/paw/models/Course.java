@@ -52,20 +52,6 @@ public class Course {
     )
     private Set<Course> upperCorrelatives;
 
-
-    /*@Column(length=5, unique=true)
-    private String code;
-    */
-
-    //@Column(name = "code", length = 5, unique = true)
-    //private String code;
-
-//    @ManyToMany/*(cascade={CascadeType.PERSIST, CascadeType.MERGE})*/
-//    @JoinTable(
-//            name="inscription",
-//            joinColumns=@JoinColumn(referencedColumnName = "id", name="course_id"),
-//            inverseJoinColumns=@JoinColumn(name="docket", referencedColumnName = "docket")
-//    )
     @ManyToMany(mappedBy = "studentCourses")
     private List<Student> students;
 

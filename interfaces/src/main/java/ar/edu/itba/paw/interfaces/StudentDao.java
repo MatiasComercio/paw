@@ -174,6 +174,22 @@ public interface StudentDao {
      */
 	List<FinalInscription> getAllFinalInscriptions();
 
+	/**
+	 * Gets the final inscription list from the open FinalInstance.
+	 *
+	 * This was implemented in order to make a distinction between
+	 * final exam opportunities in different parts of the year, making possible
+	 * to avoid having students in multiple inscriptions for the same Course and
+	 * in the same FinalInstance.
+     *
+     * The idea is that only one FinalInstance is open at the same time for this
+     * system to work correctly. Moreover, on the real SGA system there are not
+     * multiple instances open.
+	 *
+	 * @return The list containing the final inscriptions
+     */
+	List<FinalInscription> getAllFinalInscriptionsFromOpenInstance();
+
     /**
      *
      * @param id
@@ -188,4 +204,12 @@ public interface StudentDao {
 	 * @return
 	 */
 	boolean createProcedure(Procedure procedure);
+
+    /**
+     * Gets the final inscriptions for a course corresponding to the open final instance.
+     *
+     * @param course The course corresponding to de final inscriptions
+     * @return
+     */
+    List<FinalInscription> getOpenFinalInscriptionsByCourse(Course course);
 }

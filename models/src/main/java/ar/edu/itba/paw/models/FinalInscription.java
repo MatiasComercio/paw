@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.users.Student;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,6 +29,18 @@ public class FinalInscription {
 //            inverseJoinColumns=@JoinColumn(name="docket", referencedColumnName = "docket")
 //    )
     private Set<Student> students;
+
+    @ManyToMany()
+    @JoinTable(name="finalinscription_student_history")
+    private Set<Student> history;
+
+    public Set<Student> getHistory() {
+        return history;
+    }
+
+    public void setHistory(Set<Student> history) {
+        this.history = history;
+    }
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
     private Course course;

@@ -1,10 +1,8 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
-import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
-import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -107,22 +105,6 @@ public class StudentController {
 	@RequestMapping("/students/{docket}/info")
 	public ModelAndView getStudent(@PathVariable final int docket,
 								   @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		//////////////////////////////////TEST
-
-//		final Student student1 = studentService.getByDocket(docket);
-//		final Procedure procedure = new Procedure.Builder()
-//				.procedureState("PENDING")
-//				.title("this is the title")
-//				.message("tramite 123")
-//				.sender(student1)
-//				.build();
-//		studentService.createProcedure(procedure);
-//
-//		final List<Procedure> procedures = studentService.getProcedures(docket);
-////		LOGGER.debug("PROCEDURES = " + procedures);
-
-		/////////////////////////////////TEST
 
 		if (!loggedUser.hasAuthority("VIEW_STUDENT")) {
 			LOGGER.warn("User {} tried to view student with docket {} and doesn't have VIEW_STUDENT authority [GET]", loggedUser.getDni(), docket);
@@ -330,9 +312,7 @@ public class StudentController {
 		}
 
 		boolean done = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
-//		if (done == null) {
-//			done = Result.ERROR_UNKNOWN;
-//		}
+
 		if (!done) {
 			LOGGER.warn("User {} could not add inscription for student {}, Result = {}", loggedUser.getDni(), docket, done);
 			redirectAttributes.addFlashAttribute("alert", "danger");
@@ -503,7 +483,6 @@ public class StudentController {
 
 		/********************************/
 
-		/*gradeForm.setDocket(docket);*/
 		gradeForm.setStudent(studentService.getByDocket(docket));
 		Grade grade = gradeForm.build();
 		boolean done = studentService.addGrade(grade);
@@ -533,7 +512,6 @@ public class StudentController {
 			return new ModelAndView(UNAUTHORIZED);
 		}
 		studentService.deleteStudent(docket);
-//		ModelAndView mav = new ModelAndView("studentsSearch");
 		redirectAttributes.addFlashAttribute("alert", "success");
 		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteStudent_success",
 				null,
@@ -633,22 +611,6 @@ public class StudentController {
 	}
 
 
-//	private List<List<GradeForm>> getSemesters(final int docket) {
-//		final List<List<GradeForm>> semesters = new LinkedList<>();
-//		for (List<GradeForm> semester : semesters) {
-//			semester = new ArrayList<>();
-//		}
-//
-//		final Student student = studentService.getGrades(docket);
-//
-//		final List<Grade> approvedCourses = student.getGrades();
-//		for (Grade g : approvedCourses) {
-//
-//		}
-//
-//		return semesters;
-//	}
-
 	@RequestMapping(value = "/students/{docket}/final_inscription", method = RequestMethod.GET)
 	public ModelAndView studentFinalInscription(@PathVariable final int docket, final Model model,
 										   @ModelAttribute("user") UserSessionDetails loggedUser) {
@@ -664,9 +626,6 @@ public class StudentController {
 			model.addAttribute("finalInscriptionForm", new FinalInscriptionForm());
 		}
 
-//		final CourseFilterForm courseFilterForm = (CourseFilterForm) model.asMap().get("courseFilterForm");
-//		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
-//				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
 
 		// +++ximprove with Spring Security
 		final Student student = studentService.getByDocket(docket);
@@ -674,31 +633,17 @@ public class StudentController {
 			return new ModelAndView("forward:/errors/404.html");
 		}
 
-//		final ModelAndView mav = new ModelAndView("courses");
-//		mav.addObject("student", student);
-//		mav.addObject("section2", "inscription");
-//		mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
-//		mav.addObject("inscriptionFormAction", "/students/" + docket + "/inscription");
-//		mav.addObject("subsection_enroll", true);
-//		mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
-//		mav.addObject("docket", docket);
-
 		final ModelAndView mav = new ModelAndView("finalInscription2");
 		mav.addObject("student", student);
 		mav.addObject("section2", "final_inscription");
-		//Don't use: mav.addObject("courseFilterFormAction", "/students/" + docket + "/inscription/courseFilterForm");
 		mav.addObject("finalInscriptionFormAction", "/students/" + docket + "/final_inscription");
         mav.addObject("finalInscriptionDropFormAction", "/students/" + docket + "/drop_inscription");
 
-		//mav.addObject("subsection_enroll", true);
-		//mav.addObject("courses", studentService.getAvailableInscriptionCourses(docket, courseFilter));
 		mav.addObject("finalInscriptions", studentService.getAvailableFinalInscriptions(docket));
 		mav.addObject("docket", docket);
 
 		mav.addObject("finalInscriptionsTaken", studentService.getFinalInscriptionsTaken(docket));
-        for (FinalInscription inscription : studentService.getFinalInscriptionsTaken(docket)) {
-            LOGGER.info("TAKEN: {}", inscription);
-        }
+
         return mav;
 	}
 
@@ -782,20 +727,6 @@ public class StudentController {
 
         return new ModelAndView("redirect:/students/" + docket + "/final_inscription");
     }
-
-
-//
-//	@RequestMapping(value = "/students/{docket}/inscription/courseFilterForm", method = RequestMethod.GET)
-//	public ModelAndView studentInscriptionCourseFilter(@PathVariable final int docket,
-//													   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-//													   final BindingResult errors,
-//													   final RedirectAttributes redirectAttributes) {
-//		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
-//		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
-//		return new ModelAndView("redirect:/students/" + docket + "/inscription");
-//	}
-
-
 
 	/**************************************************************/
 	private List<Student> loadStudentsByFilter(final ModelAndView mav,

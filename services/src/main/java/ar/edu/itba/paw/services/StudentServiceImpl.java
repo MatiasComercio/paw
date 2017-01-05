@@ -314,12 +314,11 @@ public class StudentServiceImpl implements StudentService {
 		Student student = studentDao.getByDocket(docket);
 
 		//inscription.getVacancy() < inscription.getMaxVacancy() The inscription should be visible even when full
-		for(FinalInscription inscription : studentDao.getAllFinalInscriptions()){
+		for(FinalInscription inscription : studentDao.getAllFinalInscriptionsFromOpenInstance()){
             if(studentDao.isApproved(docket, inscription.getCourse().getId()) &&
 					//checks if student is not already included in the current final inscription.
 					!inscription.getStudents().contains(student) && inscription.isOpen()){
                 finalInscriptions.add(inscription);
-				//TODO: increasing the variable inside a transaction? Does this mean it gets saved in the db?(Because it should get saved)
 			}
 		}
 		return finalInscriptions;
@@ -343,10 +342,21 @@ public class StudentServiceImpl implements StudentService {
             return false;
         }
 
-		if(finalInscription.getVacancy() >= finalInscription.getMaxVacancy()){
+		if (finalInscription.getVacancy() >= finalInscription.getMaxVacancy()){
 			return false;
 		}
+
+		//Checks that the student was not in this inscription or another for this course
+		List<FinalInscription> finalInscriptionsForCourse = studentDao.getOpenFinalInscriptionsByCourse(finalInscription.getCourse());
+
+		for (FinalInscription inscription : finalInscriptionsForCourse) {
+			if (inscription.getHistory().contains(student))
+					return false;
+		}
+
+
 		finalInscription.getStudents().add(student);
+		finalInscription.getHistory().add(student);
 		finalInscription.increaseVacancy();
 		return true;
 	}
@@ -356,7 +366,7 @@ public class StudentServiceImpl implements StudentService {
 	public List<FinalInscription> getFinalInscriptionsTaken(int docket) {
 		final List<FinalInscription> finalInscriptionsTaken = new ArrayList<>();
         final Student student = studentDao.getByDocket(docket);
-		final List<FinalInscription> finalInscriptions = studentDao.getAllFinalInscriptions();
+		final List<FinalInscription> finalInscriptions = studentDao.getAllFinalInscriptionsFromOpenInstance();
 
         for (FinalInscription inscription : finalInscriptions) {
             if (inscription.getStudents().contains(student))
@@ -375,6 +385,7 @@ public class StudentServiceImpl implements StudentService {
 
         if (finalInscription.getStudents().contains(student)) {
             finalInscription.getStudents().remove(student);
+			finalInscription.getHistory().remove(student);
             finalInscription.decreaseVacancy();
         }
 
@@ -398,7 +409,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Set<Student> getFinalStudents(int id) {
         Set<Student> set = new HashSet<>();
-        set.addAll(studentDao.getFinalInscription(id).getStudents());
+        set.addAll(studentDao.getFinalInscription(id).getHistory());
         return set;
     }
 
