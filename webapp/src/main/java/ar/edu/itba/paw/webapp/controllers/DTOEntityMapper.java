@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.webapp.models.StudentDTO;
+import ar.edu.itba.paw.webapp.models.StudentIndexDTO;
 import org.modelmapper.ModelMapper;
 
 public class DTOEntityMapper {
@@ -12,13 +12,12 @@ public class DTOEntityMapper {
     this.modelMapper = modelMapper;
   }
 
-  public StudentDTO convertToDTO(Student student){
-    StudentDTO studentDTO = modelMapper.map(student, StudentDTO.class);
-    return studentDTO;
+  /* default */ StudentIndexDTO convertToDTO(Student student){
+    return modelMapper.map(student, StudentIndexDTO.class);
   }
 
-  public Student convertToEntity(StudentDTO studentDTO){
-    Student student = modelMapper.map(studentDTO, Student.class);
+  /* default */ Student convertToEntity(StudentIndexDTO studentIndexDTO){
+    Student student = modelMapper.map(studentIndexDTO, Student.class);
 //    post.setSubmissionDate(postDto.getSubmissionDateConverted(
 //            userService.getCurrentUser().getPreference().getTimezone()));
 //    if (postDto.getId() != null) {

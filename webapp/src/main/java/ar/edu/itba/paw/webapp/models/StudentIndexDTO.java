@@ -2,21 +2,21 @@ package ar.edu.itba.paw.webapp.models;
 
 import ar.edu.itba.paw.models.Address;
 
-public class StudentDTO {
+public class StudentIndexDTO {
 
   private int docket;
   private String firstName;
   private String lastName;
   private Address address;
 
-  public StudentDTO(int docket, String firstName, String lastName, Address address) {
+  public StudentIndexDTO(int docket, String firstName, String lastName, Address address) {
     this.docket = docket;
     this.firstName = firstName;
     this.lastName = lastName;
     this.address = address;
   }
 
-  public StudentDTO() {
+  public StudentIndexDTO() {
     // Just for Jersey
   }
 

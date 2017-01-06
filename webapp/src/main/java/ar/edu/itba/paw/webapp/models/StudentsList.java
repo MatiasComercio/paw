@@ -3,9 +3,9 @@ package ar.edu.itba.paw.webapp.models;
 import java.util.List;
 
 public class StudentsList {
-  private List<StudentDTO> students;
+  private List<StudentIndexDTO> students;
 
-  public StudentsList(List<StudentDTO> students) {
+  public StudentsList(List<StudentIndexDTO> students) {
     this.students = students;
   }
 
@@ -13,11 +13,11 @@ public class StudentsList {
     // Just for Jersey =)
   }
 
-  public List<StudentDTO> getStudents() {
+  public List<StudentIndexDTO> getStudents() {
     return students;
   }
 
-  public void setStudents(List<StudentDTO> students) {
+  public void setStudents(List<StudentIndexDTO> students) {
     this.students = students;
   }
 }

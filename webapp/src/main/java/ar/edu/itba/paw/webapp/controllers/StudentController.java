@@ -3,14 +3,12 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.webapp.models.StudentDTO;
+import ar.edu.itba.paw.webapp.models.StudentIndexDTO;
 import ar.edu.itba.paw.webapp.models.StudentsList;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -32,7 +30,7 @@ public class StudentController {
   @Produces(MediaType.APPLICATION_JSON)
   public Response studentsIndex(){
     List<Student> students = ss.getByFilter(null);
-    List<StudentDTO> studentList = students.stream()
+    List<StudentIndexDTO> studentList = students.stream()
             .map(student -> mapper.convertToDTO(student)).collect(Collectors.toList());
 
     return Response.ok(new StudentsList(studentList)).build();
