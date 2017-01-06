@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.webapp.models.StudentIndexDTO;
+import ar.edu.itba.paw.webapp.models.StudentShowDTO;
 import ar.edu.itba.paw.webapp.models.UserDTO;
 import org.modelmapper.ModelMapper;
 
@@ -13,11 +14,15 @@ public class DTOEntityMapper {
     this.modelMapper = modelMapper;
   }
 
-  /* default */ StudentIndexDTO convertToDTO(Student student){
+  public StudentIndexDTO convertToStudentIndexDTO(final Student student) {
     return modelMapper.map(student, StudentIndexDTO.class);
   }
 
-  /* default */ Student convertToEntity(UserDTO userDTO){
+  public StudentShowDTO convertToStudentShowDTO(final Student student) {
+    return modelMapper.map(student, StudentShowDTO.class);
+  }
+
+  Student convertToEntity(UserDTO userDTO){
     return modelMapper.map(userDTO, Student.class);
   }
 

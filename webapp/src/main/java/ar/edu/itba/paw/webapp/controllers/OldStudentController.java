@@ -67,63 +67,63 @@ public class OldStudentController {
 		return new ResetPasswordForm();
 	}
 
-	@RequestMapping(value = "/students", method = RequestMethod.GET)
-	public ModelAndView getStudents(@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
-									final BindingResult errors,
-									final Model model,
-									@ModelAttribute("user") UserSessionDetails loggedUser) {
+//	@RequestMapping(value = "/students", method = RequestMethod.GET)
+//	public ModelAndView getStudents(@Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
+//									final BindingResult errors,
+//									final Model model,
+//									@ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("VIEW_STUDENTS")) {
+//			LOGGER.warn("User {} tried to view all students and doesn't have VIEW_STUDENTS authority [GET]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		if (!model.containsAttribute("deleteStudentForm")) {
+//			model.addAttribute("deleteStudentForm", new StudentFilterForm()); /* +++xcheck: if it is necessary to create a new Form */
+//		}
+//
+//		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+//				.docket(studentFilterForm.getDocket())
+//				.firstName(studentFilterForm.getFirstName())
+//				.lastName(studentFilterForm.getLastName())
+//				.build();
+//
+//		final ModelAndView mav = new ModelAndView("students");
+//
+//		final List<Student> students = loadStudentsByFilter(mav, errors, studentFilter);
+//
+//		if (students == null) {
+//			return NOT_FOUND_MAV;
+//		}
+//
+//		mav.addObject("students", students);
+//		mav.addObject("studentFilterFormAction", "/students");
+//		mav.addObject("subsection_students", true);
+//		return mav;
+//	}
 
-		if (!loggedUser.hasAuthority("VIEW_STUDENTS")) {
-			LOGGER.warn("User {} tried to view all students and doesn't have VIEW_STUDENTS authority [GET]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		if (!model.containsAttribute("deleteStudentForm")) {
-			model.addAttribute("deleteStudentForm", new StudentFilterForm()); /* +++xcheck: if it is necessary to create a new Form */
-		}
-
-		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
-				.docket(studentFilterForm.getDocket())
-				.firstName(studentFilterForm.getFirstName())
-				.lastName(studentFilterForm.getLastName())
-				.build();
-
-		final ModelAndView mav = new ModelAndView("students");
-
-		final List<Student> students = loadStudentsByFilter(mav, errors, studentFilter);
-
-		if (students == null) {
-			return NOT_FOUND_MAV;
-		}
-
-		mav.addObject("students", students);
-		mav.addObject("studentFilterFormAction", "/students");
-		mav.addObject("subsection_students", true);
-		return mav;
-	}
-
-	@RequestMapping("/students/{docket}/info")
-	public ModelAndView getStudent(@PathVariable final int docket,
-								   @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("VIEW_STUDENT")) {
-			LOGGER.warn("User {} tried to view student with docket {} and doesn't have VIEW_STUDENT authority [GET]", loggedUser.getDni(), docket);
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		final Student student =  studentService.getByDocket(docket);
-
-		final ModelAndView mav;
-
-		if (student == null) {
-			return NOT_FOUND_MAV;
-		}
-
-		mav = new ModelAndView("student");
-		mav.addObject("student", student);
-		mav.addObject("section2", "info");
-		return mav;
-	}
+//	@RequestMapping("/students/{docket}/info")
+//	public ModelAndView getStudent(@PathVariable final int docket,
+//								   @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("VIEW_STUDENT")) {
+//			LOGGER.warn("User {} tried to view student with docket {} and doesn't have VIEW_STUDENT authority [GET]", loggedUser.getDni(), docket);
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		final Student student =  studentService.getByDocket(docket);
+//
+//		final ModelAndView mav;
+//
+//		if (student == null) {
+//			return NOT_FOUND_MAV;
+//		}
+//
+//		mav = new ModelAndView("student");
+//		mav.addObject("student", student);
+//		mav.addObject("section2", "info");
+//		return mav;
+//	}
 
 	@RequestMapping("/students/{docket}/grades")
 	public ModelAndView getStudentGrades(@PathVariable final int docket, Model model,
@@ -502,23 +502,23 @@ public class OldStudentController {
 		return new ModelAndView("redirect:/courses/" + c + "/students");
 	}
 
-	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
-	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes,
-									  @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("DELETE_STUDENT")
-				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
-			LOGGER.warn("User {} tried to delete a student and doesn't have DELETE_STUDENT authority [POST]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-		studentService.deleteStudent(docket);
-		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteStudent_success",
-				null,
-				Locale.getDefault()));
-
-		return new ModelAndView("redirect:/students");
-	}
+//	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
+//	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes,
+//									  @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("DELETE_STUDENT")
+//				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+//			LOGGER.warn("User {} tried to delete a student and doesn't have DELETE_STUDENT authority [POST]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//		studentService.deleteStudent(docket);
+//		redirectAttributes.addFlashAttribute("alert", "success");
+//		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteStudent_success",
+//				null,
+//				Locale.getDefault()));
+//
+//		return new ModelAndView("redirect:/students");
+//	}
 
 	@RequestMapping("/students/{docket}/edit")
 	public ModelAndView editStudent(
