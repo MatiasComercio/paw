@@ -54,7 +54,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 		http
 				.userDetailsService(userDetailsService)
 				.sessionManagement()
-				.invalidSessionUrl("/login")
+//				.invalidSessionUrl("/login")
 				// for maintenance
 //				.invalidSessionUrl("/inMaintenance")
 
@@ -62,28 +62,28 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/login").anonymous()
 				.antMatchers("/admin/**").hasRole("VIEW_ADMIN")
 				.antMatchers("/admins/**").hasRole("VIEW_ADMINS")
-				.antMatchers("/**").authenticated()
+//				.antMatchers("/**").authenticated() // TODO: Uncomment
 
 				// configuration when updating database; // for maintenance
 //				.antMatchers("/inMaintenance").anonymous()
 //				.antMatchers("/**").denyAll()
 
-				.and().formLogin()
-				.usernameParameter("j_dni")
-				.passwordParameter("j_password")
-				.defaultSuccessUrl("/", false)
-//				.successHandler(authSuccessHandler)
-				.failureUrl("/login?error")
-				.loginPage("/login")
+//				.and().formLogin()
+//				.usernameParameter("j_dni")
+//				.passwordParameter("j_password")
+//				.defaultSuccessUrl("/", false)
+////				.successHandler(authSuccessHandler)
+//				.failureUrl("/login?error")
+//				.loginPage("/login")
 				// for maintenance
 //				.loginPage("/inMaintenance")
-				.loginProcessingUrl("/login")
+//				.loginProcessingUrl("/login")
 
-				.and().rememberMe()
-				.rememberMeParameter("j_remember_me")
-				.userDetailsService(userDetailsService)
-				.key(KEY)
-				.tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
+//				.and().rememberMe()
+//				.rememberMeParameter("j_remember_me")
+//				.userDetailsService(userDetailsService)
+//				.key(KEY)
+//				.tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
 
 				.and().logout()
 				.logoutUrl("/logout")

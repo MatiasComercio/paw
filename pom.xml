@@ -48,6 +48,7 @@
     <hibernate.jpa-api.version>1.0.0.Final</hibernate.jpa-api.version>
     <org.jboss.logging>3.3.0.Final</org.jboss.logging>
     <jersey.version>3.0-SNAPSHOT</jersey.version>
+    <org.modelmapper.version>0.7.7</org.modelmapper.version>
   </properties>
   <build>
     <plugins>
@@ -323,6 +324,12 @@
         <groupId>org.glassfish.jersey.media</groupId>
         <artifactId>jersey-media-jaxb</artifactId>
         <version>${jersey.version}</version>
+      </dependency>
+      <!-- Entity-DTO Mapper -->
+      <dependency>
+        <groupId>org.modelmapper</groupId>
+        <artifactId>modelmapper</artifactId>
+        <version>${org.modelmapper.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

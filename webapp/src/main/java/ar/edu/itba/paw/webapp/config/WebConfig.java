@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.config;
 
+import ar.edu.itba.paw.webapp.controllers.DTOEntityMapper;
+import org.modelmapper.ModelMapper;
 import org.postgresql.Driver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +33,10 @@ import java.util.Properties;
 @ComponentScan({
 		"ar.edu.itba.paw.webapp.controllers",
 		"ar.edu.itba.paw.webapp.forms.validators",
-		"ar.edu.itba.paw.services",
+		"ar.edu.itba.paw.services",/**
+ * Created by mati on 06/01/17.
+ */
+
 		"ar.edu.itba.paw.persistence"
 })
 @EnableWebMvc
@@ -145,4 +150,10 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		// use LOGGER debug mode for switching this on/off development/production mode respectively
 		return LOGGER.isDebugEnabled();
 	}
+
+	@Bean
+	public DTOEntityMapper entityMapper(){
+		return new DTOEntityMapper(new ModelMapper());
+	}
+
 }

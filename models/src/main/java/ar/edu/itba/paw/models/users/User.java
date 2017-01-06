@@ -150,6 +150,8 @@ public class User implements Serializable {
 		return role == null ? null : role.getRole();
 	}
 
+	public RoleClass getRoleClass(){return role;}
+
 	public List<Procedure> getProcedures() {
 		return procedures;
 	}
