@@ -206,6 +206,38 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
+	public void setDni(int dni) {
+		this.dni = dni;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public void setGenre(Genre genre) {
+		this.genre = genre;
+	}
+
+	public void setBirthday(LocalDate birthday) {
+		this.birthday = birthday;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public void setRole(RoleClass role) {
+		this.role = role;
+	}
+
+	public void setProcedures(List<Procedure> procedures) {
+		this.procedures = procedures;
+	}
+
 	public void resetPassword() {
 		this.password = DEFAULT_PASSWORD;
 	}
