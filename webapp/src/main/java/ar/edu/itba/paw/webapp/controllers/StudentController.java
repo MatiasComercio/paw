@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.validation.Valid;
+import javax.validation.ValidationException;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -67,7 +71,8 @@ public class StudentController {
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response studentsNew(final UserDTO user){
+  public Response studentsNew(@Valid final UserDTO user) throws ValidationException{
+    System.out.println("[HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO]");
     ss.create(mapper.convertToEntity(user));
     final Student student = ss.getByDni(user.getDni());
 
@@ -82,6 +87,24 @@ public class StudentController {
     ss.deleteStudent(docket);
 
     return noContent().build();
+  }
+
+  @GET
+  @Path("/validate")
+  public Response validateStudent(
+          @Size(min = 2, max = 25, message = "firstName Length should be between 2 and 25 character")
+          @QueryParam("firstName") String firstName,
+
+          @Size(min = 2, max = 25, message = "lastName Length should be between 2 and 25 character")
+          @QueryParam("lastName") String lastName,
+
+          @Min(value = 15, message = "age should not be less that 15")
+          @QueryParam("age")
+                  String age) throws ValidationException {
+
+    String student = String.format("firstName: %s, lastName: %s, age: %s", firstName, lastName, age);
+    String response = student;
+    return Response.status(Response.Status.OK).entity(response).type(MediaType.TEXT_PLAIN).build();
   }
 
 }

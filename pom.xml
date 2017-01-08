@@ -49,6 +49,7 @@
     <org.jboss.logging>3.3.0.Final</org.jboss.logging>
     <jersey.version>3.0-SNAPSHOT</jersey.version>
     <org.modelmapper.version>0.7.7</org.modelmapper.version>
+    <jersey.bean-validation>2.25</jersey.bean-validation>
   </properties>
   <build>
     <plugins>
@@ -312,6 +313,11 @@
             <artifactId>validation-api</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.ext</groupId>
+        <artifactId>jersey-bean-validation</artifactId>
+        <version>${jersey.bean-validation}</version>
       </dependency>
 
       <!-- Jersey JSON -->
