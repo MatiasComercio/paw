@@ -72,12 +72,9 @@ public class StudentController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public Response studentsNew(@Valid final UserDTO user) throws ValidationException{
-    System.out.println("[HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO]");
     ss.create(mapper.convertToEntity(user));
     final Student student = ss.getByDni(user.getDni());
-
     final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(student.getDocket())).build();
-
     return created(uri).build();
   }
 
@@ -85,26 +82,7 @@ public class StudentController {
   @Path("/{docket}")
   public Response studentsDestroy(@PathParam("docket") final int docket) {
     ss.deleteStudent(docket);
-
     return noContent().build();
-  }
-
-  @GET
-  @Path("/validate")
-  public Response validateStudent(
-          @Size(min = 2, max = 25, message = "firstName Length should be between 2 and 25 character")
-          @QueryParam("firstName") String firstName,
-
-          @Size(min = 2, max = 25, message = "lastName Length should be between 2 and 25 character")
-          @QueryParam("lastName") String lastName,
-
-          @Min(value = 15, message = "age should not be less that 15")
-          @QueryParam("age")
-                  String age) throws ValidationException {
-
-    String student = String.format("firstName: %s, lastName: %s, age: %s", firstName, lastName, age);
-    String response = student;
-    return Response.status(Response.Status.OK).entity(response).type(MediaType.TEXT_PLAIN).build();
   }
 
 }

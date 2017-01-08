@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.expections;
+package ar.edu.itba.paw.webapp.exceptions;
 
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.core.MediaType;

@@ -2,9 +2,7 @@ package ar.edu.itba.paw.webapp.models;
 
 import ar.edu.itba.paw.models.RoleClass;
 import ar.edu.itba.paw.models.users.User;
-//import org.hibernate.validator.constraints.NotBlank;
-//import org.springframework.format.annotation.DateTimeFormat;
-
+import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -31,8 +29,8 @@ public class UserDTO {
   // @DateTimeFormat(pattern="yyyy-MM-dd")
   private LocalDate birthday;
 
-  // @NotBlank
-  @Size(min=8, max=32)
+  @NotBlank
+  //@Size(min=8, max=32)
   private String password;
 
   private AddressDTO address;

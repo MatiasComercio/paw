@@ -58,8 +58,15 @@
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>ar.edu.itba.paw.webapp.controllers</param-value>
+            <param-value>
+                ar.edu.itba.paw.webapp.controllers,
+                ar.edu.itba.paw.webapp.exceptions
+            </param-value>
         </init-param>
+        <init-param>
+            <param-name>jersey.config.beanValidation.enableOutputValidationErrorEntity.server</param-name>
+            <param-value>true</param-value>
+        </init-param>ig.server.provider.classpath
         <load-on-startup>1</load-on-startup>
     </servlet>
 
