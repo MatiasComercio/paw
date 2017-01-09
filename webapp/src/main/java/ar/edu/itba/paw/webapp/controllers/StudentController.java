@@ -8,13 +8,12 @@ import ar.edu.itba.paw.webapp.models.StudentIndexDTO;
 import ar.edu.itba.paw.webapp.models.StudentShowDTO;
 import ar.edu.itba.paw.webapp.models.StudentsList;
 import ar.edu.itba.paw.webapp.models.UserDTO;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -34,6 +33,8 @@ public class StudentController {
 
   /** Fields **/
 
+  private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(StudentController.class);
+
   @Autowired
   private StudentService ss;
 
@@ -49,10 +50,9 @@ public class StudentController {
   @Produces(MediaType.APPLICATION_JSON)
   public Response studentsIndex(
           @Min(value = 1, message = "docket must be greater than or equal to 1\n")
-          @QueryParam("docket") final int docket,
+          @QueryParam("docket") final Integer docket,
           @Size(min=2, max=50, message = "firstName must have between 2 and 50 characters\n")
           @QueryParam("firstName") final String firstName,
-          @NotNull(message = "lastName must not be null\n")
           @QueryParam("lastName") final String lastName){
     final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
             .docket(docket).firstName(firstName).lastName(lastName).build();
@@ -93,5 +93,7 @@ public class StudentController {
     ss.deleteStudent(docket);
     return noContent().build();
   }
+
+
 
 }
