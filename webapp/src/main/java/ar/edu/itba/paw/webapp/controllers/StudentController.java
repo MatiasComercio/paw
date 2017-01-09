@@ -3,14 +3,19 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.models.StudentIndexDTO;
 import ar.edu.itba.paw.webapp.models.StudentShowDTO;
 import ar.edu.itba.paw.webapp.models.StudentsList;
 import ar.edu.itba.paw.webapp.models.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -42,8 +47,17 @@ public class StudentController {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response studentsIndex(){
-    final List<Student> students = ss.getByFilter(null);
+  public Response studentsIndex(
+          @Min(value = 1, message = "docket must be greater than or equal to 1\n")
+          @QueryParam("docket") final int docket,
+          @Size(min=2, max=50, message = "firstName must have between 2 and 50 characters\n")
+          @QueryParam("firstName") final String firstName,
+          @NotNull(message = "lastName must not be null\n")
+          @QueryParam("lastName") final String lastName){
+    final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+            .docket(docket).firstName(firstName).lastName(lastName).build();
+
+    final List<Student> students = ss.getByFilter(studentFilter);
     final List<StudentIndexDTO> studentList = students.stream()
             .map(student -> mapper.convertToStudentIndexDTO(student)).collect(Collectors.toList());
 

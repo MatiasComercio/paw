@@ -350,61 +350,61 @@ public class OldStudentController {
 		return new ModelAndView("redirect:/students/" + docket + "/courses");
 	}
 
-	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
-	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
-								   RedirectAttributes redirectAttributes,
-								   @ModelAttribute("user") UserSessionDetails loggedUser) {
+//	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
+//	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
+//								   RedirectAttributes redirectAttributes,
+//								   @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("ADD_STUDENT")) {
+//			LOGGER.warn("User {} tried to add student with DNI {} and doesn't have ADD_STUDENT authority [GET]", loggedUser.getDni(), studentForm.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//		ModelAndView mav = new ModelAndView("addUser");
+//		mav.addObject("section2", "addStudent");
+//		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
+//		return mav;
+//	}
 
-		if (!loggedUser.hasAuthority("ADD_STUDENT")) {
-			LOGGER.warn("User {} tried to add student with DNI {} and doesn't have ADD_STUDENT authority [GET]", loggedUser.getDni(), studentForm.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-		ModelAndView mav = new ModelAndView("addUser");
-		mav.addObject("section2", "addStudent");
-		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
-		return mav;
-	}
 
-
-	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
-	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
-								   final BindingResult errors, RedirectAttributes redirectAttributes,
-								   @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("ADD_STUDENT")) {
-			LOGGER.warn("User {} tried to add student with DNI {} and doesn't have ADD_STUDENT authority [POST]", loggedUser.getDni(), studentForm.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-		if (errors.hasErrors()){
-			LOGGER.warn("User {} could not add student due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
-			/* set alert */
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
-			/* --------- */
-			return addStudent(studentForm, redirectAttributes, loggedUser);
-		} else {
-			final Student student = studentForm.build();
-			boolean done;
-
-			try {
-				done = studentService.create(student);
-			} catch (final DataIntegrityViolationException e) {
-				LOGGER.warn("User {} could not add student with DNI {}. Reason: ", loggedUser.getDni(), student.getDni(), e);
-				done = false;
-			}
-
-			if(!done) {
-				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("USER_EXISTS_DNI", null, Locale.getDefault()));
-				return addStudent(studentForm, redirectAttributes, loggedUser);
-			}
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addStudent_success",
-					null,
-					Locale.getDefault()));
-			return new ModelAndView("redirect:/students");
-		}
-	}
+//	@RequestMapping(value = "/students/add_student", method = RequestMethod.POST)
+//	public ModelAndView addStudent(@Valid @ModelAttribute("studentForm") StudentForm studentForm,
+//								   final BindingResult errors, RedirectAttributes redirectAttributes,
+//								   @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("ADD_STUDENT")) {
+//			LOGGER.warn("User {} tried to add student with DNI {} and doesn't have ADD_STUDENT authority [POST]", loggedUser.getDni(), studentForm.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//		if (errors.hasErrors()){
+//			LOGGER.warn("User {} could not add student due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
+//			/* set alert */
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+//			/* --------- */
+//			return addStudent(studentForm, redirectAttributes, loggedUser);
+//		} else {
+//			final Student student = studentForm.build();
+//			boolean done;
+//
+//			try {
+//				done = studentService.create(student);
+//			} catch (final DataIntegrityViolationException e) {
+//				LOGGER.warn("User {} could not add student with DNI {}. Reason: ", loggedUser.getDni(), student.getDni(), e);
+//				done = false;
+//			}
+//
+//			if(!done) {
+//				redirectAttributes.addFlashAttribute("alert", "danger");
+//				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("USER_EXISTS_DNI", null, Locale.getDefault()));
+//				return addStudent(studentForm, redirectAttributes, loggedUser);
+//			}
+//			redirectAttributes.addFlashAttribute("alert", "success");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addStudent_success",
+//					null,
+//					Locale.getDefault()));
+//			return new ModelAndView("redirect:/students");
+//		}
+//	}
 
 	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.POST)
 	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
