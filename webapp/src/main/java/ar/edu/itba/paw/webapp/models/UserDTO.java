@@ -11,17 +11,17 @@ import java.time.LocalDate;
 
 public class UserDTO {
 
-  @Digits(integer=8, fraction=0, message = "DNI must have 8 digits\n")
-  @Min(value = 1, message = "DNI must be greater than or equal to 1\n")
-  @NotNull(message = "DNI must not be null\n")
-  private int dni;
+  @Digits(integer=8, fraction=0, message = "{userDTO.dni.digits}")
+  @Min(value = 1, message = "{userDTO.dni.min}")
+  @NotNull(message = "{userDTO.dni.notNull}")
+  private Integer dni;
 
-  @NotNull(message = "firstName must not be null\n")
-  @Size(min=2, max=50, message = "firstName must have between 2 and 50 characters\n")
+  @NotNull(message = "{userDTO.firstName.notNull}")
+  @Size(min=2, max=50, message = "{userDTO.firstName.size}")
   private String firstName;
 
-  @NotNull(message = "lastName must not be null\n")
-  @Size(min=2, max=50, message = "lastName must have between 2 and 50 characters\n")
+  @NotNull(message = "{userDTO.lastName.notNull}")
+  @Size(min=2, max=50, message = "{userDTO.lastName.size}")
   private String lastName;
 
   private User.Genre genre;
@@ -29,8 +29,8 @@ public class UserDTO {
   // @DateTimeFormat(pattern="yyyy-MM-dd")
   private LocalDate birthday;
 
-  @NotBlank(message = "password must not be null\n")
-  @Size(min=8, max=32, message = "password must have between 8 and 32 characters\n")
+  @NotBlank(message = "{userDTO.password.notBlank}")
+  @Size(min=8, max=32, message = "{userDTO.password.size}")
   private String password;
 
   private AddressDTO address;
@@ -43,11 +43,11 @@ public class UserDTO {
     // Just for Jersey =)
   }
 
-  public int getDni() {
+  public Integer getDni() {
     return dni;
   }
 
-  public void setDni(int dni) {
+  public void setDni(Integer dni) {
     this.dni = dni;
   }
 

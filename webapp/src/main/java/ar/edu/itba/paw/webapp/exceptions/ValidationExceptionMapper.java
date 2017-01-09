@@ -20,7 +20,7 @@ public class ValidationExceptionMapper implements ExceptionMapper<ValidationExce
     LOGGER.warn("Exception: {}", (Object[]) e.getStackTrace());
     final StringBuilder strBuilder = new StringBuilder();
     for (ConstraintViolation<?> cv : ((ConstraintViolationException) e).getConstraintViolations()) {
-      strBuilder.append(cv.getMessage());
+      strBuilder.append(cv.getMessage() + "\n");
     }
     return Response.ok().status(Response.Status.INTERNAL_SERVER_ERROR).entity(strBuilder.toString()).build();
   }
