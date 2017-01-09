@@ -1,27 +1,17 @@
 language: java
-# https://docs.travis-ci.com/user/languages/java/#Testing-Against-Multiple-JDKs
 jdk:
   - oraclejdk8
-sudo: false
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
-  sonarqube:
-    token:
-      secure: "H4jf2AGwka6JHeQ1WRb7zVwn6ZGUYPYXY91Wt22E/BQCMVsk4XMTGl+P8e1W6wzYAfrRi2j6AC5+v0VF7y4jpkooeEbLmFCNCpsAf0SQ1W3/X5EbO6xGLdAx0pV2ycxniVK52O5EoulZQdOqfQ2R4tY4sJCvzgpsuydsqaAPmK5K7fJEU7MSATQdkiQQnXoK5GJNJe+/wPu9+9iYEFoCQJ9x5z+OULPiPC6xCw21culnkgwAVvygVc5vFeudiPECj2W8t3qe9rBYjhPBi5g916g2LY1OQMs80/+OT4xKeC6rBazC86T0pcCtQGUPoulUJvJdg2TKQ3yNDWucKjZ6FYaS4ijz2nDyYq3TVPCO8O8eAyP39LIAQZ6E5c6FldU8oGMmMl3BmtQoOnQL9Qgu1ZecAsS1ZdZ5ZEgRkBteEkQvxHu1oABKnXbE+Mg50XpMERmpaT9/hWuogBzeKvJCa3QfziT9WYtAdAyl5vl5Nwf5ZAMwtcTj7MSKSp2JmTm+LTE3esbnHmCE/9dx/PZP9n6E3ttE8ytf2bo3VV4u9IMnLVPuVAZocGkpDMsTi/pHcAreZ0jS8Q0VxXR6M3tF7kZEgOoffl6DSftGRXYa2Akl9Ieez5MIy7SlEF0GVV18kJGuUDOZ9zW7nb5oIsRmCtOVNMvcnxAfWU7VhIlR/h0="
-    github_token:
-      secure: "QvYInceq9oHVh/MPO+uHRYzOucx1g1SEFvtw0eAN3EeuBOCyoJU4Vgnls08+W00tvmwXoGEWMkUh+sDktAvtucPPRzbKfS3i1lbehXuu4az83L253/b58dnq9LVyZh9WTJYu2V416tf1N0a256Fk6xo4xYDe7IG1uEd8dByxT3cJuVFtfGi3oE4BPkYX4YmA4h2Y64YXgS2tHk+zBADWhBbzn70bdrDw3ieB865VX4ucjFsmGIMufSGqwYxLQVtLOmkgvqcH3iQb48ofZbSZyi72OSsCS1RhVi8exleDZfvXvdKDRjkHrO2ZiVOrbZepNzu7V/2F9wOhybesn2ufuTAcy6xTZ6iMGlETBFeVvTsqbBH3rtCecnacsHGJePkUT7v9aD0tcluO7MtB09rUmxk3QVWwL459jwO2yqWjemFGB9TBxTETutJ5e1aEWMA77pe0CZIMoFjKHUHVkooSffk3NPDBB73tJVA9nS6MA8YZ32qYj9s1QjCC0BGPfsleYmpWqYCiEh4tasp+MWrCjbPDileoVI0LxVFWF0D5dwJ/zisiZmz2hZRTIZM2Wy5KsvJfE66lgq2UB7xE4TWiP2sGTxQEbbyLy4zBU8yLLDi5zVPRjtXeWmbooWTYfLruBmkq7u5Ec8bOUR2/Zi1kI4V3QuX8ACTFlLvj9QBYkTA="
-# safelist
 branches:
   only:
   - master
   - development
   - stage
 script:
-  - sonar-scanner
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
+  - mvn clean package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN}
+  - mvn sonar:sonar -Dsonar.sourceEncoding=UTF-8 -Dsonar.analysis.mode=preview -Dsonar.github.repository=MatiasComercio/paw -Dsonar.github.login=MatiasComercio -Dsonar.github.oauth=${GITHUB_ACCESS_TOKEN} -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN} -Dsonar.github.pullRequest=${TRAVIS_PULL_REQUEST}
+after_success:
+  - mvn clean test jacoco:report coveralls:report
 cache:
   directories:
-    - '$HOME/.m2/repository'
+    - '$HOME/.m2'
     - '$HOME/.sonar/cache'
