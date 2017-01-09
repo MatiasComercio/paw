@@ -3,19 +3,14 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.users.Student;
-import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.webapp.models.StudentIndexDTO;
 import ar.edu.itba.paw.webapp.models.StudentShowDTO;
 import ar.edu.itba.paw.webapp.models.StudentsList;
 import ar.edu.itba.paw.webapp.models.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import javax.validation.Valid;
 import javax.validation.ValidationException;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;

@@ -1,19 +1,15 @@
 package ar.edu.itba.paw.webapp.models;
 
-import ar.edu.itba.paw.models.Address;
-
 public class StudentIndexDTO {
 
   private int docket;
   private String firstName;
   private String lastName;
-  private Address address;
 
-  public StudentIndexDTO(int docket, String firstName, String lastName, Address address) {
+  public StudentIndexDTO(int docket, String firstName, String lastName) {
     this.docket = docket;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.address = address;
   }
 
   public StudentIndexDTO() {
@@ -44,11 +40,4 @@ public class StudentIndexDTO {
     this.lastName = lastName;
   }
 
-  public Address getAddress() {
-    return address;
-  }
-
-  public void setAddress(Address address) {
-    this.address = address;
-  }
 }
