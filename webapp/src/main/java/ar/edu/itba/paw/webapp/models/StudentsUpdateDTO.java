@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDate;
 
-public class StudentUpdateDTO {
+public class StudentsUpdateDTO {
 
   @Digits(integer=8, fraction=0)
   @Min(value = 1)
@@ -31,11 +31,11 @@ public class StudentUpdateDTO {
   @XmlJavaTypeAdapter(LocalDateAdapter.class) //TODO: Improve, see if we can validate if the date is incorrect, so an error is returned, instead of mapping it to null
   private LocalDate birthday;
 
-  public StudentUpdateDTO() {
+  public StudentsUpdateDTO() {
 
   }
 
-  public StudentUpdateDTO(Integer dni, String firstName, String lastName, User.Genre genre, LocalDate birthday) {
+  public StudentsUpdateDTO(Integer dni, String firstName, String lastName, User.Genre genre, LocalDate birthday) {
     this.dni = dni;
     this.firstName = firstName;
     this.lastName = lastName;

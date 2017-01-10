@@ -25,7 +25,7 @@ public class DTOEntityMapper {
     return modelMapper.map(address, AddressDTO.class);
   }
 
-  Student convertToStudent(final StudentUpdateDTO studentUpdateDTO) {
+  Student convertToStudent(final StudentsUpdateDTO studentUpdateDTO) {
     return modelMapper.map(studentUpdateDTO, Student.class);
   }
 

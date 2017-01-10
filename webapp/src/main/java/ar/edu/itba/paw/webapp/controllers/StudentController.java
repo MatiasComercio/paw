@@ -93,6 +93,7 @@ public class StudentController {
   }
 
   @GET
+  @Produces(MediaType.APPLICATION_JSON)
   @Path("/{docket}/address")
   public Response studentsAddressShow(@PathParam("docket") final int docket){
     final Student student = ss.getByDocket(docket);
@@ -104,15 +105,17 @@ public class StudentController {
   }
 
 //  @GET
-//  @Path("/{docket}/grades")
-//  public Response studentsGradesIndex(@PathParam("docket") final int docket){
+//  @Produces(MediaType.APPLICATION_JSON)
+//  @Path("/{docket}/courses")
+//  public Response studentsCoursesIndex(@PathParam("docket") final int docket){
+//
 //
 //  }
 
   @POST
   @Path("/{docket}")
   public Response studentsUpdate(@PathParam("docket") final int docket,
-                                 @Valid final StudentUpdateDTO studentUpdateDTO) {
+                                 @Valid final StudentsUpdateDTO studentUpdateDTO) {
     final Student partialStudent = mapper.convertToStudent(studentUpdateDTO);
 
     System.out.println("Birthday = " + studentUpdateDTO.getBirthday());

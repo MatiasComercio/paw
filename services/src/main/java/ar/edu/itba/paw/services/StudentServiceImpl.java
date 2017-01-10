@@ -104,9 +104,12 @@ public class StudentServiceImpl implements StudentService {
 		final Student oldStudent = studentDao.getByDocket(docket);
 
 		/* Set Remaining information that cannot be updated by the user via this method */
+		student.setDocket(docket);
 		student.setId_seq(oldStudent.getId_seq());
 		student.setAddress(oldStudent.getAddress());
-		student.getAddress().setDni(student.getDni());
+		if(student.getAddress() != null){
+			student.getAddress().setDni(student.getDni());
+		}
 		student.setPassword(oldStudent.getPassword());
 		student.setEmail(oldStudent.getEmail());
 		student.setRole(oldStudent.getRole());
