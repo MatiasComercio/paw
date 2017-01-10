@@ -1,10 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.FinalInscription;
-import ar.edu.itba.paw.models.Grade;
-import ar.edu.itba.paw.models.Procedure;
-import ar.edu.itba.paw.models.TranscriptGrade;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -17,6 +13,21 @@ import java.util.Set;
 public interface StudentService {
 
     /**
+     * Gets the students that comply to a list of filters
+     *
+     * @param studentFilter The list of filters to apply
+     * @return the list of students that match the list of filters. If no student matches the filters, it returns
+     * an empty list.
+     */
+    List<Student> getByFilter(StudentFilter studentFilter);
+
+    /**
+     * @param student The student to be persisted in the database.
+     * @return true if the student was inserted; else false
+     */
+    boolean create(Student student);
+
+    /**
      * Gets the student's main data that matches the given docket.
      * If no student exists with that docket, null is returned.
      *
@@ -26,49 +37,13 @@ public interface StudentService {
     Student getByDocket(int docket);
 
     /**
-     * Gets the student with the given docket containing all the grades of the courses they took.
-     * If no student exists with that docket, null is returned.
-     *
-     * @param docket The student's docket
-     * @return The student with the given docket, if exists; null otherwise.
-     */
-    Student getGrades(int docket);
-
-    /**
-     * Gets the list of the courses the student with the given docket is enroll in,
-     * applying the specified courseFilter
-     *
-     * @param docket       The student's docket
-     * @param courseFilter The course's filter. If null, no filter is applied.
-     * @return the list of courses, if the student exists. If the docket doesn't match to a student,
-     * it returns null
-     */
-    List<Course> getStudentCourses(int docket, CourseFilter courseFilter);
-
-    /**
-     * Gets the students that comply to a list of filters
-     *
-     * @param studentFilter The list of filters to apply
-     * @return the list of students that match the list of filters. If no student matches the filters, it returns
-     * an empty list.
-     */
-    List<Student> getByFilter(StudentFilter studentFilter);
-
-
-    /**
-     * @param student The student to be persisted in the database.
-     * @return true if the student was inserted; else false
-     */
-    boolean create(Student student);
-
-    /**
      * Update student
      *
-     * @param docket  The docket of the old student
-     * @param student The new student
+     * @param newStudent The new student
+     * @param oldStudent The old student
      * @return true if the student was updated; else false
      */
-    boolean update(int docket, Student student);
+    boolean update(Student newStudent, Student oldStudent);
 
     /**
      * Delete the student that matches the given docket.
@@ -77,6 +52,23 @@ public interface StudentService {
      * @return true if the student was deleted; false else
      */
     boolean deleteStudent(int docket);
+
+    /**
+     *
+     * @param student The student
+     * @param address The new address
+     * @return true if the address was updated; else false
+     */
+    boolean editAddress(Student student, Address address);
+
+    /**
+     * Gets the student with the given docket containing all the grades of the courses they took.
+     * If no student exists with that docket, null is returned.
+     *
+     * @param docket The student's docket
+     * @return The student with the given docket, if exists; null otherwise.
+     */
+    Student getGrades(int docket);
 
     /**
      * Add the grade for a given student and course. If success, the student is unenrolled from the given course.
@@ -94,6 +86,20 @@ public interface StudentService {
      * @return The result code of the Update
      */
     boolean editGrade(Grade newGrade, BigDecimal oldGrade);
+
+
+    /**
+     * Gets the list of the courses the student with the given docket is enroll in,
+     * applying the specified courseFilter
+     *
+     * @param docket       The student's docket
+     * @param courseFilter The course's filter. If null, no filter is applied.
+     * @return the list of courses, if the student exists. If the docket doesn't match to a student,
+     * it returns null
+     */
+    List<Course> getStudentCourses(int docket, CourseFilter courseFilter);
+
+
 
     /**
      * Gets the list of the courses the student with the given docket can enroll in,

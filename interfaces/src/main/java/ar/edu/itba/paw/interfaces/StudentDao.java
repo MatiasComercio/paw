@@ -1,10 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.FinalGrade;
-import ar.edu.itba.paw.models.FinalInscription;
-import ar.edu.itba.paw.models.Grade;
-import ar.edu.itba.paw.models.Procedure;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
 
@@ -78,6 +74,13 @@ public interface StudentDao {
 	 * 		ERROR_UNKNOWN else;
 	 */
 	boolean deleteStudent(int docket);
+
+	/**
+		*
+		* @param address The new address to be persisted
+		* @return true if the address was edited, false otherwise
+		*/
+	boolean editAddress(Address address);
 
 	/**
 	 * Add the grade for a given student and course;

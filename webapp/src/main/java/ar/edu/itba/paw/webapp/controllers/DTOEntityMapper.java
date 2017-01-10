@@ -33,4 +33,8 @@ public class DTOEntityMapper {
     return modelMapper.map(userDTO, Student.class);
   }
 
+  Address convertToAddress(AddressDTO addressDTO) {
+    return modelMapper.map(addressDTO, Address.class);
+  }
+
 }

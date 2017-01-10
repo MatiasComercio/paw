@@ -16,6 +16,6 @@ public class ApplicationExceptionMapper implements ExceptionMapper<Exception>{
   @Override
   public Response toResponse(Exception e) {
     LOGGER.warn("Exception: {}", (Object[]) e.getStackTrace());
-    return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).type(MediaType.TEXT_PLAIN).entity(e.getMessage()).build();
+    return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).type(MediaType.TEXT_PLAIN).entity(e.getMessage()+"\n").build();
   }
 }

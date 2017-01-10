@@ -16,7 +16,7 @@ public class DataAccessExceptionMapper implements ExceptionMapper<DataAccessExce
   @Override
   public Response toResponse(DataAccessException e) {
     LOGGER.warn("Exception: {}", (Object[]) e.getStackTrace());
-    return Response.ok().status(Response.Status.SERVICE_UNAVAILABLE).entity(e.getMessage()).build();
+    return Response.ok().status(Response.Status.SERVICE_UNAVAILABLE).entity(e.getMessage()+"\n").build();
   }
 
 }

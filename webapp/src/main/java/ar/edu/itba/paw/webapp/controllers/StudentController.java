@@ -2,6 +2,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 
 import ar.edu.itba.paw.interfaces.StudentService;
+import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.models.*;
@@ -62,20 +63,6 @@ public class StudentController {
     return ok(new StudentsList(studentList)).build();
   }
 
-  @GET
-  @Path("/{docket}")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response studentsShow(@PathParam("docket") final int docket) {
-    final Student student = ss.getByDocket(docket);
-
-    if(student == null) {
-      return status(Status.NOT_FOUND).build();
-    }
-    final StudentShowDTO studentShowDTO = mapper.convertToStudentShowDTO(student);
-
-    return ok(studentShowDTO).build();
-  }
-
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public Response studentsNew(@Valid final UserNewDTO userNewDTO) throws ValidationException{
@@ -83,6 +70,37 @@ public class StudentController {
     final Student student = ss.getByDni(userNewDTO.getDni());
     final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(student.getDocket())).build();
     return created(uri).build();
+  }
+
+  @GET
+  @Path("/{docket}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response studentsShow(@PathParam("docket") final int docket) {
+    final Student student = ss.getByDocket(docket);
+    if(student == null) {
+      return status(Status.NOT_FOUND).build();
+    }
+    final StudentShowDTO studentShowDTO = mapper.convertToStudentShowDTO(student);
+    return ok(studentShowDTO).build();
+  }
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/{docket}")
+  public Response studentsUpdate(@PathParam("docket") final int docket,
+                                 @Valid final StudentsUpdateDTO studentUpdateDTO) {
+
+    final Student oldStudent = ss.getByDocket(docket);
+    if(oldStudent == null) {
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final Student partialStudent = mapper.convertToStudent(studentUpdateDTO);
+    ss.update(partialStudent, oldStudent);
+
+    // TODO: Why return the resource location? Can the ID (docket) change?
+    final URI uri = uriInfo.getAbsolutePathBuilder().build();
+    return ok(uri).build();
   }
 
   @DELETE
@@ -104,26 +122,21 @@ public class StudentController {
     return ok(addressDTO).build();
   }
 
-//  @GET
-//  @Produces(MediaType.APPLICATION_JSON)
-//  @Path("/{docket}/courses")
-//  public Response studentsCoursesIndex(@PathParam("docket") final int docket){
-//
-//
-//  }
-
   @POST
-  @Path("/{docket}")
-  public Response studentsUpdate(@PathParam("docket") final int docket,
-                                 @Valid final StudentsUpdateDTO studentUpdateDTO) {
-    final Student partialStudent = mapper.convertToStudent(studentUpdateDTO);
-
-    System.out.println("Birthday = " + studentUpdateDTO.getBirthday());
-
-    ss.update(docket, partialStudent);
-
-    final URI uri = uriInfo.getAbsolutePathBuilder().build();
-    return ok(uri).build();
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/{docket}/address")
+  public Response studentAddressUpdate(
+          @PathParam("docket") final int docket,
+          @Valid AddressDTO addressDTO){
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+    Address address = mapper.convertToAddress(addressDTO);
+    address.setDni(student.getDni());
+    student.setAddress(address);
+    ss.editAddress(student, address);
+    return ok().build();
   }
 
 }

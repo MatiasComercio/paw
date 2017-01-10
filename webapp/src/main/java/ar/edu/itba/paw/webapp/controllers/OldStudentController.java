@@ -520,95 +520,95 @@ public class OldStudentController {
 //		return new ModelAndView("redirect:/students");
 //	}
 
-	@RequestMapping("/students/{docket}/edit")
-	public ModelAndView editStudent(
-			@PathVariable final Integer docket,
-			@ModelAttribute("studentForm") final StudentForm studentForm,
-			final RedirectAttributes redirectAttributes,
-			@ModelAttribute("user") UserSessionDetails loggedUser) {
+//	@RequestMapping("/students/{docket}/edit")
+//	public ModelAndView editStudent(
+//			@PathVariable final Integer docket,
+//			@ModelAttribute("studentForm") final StudentForm studentForm,
+//			final RedirectAttributes redirectAttributes,
+//			@ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("EDIT_STUDENT")
+//				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+//			LOGGER.warn("User {} tried to edit a student and doesn't have EDIT_STUDENT authority [GET]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		final ModelAndView mav = new ModelAndView("addUser");
+//
+//		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
+//		Student student = studentService.getByDocket(docket);
+//
+//		if (student == null){
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editStudent_fail",
+//					null,
+//					Locale.getDefault()));
+//			return new ModelAndView("redirect:/students");
+//		}
+//
+//		if (!redirectAttributes.getFlashAttributes().containsKey("justCalled")) {
+//			studentForm.loadFromStudent(student);
+//		}
+//
+//		mav.addObject("docket", docket);
+//		mav.addObject("student", student);
+//		mav.addObject("section2", "edit");
+//		return mav;
+//	}
 
-		if (!loggedUser.hasAuthority("EDIT_STUDENT")
-				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
-			LOGGER.warn("User {} tried to edit a student and doesn't have EDIT_STUDENT authority [GET]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		final ModelAndView mav = new ModelAndView("addUser");
-
-		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
-		Student student = studentService.getByDocket(docket);
-
-		if (student == null){
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editStudent_fail",
-					null,
-					Locale.getDefault()));
-			return new ModelAndView("redirect:/students");
-		}
-
-		if (!redirectAttributes.getFlashAttributes().containsKey("justCalled")) {
-			studentForm.loadFromStudent(student);
-		}
-
-		mav.addObject("docket", docket);
-		mav.addObject("student", student);
-		mav.addObject("section2", "edit");
-		return mav;
-	}
-
-	@RequestMapping(value = "/students/{docket}/edit", method = RequestMethod.POST)
-	public ModelAndView editStudent(@PathVariable final Integer docket,
-									@Valid @ModelAttribute("studentForm") StudentForm studentForm,
-									final BindingResult errors,
-									RedirectAttributes redirectAttributes,
-									@ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("EDIT_STUDENT")
-				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
-			LOGGER.warn("User {} tried to edit a student and doesn't have EDIT_STUDENT authority [POST]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-		if (errors.hasErrors()){
-			LOGGER.warn("User {} could not edit student due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
-			/* set alert */
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
-			/* --------- */
-			redirectAttributes.addFlashAttribute("justCalled", true);
-			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
-		}
-
-		final Student s = studentService.getByDocket(docket);
-
-
-
-		// Write data that was hidden at the form --> not submitted
-		studentForm.setId_seq(s.getId_seq());
-		studentForm.setAddress_id_seq(s.getAddress().getId_seq());
-		studentForm.setPassword(s.getPassword());
-		studentForm.setEmail(s.getEmail());
-
-		Student student = studentForm.build();
-
-		final boolean done = studentService.update(docket, student);
-
-		if(!done) {
-			LOGGER.warn("User {} could not edit student, Result = {}", loggedUser.getDni());
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message",
-					messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
-			redirectAttributes.addFlashAttribute("justCalled", true);
-			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
-		}
-
-		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editStudent_success",
-				null,
-				Locale.getDefault()));
-
-		final String referrer = request.getHeader("referer");
-		return new ModelAndView("redirect:" + referrer);
-	}
+//	@RequestMapping(value = "/students/{docket}/edit", method = RequestMethod.POST)
+//	public ModelAndView editStudent(@PathVariable final Integer docket,
+//									@Valid @ModelAttribute("studentForm") StudentForm studentForm,
+//									final BindingResult errors,
+//									RedirectAttributes redirectAttributes,
+//									@ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("EDIT_STUDENT")
+//				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+//			LOGGER.warn("User {} tried to edit a student and doesn't have EDIT_STUDENT authority [POST]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//		if (errors.hasErrors()){
+//			LOGGER.warn("User {} could not edit student due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
+//			/* set alert */
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+//			/* --------- */
+//			redirectAttributes.addFlashAttribute("justCalled", true);
+//			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
+//		}
+//
+//		final Student s = studentService.getByDocket(docket);
+//
+//
+//
+//		// Write data that was hidden at the form --> not submitted
+//		studentForm.setId_seq(s.getId_seq());
+//		studentForm.setAddress_id_seq(s.getAddress().getId_seq());
+//		studentForm.setPassword(s.getPassword());
+//		studentForm.setEmail(s.getEmail());
+//
+//		Student student = studentForm.build();
+//
+//		final boolean done = studentService.update(docket, student);
+//
+//		if(!done) {
+//			LOGGER.warn("User {} could not edit student, Result = {}", loggedUser.getDni());
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message",
+//					messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
+//			redirectAttributes.addFlashAttribute("justCalled", true);
+//			return editStudent(docket, studentForm, redirectAttributes, loggedUser);
+//		}
+//
+//		redirectAttributes.addFlashAttribute("alert", "success");
+//		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editStudent_success",
+//				null,
+//				Locale.getDefault()));
+//
+//		final String referrer = request.getHeader("referer");
+//		return new ModelAndView("redirect:" + referrer);
+//	}
 
 
 	@RequestMapping(value = "/students/{docket}/final_inscription", method = RequestMethod.GET)
