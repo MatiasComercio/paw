@@ -1,6 +1,5 @@
 package ar.edu.itba.paw.webapp.models;
 
-import ar.edu.itba.paw.models.RoleClass;
 import ar.edu.itba.paw.models.users.User;
 import org.hibernate.validator.constraints.NotBlank;
 import javax.validation.constraints.Digits;
@@ -9,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
-public class UserDTO {
+public class UserNewDTO {
 
   @Digits(integer=8, fraction=0)
   @Min(value = 1)
@@ -35,11 +34,7 @@ public class UserDTO {
 
   private AddressDTO address;
 
-  // Just for GET
-  private RoleClass role;
-  private String email;
-
-  public UserDTO() {
+  public UserNewDTO() {
     // Just for Jersey =)
   }
 
@@ -83,14 +78,6 @@ public class UserDTO {
     this.birthday = birthday;
   }
 
-  public String getEmail() {
-    return email;
-  }
-
-  public void setEmail(String email) {
-    this.email = email;
-  }
-
   public AddressDTO getAddress() {
     return address;
   }
@@ -107,11 +94,4 @@ public class UserDTO {
     this.password = password;
   }
 
-  public RoleClass getRole() {
-    return role;
-  }
-
-  public void setRole(RoleClass role) {
-    this.role = role;
-  }
 }

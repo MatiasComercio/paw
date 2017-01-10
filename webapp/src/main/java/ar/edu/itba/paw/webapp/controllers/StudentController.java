@@ -4,10 +4,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
-import ar.edu.itba.paw.webapp.models.StudentIndexDTO;
-import ar.edu.itba.paw.webapp.models.StudentShowDTO;
-import ar.edu.itba.paw.webapp.models.StudentsList;
-import ar.edu.itba.paw.webapp.models.UserDTO;
+import ar.edu.itba.paw.webapp.models.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -81,7 +78,7 @@ public class StudentController {
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response studentsNew(@Valid final UserDTO user) throws ValidationException{
+  public Response studentsNew(@Valid final UserNewDTO user) throws ValidationException{
     ss.create(mapper.convertToEntity(user));
     final Student student = ss.getByDni(user.getDni());
     final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(student.getDocket())).build();
@@ -95,6 +92,22 @@ public class StudentController {
     return noContent().build();
   }
 
+  @GET
+  @Path("/{docket}/address")
+  public Response studentsAddressShow(@PathParam("docket") final int docket){
+    final Student student = ss.getByDocket(docket);
+    if(student == null || student.getAddress() == null) {
+      return status(Status.NOT_FOUND).build();
+    }
+    final AddressDTO addressDTO = mapper.convertToAddressDTO(student.getAddress());
+    return ok(addressDTO).build();
+  }
+
+  @GET
+  @Path("/{docket}/grades")
+  public Response studentsGradesIndex(@PathParam("docket") final int docket){
+
+  }
 
 
 }
