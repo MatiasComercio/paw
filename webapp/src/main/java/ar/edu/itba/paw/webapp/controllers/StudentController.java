@@ -78,9 +78,9 @@ public class StudentController {
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response studentsNew(@Valid final UserNewDTO user) throws ValidationException{
-    ss.create(mapper.convertToEntity(user));
-    final Student student = ss.getByDni(user.getDni());
+  public Response studentsNew(@Valid final UserNewDTO userNewDTO) throws ValidationException{
+    ss.create(mapper.convertToStudent(userNewDTO));
+    final Student student = ss.getByDni(userNewDTO.getDni());
     final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(student.getDocket())).build();
     return created(uri).build();
   }
@@ -109,5 +109,18 @@ public class StudentController {
 //
 //  }
 
+  @POST
+  @Path("/{docket}")
+  public Response studentsUpdate(@PathParam("docket") final int docket,
+                                 @Valid final StudentUpdateDTO studentUpdateDTO) {
+    final Student partialStudent = mapper.convertToStudent(studentUpdateDTO);
+
+    System.out.println("Birthday = " + studentUpdateDTO.getBirthday());
+
+    ss.update(docket, partialStudent);
+
+    final URI uri = uriInfo.getAbsolutePathBuilder().build();
+    return ok(uri).build();
+  }
 
 }
