@@ -92,6 +92,22 @@ public class StudentController {
     return noContent().build();
   }
 
+  @GET
+  @Path("/{docket}/address")
+  public Response studentsAddressShow(@PathParam("docket") final int docket){
+    final Student student = ss.getByDocket(docket);
+    if(student == null || student.getAddress() == null) {
+      return status(Status.NOT_FOUND).build();
+    }
+    final AddressDTO addressDTO = mapper.convertToAddressDTO(student.getAddress());
+    return ok(addressDTO).build();
+  }
+
+  @GET
+  @Path("/{docket}/grades")
+  public Response studentsGradesIndex(@PathParam("docket") final int docket){
+
+  }
   @POST
   @Path("/{docket}")
   public Response studentsUpdate(@PathParam("docket") final int docket,

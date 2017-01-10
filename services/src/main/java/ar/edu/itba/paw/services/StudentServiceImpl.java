@@ -70,6 +70,9 @@ public class StudentServiceImpl implements StudentService {
 		if (student.getEmail() == null || Objects.equals(student.getEmail(), "")) {
 			student.setEmail(userService.createEmail(student));
 		}
+		if(student.getAddress() != null){
+			student.getAddress().setDni(student.getDni());
+		}
 		return studentDao.create(student);
 	}
 
