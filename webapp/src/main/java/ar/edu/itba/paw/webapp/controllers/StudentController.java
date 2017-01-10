@@ -49,11 +49,11 @@ public class StudentController {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response studentsIndex(
-          @Min(value = 1, message = "{student.docket.min}")
+          @Min(value = 1)
           @QueryParam("docket") final Integer docket,
-          @Size(min=2, max=50, message = "{userDTO.firstName.size}")
+          @Size(min=2, max=50)
           @QueryParam("firstName") final String firstName,
-          @Size(min=2, max=50, message = "{userDTO.lastName.size}")
+          @Size(min=2, max=50)
           @QueryParam("lastName") final String lastName){
     final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
             .docket(docket).firstName(firstName).lastName(lastName).build();

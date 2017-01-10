@@ -11,17 +11,17 @@ import java.time.LocalDate;
 
 public class UserDTO {
 
-  @Digits(integer=8, fraction=0, message = "{userDTO.dni.digits}")
-  @Min(value = 1, message = "{userDTO.dni.min}")
-  @NotNull(message = "{userDTO.dni.notNull}")
+  @Digits(integer=8, fraction=0)
+  @Min(value = 1)
+  @NotNull()
   private Integer dni;
 
-  @NotNull(message = "{userDTO.firstName.notNull}")
-  @Size(min=2, max=50, message = "{userDTO.firstName.size}")
+  @NotNull()
+  @Size(min=2, max=50)
   private String firstName;
 
-  @NotNull(message = "{userDTO.lastName.notNull}")
-  @Size(min=2, max=50, message = "{userDTO.lastName.size}")
+  @NotNull()
+  @Size(min=2, max=50)
   private String lastName;
 
   private User.Genre genre;
@@ -29,8 +29,8 @@ public class UserDTO {
   // @DateTimeFormat(pattern="yyyy-MM-dd")
   private LocalDate birthday;
 
-  @NotBlank(message = "{userDTO.password.notBlank}")
-  @Size(min=8, max=32, message = "{userDTO.password.size}")
+  @NotBlank()
+  @Size(min=8, max=32)
   private String password;
 
   private AddressDTO address;
