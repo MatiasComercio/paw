@@ -1,16 +1,43 @@
 package ar.edu.itba.paw.webapp.models;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class AddressDTO {
 
   private Integer dni;
+
+  @NotNull
+  @Size(min=2, max=50)
   private String country;
+
+  @NotNull
+  @Size(min=2, max=50)
   private String city;
+
+  @NotNull
+  @Size(min=2, max=50)
   private String neighborhood;
+
+  @NotNull
+  @Size(min=2, max=100)
   private String street;
+
+  @NotNull
+  @Min(0)
   private Integer number;
+
+  @Min(0)
   private Integer floor;
+
+  @Size(max=10)
   private String door;
+
+  @Min(0)
   private Long telephone;
+
+  @Min(0)
   private Integer zipCode;
 
   public AddressDTO() {

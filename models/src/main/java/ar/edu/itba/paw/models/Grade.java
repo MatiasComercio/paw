@@ -27,9 +27,9 @@ public class Grade {
 	private LocalDateTime modified;
 
 	@Transient
-    private Boolean taking;
+	private Boolean taking;
 
-    @OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.EAGER)
 	private List<FinalGrade> finalGrades;
 
 	public void setTaking(final Boolean taking) {
@@ -44,12 +44,12 @@ public class Grade {
 		this.id = builder.id;
 		this.student = builder.student;
 		this.course = new Course.Builder(builder.courseId)
-				.name(builder.courseName)
-				.courseId(builder.courseCodId)
-				.build();
+						.name(builder.courseName)
+						.courseId(builder.courseCodId)
+						.build();
 		this.grade = builder.grade;
 		this.modified = builder.modified;
-        this.taking = builder.taking;
+		this.taking = builder.taking;
 	}
 
 	protected Grade() {
@@ -94,18 +94,17 @@ public class Grade {
 
 	public LocalDateTime getModified() { return modified; }
 
+	public List<FinalGrade> getFinalGrades() {
+		return finalGrades;
+	}
 
-    public List<FinalGrade> getFinalGrades() {
-        return finalGrades;
-    }
+	public void setFinalGrades(List<FinalGrade> finalGrades) {
+		this.finalGrades = finalGrades;
+	}
 
-    public void setFinalGrades(List<FinalGrade> finalGrades) {
-        this.finalGrades = finalGrades;
-    }
-
-    public Boolean getTaking() {
-        return taking;
-    }
+	public Boolean getTaking() {
+		return taking;
+	}
 
 	public void setStudent(final Student student) {
 		this.student = student;
@@ -113,6 +112,18 @@ public class Grade {
 
 	public Student getStudent() {
 		return this.student;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public void setGrade(BigDecimal grade) {
+		this.grade = grade;
+	}
+
+	public void setModified(LocalDateTime modified) {
+		this.modified = modified;
 	}
 
 	@Override
@@ -156,7 +167,7 @@ public class Grade {
 		private Course course;
 		private String courseName = "";
 		private LocalDateTime modified;
-        private Boolean taking = false;
+		private Boolean taking = false;
 
 		public Builder(final Integer id, final Student student, final int courseId, final String courseCodId, final BigDecimal grade) {
 			this.id = id;
@@ -189,10 +200,10 @@ public class Grade {
 			return this;
 		}
 
-        public Builder taking(final Boolean taking){
-            this.taking = taking;
-            return this;
-        }
+		public Builder taking(final Boolean taking){
+			this.taking = taking;
+			return this;
+		}
 
 		public Grade build() {
 			return new Grade(this);

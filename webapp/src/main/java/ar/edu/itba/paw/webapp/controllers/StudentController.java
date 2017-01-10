@@ -103,11 +103,11 @@ public class StudentController {
     return ok(addressDTO).build();
   }
 
-  @GET
-  @Path("/{docket}/grades")
-  public Response studentsGradesIndex(@PathParam("docket") final int docket){
-
-  }
+//  @GET
+//  @Path("/{docket}/grades")
+//  public Response studentsGradesIndex(@PathParam("docket") final int docket){
+//
+//  }
 
 
 }
