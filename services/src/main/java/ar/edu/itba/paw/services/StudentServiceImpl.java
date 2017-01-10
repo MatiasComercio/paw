@@ -98,6 +98,20 @@ public class StudentServiceImpl implements StudentService {
 	@Transactional
 	@Override
 	public boolean update(final int docket, final Student student) {
+		final Student oldStudent = studentDao.getByDocket(docket);
+
+		/* Set Remaining information that cannot be updated by the user via this method */
+		student.setId_seq(oldStudent.getId_seq());
+		student.setAddress(oldStudent.getAddress());
+		student.getAddress().setDni(student.getDni());
+		student.setPassword(oldStudent.getPassword());
+		student.setEmail(oldStudent.getEmail());
+		student.setRole(oldStudent.getRole());
+
+		/* Set student courses */
+		final List<Course> courses = studentDao.getStudentCourses(docket);
+		student.setStudentCourses(courses);
+
 		return studentDao.update(student);
 	}
 

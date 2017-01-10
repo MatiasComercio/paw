@@ -103,9 +103,6 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public boolean update(final Student student) {
-		final Student s = getByDni(student.getDni());
-		final List<Course> courses = getStudentCourses(s.getDocket());
-		student.setStudentCourses(courses);
 		em.merge(student);
 		LOGGER.debug("[update] - {}", student);
 

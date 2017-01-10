@@ -4,10 +4,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
-import ar.edu.itba.paw.webapp.models.StudentIndexDTO;
-import ar.edu.itba.paw.webapp.models.StudentShowDTO;
-import ar.edu.itba.paw.webapp.models.StudentsList;
-import ar.edu.itba.paw.webapp.models.UserDTO;
+import ar.edu.itba.paw.webapp.models.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -82,7 +79,7 @@ public class StudentController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public Response studentsNew(@Valid final UserDTO user) throws ValidationException{
-    ss.create(mapper.convertToEntity(user));
+    ss.create(mapper.convertToUser(user));
     final Student student = ss.getByDni(user.getDni());
     final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(student.getDocket())).build();
     return created(uri).build();
@@ -95,6 +92,18 @@ public class StudentController {
     return noContent().build();
   }
 
+  @POST
+  @Path("/{docket}")
+  public Response studentsUpdate(@PathParam("docket") final int docket,
+                                 @Valid final StudentUpdateDTO studentUpdateDTO) {
+    final Student partialStudent = mapper.convertToStudent(studentUpdateDTO);
 
+    System.out.println("Birthday = " + studentUpdateDTO.getBirthday());
+
+    ss.update(docket, partialStudent);
+
+    final URI uri = uriInfo.getAbsolutePathBuilder().build();
+    return ok(uri).build();
+  }
 
 }
