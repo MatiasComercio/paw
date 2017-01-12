@@ -129,12 +129,13 @@ public class StudentController {
           @PathParam("docket") final int docket,
           @Valid AddressDTO addressDTO){
     final Student student = ss.getByDocket(docket);
+
     if(student == null){
       return status(Status.NOT_FOUND).build();
     }
     Address address = mapper.convertToAddress(addressDTO);
     address.setDni(student.getDni());
-    student.setAddress(address);
+//    student.setAddress(address);
     ss.editAddress(student, address);
     return ok().build();
   }

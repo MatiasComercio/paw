@@ -131,6 +131,7 @@ public class StudentServiceImpl implements StudentService {
 		if(oldAddress != null){
 			address.setId_seq(oldAddress.getId_seq());
 		}
+		student.setAddress(address);
 		return studentDao.editAddress(address);
 	}
 
