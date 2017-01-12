@@ -164,9 +164,8 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public boolean editAddress(Address address) {
+	public void editAddress(final Address address) {
 		em.merge(address);
-		return true;
 	}
 
 	@Override

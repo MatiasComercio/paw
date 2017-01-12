@@ -78,9 +78,8 @@ public interface StudentDao {
 	/**
 		*
 		* @param address The new address to be persisted
-		* @return true if the address was edited, false otherwise
 		*/
-	boolean editAddress(Address address);
+	void editAddress(Address address);
 
 	/**
 	 * Add the grade for a given student and course;

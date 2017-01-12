@@ -55,11 +55,10 @@ public interface StudentService {
 
     /**
      *
-     * @param student The student
+     * @param student The docket of the student whose address will be edited. It is assumed that the student exists.
      * @param address The new address
-     * @return true if the address was updated; else false
      */
-    boolean editAddress(Student student, Address address);
+    void editAddress(int student, Address address);
 
     /**
      * Gets the student with the given docket containing all the grades of the courses they took.

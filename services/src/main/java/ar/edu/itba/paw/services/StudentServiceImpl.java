@@ -122,17 +122,19 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean editAddress(Student student, Address address) {
+	public void editAddress(final int docket, final Address address) {
 		if(address == null){
-			return false;
+			return;
 		}
+    final Student student = getByDocket(docket);
+    final Address oldAddress = student.getAddress();
+
 		address.setDni(student.getDni());
-		Address oldAddress = student.getAddress();
-		if(oldAddress != null){
+    if(oldAddress != null) {
 			address.setId_seq(oldAddress.getId_seq());
 		}
-		student.setAddress(address);
-		return studentDao.editAddress(address);
+
+    studentDao.editAddress(address);
 	}
 
 	@Override
