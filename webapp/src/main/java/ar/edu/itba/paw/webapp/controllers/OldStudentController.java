@@ -214,42 +214,42 @@ public class OldStudentController {
 //		return mav;
 //	}
 
-	@RequestMapping(value = "/students/{docket}/courses/unenroll", method = RequestMethod.POST)
-	public ModelAndView unenroll(@PathVariable final Integer docket,
-								 @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
-								 final BindingResult errors,
-								 final RedirectAttributes redirectAttributes,
-								 @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("DELETE_INSCRIPTION")
-				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
-			LOGGER.warn("User {} tried to unenroll a student {} from a course and doesn't have DELETE_INSCRIPTION authority [POST]", loggedUser.getDni(), docket);
-			return new ModelAndView(UNAUTHORIZED);
-		}
-		if (errors.hasErrors()) {
-			LOGGER.warn("User {} could not unenroll docket {} due to {} [POST]", loggedUser.getDni(), docket, errors.getAllErrors());
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
-			redirectAttributes.addFlashAttribute("inscriptionForm", inscriptionForm);
-			return new ModelAndView("redirect:/students/" + docket + "/courses");
-		}
-
-		final boolean done = studentService.unenroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
-
-		if (!done) {
-			LOGGER.warn("User {} could not unenroll a student {}, Result = {}", loggedUser.getDni(), docket, done);
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
-		} else {
-			LOGGER.info("User {} unenrolled student {} successfully", loggedUser.getDni(), docket);
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("unenroll_success",
-					new Object[] {inscriptionForm.getCourseId(), inscriptionForm.getCourseName()},
-					Locale.getDefault()));
-		}
-
-		return new ModelAndView("redirect:/students/" + docket + "/courses");
-
-	}
+//	@RequestMapping(value = "/students/{docket}/courses/unenroll", method = RequestMethod.POST)
+//	public ModelAndView unenroll(@PathVariable final Integer docket,
+//								 @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
+//								 final BindingResult errors,
+//								 final RedirectAttributes redirectAttributes,
+//								 @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("DELETE_INSCRIPTION")
+//				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+//			LOGGER.warn("User {} tried to unenroll a student {} from a course and doesn't have DELETE_INSCRIPTION authority [POST]", loggedUser.getDni(), docket);
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//		if (errors.hasErrors()) {
+//			LOGGER.warn("User {} could not unenroll docket {} due to {} [POST]", loggedUser.getDni(), docket, errors.getAllErrors());
+//			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
+//			redirectAttributes.addFlashAttribute("inscriptionForm", inscriptionForm);
+//			return new ModelAndView("redirect:/students/" + docket + "/courses");
+//		}
+//
+//		final boolean done = studentService.unenroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
+//
+//		if (!done) {
+//			LOGGER.warn("User {} could not unenroll a student {}, Result = {}", loggedUser.getDni(), docket, done);
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
+//		} else {
+//			LOGGER.info("User {} unenrolled student {} successfully", loggedUser.getDni(), docket);
+//			redirectAttributes.addFlashAttribute("alert", "success");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("unenroll_success",
+//					new Object[] {inscriptionForm.getCourseId(), inscriptionForm.getCourseName()},
+//					Locale.getDefault()));
+//		}
+//
+//		return new ModelAndView("redirect:/students/" + docket + "/courses");
+//
+//	}
 
 	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.GET)
 	public ModelAndView studentInscription(@PathVariable final int docket, final Model model,
@@ -293,62 +293,62 @@ public class OldStudentController {
 		return mav;
 	}
 
-	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.POST)
-	public ModelAndView studentInscription(@PathVariable final int docket,
-										   @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
-										   final BindingResult errors,
-										   final RedirectAttributes redirectAttributes,
-										   @ModelAttribute("user") UserSessionDetails loggedUser) {
+//	@RequestMapping(value = "/students/{docket}/inscription", method = RequestMethod.POST)
+//	public ModelAndView studentInscription(@PathVariable final int docket,
+//										   @Valid @ModelAttribute("inscriptionForm") InscriptionForm inscriptionForm,
+//										   final BindingResult errors,
+//										   final RedirectAttributes redirectAttributes,
+//										   @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("ADD_INSCRIPTION")
+//				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+//			LOGGER.warn("User {} tried to add inscription for student {} and doesn't have ADD_INSCRIPTION authority [POST]", loggedUser.getDni(), docket);
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//		if (errors.hasErrors()){
+//			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
+//			redirectAttributes.addFlashAttribute("inscriptionForm", inscriptionForm);
+//			return new ModelAndView("redirect:/students/" + docket + "/inscription");
+//		}
+//
+//		boolean done = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
+//
+//		if (!done) {
+//			LOGGER.warn("User {} could not add inscription for student {}, Result = {}", loggedUser.getDni(), docket, done);
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_CORRELATIVE_NOT_APPROVED", null, Locale.getDefault()));
+//
+//		} else {
+//			LOGGER.info("User {} added inscription of student {} successfully", loggedUser.getDni(), docket);
+//			redirectAttributes.addFlashAttribute("alert", "success");
+//			redirectAttributes.addFlashAttribute("message",
+//					messageSource.getMessage("inscription_success",
+//							new Object[] {inscriptionForm.getCourseId(), inscriptionForm.getCourseName()},
+//							Locale.getDefault()));
+//		}
+//
+//		return new ModelAndView("redirect:/students/" + docket + "/inscription");
+//	}
 
-		if (!loggedUser.hasAuthority("ADD_INSCRIPTION")
-				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
-			LOGGER.warn("User {} tried to add inscription for student {} and doesn't have ADD_INSCRIPTION authority [POST]", loggedUser.getDni(), docket);
-			return new ModelAndView(UNAUTHORIZED);
-		}
-		if (errors.hasErrors()){
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.inscriptionForm", errors);
-			redirectAttributes.addFlashAttribute("inscriptionForm", inscriptionForm);
-			return new ModelAndView("redirect:/students/" + docket + "/inscription");
-		}
-
-		boolean done = studentService.enroll(inscriptionForm.getStudentDocket(), inscriptionForm.getCourseId());
-
-		if (!done) {
-			LOGGER.warn("User {} could not add inscription for student {}, Result = {}", loggedUser.getDni(), docket, done);
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_CORRELATIVE_NOT_APPROVED", null, Locale.getDefault()));
-
-		} else {
-			LOGGER.info("User {} added inscription of student {} successfully", loggedUser.getDni(), docket);
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message",
-					messageSource.getMessage("inscription_success",
-							new Object[] {inscriptionForm.getCourseId(), inscriptionForm.getCourseName()},
-							Locale.getDefault()));
-		}
-
-		return new ModelAndView("redirect:/students/" + docket + "/inscription");
-	}
-
-	@RequestMapping(value = "/students/{docket}/inscription/courseFilterForm", method = RequestMethod.GET)
-	public ModelAndView studentInscriptionCourseFilter(@PathVariable final int docket,
-													   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-													   final BindingResult errors,
-													   final RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
-		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
-		return new ModelAndView("redirect:/students/" + docket + "/inscription");
-	}
-
-	@RequestMapping(value = "/students/{docket}/courses/courseFilterForm", method = RequestMethod.GET)
-	public ModelAndView studentCoursesCourseFilter(@PathVariable final int docket,
-												   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-												   final BindingResult errors,
-												   final RedirectAttributes redirectAttributes) {
-		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
-		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
-		return new ModelAndView("redirect:/students/" + docket + "/courses");
-	}
+//	@RequestMapping(value = "/students/{docket}/inscription/courseFilterForm", method = RequestMethod.GET)
+//	public ModelAndView studentInscriptionCourseFilter(@PathVariable final int docket,
+//													   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+//													   final BindingResult errors,
+//													   final RedirectAttributes redirectAttributes) {
+//		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
+//		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
+//		return new ModelAndView("redirect:/students/" + docket + "/inscription");
+//	}
+//
+//	@RequestMapping(value = "/students/{docket}/courses/courseFilterForm", method = RequestMethod.GET)
+//	public ModelAndView studentCoursesCourseFilter(@PathVariable final int docket,
+//												   @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+//												   final BindingResult errors,
+//												   final RedirectAttributes redirectAttributes) {
+//		redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseFilterForm", errors);
+//		redirectAttributes.addFlashAttribute("courseFilterForm", courseFilterForm);
+//		return new ModelAndView("redirect:/students/" + docket + "/courses");
+//	}
 
 //	@RequestMapping(value = "/students/add_student", method = RequestMethod.GET)
 //	public ModelAndView addStudent(@ModelAttribute("studentForm") final StudentForm studentForm,
