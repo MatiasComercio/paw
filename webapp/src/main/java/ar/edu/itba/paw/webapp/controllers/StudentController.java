@@ -139,4 +139,13 @@ public class StudentController {
     return ok().build();
   }
 
+//  @GET
+//  @Consumes(MediaType.APPLICATION_JSON)
+//  @Path("/{docket}/courses")
+//  public Response studentCoursesIndex(){
+//
+//  }
+
+
+
 }
