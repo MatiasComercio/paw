@@ -182,15 +182,14 @@ public class StudentController {
   @Path("/{docket}/courses")
   public Response studentsCoursesCreate(
           @PathParam("docket") final Integer docket,
-          // @Pattern(regexp="\\d{2}\\.\\d{2}")
-          String courseID){
+          @Valid InscriptionDTO inscriptionDTO){
 
     final Student student = ss.getByDocket(docket);
     if(student == null){
       return status(Status.NOT_FOUND).build();
     }
 
-    final Course course = cs.getByCourseID(courseID);
+    final Course course = cs.getByCourseID(inscriptionDTO.getCourseId());
     if(course == null){
       return status(Status.BAD_REQUEST).build();
     }
@@ -199,8 +198,32 @@ public class StudentController {
 
     if(!result){
       return status(Status.BAD_REQUEST).build();
+      // TODO: Decide what to return
+      // return status(Status.PRECONDITION_FAILED).build();
     }
     return status(Status.OK).build();
+  }
+
+  @DELETE
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/{docket}/courses")
+  public Response studentsCoursesDestroy(
+          @PathParam("docket") final Integer docket,
+          @Valid InscriptionDTO inscriptionDTO){
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final Course course = cs.getByCourseID(inscriptionDTO.getCourseId());
+    if(course == null){
+      return status(Status.BAD_REQUEST).build();
+    }
+
+    ss.unenroll(docket, course.getId());
+
+    return Response.noContent().build();
   }
 
 }
