@@ -1,13 +1,11 @@
-package ar.edu.itba.paw.webapp.controllers;
+package ar.edu.itba.paw.webapp.controllers.old;
 
 import ar.edu.itba.paw.interfaces.AdminService;
-import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
 import ar.edu.itba.paw.webapp.forms.AdminFilterForm;
 import ar.edu.itba.paw.webapp.forms.AdminForm;
-import ar.edu.itba.paw.webapp.forms.ProcedureForm;
 import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

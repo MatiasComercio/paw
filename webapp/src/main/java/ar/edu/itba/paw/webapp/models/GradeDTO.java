@@ -4,7 +4,6 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalGrade;
 import ar.edu.itba.paw.models.users.Student;
 
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;

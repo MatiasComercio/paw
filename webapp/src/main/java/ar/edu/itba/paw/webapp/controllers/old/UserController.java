@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.controllers;
+package ar.edu.itba.paw.webapp.controllers.old;
 
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;

@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.users.Student;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Entity

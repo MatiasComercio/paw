@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.webapp.models;
 
 import ar.edu.itba.paw.models.users.User;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
