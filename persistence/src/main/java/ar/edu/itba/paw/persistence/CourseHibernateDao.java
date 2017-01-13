@@ -27,6 +27,9 @@ import java.util.Set;
 @Repository
 public class CourseHibernateDao implements CourseDao {
 
+    private static final String GET_BY_COURSE_ID = "from Course as c where c.courseId = :courseId";
+    private static final String COURSE_ID_PARAM = "courseId";
+
     @PersistenceContext
     private EntityManager em;
 
@@ -93,6 +96,15 @@ public class CourseHibernateDao implements CourseDao {
 //        boolean gradeExists = gradeExists(id);
 
         return em.find(Course.class, id);
+    }
+
+    @Override
+    public Course getByCourseID(String courseID) {
+        final TypedQuery<Course> query = em.createQuery(GET_BY_COURSE_ID, Course.class);
+        query.setParameter(COURSE_ID_PARAM, courseID);
+        query.setMaxResults(1);
+        final List<Course> courses = query.getResultList();
+        return courses.isEmpty() ? null : courses.get(0);
     }
 
     @Override

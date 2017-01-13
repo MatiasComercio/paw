@@ -168,51 +168,51 @@ public class OldStudentController {
 		return mav;
 	}
 
-	@RequestMapping(value = "/students/{docket}/courses", method = RequestMethod.GET)
-	public ModelAndView getStudentCourses(@PathVariable final int docket, final Model model,
-	                                      @ModelAttribute("user") UserSessionDetails loggedUser,
-	                                      @Valid @ModelAttribute("courseFilterForm")
-	                                          final CourseFilterForm courseFilterForm,
-	                                      final BindingResult errors) {
-
-		if (!loggedUser.hasAuthority("VIEW_COURSES")) {
-			LOGGER.warn("User {} tried to view all the courses the student with docket {} is enrolled in " +
-					"and doesn't have VIEW_COURSES authority [GET]", loggedUser.getDni(), docket);
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		if (!model.containsAttribute("inscriptionForm")) {
-			model.addAttribute("inscriptionForm", new InscriptionForm());
-		}
-		if (!model.containsAttribute("gradeForm")) {
-			model.addAttribute("gradeForm", new GradeForm());
-		}
-
-		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
-				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
-
-		final ModelAndView mav = new ModelAndView("courses");
-
-		final List<Course> courses = loadCoursesForDocketByFilter(docket, mav, errors, courseFilter);
-		if (courses == null) {
-			return NOT_FOUND_MAV;
-		}
-
-		final Student student = studentService.getByDocket(docket);
-		if (student == null) {
-			return NOT_FOUND_MAV;
-		}
-
-		mav.addObject("student", student);
-		mav.addObject("section2", "courses");
-		mav.addObject("courseFilterFormAction", "/students/" + docket + "/courses");
-		mav.addObject("inscriptionFormAction", "/students/" + docket + "/courses/unenroll");
-		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/add");
-		mav.addObject("subsection_courses", true); /* only different line from /inscription */
-		mav.addObject("courses", courses);
-		mav.addObject("docket", docket);
-		return mav;
-	}
+//	@RequestMapping(value = "/students/{docket}/courses", method = RequestMethod.GET)
+//	public ModelAndView getStudentCourses(@PathVariable final int docket, final Model model,
+//	                                      @ModelAttribute("user") UserSessionDetails loggedUser,
+//	                                      @Valid @ModelAttribute("courseFilterForm")
+//	                                          final CourseFilterForm courseFilterForm,
+//	                                      final BindingResult errors) {
+//
+//		if (!loggedUser.hasAuthority("VIEW_COURSES")) {
+//			LOGGER.warn("User {} tried to view all the courses the student with docket {} is enrolled in " +
+//					"and doesn't have VIEW_COURSES authority [GET]", loggedUser.getDni(), docket);
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		if (!model.containsAttribute("inscriptionForm")) {
+//			model.addAttribute("inscriptionForm", new InscriptionForm());
+//		}
+//		if (!model.containsAttribute("gradeForm")) {
+//			model.addAttribute("gradeForm", new GradeForm());
+//		}
+//
+//		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
+//				id(courseFilterForm.getId()).keyword(courseFilterForm.getName()).build();
+//
+//		final ModelAndView mav = new ModelAndView("courses");
+//
+//		final List<Course> courses = loadCoursesForDocketByFilter(docket, mav, errors, courseFilter);
+//		if (courses == null) {
+//			return NOT_FOUND_MAV;
+//		}
+//
+//		final Student student = studentService.getByDocket(docket);
+//		if (student == null) {
+//			return NOT_FOUND_MAV;
+//		}
+//
+//		mav.addObject("student", student);
+//		mav.addObject("section2", "courses");
+//		mav.addObject("courseFilterFormAction", "/students/" + docket + "/courses");
+//		mav.addObject("inscriptionFormAction", "/students/" + docket + "/courses/unenroll");
+//		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/add");
+//		mav.addObject("subsection_courses", true); /* only different line from /inscription */
+//		mav.addObject("courses", courses);
+//		mav.addObject("docket", docket);
+//		return mav;
+//	}
 
 	@RequestMapping(value = "/students/{docket}/courses/unenroll", method = RequestMethod.POST)
 	public ModelAndView unenroll(@PathVariable final Integer docket,

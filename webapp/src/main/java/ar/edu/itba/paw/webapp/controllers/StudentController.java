@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 
+import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
@@ -39,6 +40,9 @@ public class StudentController {
 
   @Autowired
   private StudentService ss;
+
+  @Autowired
+  private CourseService cs;
 
   @Autowired
   private DTOEntityMapper mapper;
@@ -171,6 +175,32 @@ public class StudentController {
 
     return ok(new CoursesList(coursesList)).build();
 
+  }
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/{docket}/courses")
+  public Response studentsCoursesCreate(
+          @PathParam("docket") final Integer docket,
+          // @Pattern(regexp="\\d{2}\\.\\d{2}")
+          String courseID){
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final Course course = cs.getByCourseID(courseID);
+    if(course == null){
+      return status(Status.BAD_REQUEST).build();
+    }
+
+    boolean result = ss.enroll(docket, course.getId());
+
+    if(!result){
+      return status(Status.BAD_REQUEST).build();
+    }
+    return status(Status.OK).build();
   }
 
 }

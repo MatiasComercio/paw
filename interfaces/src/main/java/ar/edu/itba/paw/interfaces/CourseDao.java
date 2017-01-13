@@ -30,7 +30,12 @@ public interface CourseDao {
      */
     Course getById(int id);
 
-
+    /**
+     * Gets the desired course by the course's ID code
+     * @param courseID the course's ID code
+     * @return the course if it exists; null otherwise.
+     */
+    Course getByCourseID(String courseID);
 
     /**
      * Gets the desired course by the identifier with the inscribed students

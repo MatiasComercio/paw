@@ -68,6 +68,12 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
+    public Course getByCourseID(String courseID) {
+        return courseDao.getByCourseID(courseID);
+    }
+
+    @Transactional
+    @Override
     public Course getCourseStudents(int id) {
         return courseDao.getCourseStudents(id);
     }
