@@ -163,8 +163,6 @@ public class StudentController {
       return status(Status.NOT_FOUND).build();
     }
 
-    List<Course> c = student.getStudentCourses();
-
     final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
             id(courseID).keyword(courseName).build();
 
