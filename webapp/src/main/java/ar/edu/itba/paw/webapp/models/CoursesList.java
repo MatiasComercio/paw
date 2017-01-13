@@ -8,6 +8,10 @@ public class CoursesList {
 
   public CoursesList() {}
 
+  public CoursesList(List<CourseDTO> courses) {
+    this.courses = courses;
+  }
+
   public List<CourseDTO> getCourses() {
     return courses;
   }

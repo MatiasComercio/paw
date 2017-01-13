@@ -3,7 +3,9 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Address;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.models.*;
 import org.slf4j.LoggerFactory;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -49,9 +53,9 @@ public class StudentController {
   public Response studentsIndex(
           @Min(value = 1)
           @QueryParam("docket") final Integer docket,
-          @Size(min=2, max=50)
+          @Size(max=50)
           @QueryParam("firstName") final String firstName,
-          @Size(min=2, max=50)
+          @Size(max=50)
           @QueryParam("lastName") final String lastName){
     final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
             .docket(docket).firstName(firstName).lastName(lastName).build();
@@ -125,7 +129,7 @@ public class StudentController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/{docket}/address")
-  public Response studentAddressUpdate(
+  public Response studentsAddressUpdate(
           @PathParam("docket") final int docket,
           @Valid AddressDTO addressDTO) {
     final Student student = ss.getByDocket(docket);
@@ -139,13 +143,34 @@ public class StudentController {
     return ok().build();
   }
 
-//  @GET
-//  @Consumes(MediaType.APPLICATION_JSON)
-//  @Path("/{docket}/courses")
-//  public Response studentCoursesIndex(){
-//
-//  }
+  @GET
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/{docket}/courses")
+  public Response studentsCoursesIndex(
+          @Min(value = 1)
+          @PathParam("docket") final Integer docket,
+          @Size(max=5)
+          @QueryParam("id") final String courseID,
+          @Size(max=50)
+          @QueryParam("name") final String courseName){
 
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
 
+    List<Course> c = student.getStudentCourses();
+
+    final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
+            id(courseID).keyword(courseName).build();
+
+    List<Course> courses = ss.getStudentCourses(docket, courseFilter);
+
+    final List<CourseDTO> coursesList = courses.stream()
+            .map(course -> mapper.convertToCourseDTO(course)).collect(Collectors.toList());
+
+    return ok(new CoursesList(coursesList)).build();
+
+  }
 
 }

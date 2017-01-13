@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.models.Address;
+import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.webapp.models.*;
 import org.modelmapper.ModelMapper;
@@ -37,4 +38,7 @@ public class DTOEntityMapper {
     return modelMapper.map(addressDTO, Address.class);
   }
 
+  public CourseDTO convertToCourseDTO(Course course) {
+    return modelMapper.map(course, CourseDTO.class);
+  }
 }
