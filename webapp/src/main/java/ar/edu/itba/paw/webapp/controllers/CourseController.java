@@ -16,9 +16,12 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +42,12 @@ public class CourseController {
   @Autowired
   private DTOEntityMapper mapper;
 
+
+  @Context
+  private UriInfo uriInfo;
+
+  /** API Methods **/
+
   @GET
   @Path("/{courseId}")
   @Produces(MediaType.APPLICATION_JSON)
@@ -58,16 +67,19 @@ public class CourseController {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response coursesUpdate(@PathParam("courseId") final String courseId,
                                 @Valid final CourseDTO courseDTO) {
+
     if(cs.getByCourseID(courseId) == null) {
       return status(Status.NOT_FOUND).build();
     }
-    System.out.println(courseDTO);
     final Course courseUpdated = mapper.convertToCourse(courseDTO);
 
     if(!cs.update(courseId, courseUpdated)) {
       return status(Status.BAD_REQUEST).build(); //TODO: Decide what to return
     }
-    return ok().build();
+
+    final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(courseUpdated.getCourseId())).build();
+
+    return ok(uri).build();
   }
 
   @GET
@@ -92,5 +104,18 @@ public class CourseController {
     final List<StudentIndexDTO> studentsList = courseStudents.stream().map(student -> mapper.convertToStudentIndexDTO(student)).collect(Collectors.toList());
 
     return ok(new StudentsList(studentsList)).build();
+  }
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response coursesNew(@Valid final CourseDTO courseDTO) {
+    final Course course = mapper.convertToCourse(courseDTO);
+
+    if(!cs.create(course)) {
+      return status(Status.BAD_REQUEST).build();
+    }
+    final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(course.getCourseId())).build();
+
+    return created(uri).build();
   }
 }

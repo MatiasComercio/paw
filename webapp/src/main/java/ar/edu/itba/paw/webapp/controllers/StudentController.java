@@ -73,9 +73,12 @@ public class StudentController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   public Response studentsNew(@Valid final UserNewDTO userNewDTO) throws ValidationException{
-    ss.create(mapper.convertToStudent(userNewDTO));
-    final Student student = ss.getByDni(userNewDTO.getDni());
-    final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(student.getDocket())).build();
+    final Student student = mapper.convertToStudent(userNewDTO);
+    if(!ss.create(student)) {
+      return status(Status.BAD_REQUEST).build();
+    }
+    final int docket = ss.getByDni(userNewDTO.getDni()).getDocket();
+    final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(docket)).build();
     return created(uri).build();
   }
 

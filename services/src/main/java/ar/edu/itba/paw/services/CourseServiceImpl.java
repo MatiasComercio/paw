@@ -30,6 +30,9 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     @Override
     public boolean create(Course course) {
+        if(getByCourseID(course.getCourseId()) != null) {
+            return false;
+        }
         return courseDao.create(course);
     }
 
