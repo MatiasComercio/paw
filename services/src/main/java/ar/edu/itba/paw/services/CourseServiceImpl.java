@@ -96,7 +96,10 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public boolean deleteCourse(final int courseId) {
+    public boolean deleteCourse(final String courseId) {
+        if(courseDao.getByCourseID(courseId) == null) {
+            return true;
+        }
         if(courseDao.inscriptionExists(courseId)){
 //            return Result.COURSE_EXISTS_INSCRIPTION;
             return false;
@@ -187,13 +190,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public List<Integer> getCorrelatives(final int courseId) {
+    public List<Integer> getCorrelatives(final String courseId) {
         return courseDao.getCorrelatives(courseId);
     }
 
     @Transactional
     @Override
-    public List<Integer> getUpperCorrelatives(final int courseId) {
+    public List<Integer> getUpperCorrelatives(final String courseId) {
         return courseDao.getUpperCorrelatives(courseId);
     }
 
@@ -201,13 +204,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public boolean deleteCorrelative(final int courseId, final int correlativeId) {
+    public boolean deleteCorrelative(final String courseId, final int correlativeId) {
         return courseDao.deleteCorrelative(courseId, correlativeId);
     }
 
     @Transactional
     @Override
-    public boolean deleteCourseCorrelatives(final int courseId) {
+    public boolean deleteCourseCorrelatives(final String courseId) {
         List<Integer> correlatives = getCorrelatives(courseId);
         List<Integer> upperCorrelatives = getUpperCorrelatives(courseId);
 
@@ -229,7 +232,7 @@ public class CourseServiceImpl implements CourseService {
         }
         if(upperCorrelatives != null){
             for(Integer upperCorrelative: upperCorrelatives){
-                deleteCorrelative(upperCorrelative, courseId);
+                deleteCorrelative(courseId, upperCorrelative);
             }
         }
 //        return Result.OK;

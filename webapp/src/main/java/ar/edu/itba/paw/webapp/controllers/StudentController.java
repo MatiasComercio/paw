@@ -194,7 +194,7 @@ public class StudentController {
       return status(Status.BAD_REQUEST).build();
     }
 
-    boolean result = ss.enroll(docket, course.getId());
+    boolean result = ss.enroll(docket, course.getCourseId());
 
     if(!result){
       return status(Status.BAD_REQUEST).build();

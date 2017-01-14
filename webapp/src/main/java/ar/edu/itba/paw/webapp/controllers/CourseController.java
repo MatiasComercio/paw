@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -20,7 +19,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -117,5 +115,15 @@ public class CourseController {
     final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(course.getCourseId())).build();
 
     return created(uri).build();
+  }
+
+  @DELETE
+  @Path("/{courseId}")
+  public Response coursesDestroy(@PathParam("courseId") final String courseId) {
+    if(!cs.deleteCourse(courseId)) {
+      return Response.status(Status.CONFLICT).build(); //TODO: check what to return
+    }
+
+    return Response.noContent().build();
   }
 }

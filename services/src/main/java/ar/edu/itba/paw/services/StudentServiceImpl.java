@@ -206,7 +206,7 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean enroll(final int studentDocket, final int courseId) {
+	public boolean enroll(final int studentDocket, final String courseId) {
 		boolean result;
 
 		if (!checkCorrelatives(studentDocket, courseId)) {
@@ -229,7 +229,7 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean checkCorrelatives(final int docket, final int courseId) {
+	public boolean checkCorrelatives(final int docket, final String courseId) {
 		List<Integer> correlatives = courseService.getCorrelatives(courseId);
 		List<Integer> approvedCourses = studentDao.getApprovedCoursesId(docket);
 

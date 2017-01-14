@@ -60,21 +60,18 @@ public interface CourseDao {
 
     /**
      * Attempts to delete the course with the given id
-     * @param id of the course to delete
-     * @return OK if the course was deleted;
-     *         COURSE_EXISTS_INSCRIPTION if there are inscriptions in that course;
-     *         COURSE_EXISTS_GRADE if there grades tied to the course;
-     *         INVALID_INPUT_PARAMETERS if the ID is invalid;
-     *         ERROR_UNKNOWN else;
+     * @param courseId of the course to delete
+     * @return true if the course was deleted;
+     *         false in other case;
      */
-    boolean deleteCourse(int id);
+    boolean deleteCourse(String courseId);
 
     /**
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
      * given course)
      */
-    List<Integer> getCorrelatives(int courseId);
+    List<Integer> getCorrelatives(String courseId);
 
     /**
      * Check if a correlativity loop is formed
@@ -106,20 +103,20 @@ public interface CourseDao {
      * @param courseId The id of the course.
      * @return The boolean indicating if the given course has any enrolled students.
      */
-    boolean inscriptionExists(int courseId);
+    boolean inscriptionExists(String courseId);
 
     /**
      * @param courseId The id of the course.
      * @return The boolean indicating whether there are any students with grades of the given course.
      */
-    boolean gradeExists(int courseId);
+    boolean gradeExists(String courseId);
 
     /**
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that require this course to enroll a student in the
      * given course)
      */
-    List<Integer> getUpperCorrelatives(int courseId);
+    List<Integer> getUpperCorrelatives(String courseId);
 
     /**
      *
@@ -127,7 +124,7 @@ public interface CourseDao {
      * @param correlativeId The id of the correlative for the given course.
      * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
      */
-    boolean deleteCorrelative(int courseId, int correlativeId);
+    boolean deleteCorrelative(String courseId, int correlativeId);
 
     /**
      * Get the number of semesters.

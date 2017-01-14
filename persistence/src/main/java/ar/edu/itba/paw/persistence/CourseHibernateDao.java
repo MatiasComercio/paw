@@ -144,16 +144,16 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public boolean deleteCourse(int id) {
-        Course course = getById(id);
+    public boolean deleteCourse(final String courseId) {
+        Course course = getByCourseID(courseId);
         em.remove(course);
 
         return true;
     }
 
     @Override
-    public List<Integer> getCorrelatives(int courseId) {
-        Course course = getById(courseId);
+    public List<Integer> getCorrelatives(String courseId) {
+        Course course = getByCourseID(courseId);
         List<Integer> correlatives = new ArrayList<Integer>();
 
         for(Course correlative: course.getCorrelatives()){
@@ -217,8 +217,8 @@ public class CourseHibernateDao implements CourseDao {
     //TODO: Requires students
     //TODO: Test this
     @Override
-    public boolean inscriptionExists(int courseId) {
-        Course course = getById(courseId);
+    public boolean inscriptionExists(String courseId) {
+        Course course = getByCourseID(courseId);
         if(course.getStudents() == null || course.getStudents().size() == 0){
             return false;
         }
@@ -226,17 +226,17 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public boolean gradeExists(int courseId) {
+    public boolean gradeExists(String courseId) {
 
-        final TypedQuery<Long> query = em.createQuery("select count(gr) from Grade as gr where gr.course.id = :id", Long.class);
+        final TypedQuery<Long> query = em.createQuery("select count(gr) from Grade as gr where gr.course.courseId = :id", Long.class);
         query.setParameter("id", courseId);
         Long totalGrades = query.getSingleResult();
         return totalGrades > 0;
     }
 
     @Override
-    public List<Integer> getUpperCorrelatives(int courseId) {
-        Course course = getById(courseId);
+    public List<Integer> getUpperCorrelatives(String courseId) {
+        Course course = getByCourseID(courseId);
         List<Integer> upperCorrelatives = new ArrayList<>();
 
         for(Course correlative : course.getUpperCorrelatives()){
@@ -247,8 +247,8 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public boolean deleteCorrelative(int courseId, int correlativeId) { //fixme is ok that always returrs true?
-        Course course = getById(courseId);
+    public boolean deleteCorrelative(String courseId, int correlativeId) { //fixme is ok that always returrs true?
+        Course course = getByCourseID(courseId);
         Course correlative = getById(correlativeId);
         course.getCorrelatives().remove(correlative);
         Session session = em.unwrap(Session.class);

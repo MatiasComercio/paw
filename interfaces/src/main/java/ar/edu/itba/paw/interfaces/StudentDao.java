@@ -114,7 +114,7 @@ public interface StudentDao {
 	 * @param courseId The course id
 	 * @return a Result object containing information of the operation carried out
 	 */
-	boolean enroll(int studentDocket, int courseId);
+	boolean enroll(int studentDocket, String courseId);
 
 	/**
 	 * Unenrolls the student with the given docket of the course with the specified id.

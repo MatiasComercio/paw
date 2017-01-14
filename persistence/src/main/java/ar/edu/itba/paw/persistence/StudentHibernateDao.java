@@ -169,9 +169,9 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public boolean enroll(final int studentDocket, final int courseId) {
+	public boolean enroll(final int studentDocket, final String courseId) {
 		final Student student = getByDocket(studentDocket);
-		final Course course = courseDao.getById(courseId);
+		final Course course = courseDao.getByCourseID(courseId);
 		final List<Course> studentCourses = student.getStudentCourses();
 
 		studentCourses.add(course);

@@ -119,7 +119,7 @@ public interface StudentService {
      * @param courseId      The course id
      * @return a Result object containing information of the operation carried out
      */
-    boolean enroll(int studentDocket, int courseId);
+    boolean enroll(int studentDocket, String courseId);
 
     /**
      * Unenrolls the student with the given docket of the course with the specified id.
@@ -157,7 +157,7 @@ public interface StudentService {
      * @param courseId The id of the course
      * @return True if the student can take de course, False if not.
      */
-    boolean checkCorrelatives(int docket, int courseId);
+    boolean checkCorrelatives(int docket, String courseId);
 
     /**
      * Check if the student corresponding to docket has approved all the necessary

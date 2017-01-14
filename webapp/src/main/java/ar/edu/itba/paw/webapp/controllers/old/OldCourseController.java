@@ -288,76 +288,76 @@ public class OldCourseController {
 		return mav;
 	}
 
-	@RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
-	public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
-	                              final BindingResult errors, RedirectAttributes redirectAttributes,
-	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
+//	@RequestMapping(value = "/courses/add_course", method = RequestMethod.POST)
+//	public ModelAndView addCourse(@Valid @ModelAttribute("courseForm") CourseForm courseForm,
+//	                              final BindingResult errors, RedirectAttributes redirectAttributes,
+//	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("ADD_COURSE")) {
+//			LOGGER.warn("User {} tried to add a course and doesn't have ADD_COURSE authority [POST]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		if(errors.hasErrors()){
+//			LOGGER.warn("User {} could not add course {} due to {} [POST]", loggedUser.getDni(), courseForm.getId(), errors.getAllErrors());
+//			/* set alert */
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+//			/* --------- */
+//			return addCourse(courseForm, redirectAttributes, loggedUser);
+//		} else {
+//			final Course course = courseForm.build();
+//			boolean done;
+//
+//			try {
+//				done = courseService.create(course);
+//			} catch (final DataIntegrityViolationException e) {
+//				LOGGER.warn("User {} could not add course. Result: ", loggedUser.getDni(), e);
+//				done = false;
+//			}
+//			if(!done){
+//				redirectAttributes.addFlashAttribute("alert", "danger");
+//				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("COURSE_EXISTS_ID", null, Locale.getDefault()));
+//				return addCourse(courseForm, redirectAttributes, loggedUser);
+//			} else {
+//				LOGGER.info("User {} added course {}", loggedUser.getDni(), courseForm.getId());
+//			}
+//			redirectAttributes.addFlashAttribute("alert", "success");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addCourse_success",
+//					null,
+//					Locale.getDefault()));
+//			return new ModelAndView("redirect:/courses");
+//		}
+//	}
 
-		if (!loggedUser.hasAuthority("ADD_COURSE")) {
-			LOGGER.warn("User {} tried to add a course and doesn't have ADD_COURSE authority [POST]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		if(errors.hasErrors()){
-			LOGGER.warn("User {} could not add course {} due to {} [POST]", loggedUser.getDni(), courseForm.getId(), errors.getAllErrors());
-			/* set alert */
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
-			/* --------- */
-			return addCourse(courseForm, redirectAttributes, loggedUser);
-		} else {
-			final Course course = courseForm.build();
-			boolean done;
-
-			try {
-				done = courseService.create(course);
-			} catch (final DataIntegrityViolationException e) {
-				LOGGER.warn("User {} could not add course. Result: ", loggedUser.getDni(), e);
-				done = false;
-			}
-			if(!done){
-				redirectAttributes.addFlashAttribute("alert", "danger");
-				redirectAttributes.addFlashAttribute("message", messageSource.getMessage("COURSE_EXISTS_ID", null, Locale.getDefault()));
-				return addCourse(courseForm, redirectAttributes, loggedUser);
-			} else {
-				LOGGER.info("User {} added course {}", loggedUser.getDni(), courseForm.getId());
-			}
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addCourse_success",
-					null,
-					Locale.getDefault()));
-			return new ModelAndView("redirect:/courses");
-		}
-	}
-
-	@RequestMapping(value = "/courses/{id}/delete", method = RequestMethod.POST)
-	public ModelAndView deleteCourse(@PathVariable final Integer id,
-	                                 RedirectAttributes redirectAttributes,
-	                                 @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("DELETE_COURSE")) {
-			LOGGER.warn("User {} tried to delete a course and doesn't have DELETE_COURSE authority [POST]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		final boolean done = courseService.deleteCourse(id);
-		final String urlRedirect;
-		if(done) {
-			LOGGER.info("User {} deleted a course successfully", loggedUser.getDni());
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteCourse_success",
-					null,
-					Locale.getDefault()));
-			urlRedirect = "/courses";
-		} else { // if course with the specified id does not exist, it will enter here
-			LOGGER.warn("User {} could not delete course, Result = {}", loggedUser.getDni(), done);
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("COURSE_EXISTS_INSCRIPTION_OR_GRADE", null, Locale.getDefault()));
-			urlRedirect = request.getHeader("referer");
-		}
-
-		return new ModelAndView("redirect:" + urlRedirect);
-	}
+//	@RequestMapping(value = "/courses/{id}/delete", method = RequestMethod.POST)
+//	public ModelAndView deleteCourse(@PathVariable final Integer id,
+//	                                 RedirectAttributes redirectAttributes,
+//	                                 @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("DELETE_COURSE")) {
+//			LOGGER.warn("User {} tried to delete a course and doesn't have DELETE_COURSE authority [POST]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		final boolean done = courseService.deleteCourse(id);
+//		final String urlRedirect;
+//		if(done) {
+//			LOGGER.info("User {} deleted a course successfully", loggedUser.getDni());
+//			redirectAttributes.addFlashAttribute("alert", "success");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("deleteCourse_success",
+//					null,
+//					Locale.getDefault()));
+//			urlRedirect = "/courses";
+//		} else { // if course with the specified id does not exist, it will enter here
+//			LOGGER.warn("User {} could not delete course, Result = {}", loggedUser.getDni(), done);
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("COURSE_EXISTS_INSCRIPTION_OR_GRADE", null, Locale.getDefault()));
+//			urlRedirect = request.getHeader("referer");
+//		}
+//
+//		return new ModelAndView("redirect:" + urlRedirect);
+//	}
 
 //	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)
 //	public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model,
@@ -441,44 +441,44 @@ public class OldCourseController {
 
 		return new ModelAndView("redirect:/courses/" + course_id + "/add_correlative");
 	}
-
-	@RequestMapping(value = "/courses/{course_id}/delete_correlative", method = RequestMethod.POST)
-	public ModelAndView deleteCorrelative(@PathVariable final Integer course_id,
-	                                      @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
-	                                      final BindingResult errors, final RedirectAttributes redirectAttributes,
-	                                      @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("DELETE_CORRELATIVE")) {
-			LOGGER.warn("User {} tried to delete correlative and doesn't have DELETE_CORRELATIVE authority [POST]", loggedUser);
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		if (errors.hasErrors()){
-			LOGGER.warn("User {} could not delete correlative due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
-			redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
-			return new ModelAndView("redirect:/courses/" + course_id + "/info");
-		}
-
-		boolean done = courseService.deleteCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
-
-		if (!done) {
-			LOGGER.warn("User {} could not delete correlative, Result = {}", loggedUser.getDni(), done);
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
-
-		} else { // if course with the specified id does not exist, it will enter here
-			LOGGER.info("User {} deleted correlative successfully", loggedUser.getDni());
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message",
-					messageSource.getMessage("correlative_delete_success",
-							new Object[] {correlativeForm.getCourseName(), correlativeForm.getCorrelativeName()},
-							Locale.getDefault()));
-		}
-
-		return new ModelAndView("redirect:/courses/" + course_id + "/info");
-
-	}
+//
+//	@RequestMapping(value = "/courses/{course_id}/delete_correlative", method = RequestMethod.POST)
+//	public ModelAndView deleteCorrelative(@PathVariable final Integer course_id,
+//	                                      @Valid @ModelAttribute("CorrelativeForm") CorrelativeForm correlativeForm,
+//	                                      final BindingResult errors, final RedirectAttributes redirectAttributes,
+//	                                      @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("DELETE_CORRELATIVE")) {
+//			LOGGER.warn("User {} tried to delete correlative and doesn't have DELETE_CORRELATIVE authority [POST]", loggedUser);
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		if (errors.hasErrors()){
+//			LOGGER.warn("User {} could not delete correlative due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
+//			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.correlativeForm", errors);
+//			redirectAttributes.addFlashAttribute("correlativeForm", correlativeForm);
+//			return new ModelAndView("redirect:/courses/" + course_id + "/info");
+//		}
+//
+//		boolean done = courseService.deleteCorrelative(correlativeForm.getCourseId(), correlativeForm.getCorrelativeId());
+//
+//		if (!done) {
+//			LOGGER.warn("User {} could not delete correlative, Result = {}", loggedUser.getDni(), done);
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
+//
+//		} else { // if course with the specified id does not exist, it will enter here
+//			LOGGER.info("User {} deleted correlative successfully", loggedUser.getDni());
+//			redirectAttributes.addFlashAttribute("alert", "success");
+//			redirectAttributes.addFlashAttribute("message",
+//					messageSource.getMessage("correlative_delete_success",
+//							new Object[] {correlativeForm.getCourseName(), correlativeForm.getCorrelativeName()},
+//							Locale.getDefault()));
+//		}
+//
+//		return new ModelAndView("redirect:/courses/" + course_id + "/info");
+//
+//	}
 
 	@RequestMapping(value = "/courses/{id}/students_passed", method = RequestMethod.GET)
 	public ModelAndView getCourseStudentsThatPassed(@PathVariable("id") final Integer id, final Model model,
