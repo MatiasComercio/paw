@@ -17,11 +17,11 @@ public interface CourseDao {
 
     /**
      * Update a course
-     * @param id Id of the old course
+     * @param courseId Id of the old course
      * @param course Modified course
      * @return The result code of the insertion
      */
-    boolean update(int id, Course course);
+    boolean update(String courseId, Course course);
 
     /**
      * Get the course identified by an ID
@@ -141,7 +141,7 @@ public interface CourseDao {
      * @return List of correlatives for the given course (i.d. The courses that are required to enroll a student in the
      * given course)
      */
-    List<Course> getCorrelativeCourses(int courseId);
+    List<Course> getCorrelativeCourses(String courseId);
 
     /**
      * Get the total credits of the plan.

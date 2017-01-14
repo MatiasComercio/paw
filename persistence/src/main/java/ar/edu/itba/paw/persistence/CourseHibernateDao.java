@@ -46,7 +46,7 @@ public class CourseHibernateDao implements CourseDao {
 
 
     @Override
-    public boolean update(int id, Course course){
+    public boolean update(final String id, final Course course){
 
         //NOTE: In this case if the id is changed an exception is thrown. In the future we shouldn't allow a user to modify the seq_id!
         final List<Course> correlatives = getCorrelativeCourses(id);
@@ -266,8 +266,8 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public List<Course> getCorrelativeCourses(int courseId) {
-        Course course = getById(courseId);
+    public List<Course> getCorrelativeCourses(final String courseId) {
+        Course course = getByCourseID(courseId);
         List<Course> correlatives = new ArrayList<>();
 
         for(Course correlative: course.getCorrelatives()){

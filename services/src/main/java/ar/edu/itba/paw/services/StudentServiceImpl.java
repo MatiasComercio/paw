@@ -374,7 +374,7 @@ public class StudentServiceImpl implements StudentService {
 		FinalInscription finalInscription = studentDao.getFinalInscription(finalInscriptionId);
 		Student student = studentDao.getByDocket(docket);
 
-		if (!checkFinalCorrelatives(docket, finalInscription.getCourse().getId())){
+		if (!checkFinalCorrelatives(docket, finalInscription.getCourse().getCourseId())){
 			return false;
 		}
 
@@ -430,7 +430,7 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean checkFinalCorrelatives(int docket, int courseId) {
+	public boolean checkFinalCorrelatives(int docket, String courseId) {
 
 		final List<Course> correlatives = courseService.getCorrelativesByFilter(courseId, null);
 		final List<Course> approvedCourses = studentDao.getApprovedFinalCourses(docket);

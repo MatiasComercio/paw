@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.webapp.models.*;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 
 public class DTOEntityMapper {
 
@@ -38,7 +39,19 @@ public class DTOEntityMapper {
     return modelMapper.map(addressDTO, Address.class);
   }
 
-  public CourseDTO convertToCourseDTO(Course course) {
+  CourseDTO convertToCourseDTO(Course course) {
     return modelMapper.map(course, CourseDTO.class);
+  }
+
+  Course convertToCourse(final CourseDTO courseDTO) {
+    PropertyMap<Course, CourseDTO> courseIdMapper = new PropertyMap<Course, CourseDTO>() {
+      protected void configure() {
+        map().setCourseId(source.getCourseId());
+      }
+    };
+    modelMapper.addMappings(courseIdMapper);
+    modelMapper.validate();
+
+    return modelMapper.map(courseDTO, Course.class);
   }
 }

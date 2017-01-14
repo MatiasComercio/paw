@@ -35,24 +35,25 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public boolean update(final int id, final Course course){
+    public boolean update(final String courseId, final Course courseUpdated){
 
-        final List<Course> correlatives = getCorrelativesByFilter(id, null);
-        final Course c = courseDao.getById(id);
+        final List<Course> correlatives = getCorrelativesByFilter(courseId, null);
+        final Course courseOld = courseDao.getByCourseID(courseId);
 
+        courseUpdated.setId(courseOld.getId());
         for (Course correlative : correlatives){
-            if (correlative.getSemester() >= course.getSemester()) {
+            if (correlative.getSemester() >= courseUpdated.getSemester()) {
                 return false;
             }
         }
 
-        for (Course course1 : c.getUpperCorrelatives()) {
-            if (course1.getSemester() <= course.getSemester()){
+        for (Course course1 : courseOld.getUpperCorrelatives()) {
+            if (course1.getSemester() <= courseUpdated.getSemester()){
                 return false;
             }
         }
 
-        return courseDao.update(id, course);
+        return courseDao.update(courseId, courseUpdated);
     }
 
     @Override
@@ -234,7 +235,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public List<Course> getCorrelativesByFilter(final int courseId, final CourseFilter courseFilter) {
+    public List<Course> getCorrelativesByFilter(final String courseId, final CourseFilter courseFilter) {
 
         final List<Course> courses = getByFilter(courseFilter);
 
@@ -260,7 +261,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public List<Course> getAvailableAddCorrelatives(final int courseId, final CourseFilter courseFilter) {
+    public List<Course> getAvailableAddCorrelatives(final String courseId, final CourseFilter courseFilter) {
         List<Course> courses =  getByFilter(courseFilter);
         List<Course> correlatives = getCorrelativesByFilter(courseId, null);
 
@@ -270,7 +271,7 @@ public class CourseServiceImpl implements CourseService {
         courses.removeAll(correlatives);
 
         //Remove the course itself from the list
-        courses.remove(getById(courseId));
+        courses.remove(getByCourseID(courseId));
         return courses;
     }
 

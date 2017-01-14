@@ -19,11 +19,11 @@ public interface CourseService {
 
     /**
      * Update a course
-     * @param id Id the previous course.
+     * @param courseId Id the previous course.
      * @param course Modified course.
      * @return The result code of the insertion.
      */
-    boolean update(int id, Course course);
+    boolean update(String courseId, Course course);
 
 	/**
      * Get all the current available courses
@@ -133,14 +133,14 @@ public interface CourseService {
      * @param courseFilter The course's filter. If null, no filter is applied.
      * @return A list of correlatives courses to the given course, with the filter applied.
      */
-    List<Course> getCorrelativesByFilter(int courseId, CourseFilter courseFilter);
+    List<Course> getCorrelativesByFilter(String courseId, CourseFilter courseFilter);
 
     /**
      *
      * @param courseId The id of the course
      * @return A list of the courses that are available to be added as correlatives for the given course
      */
-    List<Course> getAvailableAddCorrelatives(int courseId, CourseFilter courseFilter);
+    List<Course> getAvailableAddCorrelatives(String courseId, CourseFilter courseFilter);
 
     /**
      * Get the total credits of the plan.

@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.validation.Valid;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import static javax.ws.rs.core.Response.*;
@@ -30,8 +30,9 @@ public class CourseController {
   private DTOEntityMapper mapper;
 
   @GET
-  @Path("/{course_id}")
-  public Response coursesShow(@PathParam("course_id") final String courseId) {
+  @Path("/{courseId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response coursesShow(@PathParam("courseId") final String courseId) {
     final Course course = cs.getByCourseID(courseId);
 
     if(course == null) {
@@ -40,5 +41,22 @@ public class CourseController {
 
     final CourseDTO courseDTO = mapper.convertToCourseDTO(course);
     return ok(courseDTO).build();
+  }
+
+  @POST
+  @Path("/{courseId}")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response coursesUpdate(@PathParam("courseId") final String courseId,
+                                @Valid final CourseDTO courseDTO) {
+    if(cs.getByCourseID(courseId) == null) {
+      return status(Status.NOT_FOUND).build();
+    }
+    System.out.println(courseDTO);
+    final Course courseUpdated = mapper.convertToCourse(courseDTO);
+
+    if(!cs.update(courseId, courseUpdated)) {
+      return status(Status.BAD_REQUEST).build(); //TODO: Decide what to return
+    }
+    return ok().build();
   }
 }

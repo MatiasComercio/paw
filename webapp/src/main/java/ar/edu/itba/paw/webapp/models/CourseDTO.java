@@ -29,37 +29,49 @@ public class CourseDTO {
 
 
   public CourseDTO() {
+
+  }
+
+
+  public String getCourseId() {
+    return courseId;
   }
 
   public void setCourseId(String courseId) {
     this.courseId = courseId;
   }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public void setCredits(int credits) {
-    this.credits = credits;
-  }
-
-  public void setSemester(int semester) {
-    this.semester = semester;
-  }
-
-  public String getCourseId() {
-    return courseId;
-  }
-
   public String getName() {
     return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public int getCredits() {
     return credits;
   }
 
+  public void setCredits(int credits) {
+    this.credits = credits;
+  }
+
   public int getSemester() {
     return semester;
+  }
+
+  public void setSemester(int semester) {
+    this.semester = semester;
+  }
+
+  @Override
+  public String toString() {
+    return "CourseDTO{" +
+            "courseId='" + courseId + '\'' +
+            ", name='" + name + '\'' +
+            ", credits=" + credits +
+            ", semester=" + semester +
+            '}';
   }
 }

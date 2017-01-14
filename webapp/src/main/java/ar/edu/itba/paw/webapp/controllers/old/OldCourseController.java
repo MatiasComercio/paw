@@ -104,37 +104,37 @@ public class OldCourseController {
 		return mav;
 	}
 
-	@RequestMapping("/courses/{id}/info")
-	public ModelAndView getCourse(@PathVariable final Integer id, Model model,
-	                              @ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm,
-	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("VIEW_COURSE")) {
-			LOGGER.warn("User {} tried to view the course {} and doesn't have VIEW_COURSE authority [GET]",
-					loggedUser.getDni(), id);
-			return new ModelAndView(UNAUTHORIZED);
-		}
-		final ModelAndView mav = new ModelAndView("course");
-
-		if (!model.containsAttribute("correlativeForm")) {
-			model.addAttribute("correlativeForm", new CorrelativeForm());
-		}
-
-		final Course course = courseService.getById(id);
-
-		if (course == null) {
-			LOGGER.warn("User {} tried to edit course {} that does not exist", loggedUser.getDni(), id);
-			return new ModelAndView(NOT_FOUND);
-		}
-
-		mav.addObject("course", course);
-		mav.addObject("section2", "info"); /* +++xcheck: if it's ok, do the same for all the URLs */
-		mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
-		mav.addObject("subsection_delete_correlative", true);
-		mav.addObject("correlatives", courseService.getCorrelativesByFilter(id, null));
-		mav.addObject("finalInscriptions", courseService.getOpenFinalInsciptions(id));
-		return mav;
-	}
+//	@RequestMapping("/courses/{id}/info")
+//	public ModelAndView getCourse(@PathVariable final Integer id, Model model,
+//	                              @ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm,
+//	                              @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("VIEW_COURSE")) {
+//			LOGGER.warn("User {} tried to view the course {} and doesn't have VIEW_COURSE authority [GET]",
+//					loggedUser.getDni(), id);
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//		final ModelAndView mav = new ModelAndView("course");
+//
+//		if (!model.containsAttribute("correlativeForm")) {
+//			model.addAttribute("correlativeForm", new CorrelativeForm());
+//		}
+//
+//		final Course course = courseService.getById(id);
+//
+//		if (course == null) {
+//			LOGGER.warn("User {} tried to edit course {} that does not exist", loggedUser.getDni(), id);
+//			return new ModelAndView(NOT_FOUND);
+//		}
+//
+//		mav.addObject("course", course);
+//		mav.addObject("section2", "info"); /* +++xcheck: if it's ok, do the same for all the URLs */
+//		mav.addObject("correlativeFormAction", "/courses/" + id + "/delete_correlative");
+//		mav.addObject("subsection_delete_correlative", true);
+//		mav.addObject("correlatives", courseService.getCorrelativesByFilter(id, null));
+//		mav.addObject("finalInscriptions", courseService.getOpenFinalInsciptions(id));
+//		return mav;
+//	}
 
 	@RequestMapping("/courses/{courseId}/edit")
 	public ModelAndView editCourse(
@@ -172,57 +172,57 @@ public class OldCourseController {
 		return mav;
 	}
 
-	@RequestMapping(value = "/courses/{courseId}/edit", method = RequestMethod.POST)
-	public ModelAndView editCourse(@PathVariable final Integer courseId,
-	                               @Valid @ModelAttribute("courseForm") CourseForm courseForm,
-	                               final BindingResult errors,
-	                               RedirectAttributes redirectAttributes,
-	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("EDIT_COURSE")) {
-			LOGGER.warn("User {} tried to edit a course and doesn't have EDIT_COURSE authority [POST]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		if (errors.hasErrors()){
-			LOGGER.warn("User {} could not edit course {} due to {} [POST]", loggedUser.getDni(), courseId, errors.getAllErrors());
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseForm", errors);
-			redirectAttributes.addFlashAttribute("courseForm", courseForm);
-			/* set alert */
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
-			/* --------- */
-			redirectAttributes.addFlashAttribute("justCalled", true);
-			return editCourse(courseId, courseForm, redirectAttributes, loggedUser);
-		}
-
-		Course course = courseForm.build();
-		boolean done;
-		try {
-			done = courseService.update(courseId, course);
-		} catch (final DataIntegrityViolationException e) {
-			LOGGER.warn("User {} could not add course. Result: ", loggedUser.getDni(), e);
-			done = false;
-		}
-
-		/* If no course with 'courseId' exists, !result.equals(Result.OK) will be true */
-		if(!done){
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("course_persist_fail", null, Locale.getDefault()));
-			redirectAttributes.addFlashAttribute("justCalled", true);
-			return editCourse(courseId, courseForm, redirectAttributes, loggedUser);
-		} else {
-			LOGGER.info("User {} edited course {} successfully", loggedUser.getDni(), courseId);
-		}
-
-		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editCourse_success",
-				null,
-				Locale.getDefault()));
-
-		final String referrer = request.getHeader("referer");
-		return new ModelAndView("redirect:" + referrer);
-	}
+//	@RequestMapping(value = "/courses/{courseId}/edit", method = RequestMethod.POST)
+//	public ModelAndView editCourse(@PathVariable final Integer courseId,
+//	                               @Valid @ModelAttribute("courseForm") CourseForm courseForm,
+//	                               final BindingResult errors,
+//	                               RedirectAttributes redirectAttributes,
+//	                               @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("EDIT_COURSE")) {
+//			LOGGER.warn("User {} tried to edit a course and doesn't have EDIT_COURSE authority [POST]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		if (errors.hasErrors()){
+//			LOGGER.warn("User {} could not edit course {} due to {} [POST]", loggedUser.getDni(), courseId, errors.getAllErrors());
+//			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.courseForm", errors);
+//			redirectAttributes.addFlashAttribute("courseForm", courseForm);
+//			/* set alert */
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+//			/* --------- */
+//			redirectAttributes.addFlashAttribute("justCalled", true);
+//			return editCourse(courseId, courseForm, redirectAttributes, loggedUser);
+//		}
+//
+//		Course course = courseForm.build();
+//		boolean done;
+//		try {
+//			done = courseService.update(courseId, course);
+//		} catch (final DataIntegrityViolationException e) {
+//			LOGGER.warn("User {} could not add course. Result: ", loggedUser.getDni(), e);
+//			done = false;
+//		}
+//
+//		/* If no course with 'courseId' exists, !result.equals(Result.OK) will be true */
+//		if(!done){
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("course_persist_fail", null, Locale.getDefault()));
+//			redirectAttributes.addFlashAttribute("justCalled", true);
+//			return editCourse(courseId, courseForm, redirectAttributes, loggedUser);
+//		} else {
+//			LOGGER.info("User {} edited course {} successfully", loggedUser.getDni(), courseId);
+//		}
+//
+//		redirectAttributes.addFlashAttribute("alert", "success");
+//		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editCourse_success",
+//				null,
+//				Locale.getDefault()));
+//
+//		final String referrer = request.getHeader("referer");
+//		return new ModelAndView("redirect:" + referrer);
+//	}
 
 
 	@RequestMapping(value = "/courses/{id}/students", method = RequestMethod.GET)
@@ -359,51 +359,51 @@ public class OldCourseController {
 		return new ModelAndView("redirect:" + urlRedirect);
 	}
 
-	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)
-	public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model,
-	                                   @ModelAttribute("user") UserSessionDetails loggedUser,
-	                                   // the order (1- @Valid ; 2- BindingResult) is very important; if not like this,
-	                                   // it does not work
-	                                   @Valid @ModelAttribute("courseFilterForm")
-	                                       final CourseFilterForm courseFilterForm,
-	                                   final BindingResult errors) {
-
-		if (!loggedUser.hasAuthority("ADD_CORRELATIVE")) {
-			LOGGER.warn("User {} tried to add a correlative and doesn't have ADD_CORRELATIVE authority [POST]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		if (!model.containsAttribute("correlativeForm")) {
-			model.addAttribute("correlativeForm", new CorrelativeForm());
-		}
-
-		// check the course exists (in case the url is modified)
-		final Course course = courseService.getById(course_id);
-		if (course == null) {
-			LOGGER.warn("User {} tried to access course {} that does not exist", loggedUser.getDni(), course_id);
-			return NOT_FOUND_MAV;
-		}
-
-		final ModelAndView mav = new ModelAndView("courses");
-		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder()
-				.id(courseFilterForm.getId())
-				.keyword(courseFilterForm.getName())
-				.build();
-
-		final List<Course> availableAddCorrelativesCourses =
-				loadAddCorrelativeCoursesForCourseIdByFilter(course_id, mav, errors, courseFilter);
-		if (availableAddCorrelativesCourses == null) {
-			return NOT_FOUND_MAV;
-		}
-
-		mav.addObject("course", course);
-		mav.addObject("section2", "addCorrelative");
-		mav.addObject("courseFilterFormAction", "/courses/" + course_id + "/add_correlative");
-		mav.addObject("correlativeFormAction", "/courses/" + course_id + "/add_correlative");
-		mav.addObject("subsection_add_correlative", true);
-		mav.addObject("courses", availableAddCorrelativesCourses);
-		return mav;
-	}
+//	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.GET)
+//	public ModelAndView addCorrelative(@PathVariable final Integer course_id, Model model,
+//	                                   @ModelAttribute("user") UserSessionDetails loggedUser,
+//	                                   // the order (1- @Valid ; 2- BindingResult) is very important; if not like this,
+//	                                   // it does not work
+//	                                   @Valid @ModelAttribute("courseFilterForm")
+//	                                       final CourseFilterForm courseFilterForm,
+//	                                   final BindingResult errors) {
+//
+//		if (!loggedUser.hasAuthority("ADD_CORRELATIVE")) {
+//			LOGGER.warn("User {} tried to add a correlative and doesn't have ADD_CORRELATIVE authority [POST]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		if (!model.containsAttribute("correlativeForm")) {
+//			model.addAttribute("correlativeForm", new CorrelativeForm());
+//		}
+//
+//		// check the course exists (in case the url is modified)
+//		final Course course = courseService.getById(course_id);
+//		if (course == null) {
+//			LOGGER.warn("User {} tried to access course {} that does not exist", loggedUser.getDni(), course_id);
+//			return NOT_FOUND_MAV;
+//		}
+//
+//		final ModelAndView mav = new ModelAndView("courses");
+//		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder()
+//				.id(courseFilterForm.getId())
+//				.keyword(courseFilterForm.getName())
+//				.build();
+//
+//		final List<Course> availableAddCorrelativesCourses =
+//				loadAddCorrelativeCoursesForCourseIdByFilter(course_id, mav, errors, courseFilter);
+//		if (availableAddCorrelativesCourses == null) {
+//			return NOT_FOUND_MAV;
+//		}
+//
+//		mav.addObject("course", course);
+//		mav.addObject("section2", "addCorrelative");
+//		mav.addObject("courseFilterFormAction", "/courses/" + course_id + "/add_correlative");
+//		mav.addObject("correlativeFormAction", "/courses/" + course_id + "/add_correlative");
+//		mav.addObject("subsection_add_correlative", true);
+//		mav.addObject("courses", availableAddCorrelativesCourses);
+//		return mav;
+//	}
 
 	@RequestMapping(value = "/courses/{course_id}/add_correlative", method = RequestMethod.POST)
 	public ModelAndView addCorrelative(@PathVariable final Integer course_id,
@@ -552,24 +552,24 @@ public class OldCourseController {
 		return students;
 	}
 
-	private List<Course> loadAddCorrelativeCoursesForCourseIdByFilter(final Integer course_id,
-	                                                                  final ModelAndView mav,
-	                                                                  final BindingResult errors,
-	                                                                  final CourseFilter courseFilter) {
-		final List<Course> courses;
-		if (errors.hasErrors()) {
-			LOGGER.warn("Could not get courses due to {} [GET]", errors.getAllErrors());
-
-			mav.addObject("alert", "danger");
-			mav.addObject("message", messageSource.getMessage("search_fail",
-					null,
-					Locale.getDefault()));
-			courses = courseService.getAvailableAddCorrelatives(course_id, null);
-		} else {
-			courses = courseService.getAvailableAddCorrelatives(course_id, courseFilter);
-		}
-		return courses;
-	}
+//	private List<Course> loadAddCorrelativeCoursesForCourseIdByFilter(final Integer course_id,
+//	                                                                  final ModelAndView mav,
+//	                                                                  final BindingResult errors,
+//	                                                                  final CourseFilter courseFilter) {
+//		final List<Course> courses;
+//		if (errors.hasErrors()) {
+//			LOGGER.warn("Could not get courses due to {} [GET]", errors.getAllErrors());
+//
+//			mav.addObject("alert", "danger");
+//			mav.addObject("message", messageSource.getMessage("search_fail",
+//					null,
+//					Locale.getDefault()));
+//			courses = courseService.getAvailableAddCorrelatives(course_id, null);
+//		} else {
+//			courses = courseService.getAvailableAddCorrelatives(course_id, courseFilter);
+//		}
+//		return courses;
+//	}
 
 	private Course loadCourseWithStudentThatPassedByFilter(final Integer id,
 	                                                       final ModelAndView mav,

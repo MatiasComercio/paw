@@ -168,7 +168,7 @@ public interface StudentService {
      * @param courseId The id of the course
      * @return True if the student can take de course, False if not.
      */
-    boolean checkFinalCorrelatives(int docket, int courseId);
+    boolean checkFinalCorrelatives(int docket, String courseId);
 
     /**
      * Get the representation of a student's transcript
