@@ -56,7 +56,7 @@ public class CourseHibernateDao implements CourseDao {
         course.setCorrelatives(setCorrelatives);
 
         Session session = em.unwrap(Session.class);
-        Course oldCourse = em.getReference(Course.class, id);
+        Course oldCourse = em.getReference(Course.class, course.getId());
 
         course.setUpperCorrelatives(oldCourse.getUpperCorrelatives());
 

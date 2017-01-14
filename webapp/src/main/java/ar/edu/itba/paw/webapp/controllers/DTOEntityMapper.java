@@ -5,7 +5,8 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.webapp.models.*;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
+import org.modelmapper.convention.MatchingStrategies;
+import org.modelmapper.spi.MatchingStrategy;
 
 public class DTOEntityMapper {
 
@@ -44,14 +45,13 @@ public class DTOEntityMapper {
   }
 
   Course convertToCourse(final CourseDTO courseDTO) {
-    PropertyMap<Course, CourseDTO> courseIdMapper = new PropertyMap<Course, CourseDTO>() {
-      protected void configure() {
-        map().setCourseId(source.getCourseId());
-      }
-    };
-    modelMapper.addMappings(courseIdMapper);
-    modelMapper.validate();
+    final MatchingStrategy originalMatchingStrategy = modelMapper.getConfiguration().getMatchingStrategy();
 
-    return modelMapper.map(courseDTO, Course.class);
+    //TODO: Check if this can be improved
+    modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+    final Course course = modelMapper.map(courseDTO, Course.class);
+    modelMapper.getConfiguration().setMatchingStrategy(originalMatchingStrategy);
+
+    return course;
   }
 }
