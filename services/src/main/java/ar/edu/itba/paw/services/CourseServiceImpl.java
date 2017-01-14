@@ -75,8 +75,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Course getCourseStudents(int id) {
-        return courseDao.getCourseStudents(id);
+    public Course getCourseStudents(String courseId) {
+        return courseDao.getCourseStudents(courseId);
     }
 
     @Transactional
@@ -112,7 +112,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public List<Student> getCourseStudents(final int id, final StudentFilter studentFilter) {
+    public List<Student> getCourseStudents(final String id, final StudentFilter studentFilter) {
 
         final Course course = courseDao.getCourseStudents(id);
         if (course == null) {

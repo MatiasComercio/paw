@@ -108,8 +108,8 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public Course getCourseStudents(int id) {
-        Course course = getById(id);
+    public Course getCourseStudents(String courseId) {
+        Course course = getByCourseID(courseId);
         course.getStudents();
         return course;
     }

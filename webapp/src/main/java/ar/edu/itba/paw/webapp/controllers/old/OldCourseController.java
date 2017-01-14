@@ -136,41 +136,41 @@ public class OldCourseController {
 //		return mav;
 //	}
 
-	@RequestMapping("/courses/{courseId}/edit")
-	public ModelAndView editCourse(
-			@PathVariable final Integer courseId,
-			@ModelAttribute("courseForm") final CourseForm courseForm,
-//			@ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm,
-			final RedirectAttributes redirectAttributes,
-			@ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("EDIT_COURSE")) {
-			LOGGER.warn("User {} tried to edit a course and doesn't have EDIT_COURSE authority [GET]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		final ModelAndView mav = new ModelAndView("addCourse");
-
-		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
-		Course course = courseService.getById(courseId);
-
-		if (course == null){
-			LOGGER.warn("User {} tried to edit course {} that does not exist", loggedUser.getDni(), courseId);
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editCourse_fail", null, Locale.getDefault()));
-			return new ModelAndView("redirect:/courses");
-		}
-
-		if (!redirectAttributes.getFlashAttributes().containsKey("justCalled")) {
-			courseForm.loadFromCourse(course);
-		}
-
-		mav.addObject("section2", "edit");
-		mav.addObject("course", course);
-		mav.addObject("task", TASK_FORM_EDIT);
-
-		return mav;
-	}
+//	@RequestMapping("/courses/{courseId}/edit")
+//	public ModelAndView editCourse(
+//			@PathVariable final Integer courseId,
+//			@ModelAttribute("courseForm") final CourseForm courseForm,
+////			@ModelAttribute("deleteCourseForm") final CourseFilterForm courseFilterForm,
+//			final RedirectAttributes redirectAttributes,
+//			@ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("EDIT_COURSE")) {
+//			LOGGER.warn("User {} tried to edit a course and doesn't have EDIT_COURSE authority [GET]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		final ModelAndView mav = new ModelAndView("addCourse");
+//
+//		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
+//		Course course = courseService.getById(courseId);
+//
+//		if (course == null){
+//			LOGGER.warn("User {} tried to edit course {} that does not exist", loggedUser.getDni(), courseId);
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("editCourse_fail", null, Locale.getDefault()));
+//			return new ModelAndView("redirect:/courses");
+//		}
+//
+//		if (!redirectAttributes.getFlashAttributes().containsKey("justCalled")) {
+//			courseForm.loadFromCourse(course);
+//		}
+//
+//		mav.addObject("section2", "edit");
+//		mav.addObject("course", course);
+//		mav.addObject("task", TASK_FORM_EDIT);
+//
+//		return mav;
+//	}
 
 //	@RequestMapping(value = "/courses/{courseId}/edit", method = RequestMethod.POST)
 //	public ModelAndView editCourse(@PathVariable final Integer courseId,
@@ -224,52 +224,52 @@ public class OldCourseController {
 //		return new ModelAndView("redirect:" + referrer);
 //	}
 
-
-	@RequestMapping(value = "/courses/{id}/students", method = RequestMethod.GET)
-	public ModelAndView getCourseStudents(@PathVariable("id") final Integer id,
-	                                      final Model model, final RedirectAttributes redirectAttributes,
-	                                      @ModelAttribute("user") UserSessionDetails loggedUser,
-	                                      @Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
-	                                      final BindingResult errors) {
-
-		if (!loggedUser.hasAuthority("VIEW_STUDENTS")) {
-			LOGGER.warn("User {} tried to view all students that are enrolled at course {} " +
-					"and doesn't have VIEW_STUDENTS authority [GET]", loggedUser.getDni(), id);
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		if (!model.containsAttribute("gradeForm")) {
-			model.addAttribute("gradeForm", new GradeForm());
-		}
-
-		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
-				.docket(studentFilterForm.getDocket())
-				.firstName(studentFilterForm.getFirstName())
-				.lastName(studentFilterForm.getLastName())
-				.build();
-
-		final Course course = courseService.getById(id);
-
-		if (course == null) {
-			LOGGER.warn("User {} tried to view all enrolled students from course {} that does not exist", loggedUser.getUsername(), id);
-			return new ModelAndView(NOT_FOUND);
-		}
-
-		final ModelAndView mav = new ModelAndView("courseStudents");
-
-		final List<Student> students = loadStudentsForCourseIdByFilter(id, mav, errors, studentFilter);
-		if (students == null) {
-			return NOT_FOUND_MAV;
-		}
-
-
-		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
-		mav.addObject("section2", "students");
-		mav.addObject("course", course);
-		mav.addObject("students", students);
-		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students");
-		return mav;
-	}
+//
+//	@RequestMapping(value = "/courses/{id}/students", method = RequestMethod.GET)
+//	public ModelAndView getCourseStudents(@PathVariable("id") final Integer id,
+//	                                      final Model model, final RedirectAttributes redirectAttributes,
+//	                                      @ModelAttribute("user") UserSessionDetails loggedUser,
+//	                                      @Valid @ModelAttribute("studentFilterForm") final StudentFilterForm studentFilterForm,
+//	                                      final BindingResult errors) {
+//
+//		if (!loggedUser.hasAuthority("VIEW_STUDENTS")) {
+//			LOGGER.warn("User {} tried to view all students that are enrolled at course {} " +
+//					"and doesn't have VIEW_STUDENTS authority [GET]", loggedUser.getDni(), id);
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		if (!model.containsAttribute("gradeForm")) {
+//			model.addAttribute("gradeForm", new GradeForm());
+//		}
+//
+//		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+//				.docket(studentFilterForm.getDocket())
+//				.firstName(studentFilterForm.getFirstName())
+//				.lastName(studentFilterForm.getLastName())
+//				.build();
+//
+//		final Course course = courseService.getById(id);
+//
+//		if (course == null) {
+//			LOGGER.warn("User {} tried to view all enrolled students from course {} that does not exist", loggedUser.getUsername(), id);
+//			return new ModelAndView(NOT_FOUND);
+//		}
+//
+//		final ModelAndView mav = new ModelAndView("courseStudents");
+//
+//		final List<Student> students = loadStudentsForCourseIdByFilter(id, mav, errors, studentFilter);
+//		if (students == null) {
+//			return NOT_FOUND_MAV;
+//		}
+//
+//
+//		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
+//		mav.addObject("section2", "students");
+//		mav.addObject("course", course);
+//		mav.addObject("students", students);
+//		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students");
+//		return mav;
+//	}
 
 	@RequestMapping(value = "/courses/add_course", method = RequestMethod.GET)
 	public ModelAndView addCourse(@ModelAttribute("courseForm") final CourseForm courseForm,
@@ -533,24 +533,24 @@ public class OldCourseController {
 		return courses;
 	}
 
-	private List<Student> loadStudentsForCourseIdByFilter(final int id,
-	                                                      final ModelAndView mav,
-	                                                      final BindingResult errors,
-	                                                      final StudentFilter studentFilter) {
-		final List<Student> students;
-		if (errors.hasErrors()) {
-			LOGGER.warn("Could not get students for the given course due to {} [GET]", errors.getAllErrors());
-
-			mav.addObject("alert", "danger");
-			mav.addObject("message", messageSource.getMessage("search_fail",
-					null,
-					Locale.getDefault()));
-			students = courseService.getCourseStudents(id, null);
-		} else {
-			students = courseService.getCourseStudents(id, studentFilter);
-		}
-		return students;
-	}
+//	private List<Student> loadStudentsForCourseIdByFilter(final int id,
+//	                                                      final ModelAndView mav,
+//	                                                      final BindingResult errors,
+//	                                                      final StudentFilter studentFilter) {
+//		final List<Student> students;
+//		if (errors.hasErrors()) {
+//			LOGGER.warn("Could not get students for the given course due to {} [GET]", errors.getAllErrors());
+//
+//			mav.addObject("alert", "danger");
+//			mav.addObject("message", messageSource.getMessage("search_fail",
+//					null,
+//					Locale.getDefault()));
+//			students = courseService.getCourseStudents(id, null);
+//		} else {
+//			students = courseService.getCourseStudents(id, studentFilter);
+//		}
+//		return students;
+//	}
 
 //	private List<Course> loadAddCorrelativeCoursesForCourseIdByFilter(final Integer course_id,
 //	                                                                  final ModelAndView mav,

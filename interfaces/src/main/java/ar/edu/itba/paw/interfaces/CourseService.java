@@ -50,7 +50,7 @@ public interface CourseService {
      * @param id the id of the course
      * @return the course created, with a list of the inscribed students
      */
-    Course getCourseStudents(int id);
+    Course getCourseStudents(String id);
 
     /**
      * Gets the courses that comply with the list of filters
@@ -79,7 +79,7 @@ public interface CourseService {
      * @param studentFilter the filter to be applied to the student
      * @return the list of students enrolled in the given course
      */
-    List<Student> getCourseStudents(int id, StudentFilter studentFilter);
+    List<Student> getCourseStudents(String id, StudentFilter studentFilter);
 
     /**
      * @param courseId The id of the course.

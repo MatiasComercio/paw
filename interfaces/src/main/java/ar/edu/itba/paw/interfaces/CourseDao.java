@@ -39,10 +39,10 @@ public interface CourseDao {
 
     /**
      * Gets the desired course by the identifier with the inscribed students
-     * @param id the id of the course
+     * @param courseId the id of the course
      * @return the course created, with a list of the inscribed students
      */
-    Course getCourseStudents(int id);
+    Course getCourseStudents(String courseId);
 
     /**
      * Get all the courses in the storage
