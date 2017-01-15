@@ -380,6 +380,12 @@ module.exports = function (grunt) { // eslint-disable-line strict
                 outputFile: '<%= yeoman.dist %>/scripts/paths.js'
             }
         }
+    },
+
+    karma: {
+      unit: {
+        configFile: 'karma.conf.js'
+      }
     }
   });
 
@@ -511,4 +517,6 @@ module.exports = function (grunt) { // eslint-disable-line strict
     'newer:eslint',
     'build'
   ]);
+
+  grunt.loadNpmTasks('grunt-karma');
 };

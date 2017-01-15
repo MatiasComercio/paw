@@ -8,6 +8,7 @@ require.config({
         angular: '../../bower_components/angular/angular',
         'angular-route': '../../bower_components/angular-route/angular-route',
         'angular-translate': '../../bower_components/angular-translate/angular-translate',
+        'angular-mocks': '../../bower_components/angular-mocks/angular-mocks',
         button: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button',
         bootstrap: '../../bower_components/bootstrap/dist/js/bootstrap',
         carousel: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/carousel',
@@ -23,7 +24,9 @@ require.config({
         scrollspy: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/scrollspy',
         tab: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tab',
         tooltip: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip',
-        transition: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition'
+        transition: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition',
+        'font-awesome': '../../bower_components/font-awesome',
+        'bootstrap-sass-official': '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap'
     },
     shim: {
         angular: {

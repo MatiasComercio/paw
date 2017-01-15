@@ -123,3 +123,5 @@ bower_components/
 dist/
 .sass-cache/
 .tmp/
+
+coverage/

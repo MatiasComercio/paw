@@ -38,6 +38,7 @@ define(['routes',
 
         $translateProvider.translations('preferredLanguage', i18n);
         $translateProvider.preferredLanguage('preferredLanguage');
+        $translateProvider.useSanitizeValueStrategy('escape');
       }]);
       return paw;
     }

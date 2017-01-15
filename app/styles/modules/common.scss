@@ -1,0 +1,45 @@
+@import 'modules/variables/importer';
+
+// Came with the scaffolding
+
+// For lower than IE7
+.browsehappy {
+  margin: 0.2em 0;
+  background: $silver;
+  color: $black;
+  padding: 0.2em 0;
+}
+
+/* Responsive: Portrait tablets and up */
+@media screen and (min-width: 768px) {
+  .container {
+    max-width: 730px;
+  }
+}
+
+////////////////////////////////////////
+
+html {
+  height: 100%;
+}
+
+body {
+  background: $alabaster;
+  height: 100%;
+
+  // content
+  .content {
+    padding-top: 50px;
+  }
+  // \content
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inline {
+  display: inline;
+}
