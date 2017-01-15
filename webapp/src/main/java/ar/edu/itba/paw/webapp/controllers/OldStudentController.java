@@ -406,48 +406,48 @@ public class OldStudentController {
 //		}
 //	}
 
-	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.POST)
-	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
-								  @PathVariable Integer docket, RedirectAttributes redirectAttributes,
-								  @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("EDIT_GRADE")
-				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
-			LOGGER.warn("User {} tried to edit grades of student with DNI {} and doesn't have EDIT_GRADE authority [POST]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		if (errors.hasErrors()){
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
-			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message",
-					messageSource.getMessage("editGrade_fail",
-							new Object[] {},
-							Locale.getDefault()));
-
-
-			return new ModelAndView("redirect:/students/" + docket + "/grades");
-		}
-
-		gradeForm.setStudent(studentService.getByDocket(docket));
-
-		Grade newGrade = gradeForm.build();
-
-		boolean done = studentService.editGrade(newGrade, gradeForm.getOldGrade());
-		if(!done){
-			LOGGER.warn("User {} could not edit grades, Result = {}", loggedUser.getDni(), done);
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
-			return new ModelAndView("redirect:/students/" + docket + "/grades");
-		}
-		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message",
-				messageSource.getMessage("editGrade_success",
-						new Object[] {},
-						Locale.getDefault()));
-		return new ModelAndView("redirect:/students/" + docket + "/grades");
-	}
+//	@RequestMapping(value = "/students/{docket}/grades/edit", method = RequestMethod.POST)
+//	public ModelAndView editGrade(@Valid @ModelAttribute("gradeForm") GradeForm gradeForm, final BindingResult errors,
+//								  @PathVariable Integer docket, RedirectAttributes redirectAttributes,
+//								  @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("EDIT_GRADE")
+//				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+//			LOGGER.warn("User {} tried to edit grades of student with DNI {} and doesn't have EDIT_GRADE authority [POST]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		if (errors.hasErrors()){
+//			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
+//			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message",
+//					messageSource.getMessage("editGrade_fail",
+//							new Object[] {},
+//							Locale.getDefault()));
+//
+//
+//			return new ModelAndView("redirect:/students/" + docket + "/grades");
+//		}
+//
+//		gradeForm.setStudent(studentService.getByDocket(docket));
+//
+//		Grade newGrade = gradeForm.build();
+//
+//		boolean done = studentService.editGrade(newGrade, gradeForm.getOldGrade());
+//		if(!done){
+//			LOGGER.warn("User {} could not edit grades, Result = {}", loggedUser.getDni(), done);
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
+//			return new ModelAndView("redirect:/students/" + docket + "/grades");
+//		}
+//		redirectAttributes.addFlashAttribute("alert", "success");
+//		redirectAttributes.addFlashAttribute("message",
+//				messageSource.getMessage("editGrade_success",
+//						new Object[] {},
+//						Locale.getDefault()));
+//		return new ModelAndView("redirect:/students/" + docket + "/grades");
+//	}
 
 //	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.POST)
 //	public ModelAndView addGrade(@PathVariable Integer docket,

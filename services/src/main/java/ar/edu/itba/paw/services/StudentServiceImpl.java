@@ -369,6 +369,10 @@ public class StudentServiceImpl implements StudentService {
 		FinalInscription finalInscription = studentDao.getFinalInscription(finalInscriptionId);
 		Student student = studentDao.getByDocket(docket);
 
+		if(finalInscription == null){
+			return false;
+		}
+
 		if (!checkFinalCorrelatives(docket, finalInscription.getCourse().getId())){
 			return false;
 		}
@@ -413,6 +417,10 @@ public class StudentServiceImpl implements StudentService {
 	public boolean deleteStudentFinalInscription(int docket, int finalInscriptionId) {
 		FinalInscription finalInscription = studentDao.getFinalInscription(finalInscriptionId);
 		Student student = studentDao.getByDocket(docket);
+
+		if(finalInscription == null || student == null){
+			return false;
+		}
 
 		if (finalInscription.getStudents().contains(student)) {
 			finalInscription.getStudents().remove(student);

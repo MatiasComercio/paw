@@ -304,9 +304,53 @@ public class StudentController {
 
   }
 
-//  @DELETE
-//  @Path("/{docket}/grades/{gradeId}")
-//  public Response studentsGradesDestroy(@PathParam("docket") final Integer gradeId){
+
+  @POST
+  @Path("/{docket}/finalInscriptions/{inscriptionId}")
+  public Response studentsFinalInscriptionNew(
+          @PathParam("docket") final Integer docket,
+          @Min(1)
+          @PathParam("inscriptionId") final Integer inscriptionId){
+
+    // TODO: Test this method
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    boolean done = ss.addStudentFinalInscription(docket, inscriptionId);
+    if(!done){
+      return status(Status.BAD_REQUEST).build();
+    }
+
+    return ok().build();
+  }
+
+  @DELETE
+  @Path("/{docket}/finalInscriptions/{inscriptionId}")
+  public Response studentsFinalInscriptionDestroy(
+          @PathParam("docket") final Integer docket,
+          @Min(1)
+          @PathParam("inscriptionId") final Integer inscriptionId) {
+
+    // TODO: Test this method
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+    ss.deleteStudentFinalInscription(docket, inscriptionId);
+
+    return ok().build(); // TODO: No content??
+
+  }
+
+//  @GET
+//  @Produces(MediaType.APPLICATION_JSON)
+//  @Path("/{docket}/courses/available")
+//  public Response studentsCoursesAvailable(){
+//
 //  }
 
 }
