@@ -125,48 +125,48 @@ public class OldStudentController {
 //		return mav;
 //	}
 
-	@RequestMapping("/students/{docket}/grades")
-	public ModelAndView getStudentGrades(@PathVariable final int docket, Model model,
-										 RedirectAttributes redirectAttributes,
-										 @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("VIEW_GRADES")
-				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
-			LOGGER.warn("User {} tried to get the grades of a student {} and doesn't have VIEW_GRADES authority [POST]", loggedUser.getDni(), docket);
-			return new ModelAndView(UNAUTHORIZED);
-		}
-		final Student student = studentService.getGrades(docket);
-		final ModelAndView mav;
-		final Integer totalCredits, passedCredits, percentage;
-
-		if (student == null) {
-			return new ModelAndView("forward:/errors/404.html");
-		}
-
-		if (!model.containsAttribute("gradeForm")) {
-			model.addAttribute("gradeForm", new GradeForm());
-		}
-
-		mav = new ModelAndView("grades_old"); // +++xchange
-
-		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
-
-		mav.addObject("student", student);
-		mav.addObject("section2", "grades");
-		mav.addObject("subsection_grades", true);
-		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/edit");
-
-		totalCredits = studentService.getTotalPlanCredits();
-		passedCredits = studentService.getPassedCredits(docket);
-		percentage = (!totalCredits.equals(0)) ? (passedCredits * 100) / totalCredits : 0;
-
-		mav.addObject("section2", "grades");
-		mav.addObject("semesters", studentService.getTranscript(docket));
-		mav.addObject("total_credits", totalCredits);
-		mav.addObject("passed_credits", passedCredits);
-		mav.addObject("percentage", percentage);
-		return mav;
-	}
+//	@RequestMapping("/students/{docket}/grades")
+//	public ModelAndView getStudentGrades(@PathVariable final int docket, Model model,
+//										 RedirectAttributes redirectAttributes,
+//										 @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("VIEW_GRADES")
+//				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+//			LOGGER.warn("User {} tried to get the grades of a student {} and doesn't have VIEW_GRADES authority [POST]", loggedUser.getDni(), docket);
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//		final Student student = studentService.getGrades(docket);
+//		final ModelAndView mav;
+//		final Integer totalCredits, passedCredits, percentage;
+//
+//		if (student == null) {
+//			return new ModelAndView("forward:/errors/404.html");
+//		}
+//
+//		if (!model.containsAttribute("gradeForm")) {
+//			model.addAttribute("gradeForm", new GradeForm());
+//		}
+//
+//		mav = new ModelAndView("grades_old"); // +++xchange
+//
+//		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
+//
+//		mav.addObject("student", student);
+//		mav.addObject("section2", "grades");
+//		mav.addObject("subsection_grades", true);
+//		mav.addObject("gradeFormAction", "/students/" + docket + "/grades/edit");
+//
+//		totalCredits = studentService.getTotalPlanCredits();
+//		passedCredits = studentService.getPassedCredits(docket);
+//		percentage = (!totalCredits.equals(0)) ? (passedCredits * 100) / totalCredits : 0;
+//
+//		mav.addObject("section2", "grades");
+//		mav.addObject("semesters", studentService.getTranscript(docket));
+//		mav.addObject("total_credits", totalCredits);
+//		mav.addObject("passed_credits", passedCredits);
+//		mav.addObject("percentage", percentage);
+//		return mav;
+//	}
 
 //	@RequestMapping(value = "/students/{docket}/courses", method = RequestMethod.GET)
 //	public ModelAndView getStudentCourses(@PathVariable final int docket, final Model model,

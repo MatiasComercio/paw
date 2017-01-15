@@ -150,15 +150,9 @@ public class Course {
 
         if (credits != course.credits) return false;
         if (semester != course.semester) return false;
-        if (id != null ? !id.equals(course.id) : course.id != null) return false;
-        if (courseId != null ? !courseId.equals(course.courseId) : course.courseId != null) return false;
-        if (name != null ? !name.equals(course.name) : course.name != null) return false;
-        if (correlatives != null ? !correlatives.equals(course.correlatives) : course.correlatives != null)
-            return false;
-        if (upperCorrelatives != null ? !upperCorrelatives.equals(course.upperCorrelatives) : course.upperCorrelatives != null)
-            return false;
-        if (students != null ? !students.equals(course.students) : course.students != null) return false;
-        return approvedStudents != null ? approvedStudents.equals(course.approvedStudents) : course.approvedStudents == null;
+        if (!id.equals(course.id)) return false;
+        if (!courseId.equals(course.courseId)) return false;
+        return name.equals(course.name);
 
     }
 
@@ -169,11 +163,6 @@ public class Course {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + credits;
         result = 31 * result + semester;
-        //TODO:Removed due to SO firing
-        //result = 31 * result + (correlatives != null ? correlatives.hashCode() : 0);
-        //result = 31 * result + (upperCorrelatives != null ? upperCorrelatives.hashCode() : 0);
-        result = 31 * result + (students != null ? students.hashCode() : 0);
-        result = 31 * result + (approvedStudents != null ? approvedStudents.hashCode() : 0);
         return result;
     }
 

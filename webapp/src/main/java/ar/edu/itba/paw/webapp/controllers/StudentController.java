@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.TranscriptGrade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
@@ -179,7 +180,7 @@ public class StudentController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/{docket}/courses")
-  public Response studentsCoursesCreate(
+  public Response studentsCoursesNew(
           @PathParam("docket") final Integer docket,
           @Valid InscriptionDTO inscriptionDTO){
 
@@ -243,6 +244,36 @@ public class StudentController {
             .collect(Collectors.toList());
 
     return ok(new TranscriptDTO(transcriptDTO)).build();
+  }
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/{docket}/grades")
+  public Response studentsGradesNew(@PathParam("docket") final Integer docket,
+                                       @Valid GradeDTO gradeDTO){
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final Course course = cs.getByCourseID(gradeDTO.getCourseId());
+    if(course == null){
+      return status(Status.BAD_REQUEST).build();
+    }
+
+    final List<Course> studentCourses = ss.getStudentCourses(docket, null);
+    if(studentCourses == null || !studentCourses.contains(course)){
+      return status(Status.BAD_REQUEST).build(); //TODO: Return Precondition Failed status??
+    }
+
+    Grade grade = mapper.convertToGrade(gradeDTO, student, course);
+    grade.setCourse(course);
+    ss.addGrade(grade);
+
+    // TODO: If we return Created, what location should we return? Hibernate's id?
+    // (Same goes for an inscription)
+    return status(Status.OK).build();
   }
 
 }
