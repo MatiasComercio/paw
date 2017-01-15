@@ -132,7 +132,7 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public List<Course> getByFilter(CourseFilter courseFilter) {
+    public List<Course> getByFilter(final CourseFilter courseFilter) {
         QueryFilter queryFilter = new QueryFilter(em);
 
         if (courseFilter != null) {
