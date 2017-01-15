@@ -73,11 +73,9 @@ public interface StudentService {
      * Add the grade for a given student and course. If success, the student is unenrolled from the given course.
      *
      * @param grade which contains the student docket, the course id and the grade
-     * @return OK if the grade was added;
-     * INVALID_INPUT_PARAMETERS if one or more parameters are invalid;
-     * ERROR_UNKNOWN else;
+     * @return the new grade's id
      */
-    boolean addGrade(Grade grade);
+    int addGrade(Grade grade);
 
     /**
      * @param newGrade The new grade values
@@ -126,9 +124,8 @@ public interface StudentService {
      *
      * @param studentDocket The student's docket
      * @param courseId      The course id
-     * @return true if the student was unenrolled from a subject; else false
      */
-    boolean unenroll(int studentDocket, int courseId);
+    void unenroll(int studentDocket, int courseId);
 
     /**
      * Gets the collection of courses the student already approved.

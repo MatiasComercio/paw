@@ -2,6 +2,8 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.TranscriptGrade;
 import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.webapp.models.*;
@@ -46,6 +48,17 @@ public class DTOEntityMapper {
 
   CourseDTO convertToCourseDTO(Course course) {
     return modelMapper.map(course, CourseDTO.class);
+  }
+
+  public TranscriptGradeDTO convertToTranscriptGradeDTO(TranscriptGrade transcriptGrade) {
+    return modelMapper.map(transcriptGrade, TranscriptGradeDTO.class);
+  }
+
+  public Grade convertToGrade(GradeDTO gradeDTO, Student student, Course course, Integer id) {
+    Grade grade = new Grade.Builder(id, student, course.getId(), course.getCourseId(), gradeDTO.getGrade())
+            .modified(gradeDTO.getModified()).build();
+    grade.setCourse(course);
+    return grade;
   }
 
   Course convertToCourse(final CourseDTO courseDTO) {

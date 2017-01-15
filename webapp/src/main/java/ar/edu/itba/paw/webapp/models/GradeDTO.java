@@ -1,29 +1,43 @@
 package ar.edu.itba.paw.webapp.models;
 
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.FinalGrade;
-import ar.edu.itba.paw.models.users.Student;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 public class GradeDTO {
 
-  private Course course;
+
+  private Integer id;
+
+  //private Boolean taking;
+  //private List<FinalGrade> finalGrades;
+
+  @NotNull
+  @Pattern(regexp="\\d{2}\\.\\d{2}")
+  private String courseId;
+
+  @NotNull
+  @Min(0)
+  @Max(10)
   private BigDecimal grade;
+
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime modified;
-  private Boolean taking;
-  private List<FinalGrade> finalGrades;
-  private Student student;
 
-
-  public Course getCourse() {
-    return course;
+  public GradeDTO() {
   }
 
-  public void setCourse(Course course) {
-    this.course = course;
+  public String getCourseId() {
+    return courseId;
+  }
+
+  public void setCourseId(String courseId) {
+    this.courseId = courseId;
   }
 
   public BigDecimal getGrade() {
@@ -42,27 +56,11 @@ public class GradeDTO {
     this.modified = modified;
   }
 
-  public Boolean getTaking() {
-    return taking;
+  public Integer getId() {
+    return id;
   }
 
-  public void setTaking(Boolean taking) {
-    this.taking = taking;
-  }
-
-  public List<FinalGrade> getFinalGrades() {
-    return finalGrades;
-  }
-
-  public void setFinalGrades(List<FinalGrade> finalGrades) {
-    this.finalGrades = finalGrades;
-  }
-
-  public Student getStudent() {
-    return student;
-  }
-
-  public void setStudent(Student student) {
-    this.student = student;
+  public void setId(Integer id) {
+    this.id = id;
   }
 }

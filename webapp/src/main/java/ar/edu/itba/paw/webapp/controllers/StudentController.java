@@ -5,6 +5,8 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.TranscriptGrade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -24,6 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.*;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -180,7 +183,7 @@ public class StudentController {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/{docket}/courses")
-  public Response studentsCoursesCreate(
+  public Response studentsCoursesNew(
           @PathParam("docket") final Integer docket,
           @Valid InscriptionDTO inscriptionDTO){
 
@@ -225,5 +228,132 @@ public class StudentController {
 
     return Response.noContent().build();
   }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/{docket}/grades")
+  public Response studentsGradesIndex(@PathParam("docket") final Integer docket){
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final Collection<Collection<TranscriptGrade>> transcript = ss.getTranscript(docket);
+
+    final List<List<TranscriptGradeDTO>> transcriptDTO = transcript.stream()
+            .map(semestersList -> semestersList.stream()
+                    .map(transcriptGrade -> mapper.convertToTranscriptGradeDTO(transcriptGrade)).collect(Collectors.toList()))
+            .collect(Collectors.toList());
+
+    return ok(new TranscriptDTO(transcriptDTO)).build();
+  }
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/{docket}/grades")
+  public Response studentsGradesNew(@PathParam("docket") final Integer docket,
+                                       @Valid GradeDTO gradeDTO){
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final Course course = cs.getByCourseID(gradeDTO.getCourseId());
+    if(course == null){
+      return status(Status.BAD_REQUEST).build();
+    }
+
+    final List<Course> studentCourses = ss.getStudentCourses(docket, null);
+    if(studentCourses == null || !studentCourses.contains(course)){
+      return status(Status.BAD_REQUEST).build(); //TODO: Return Precondition Failed status??
+    }
+
+    Grade grade = mapper.convertToGrade(gradeDTO, student, course, null);
+
+    int gradeId = ss.addGrade(grade);
+
+    // TODO: If we return Created, what location should we return? Hibernate's id?
+    // (Same goes for an inscription)
+    final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(gradeId)).build();
+    return created(uri).build();
+  }
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/{docket}/grades/{gradeId}")
+  public Response studentsGradesUpdate(
+          @PathParam("docket") final Integer docket,
+          @Min(1)
+          @PathParam("gradeId") final Integer gradeId,
+          @Valid GradeDTO gradeDTO){
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final Course course = cs.getByCourseID(gradeDTO.getCourseId());
+    if(course == null){
+      return status(Status.BAD_REQUEST).build();
+    }
+
+    Grade grade = mapper.convertToGrade(gradeDTO, student, course, gradeId);
+
+    ss.editGrade(grade, null);
+
+    return ok().build();
+
+  }
+
+
+  @POST
+  @Path("/{docket}/finalInscriptions/{inscriptionId}")
+  public Response studentsFinalInscriptionNew(
+          @PathParam("docket") final Integer docket,
+          @Min(1)
+          @PathParam("inscriptionId") final Integer inscriptionId){
+
+    // TODO: Test this method
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    boolean done = ss.addStudentFinalInscription(docket, inscriptionId);
+    if(!done){
+      return status(Status.BAD_REQUEST).build();
+    }
+
+    return ok().build();
+  }
+
+  @DELETE
+  @Path("/{docket}/finalInscriptions/{inscriptionId}")
+  public Response studentsFinalInscriptionDestroy(
+          @PathParam("docket") final Integer docket,
+          @Min(1)
+          @PathParam("inscriptionId") final Integer inscriptionId) {
+
+    // TODO: Test this method
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+    ss.deleteStudentFinalInscription(docket, inscriptionId);
+
+    return ok().build(); // TODO: No content??
+
+  }
+
+//  @GET
+//  @Produces(MediaType.APPLICATION_JSON)
+//  @Path("/{docket}/courses/available")
+//  public Response studentsCoursesAvailable(){
+//
+//  }
 
 }
