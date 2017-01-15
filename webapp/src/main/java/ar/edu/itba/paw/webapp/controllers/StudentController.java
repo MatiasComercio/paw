@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.TranscriptGrade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -12,11 +13,10 @@ import ar.edu.itba.paw.webapp.models.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -25,6 +25,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.*;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -222,6 +223,26 @@ public class StudentController {
     ss.unenroll(docket, course.getId());
 
     return Response.noContent().build();
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/{docket}/grades")
+  public Response studentsGradesIndex(@PathParam("docket") final Integer docket){
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final Collection<Collection<TranscriptGrade>> transcript = ss.getTranscript(docket);
+
+    final List<List<TranscriptGradeDTO>> transcriptDTO = transcript.stream()
+            .map(semestersList -> semestersList.stream()
+                    .map(transcriptGrade -> mapper.convertToTranscriptGradeDTO(transcriptGrade)).collect(Collectors.toList()))
+            .collect(Collectors.toList());
+
+    return ok(new TranscriptDTO(transcriptDTO)).build();
   }
 
 }
