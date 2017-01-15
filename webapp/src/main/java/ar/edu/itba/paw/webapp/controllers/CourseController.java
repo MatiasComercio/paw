@@ -216,11 +216,11 @@ public class CourseController {
   }
 
   @POST
-  @Path("/finalInscription/{finalInscriptionId}")
+  @Path("/finalInscription/{finalInscriptionId}/grades")
   public Response coursesFinalInscriptionQualify(@PathParam("finalInscriptionId") final int finalInscriptionId,
-                                                 @Valid GradeDTO gradeDTO) {
+                                                 @Valid GradeFinalInscriptionDTO gradeDTO) {
     //TODO see if gradeDTO.getGrade can be improved
-    if(!ss.addFinalGrade(finalInscriptionId, gradeDTO.getStudent().getDocket(), gradeDTO.getGrade())) {
+    if(!ss.addFinalGrade(finalInscriptionId, gradeDTO.getDocket(), gradeDTO.getGrade())) {
       return status(Status.BAD_REQUEST).build();
     }
 
