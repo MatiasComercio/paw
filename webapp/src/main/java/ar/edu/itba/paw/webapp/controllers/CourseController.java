@@ -1,7 +1,10 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.CourseService;
+import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -35,6 +38,9 @@ public class CourseController {
 
   @Autowired
   private CourseService cs;
+
+  @Autowired
+  private StudentService ss;
 
   @Autowired
   private DTOEntityMapper mapper;
@@ -172,9 +178,49 @@ public class CourseController {
 
   @POST
   @Path("/{courseId}/correlatives")
-  public Response coursesCorrelativeNew(@PathParam("courseId") final String courseId,
-                                        @Valid final CorrelativeDTO correlativeDTO) {
+  public Response coursesCorrelativesNew(@PathParam("courseId") final String courseId,
+                                         @Valid final CorrelativeDTO correlativeDTO) {
     if(!cs.addCorrelative(courseId, correlativeDTO.getCorrelativeId())) {
+      return status(Status.BAD_REQUEST).build();
+    }
+
+    return noContent().build();
+  }
+
+  @DELETE
+  @Path("/{courseId}/correlatives/{correlativeId}")
+  public Response coursesCorrelativesDestroy(@PathParam("courseId") final String courseId,
+                                             @PathParam("correlativeId") final String correlativeId) {
+    if(!cs.deleteCorrelative(courseId, correlativeId)) {
+      return status(Status.BAD_REQUEST).build();
+    }
+
+    return noContent().build();
+  }
+
+  @GET
+  @Path("/finalInscription/{finalInscriptionId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response coursesFinalInscriptionsShow(@PathParam("finalInscriptionId") final int finalInscriptionId) {
+    final FinalInscription finalInscription = cs.getFinalInscription(finalInscriptionId);
+
+    if(finalInscription == null) {
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final FinalInscriptionDTO finalInscriptionDTO = mapper.convertToFinalInscriptionDTO(
+            finalInscription,
+            cs.getFinalStudents(finalInscriptionId));
+
+    return ok(finalInscriptionDTO).build();
+  }
+
+  @POST
+  @Path("/finalInscription/{finalInscriptionId}")
+  public Response coursesFinalInscriptionQualify(@PathParam("finalInscriptionId") final int finalInscriptionId,
+                                                 @Valid GradeDTO gradeDTO) {
+    //TODO see if gradeDTO.getGrade can be improved
+    if(!ss.addFinalGrade(finalInscriptionId, gradeDTO.getStudent().getDocket(), gradeDTO.getGrade())) {
       return status(Status.BAD_REQUEST).build();
     }
 

@@ -18,5 +18,51 @@ public class GradeDTO {
   private Student student;
 
 
+  public Course getCourse() {
+    return course;
+  }
 
+  public void setCourse(Course course) {
+    this.course = course;
+  }
+
+  public BigDecimal getGrade() {
+    return grade;
+  }
+
+  public void setGrade(BigDecimal grade) {
+    this.grade = grade;
+  }
+
+  public LocalDateTime getModified() {
+    return modified;
+  }
+
+  public void setModified(LocalDateTime modified) {
+    this.modified = modified;
+  }
+
+  public Boolean getTaking() {
+    return taking;
+  }
+
+  public void setTaking(Boolean taking) {
+    this.taking = taking;
+  }
+
+  public List<FinalGrade> getFinalGrades() {
+    return finalGrades;
+  }
+
+  public void setFinalGrades(List<FinalGrade> finalGrades) {
+    this.finalGrades = finalGrades;
+  }
+
+  public Student getStudent() {
+    return student;
+  }
+
+  public void setStudent(Student student) {
+    this.student = student;
+  }
 }

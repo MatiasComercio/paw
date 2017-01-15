@@ -2,11 +2,15 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.models.Address;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.webapp.models.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DTOEntityMapper {
 
@@ -53,5 +57,14 @@ public class DTOEntityMapper {
     modelMapper.getConfiguration().setMatchingStrategy(originalMatchingStrategy);
 
     return course;
+  }
+
+  FinalInscriptionDTO convertToFinalInscriptionDTO(FinalInscription finalInscription, Set<Student> finalStudents) {
+    final FinalInscriptionDTO finalInscriptionDTO = modelMapper.map(finalInscription, FinalInscriptionDTO.class);
+
+    //TODO: The students can't be obtained from the finalInscription because Hibernate throws a Lazy initialization
+    finalInscriptionDTO.setStudents(finalStudents.stream().map(this::convertToStudentIndexDTO).collect(Collectors.toList()));
+
+    return finalInscriptionDTO;
   }
 }
