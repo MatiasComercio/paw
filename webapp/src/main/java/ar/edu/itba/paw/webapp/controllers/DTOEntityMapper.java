@@ -48,9 +48,10 @@ public class DTOEntityMapper {
     return modelMapper.map(transcriptGrade, TranscriptGradeDTO.class);
   }
 
-  public Grade convertToGrade(GradeDTO gradeDTO, Student student, Course course) {
-    return new Grade.Builder(null, student, course.getId(), course.getCourseId(), gradeDTO.getGrade())
+  public Grade convertToGrade(GradeDTO gradeDTO, Student student, Course course, Integer id) {
+    Grade grade = new Grade.Builder(id, student, course.getId(), course.getCourseId(), gradeDTO.getGrade())
             .modified(gradeDTO.getModified()).build();
-
+    grade.setCourse(course);
+    return grade;
   }
 }
