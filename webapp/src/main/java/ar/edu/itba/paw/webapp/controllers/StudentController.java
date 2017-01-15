@@ -267,8 +267,8 @@ public class StudentController {
       return status(Status.BAD_REQUEST).build(); //TODO: Return Precondition Failed status??
     }
 
-    Grade grade = mapper.convertToGrade(gradeDTO, student, course);
-    grade.setCourse(course);
+    Grade grade = mapper.convertToGrade(gradeDTO, student, course, null);
+
     int gradeId = ss.addGrade(grade);
 
     // TODO: If we return Created, what location should we return? Hibernate's id?
@@ -277,17 +277,32 @@ public class StudentController {
     return created(uri).build();
   }
 
-//  @POST
-//  @Consumes(MediaType.APPLICATION_JSON)
-//  @Path("/{docket}/grades/{gradeId}")
-//  public Response studentsGradesUpdate(
-//          @PathParam("docket") final Integer docket,
-//          @PathParam("docket") final Integer gradeId,
-//          @Valid GradeDTO gradeDTO){
-//    ss.editGrade()
-//
-//
-//  }
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/{docket}/grades/{gradeId}")
+  public Response studentsGradesUpdate(
+          @PathParam("docket") final Integer docket,
+          @Min(1)
+          @PathParam("gradeId") final Integer gradeId,
+          @Valid GradeDTO gradeDTO){
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final Course course = cs.getByCourseID(gradeDTO.getCourseId());
+    if(course == null){
+      return status(Status.BAD_REQUEST).build();
+    }
+
+    Grade grade = mapper.convertToGrade(gradeDTO, student, course, gradeId);
+
+    ss.editGrade(grade, null);
+
+    return ok().build();
+
+  }
 
 //  @DELETE
 //  @Path("/{docket}/grades/{gradeId}")
