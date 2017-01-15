@@ -146,4 +146,31 @@ public class CourseController {
 
     return ok(new StudentsList(studentsList)).build();
   }
+
+  //TODO: It seems that it never returned the grade, should we do it?
+  @GET
+  @Path("/{courseId}/students/passed")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response coursesStudentsPassedIndex(@PathParam("courseId") final String courseId,
+                                             @Min(value = 1)
+                                             @QueryParam("docket") final Integer docket,
+                                             @Size(max=50)
+                                             @QueryParam("firstName") final String firstName,
+                                             @Size(max=50)
+                                             @QueryParam("lastName") final String lastName) {
+    final Course course = cs.getByCourseID(courseId);
+
+    if(course == null) {
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+            .docket(docket).firstName(firstName).lastName(lastName).build();
+    final Course courseWithStudents = cs.getStudentsThatPassedCourse(courseId, studentFilter);
+    final List<Student> approvedStudents = courseWithStudents.getApprovedStudents();
+
+    final List<StudentIndexDTO> studentsList = approvedStudents.stream().map(student -> mapper.convertToStudentIndexDTO(student)).collect(Collectors.toList());
+
+    return ok(new StudentsList(studentsList)).build();
+  }
 }

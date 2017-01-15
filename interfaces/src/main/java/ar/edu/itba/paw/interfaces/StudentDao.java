@@ -160,7 +160,7 @@ public interface StudentDao {
 
 	/* +++xtest */
 	/* +++xdocument */
-	List<Student> getStudentsPassed(int id);
+	List<Student> getStudentsPassed(String courseId);
 
 	/**
 	 *

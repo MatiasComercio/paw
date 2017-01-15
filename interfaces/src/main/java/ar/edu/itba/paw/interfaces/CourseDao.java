@@ -148,7 +148,7 @@ public interface CourseDao {
 
     /* +++ xtest */
     /* +++ xdocument */
-    Course getStudentsThatPassedCourse(int id);
+    Course getStudentsThatPassedCourse(String id);
 
 
     /**

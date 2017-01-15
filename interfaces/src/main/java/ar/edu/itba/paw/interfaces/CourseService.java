@@ -146,7 +146,7 @@ public interface CourseService {
 
     /* +++xtest */
     /* +++xdocument */
-	Course getStudentsThatPassedCourse(int id, StudentFilter studentFilter);
+	Course getStudentsThatPassedCourse(String courseId, StudentFilter studentFilter);
 
     /**
      * Get the open final inscriptions corresponding to a course.

@@ -283,8 +283,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Course getStudentsThatPassedCourse(final int id, final StudentFilter studentFilter) {
-        final Course course = courseDao.getStudentsThatPassedCourse(id);
+    public Course getStudentsThatPassedCourse(final String courseId, final StudentFilter studentFilter) {
+        final Course course = courseDao.getStudentsThatPassedCourse(courseId);
         if (course == null) {
             return null;
         }

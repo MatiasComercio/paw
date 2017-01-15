@@ -71,38 +71,38 @@ public class OldCourseController {
 		return new CourseFilterForm();
 	}
 
-	@RequestMapping(value = "/courses", method = RequestMethod.GET)
-	public ModelAndView getCourses(final Model model,
-	                               @ModelAttribute("user") UserSessionDetails loggedUser,
-	                               @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
-	                               final BindingResult errors) {
-
-		if (!loggedUser.hasAuthority("VIEW_COURSES")) {
-			LOGGER.warn("User {} tried to view all courses and doesn't have VIEW_COURSES authority [GET]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		if (!model.containsAttribute("deleteCourseForm")) {
-			model.addAttribute("deleteCourseForm", new CourseFilterForm());  /*+++xcheck: if it is necessary to create a new Form*/
-		}
-
-		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder()
-				.id(courseFilterForm.getId())
-				.keyword(courseFilterForm.getName())
-				.build();
-
-		final ModelAndView mav = new ModelAndView("courses");
-
-		final List<Course> courses = loadCoursesByFilter(mav, errors, courseFilter);
-		if (courses == null) {
-			return NOT_FOUND_MAV;
-		}
-
-		mav.addObject("courses", courses);
-		mav.addObject("subsection_get_courses", true);
-		mav.addObject("courseFilterFormAction", "/courses");
-		return mav;
-	}
+//	@RequestMapping(value = "/courses", method = RequestMethod.GET)
+//	public ModelAndView getCourses(final Model model,
+//	                               @ModelAttribute("user") UserSessionDetails loggedUser,
+//	                               @Valid @ModelAttribute("courseFilterForm") final CourseFilterForm courseFilterForm,
+//	                               final BindingResult errors) {
+//
+//		if (!loggedUser.hasAuthority("VIEW_COURSES")) {
+//			LOGGER.warn("User {} tried to view all courses and doesn't have VIEW_COURSES authority [GET]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		if (!model.containsAttribute("deleteCourseForm")) {
+//			model.addAttribute("deleteCourseForm", new CourseFilterForm());  /*+++xcheck: if it is necessary to create a new Form*/
+//		}
+//
+//		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder()
+//				.id(courseFilterForm.getId())
+//				.keyword(courseFilterForm.getName())
+//				.build();
+//
+//		final ModelAndView mav = new ModelAndView("courses");
+//
+//		final List<Course> courses = loadCoursesByFilter(mav, errors, courseFilter);
+//		if (courses == null) {
+//			return NOT_FOUND_MAV;
+//		}
+//
+//		mav.addObject("courses", courses);
+//		mav.addObject("subsection_get_courses", true);
+//		mav.addObject("courseFilterFormAction", "/courses");
+//		return mav;
+//	}
 
 //	@RequestMapping("/courses/{id}/info")
 //	public ModelAndView getCourse(@PathVariable final Integer id, Model model,
@@ -479,40 +479,40 @@ public class OldCourseController {
 //		return new ModelAndView("redirect:/courses/" + course_id + "/info");
 //
 //	}
-
-	@RequestMapping(value = "/courses/{id}/students_passed", method = RequestMethod.GET)
-	public ModelAndView getCourseStudentsThatPassed(@PathVariable("id") final Integer id, final Model model,
-	                                                @ModelAttribute("user") UserSessionDetails loggedUser,
-	                                                @Valid @ModelAttribute("studentFilterForm")
-	                                                    final StudentFilterForm studentFilterForm,
-	                                                final BindingResult errors) {
-
-		if (!loggedUser.hasAuthority("VIEW_STUDENTS_APPROVED")) {
-			LOGGER.warn("User {} tried to get the students that passed course {} and doesn't have VIEW_STUDENTS_APPROVED authority [POST]", loggedUser, id);
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
-				.docket(studentFilterForm.getDocket())
-				.firstName(studentFilterForm.getFirstName())
-				.lastName(studentFilterForm.getLastName())
-				.build();
-
-		final ModelAndView mav = new ModelAndView("courseStudents");
-
-		final Course course = loadCourseWithStudentThatPassedByFilter(id, mav, errors, studentFilter);
-		if (course == null) {
-			LOGGER.warn("User {} tried to access course {} that does not exist", loggedUser.getDni(), id);
-			return NOT_FOUND_MAV;
-		}
-
-		mav.addObject("course", course);
-		//TODO: DELETE - mav.addObject("students", course.getStudents());
-		mav.addObject("students", course.getApprovedStudents());
-		mav.addObject("section2", "studentsPassed");
-		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students_passed");
-		return mav;
-	}
+//
+//	@RequestMapping(value = "/courses/{id}/students_passed", method = RequestMethod.GET)
+//	public ModelAndView getCourseStudentsThatPassed(@PathVariable("id") final Integer id, final Model model,
+//	                                                @ModelAttribute("user") UserSessionDetails loggedUser,
+//	                                                @Valid @ModelAttribute("studentFilterForm")
+//	                                                    final StudentFilterForm studentFilterForm,
+//	                                                final BindingResult errors) {
+//
+//		if (!loggedUser.hasAuthority("VIEW_STUDENTS_APPROVED")) {
+//			LOGGER.warn("User {} tried to get the students that passed course {} and doesn't have VIEW_STUDENTS_APPROVED authority [POST]", loggedUser, id);
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+//				.docket(studentFilterForm.getDocket())
+//				.firstName(studentFilterForm.getFirstName())
+//				.lastName(studentFilterForm.getLastName())
+//				.build();
+//
+//		final ModelAndView mav = new ModelAndView("courseStudents");
+//
+//		final Course course = loadCourseWithStudentThatPassedByFilter(id, mav, errors, studentFilter);
+//		if (course == null) {
+//			LOGGER.warn("User {} tried to access course {} that does not exist", loggedUser.getDni(), id);
+//			return NOT_FOUND_MAV;
+//		}
+//
+//		mav.addObject("course", course);
+//		//TODO: DELETE - mav.addObject("students", course.getStudents());
+//		mav.addObject("students", course.getApprovedStudents());
+//		mav.addObject("section2", "studentsPassed");
+//		mav.addObject("studentFilterFormAction", "/courses/" + id + "/students_passed");
+//		return mav;
+//	}
 
 	/******************************************/
 	private List<Course> loadCoursesByFilter(final ModelAndView mav,
@@ -571,24 +571,24 @@ public class OldCourseController {
 //		return courses;
 //	}
 
-	private Course loadCourseWithStudentThatPassedByFilter(final Integer id,
-	                                                       final ModelAndView mav,
-	                                                       final BindingResult errors,
-	                                                       final StudentFilter studentFilter) {
-		final Course course;
-		if (errors.hasErrors()) {
-			LOGGER.warn("Could not get students that passed a course due to {} [GET]", errors.getAllErrors());
-
-			mav.addObject("alert", "danger");
-			mav.addObject("message", messageSource.getMessage("search_fail",
-					null,
-					Locale.getDefault()));
-			course = courseService.getStudentsThatPassedCourse(id, null);
-		} else {
-			course = courseService.getStudentsThatPassedCourse(id, studentFilter);
-		}
-		return course;
-	}
+//	private Course loadCourseWithStudentThatPassedByFilter(final Integer id,
+//	                                                       final ModelAndView mav,
+//	                                                       final BindingResult errors,
+//	                                                       final StudentFilter studentFilter) {
+//		final Course course;
+//		if (errors.hasErrors()) {
+//			LOGGER.warn("Could not get students that passed a course due to {} [GET]", errors.getAllErrors());
+//
+//			mav.addObject("alert", "danger");
+//			mav.addObject("message", messageSource.getMessage("search_fail",
+//					null,
+//					Locale.getDefault()));
+//			course = courseService.getStudentsThatPassedCourse(id, null);
+//		} else {
+//			course = courseService.getStudentsThatPassedCourse(id, studentFilter);
+//		}
+//		return course;
+//	}
 
     @RequestMapping(value = "/courses/final_inscription/{id}/info", method = RequestMethod.GET)
     public ModelAndView viewFinalInscription(
