@@ -11,6 +11,12 @@ import java.time.LocalDateTime;
 
 public class GradeDTO {
 
+
+  private Integer id;
+
+  //private Boolean taking;
+  //private List<FinalGrade> finalGrades;
+
   @NotNull
   @Pattern(regexp="\\d{2}\\.\\d{2}")
   private String courseId;
@@ -22,10 +28,6 @@ public class GradeDTO {
 
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private LocalDateTime modified;
-
-  //private Boolean taking;
-  //private List<FinalGrade> finalGrades;
-  //private Integer id;
 
   public GradeDTO() {
   }
@@ -54,4 +56,11 @@ public class GradeDTO {
     this.modified = modified;
   }
 
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
 }

@@ -449,58 +449,58 @@ public class OldStudentController {
 		return new ModelAndView("redirect:/students/" + docket + "/grades");
 	}
 
-	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.POST)
-	public ModelAndView addGrade(@PathVariable Integer docket,
-								 @Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
-								 final BindingResult errors,
-								 RedirectAttributes redirectAttributes,
-								 @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("ADD_GRADE")
-				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
-			LOGGER.warn("User {} tried to add a grade and doesn't have ADD_GRADE authority [POST]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		final Integer c = gradeForm.getCourseId();
-		if (c == null) {
-			final String referrer = request.getHeader("referer");
-			return new ModelAndView("redirect:" + referrer);
-		}
-
-		if (errors.hasErrors()) {
-			LOGGER.warn("User {} could not add a grade due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message",
-					messageSource.getMessage("addGrade_fail",
-							new Object[] {},
-							Locale.getDefault()));
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
-			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
-
-			return new ModelAndView("redirect:/courses/" + c + "/students");
-		}
-
-		/********************************/
-
-		gradeForm.setStudent(studentService.getByDocket(docket));
-		Grade grade = gradeForm.build();
-		boolean done = studentService.addGrade(grade);
-
-		if (!done) {
-			LOGGER.warn("User {} could not add a grade, Result is NULL", loggedUser.getDni());
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
-		} else {
-			LOGGER.info("User {} added a grade successfully", loggedUser.getDni());
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addGrade_success",
-					new Object[] {},
-					Locale.getDefault()));
-		}
-
-		return new ModelAndView("redirect:/courses/" + c + "/students");
-	}
+//	@RequestMapping(value = "/students/{docket}/grades/add", method = RequestMethod.POST)
+//	public ModelAndView addGrade(@PathVariable Integer docket,
+//								 @Valid @ModelAttribute("gradeForm") GradeForm gradeForm,
+//								 final BindingResult errors,
+//								 RedirectAttributes redirectAttributes,
+//								 @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("ADD_GRADE")
+//				|| (loggedUser.getId() != docket && !loggedUser.hasAuthority("ADMIN"))) {
+//			LOGGER.warn("User {} tried to add a grade and doesn't have ADD_GRADE authority [POST]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		final Integer c = gradeForm.getCourseId();
+//		if (c == null) {
+//			final String referrer = request.getHeader("referer");
+//			return new ModelAndView("redirect:" + referrer);
+//		}
+//
+//		if (errors.hasErrors()) {
+//			LOGGER.warn("User {} could not add a grade due to {} [POST]", loggedUser.getDni(), errors.getAllErrors());
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message",
+//					messageSource.getMessage("addGrade_fail",
+//							new Object[] {},
+//							Locale.getDefault()));
+//			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.gradeForm", errors);
+//			redirectAttributes.addFlashAttribute("gradeForm", gradeForm);
+//
+//			return new ModelAndView("redirect:/courses/" + c + "/students");
+//		}
+//
+//		/********************************/
+//
+//		gradeForm.setStudent(studentService.getByDocket(docket));
+//		Grade grade = gradeForm.build();
+//		boolean done = studentService.addGrade(grade);
+//
+//		if (!done) {
+//			LOGGER.warn("User {} could not add a grade, Result is NULL", loggedUser.getDni());
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
+//		} else {
+//			LOGGER.info("User {} added a grade successfully", loggedUser.getDni());
+//			redirectAttributes.addFlashAttribute("alert", "success");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addGrade_success",
+//					new Object[] {},
+//					Locale.getDefault()));
+//		}
+//
+//		return new ModelAndView("redirect:/courses/" + c + "/students");
+//	}
 
 //	@RequestMapping(value = "/students/{docket}/delete", method = RequestMethod.POST)
 //	public ModelAndView removeStudent(@PathVariable final Integer docket, RedirectAttributes redirectAttributes,

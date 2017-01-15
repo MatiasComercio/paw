@@ -84,12 +84,10 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean addGrade(final Grade grade) {
-		boolean done = studentDao.addGrade(grade);
-		if (done) {
-			done = studentDao.unenroll(grade.getStudentDocket(), grade.getCourseId());
-		}
-		return done;
+	public int addGrade(final Grade grade) {
+		int id = studentDao.addGrade(grade);
+		studentDao.unenroll(grade.getStudentDocket(), grade.getCourseId());
+		return id;
 	}
 
 	@Transactional
@@ -312,12 +310,9 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean unenroll(final int studentDocket, final int courseId) {
-		final boolean done = studentDao.unenroll(studentDocket, courseId);
-
+	public void unenroll(final int studentDocket, final int courseId) {
+		studentDao.unenroll(studentDocket, courseId);
 		/* notifyUnenrollment(studentDocket, courseId); mail +++xtodo */
-
-		return done;
 	}
 
 	@Transactional

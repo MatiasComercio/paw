@@ -269,11 +269,29 @@ public class StudentController {
 
     Grade grade = mapper.convertToGrade(gradeDTO, student, course);
     grade.setCourse(course);
-    ss.addGrade(grade);
+    int gradeId = ss.addGrade(grade);
 
     // TODO: If we return Created, what location should we return? Hibernate's id?
     // (Same goes for an inscription)
-    return status(Status.OK).build();
+    final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(gradeId)).build();
+    return created(uri).build();
   }
+
+//  @POST
+//  @Consumes(MediaType.APPLICATION_JSON)
+//  @Path("/{docket}/grades/{gradeId}")
+//  public Response studentsGradesUpdate(
+//          @PathParam("docket") final Integer docket,
+//          @PathParam("docket") final Integer gradeId,
+//          @Valid GradeDTO gradeDTO){
+//    ss.editGrade()
+//
+//
+//  }
+
+//  @DELETE
+//  @Path("/{docket}/grades/{gradeId}")
+//  public Response studentsGradesDestroy(@PathParam("docket") final Integer gradeId){
+//  }
 
 }

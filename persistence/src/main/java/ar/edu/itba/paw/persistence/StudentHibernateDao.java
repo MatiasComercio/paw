@@ -131,11 +131,10 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public boolean addGrade(final Grade grade) {
+	public int addGrade(final Grade grade) {
 		em.persist(grade);
 		LOGGER.debug("[addGrade] - {}", grade);
-
-		return true;
+		return grade.getId();
 	}
 
 	@Override
@@ -181,14 +180,13 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public boolean unenroll(final int studentDocket, final int courseId) {
+	public void unenroll(final int studentDocket, final int courseId) {
 		final Student student = getByDocket(studentDocket);
 		final Course course = courseDao.getById(courseId);
 		final List<Course> studentCourses = student.getStudentCourses();
 
 		studentCourses.remove(course);
 		em.merge(student);
-		return true;
 	}
 
 	//Modified to return courses that are approved and less than 3 finals are taken, or there's a final passed
