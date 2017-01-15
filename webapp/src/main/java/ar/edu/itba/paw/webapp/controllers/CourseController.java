@@ -5,15 +5,11 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
-import ar.edu.itba.paw.webapp.models.CourseDTO;
-import ar.edu.itba.paw.webapp.models.CoursesList;
-import ar.edu.itba.paw.webapp.models.StudentIndexDTO;
-import ar.edu.itba.paw.webapp.models.StudentsList;
+import ar.edu.itba.paw.webapp.models.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -172,5 +168,16 @@ public class CourseController {
     final List<StudentIndexDTO> studentsList = approvedStudents.stream().map(student -> mapper.convertToStudentIndexDTO(student)).collect(Collectors.toList());
 
     return ok(new StudentsList(studentsList)).build();
+  }
+
+  @POST
+  @Path("/{courseId}/correlatives")
+  public Response coursesCorrelativeNew(@PathParam("courseId") final String courseId,
+                                        @Valid final CorrelativeDTO correlativeDTO) {
+    if(!cs.addCorrelative(courseId, correlativeDTO.getCorrelativeId())) {
+      return status(Status.BAD_REQUEST).build();
+    }
+
+    return noContent().build();
   }
 }

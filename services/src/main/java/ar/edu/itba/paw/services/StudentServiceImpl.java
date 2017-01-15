@@ -230,10 +230,10 @@ public class StudentServiceImpl implements StudentService {
 	@Transactional
 	@Override
 	public boolean checkCorrelatives(final int docket, final String courseId) {
-		List<Integer> correlatives = courseService.getCorrelatives(courseId);
+		List<String> correlatives = courseService.getCorrelatives(courseId);
 		List<Integer> approvedCourses = studentDao.getApprovedCoursesId(docket);
 
-		for (Integer correlative : correlatives){
+		for (String correlative : correlatives){
 			if (!approvedCourses.contains(correlative)){
 				return false;
 			}

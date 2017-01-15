@@ -82,25 +82,25 @@ public interface CourseService {
      * @return The id's of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
      * given course)
      */
-    List<Integer> getCorrelatives(String courseId);
+    List<String> getCorrelatives(String courseId);
 
     /**
      * Make the course corresponding to the correlativeId necessary
      * to take the course corresponding to the id. Checks that no correlativity
      * loop is generated.
      *
-     * @param id The id of the course to which a correlative course is going to be added
+     * @param courseId The id of the course to which a correlative course is going to be added
      * @param correlativeId The id of the correlative course
      * @return The result indicating if the action could be done.
      */
-    boolean addCorrelative(int id, int correlativeId);
+    boolean addCorrelative(String courseId, String correlativeId);
 
     /**
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that require this course to enroll a student in the
      * given course)
      */
-    List<Integer> getUpperCorrelatives(String courseId);
+    List<String> getUpperCorrelatives(String courseId);
 
     /**
      *
@@ -108,7 +108,7 @@ public interface CourseService {
      * @param correlativeId The id of the correlative for the given course.
      * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
      */
-    boolean deleteCorrelative(String courseId, int correlativeId);
+    boolean deleteCorrelative(String courseId, String correlativeId);
 
     /**
      *

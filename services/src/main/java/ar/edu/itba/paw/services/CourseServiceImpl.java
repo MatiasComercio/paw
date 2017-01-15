@@ -145,35 +145,31 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public boolean addCorrelative(final int id, final int correlativeId) {
+    public boolean addCorrelative(final String courseId, final String correlativeId) {
 
-        if(id == correlativeId){
-//            return Result.CORRELATIVE_SAME_COURSE;
+        if(courseId.equals(correlativeId)) {
             return false;
         }
 
         //Check courses exists
-        if (!courseDao.courseExists(id) || !courseDao.courseExists(correlativeId)){
-//            return Result.COURSE_NOT_EXISTS;
+        if (!courseDao.courseExists(courseId) || !courseDao.courseExists(correlativeId)){
             return false;
         }
 
         //Check correlativity loop
-        if (courseDao.checkCorrelativityLoop(id, correlativeId)){
-//            return Result.CORRELATIVE_CORRELATIVITY_LOOP;
+        if (courseDao.checkCorrelativityLoop(courseId, correlativeId)) {
             return false;
         }
 
         //Check semester
-        final Course course = getById(id);
-        final Course correlativeCourse = getById(correlativeId);
+        final Course course = getByCourseID(courseId);
+        final Course correlativeCourse = getByCourseID(correlativeId);
 
-        if (course.getSemester() <= correlativeCourse.getSemester()){
-//            return Result.CORRELATIVE_SEMESTER_INCOMPATIBILITY;
+        if (course.getSemester() <= correlativeCourse.getSemester()) {
             return false;
         }
 
-        return courseDao.addCorrelativity(id, correlativeId);
+        return courseDao.addCorrelativity(courseId, correlativeId);
     }
 
     /* Test purpose only */
@@ -190,13 +186,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public List<Integer> getCorrelatives(final String courseId) {
+    public List<String> getCorrelatives(final String courseId) {
         return courseDao.getCorrelatives(courseId);
     }
 
     @Transactional
     @Override
-    public List<Integer> getUpperCorrelatives(final String courseId) {
+    public List<String> getUpperCorrelatives(final String courseId) {
         return courseDao.getUpperCorrelatives(courseId);
     }
 
@@ -204,34 +200,34 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public boolean deleteCorrelative(final String courseId, final int correlativeId) {
+    public boolean deleteCorrelative(final String courseId, final String correlativeId) {
         return courseDao.deleteCorrelative(courseId, correlativeId);
     }
 
     @Transactional
     @Override
     public boolean deleteCourseCorrelatives(final String courseId) {
-        List<Integer> correlatives = getCorrelatives(courseId);
-        List<Integer> upperCorrelatives = getUpperCorrelatives(courseId);
+        List<String> correlatives = getCorrelatives(courseId);
+        List<String> upperCorrelatives = getUpperCorrelatives(courseId);
 
         /* Adds transitive correlatives:
          * Say c2 is the given courseId and the following correlativities exist:
          * (c3,c2) and (c2, c1), in that case (c3, c1) is added to the correlatives table.
          */
         if (correlatives != null && upperCorrelatives != null){
-            for (Integer correlative : correlatives) {
-                for (Integer upperCorrelative : upperCorrelatives) {
+            for (String correlative : correlatives) {
+                for (String upperCorrelative : upperCorrelatives) {
                     addCorrelative(upperCorrelative, correlative); //Adding correlatives after a delete can't introduce loops
                 }
             }
         }
         if(correlatives != null){
-            for(Integer correlative: correlatives){
+            for(String correlative: correlatives){
                 deleteCorrelative(courseId, correlative);
             }
         }
         if(upperCorrelatives != null){
-            for(Integer upperCorrelative: upperCorrelatives){
+            for(String upperCorrelative: upperCorrelatives){
                 deleteCorrelative(courseId, upperCorrelative);
             }
         }
