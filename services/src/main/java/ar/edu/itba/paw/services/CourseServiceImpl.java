@@ -201,6 +201,9 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     @Override
     public boolean deleteCorrelative(final String courseId, final String correlativeId) {
+        if(getByCourseID(courseId) == null || getByCourseID(correlativeId) == null) {
+            return false;
+        }
         return courseDao.deleteCorrelative(courseId, correlativeId);
     }
 

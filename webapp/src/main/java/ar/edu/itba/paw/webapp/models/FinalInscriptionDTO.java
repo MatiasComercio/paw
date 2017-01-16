@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.models;
 import ar.edu.itba.paw.models.FinalInscription;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class FinalInscriptionDTO {
   private List<StudentIndexDTO> students;
 
   private int id;
-  private LocalDate finalExamDate;
+  private LocalDateTime finalExamDate;
   private int vacancy;
   private int maxVacancy;
   private FinalInscription.FinalInscriptionState state;
@@ -20,13 +21,13 @@ public class FinalInscriptionDTO {
 
   }
 
-//  public CourseDTO getCourse() {
-//    return course;
-//  }
-//
-//  public void setCourse(CourseDTO course) {
-//    this.course = course;
-//  }
+  public CourseDTO getCourse() {
+    return course;
+  }
+
+  public void setCourse(CourseDTO course) {
+    this.course = course;
+  }
 
   public Collection<StudentIndexDTO> getStudents() {
     return students;
@@ -44,12 +45,11 @@ public class FinalInscriptionDTO {
     this.id = id;
   }
 
-  //TODO: Date can't be mapped correctly
-  public LocalDate getFinalExamDate() {
+  public LocalDateTime getFinalExamDate() {
     return finalExamDate;
   }
 
-  public void setFinalExamDate(LocalDate finalExamDate) {
+  public void setFinalExamDate(LocalDateTime finalExamDate) {
     this.finalExamDate = finalExamDate;
   }
 
