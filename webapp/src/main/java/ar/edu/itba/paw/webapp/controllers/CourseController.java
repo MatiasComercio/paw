@@ -199,7 +199,7 @@ public class CourseController {
   }
 
   @GET
-  @Path("/finalInscription/{finalInscriptionId}")
+  @Path("/finalInscriptions/{finalInscriptionId}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response coursesFinalInscriptionsShow(@PathParam("finalInscriptionId") final int finalInscriptionId) {
     final FinalInscription finalInscription = cs.getFinalInscription(finalInscriptionId);
@@ -216,8 +216,8 @@ public class CourseController {
   }
 
   @POST
-  @Path("/finalInscription/{finalInscriptionId}/grades")
-  public Response coursesFinalInscriptionQualify(@PathParam("finalInscriptionId") final int finalInscriptionId,
+  @Path("/finalInscriptions/{finalInscriptionId}/grades")
+  public Response coursesFinalInscriptionsQualify(@PathParam("finalInscriptionId") final int finalInscriptionId,
                                                  @Valid GradeFinalInscriptionDTO gradeDTO) {
     //TODO see if gradeDTO.getGrade can be improved
     if(!ss.addFinalGrade(finalInscriptionId, gradeDTO.getDocket(), gradeDTO.getGrade())) {

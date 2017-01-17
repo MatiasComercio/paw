@@ -3,10 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
-import ar.edu.itba.paw.models.Address;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Grade;
-import ar.edu.itba.paw.models.TranscriptGrade;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -231,6 +228,33 @@ public class StudentController {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
+  @Path("/{docket}/courses/available")
+  public Response studentsCoursesAvailable(
+          @Min(value = 1)
+          @PathParam("docket") final Integer docket,
+          @Size(max=5)
+          @QueryParam("id") final String courseID,
+          @Size(max=50)
+          @QueryParam("name") final String courseName){
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
+            id(courseID).keyword(courseName).build();
+
+    List<Course> courses = ss.getAvailableInscriptionCourses(docket, courseFilter);
+
+    final List<CourseDTO> coursesList = courses.stream()
+            .map(course -> mapper.convertToCourseDTO(course)).collect(Collectors.toList());
+
+    return ok(new CoursesList(coursesList)).build();
+  }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
   @Path("/{docket}/grades")
   public Response studentsGradesIndex(@PathParam("docket") final Integer docket){
 
@@ -307,13 +331,32 @@ public class StudentController {
 
   }
 
+  /*************************  NOT WORKING ************************************************/
+
+  @GET
+  @Path("/{docket}/finalInscriptions")
+  public Response studentsFinalInscriptionsIndex(@PathParam("docket") final Integer docket){
+    // TODO: Test this method
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final List<FinalInscription> finalInscriptions = ss.getFinalInscriptionsTaken(docket);
+
+    final List<FinalInscriptionIndexDTO> list = finalInscriptions.stream()
+            .map(finalInscription -> mapper.convertToFinalInscriptionIndexDTO(finalInscription)).collect(Collectors.toList());
+
+    return ok(new FinalInscriptionsList(list)).build();
+  }
 
   @POST
-  @Path("/{docket}/finalInscriptions/{inscriptionId}")
-  public Response studentsFinalInscriptionNew(
+  @Path("/{docket}/finalInscriptions/{finalInscriptionId}")
+  public Response studentsFinalInscriptionsNew(
           @PathParam("docket") final Integer docket,
           @Min(1)
-          @PathParam("inscriptionId") final Integer inscriptionId){
+          @PathParam("finalInscriptionId") final Integer inscriptionId){
 
     // TODO: Test this method
 
@@ -331,11 +374,11 @@ public class StudentController {
   }
 
   @DELETE
-  @Path("/{docket}/finalInscriptions/{inscriptionId}")
-  public Response studentsFinalInscriptionDestroy(
+  @Path("/{docket}/finalInscriptions/{finalInscriptionId}")
+  public Response studentsFinalInscriptionsDestroy(
           @PathParam("docket") final Integer docket,
           @Min(1)
-          @PathParam("inscriptionId") final Integer inscriptionId) {
+          @PathParam("finalInscriptionId") final Integer inscriptionId) {
 
     // TODO: Test this method
 
@@ -349,11 +392,24 @@ public class StudentController {
 
   }
 
-//  @GET
-//  @Produces(MediaType.APPLICATION_JSON)
-//  @Path("/{docket}/courses/available")
-//  public Response studentsCoursesAvailable(){
-//
-//  }
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/{docket}/finalInscriptions/available")
+  public Response studentsFinalInscriptionsAvailable(@PathParam("docket") final Integer docket){
+    // TODO: Test this method
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final List<FinalInscription> finalInscriptions = ss.getAvailableFinalInscriptions(docket);
+
+    final List<FinalInscriptionIndexDTO> list = finalInscriptions.stream()
+            .map(finalInscription -> mapper.convertToFinalInscriptionIndexDTO(finalInscription)).collect(Collectors.toList());
+
+    return ok(new FinalInscriptionsList(list)).build();
+  }
+
+  /*************************  NOT WORKING ************************************************/
 
 }

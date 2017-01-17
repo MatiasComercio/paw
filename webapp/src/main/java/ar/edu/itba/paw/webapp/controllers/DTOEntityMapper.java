@@ -80,4 +80,8 @@ public class DTOEntityMapper {
 
     return finalInscriptionDTO;
   }
+
+  public FinalInscriptionIndexDTO convertToFinalInscriptionIndexDTO(FinalInscription finalInscription) {
+    return modelMapper.map(finalInscription, FinalInscriptionIndexDTO.class);
+  }
 }
