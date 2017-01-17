@@ -22,10 +22,9 @@ public interface UserService {
 	 * @param dni of the user
 	 * @param prevPassword the previous password of the user
 	 * @param newPassword the new password of the user
-	 * @param repeatNewPassword the repetition of the new password of the user
      * @return 	true if the password was changed; else false
 	 */
-	boolean changePassword(int dni, String prevPassword, String newPassword, String repeatNewPassword);
+	boolean changePassword(int dni, String prevPassword, String newPassword);
 
 	/**
 	 * Reset a user's password to it's default value;

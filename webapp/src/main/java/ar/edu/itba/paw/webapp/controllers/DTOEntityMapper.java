@@ -5,6 +5,7 @@ import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.TranscriptGrade;
 import ar.edu.itba.paw.models.FinalInscription;
+import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.webapp.models.*;
 import org.modelmapper.ModelMapper;
@@ -50,11 +51,11 @@ public class DTOEntityMapper {
     return modelMapper.map(course, CourseDTO.class);
   }
 
-  public TranscriptGradeDTO convertToTranscriptGradeDTO(TranscriptGrade transcriptGrade) {
+  TranscriptGradeDTO convertToTranscriptGradeDTO(TranscriptGrade transcriptGrade) {
     return modelMapper.map(transcriptGrade, TranscriptGradeDTO.class);
   }
 
-  public Grade convertToGrade(GradeDTO gradeDTO, Student student, Course course, Integer id) {
+  Grade convertToGrade(GradeDTO gradeDTO, Student student, Course course, Integer id) {
     Grade grade = new Grade.Builder(id, student, course.getId(), course.getCourseId(), gradeDTO.getGrade())
             .modified(gradeDTO.getModified()).build();
     grade.setCourse(course);
@@ -73,7 +74,15 @@ public class DTOEntityMapper {
   }
 
   FinalInscriptionDTO convertToFinalInscriptionDTO(FinalInscription finalInscription, Set<Student> finalStudents) {
-    final FinalInscriptionDTO finalInscriptionDTO = modelMapper.map(finalInscription, FinalInscriptionDTO.class);
+    final FinalInscriptionDTO finalInscriptionDTO = new FinalInscriptionDTO();
+    final CourseDTO courseDTO = convertToCourseDTO(finalInscription.getCourse());
+
+    finalInscriptionDTO.setCourse(courseDTO);
+    finalInscriptionDTO.setId(finalInscription.getId());
+    finalInscriptionDTO.setFinalExamDate(finalInscription.getFinalExamDate());
+    finalInscriptionDTO.setVacancy(finalInscription.getVacancy());
+    finalInscriptionDTO.setMaxVacancy(finalInscription.getMaxVacancy());
+    finalInscriptionDTO.setState(finalInscription.getState());
 
     //TODO: The students can't be obtained from the finalInscription because Hibernate throws a Lazy initialization
     finalInscriptionDTO.setStudents(finalStudents.stream().map(this::convertToStudentIndexDTO).collect(Collectors.toList()));
@@ -84,4 +93,17 @@ public class DTOEntityMapper {
   public FinalInscriptionIndexDTO convertToFinalInscriptionIndexDTO(FinalInscription finalInscription) {
     return modelMapper.map(finalInscription, FinalInscriptionIndexDTO.class);
   }
+
+  AdminDTO converToAdminDTO(final Admin admin) {
+    return modelMapper.map(admin, AdminDTO.class);
+  }
+
+  Admin convertToAdmin(AdminNewDTO adminNewDTO) {
+    return modelMapper.map(adminNewDTO, Admin.class);
+  }
+
+  AdminShowDTO converToAdminShowDTO(final Admin admin) {
+    return modelMapper.map(admin, AdminShowDTO.class);
+  }
+
 }

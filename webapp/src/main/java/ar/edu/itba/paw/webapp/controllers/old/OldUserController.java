@@ -25,9 +25,9 @@ import javax.validation.Valid;
 import java.util.Locale;
 
 @Controller
-public class UserController {
+public class OldUserController {
 
-	private final static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
+	private final static Logger LOGGER = LoggerFactory.getLogger(OldUserController.class);
 	private static final String UNAUTHORIZED = "redirect:/errors/403";
 
 	@Autowired
@@ -124,62 +124,62 @@ public class UserController {
 		return new ModelAndView("redirect:" + referrer);
 	}
 
-	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
-	public ModelAndView changePassword(
-			@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
-			final BindingResult errors,
-			final RedirectAttributes redirectAttributes) {
-		LOGGER.info("User {} is about to change password", passwordForm.getDni());
-		passwordValidator.validate(passwordForm, errors);
-
-		if (errors.hasErrors()){
-			LOGGER.warn("User {} could not change password due to {} [POST]", passwordForm.getDni(), errors.getAllErrors());
-
-			/* set alert */
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
-			/* --------- */
-
-			return changePassword(passwordForm, redirectAttributes);
-		}
-
-		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		if (auth == null) {
-			LOGGER.warn("Someone tried to change a password and auth was null [POST]");
-			return new ModelAndView("redirect:/errors/401");
-		}
-		UserSessionDetails user = (UserSessionDetails) auth.getPrincipal();
-
-		/* Check that the DNI is still valid and was not modified */
-		if (!String.valueOf(passwordForm.getDni()).equals(user.getUsername())) {
-			LOGGER.warn("Someone tried to change a password from another user.");
-			LOGGER.warn("Logged user's dni: {}", user.getUsername());
-			LOGGER.warn("Victim's dni: {}", passwordForm.getDni());
-
-			return new ModelAndView("redirect:/errors/401");
-		}
-
-		final boolean done = userService.changePassword(
-				passwordForm.getDni(),
-				passwordForm.getCurrentPassword(),
-				passwordForm.getNewPassword(),
-				passwordForm.getRepeatNewPassword());
-
-		if (!done) {
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(
-					"INVALID_PASSWORD", null, Locale.getDefault()));
-			LOGGER.warn("User {} could not change Password, Result = {}", passwordForm.getDni(), done);
-		} else {
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
-					null,
-					Locale.getDefault()));
-			LOGGER.info("User {} changed Password successfully", passwordForm.getDni());
-
-		}
-
-		final String referrer = request.getHeader("referer");
-		return new ModelAndView("redirect:" + referrer);
-	}
+//	@RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
+//	public ModelAndView changePassword(
+//			@Valid @ModelAttribute("changePasswordForm") final PasswordForm passwordForm,
+//			final BindingResult errors,
+//			final RedirectAttributes redirectAttributes) {
+//		LOGGER.info("User {} is about to change password", passwordForm.getDni());
+//		passwordValidator.validate(passwordForm, errors);
+//
+//		if (errors.hasErrors()){
+//			LOGGER.warn("User {} could not change password due to {} [POST]", passwordForm.getDni(), errors.getAllErrors());
+//
+//			/* set alert */
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+//			/* --------- */
+//
+//			return changePassword(passwordForm, redirectAttributes);
+//		}
+//
+//		final Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		if (auth == null) {
+//			LOGGER.warn("Someone tried to change a password and auth was null [POST]");
+//			return new ModelAndView("redirect:/errors/401");
+//		}
+//		UserSessionDetails user = (UserSessionDetails) auth.getPrincipal();
+//
+//		/* Check that the DNI is still valid and was not modified */
+//		if (!String.valueOf(passwordForm.getDni()).equals(user.getUsername())) {
+//			LOGGER.warn("Someone tried to change a password from another user.");
+//			LOGGER.warn("Logged user's dni: {}", user.getUsername());
+//			LOGGER.warn("Victim's dni: {}", passwordForm.getDni());
+//
+//			return new ModelAndView("redirect:/errors/401");
+//		}
+//
+//		final boolean done = userService.changePassword(
+//				passwordForm.getDni(),
+//				passwordForm.getCurrentPassword(),
+//				passwordForm.getNewPassword(),
+//				passwordForm.getRepeatNewPassword());
+//
+//		if (!done) {
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage(
+//					"INVALID_PASSWORD", null, Locale.getDefault()));
+//			LOGGER.warn("User {} could not change Password, Result = {}", passwordForm.getDni(), done);
+//		} else {
+//			redirectAttributes.addFlashAttribute("alert", "success");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("change_pwd_success",
+//					null,
+//					Locale.getDefault()));
+//			LOGGER.info("User {} changed Password successfully", passwordForm.getDni());
+//
+//		}
+//
+//		final String referrer = request.getHeader("referer");
+//		return new ModelAndView("redirect:" + referrer);
+//	}
 }

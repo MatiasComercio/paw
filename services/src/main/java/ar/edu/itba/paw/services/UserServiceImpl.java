@@ -37,10 +37,7 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	@Override
-	public boolean changePassword(final int dni, final String prevPassword, final String newPassword, final String repeatNewPassword) {
-//		if (!newPassword.equals(repeatNewPassword)) {
-//			return Result.PASSWORDS_DO_NOT_MATCH;
-//		}
+	public boolean changePassword(final int dni, final String prevPassword, final String newPassword) {
 		return userDao.changePassword(dni, prevPassword, newPassword);
 	}
 

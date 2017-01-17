@@ -4,17 +4,14 @@ import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.webapp.auth.UserSessionDetails;
-import ar.edu.itba.paw.webapp.forms.AdminFilterForm;
 import ar.edu.itba.paw.webapp.forms.AdminForm;
 import ar.edu.itba.paw.webapp.forms.ResetPasswordForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,8 +30,8 @@ import java.util.Locale;
  */
 
 @Controller
-public class AdminController {
-	private final static Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
+public class OldAdminController {
+	private final static Logger LOGGER = LoggerFactory.getLogger(OldAdminController.class);
 	private static final String ADMINS_SECTION = "admins";
 	private static final String UNAUTHORIZED = "redirect:/errors/403";
 	private static final String NOT_FOUND = "404";
@@ -64,36 +61,36 @@ public class AdminController {
 		return new ResetPasswordForm();
 	}
 
-	@RequestMapping(value = "/admins", method = RequestMethod.GET)
-	public ModelAndView admins(@Valid @ModelAttribute("adminFilterForm") final AdminFilterForm adminFilterForm,
-	                                final BindingResult errors,
-	                                final Model model,
-	                           @ModelAttribute("user") UserSessionDetails loggedUser) {
-		if (!loggedUser.hasAuthority("VIEW_ADMINS")) {
-			LOGGER.warn("User {} tried to list the admins and doesn't have VIEW_ADMINS authority [GET]", loggedUser);
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		final AdminFilter adminFilter = new AdminFilter.AdminFilterBuilder()
-				.dni(adminFilterForm.getDni())
-				.firstName(adminFilterForm.getFirstName())
-				.lastName(adminFilterForm.getLastName())
-				.build();
-
-		final ModelAndView mav = new ModelAndView("admins");
-
-		final List<Admin> admins = loadAdminsByFilter(mav, errors, adminFilter);
-		if (admins == null) {
-			return new ModelAndView(NOT_FOUND);
-		}
-
-		mav.addObject("admins", admins);
-		mav.addObject("adminFilterFormAction", "/admins");
-
-		/*+++ximprove */
-		loadEnableDisableInscription(mav);
-		return mav;
-	}
+//	@RequestMapping(value = "/admins", method = RequestMethod.GET)
+//	public ModelAndView admins(@Valid @ModelAttribute("adminFilterForm") final AdminFilterForm adminFilterForm,
+//	                                final BindingResult errors,
+//	                                final Model model,
+//	                           @ModelAttribute("user") UserSessionDetails loggedUser) {
+//		if (!loggedUser.hasAuthority("VIEW_ADMINS")) {
+//			LOGGER.warn("User {} tried to list the admins and doesn't have VIEW_ADMINS authority [GET]", loggedUser);
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		final AdminFilter adminFilter = new AdminFilter.AdminFilterBuilder()
+//				.dni(adminFilterForm.getDni())
+//				.firstName(adminFilterForm.getFirstName())
+//				.lastName(adminFilterForm.getLastName())
+//				.build();
+//
+//		final ModelAndView mav = new ModelAndView("admins");
+//
+//		final List<Admin> admins = loadAdminsByFilter(mav, errors, adminFilter);
+//		if (admins == null) {
+//			return new ModelAndView(NOT_FOUND);
+//		}
+//
+//		mav.addObject("admins", admins);
+//		mav.addObject("adminFilterFormAction", "/admins");
+//
+//		/*+++ximprove */
+//		loadEnableDisableInscription(mav);
+//		return mav;
+//	}
 
 	private void loadEnableDisableInscription(final ModelAndView mav) {
 		if(adminService.isInscriptionEnabled()){
@@ -113,131 +110,131 @@ public class AdminController {
 		}
 	}
 
-	/* +++xcheck: if errors are displayed; not redirecting attributes on post */
-	@RequestMapping(value = "/admins/add_admin", method = RequestMethod.GET)
-	public ModelAndView adminsAddAdminG(
-			@ModelAttribute("adminForm") final AdminForm adminForm,
-			final RedirectAttributes redirectAttributes,
-			@ModelAttribute("user") UserSessionDetails loggedUser) {
-		if (!loggedUser.hasAuthority("ADD_ADMIN")) {
-			LOGGER.warn("The user {} is trying to add an admin and doesn't have authority ADD_ADMIN [GET]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		ModelAndView mav = new ModelAndView("addUser");
-		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
-		mav.addObject("section2", "addAdmin");
-
-		/*+++ximprove */
-		loadEnableDisableInscription(mav);
-		return mav;
-	}
-
-	@RequestMapping(value = "/admins/add_admin", method = RequestMethod.POST)
-	public ModelAndView adminsAddAdminP(
-			@Valid @ModelAttribute("adminForm") AdminForm adminForm,
-			final BindingResult errors,
-			final RedirectAttributes redirectAttributes,
-			@ModelAttribute("user") UserSessionDetails loggedUser) {
-
-		if (!loggedUser.hasAuthority("ADD_ADMIN")) {
-			LOGGER.warn("The user {} is trying to add an admin and doesn't have authority ADD_ADMIN [POST]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-		if (errors.hasErrors()){
-			LOGGER.warn("The user {} is trying to add an admin and there was an error = {}", loggedUser, errors.getAllErrors());
-			/* set alert */
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
-			/* --------- */
-			return adminsAddAdminG(adminForm, redirectAttributes, loggedUser);
-		}
-		Admin admin = adminForm.build();
-		boolean done;
-		try {
-			done = adminService.create(admin);
-		} catch (final DataIntegrityViolationException e) {
-			done = false;
-		}
-		if(!done){
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("USER_EXISTS_DNI", null, Locale.getDefault()));
-			LOGGER.warn("User {} could not add admin, Result = {}", adminForm.getDni(), done);
-			return adminsAddAdminG(adminForm, redirectAttributes, loggedUser);
-		}
-		redirectAttributes.addFlashAttribute("alert", "success");
-		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addAdmin_success",
-				null,
-				Locale.getDefault()));
-		return new ModelAndView("redirect:/admins/");
-	}
-
-	@RequestMapping(value= "/admins/disable_inscriptions", method=RequestMethod.POST)
-	public ModelAndView disableInscriptions(RedirectAttributes redirectAttributes,
-	                                        @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-//		+++xtodo: Enable this when authorities can be dynamically reloaded
-//		if (!loggedUser.hasAuthority("DISABLE_INSCRIPTION")) {
-//			LOGGER.warn("The user {} is trying to disable inscription and and doesn't have authority DISABLE_INSCRIPTION [POST]", loggedUser.getDni());
+//	/* +++xcheck: if errors are displayed; not redirecting attributes on post */
+//	@RequestMapping(value = "/admins/add_admin", method = RequestMethod.GET)
+//	public ModelAndView adminsAddAdminG(
+//			@ModelAttribute("adminForm") final AdminForm adminForm,
+//			final RedirectAttributes redirectAttributes,
+//			@ModelAttribute("user") UserSessionDetails loggedUser) {
+//		if (!loggedUser.hasAuthority("ADD_ADMIN")) {
+//			LOGGER.warn("The user {} is trying to add an admin and doesn't have authority ADD_ADMIN [GET]", loggedUser.getDni());
 //			return new ModelAndView(UNAUTHORIZED);
 //		}
-		/* tmp fix */
-		if (!loggedUser.hasAuthority("ADMIN")) {
-			LOGGER.warn("The user {} is trying to disable inscription and and doesn't have authority ADMIN [POST]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		boolean done = adminService.disableInscriptions();
-		if(!done){
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKWOWN", null, Locale.getDefault()));
-			LOGGER.warn("User {} could not disable inscriptions, Result = {}", loggedUser.getDni(), done);
-		} else {
-			LOGGER.info("User {} disabled inscriptions successfully", loggedUser.getDni());
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("disable_inscriptions_success",
-					null,
-					Locale.getDefault()));
-		}
-
-		final String referrer = request.getHeader("referer");
-		return new ModelAndView("redirect:" + referrer);
-	}
-
-	@RequestMapping(value= "/admins/enable_inscriptions", method=RequestMethod.POST)
-	public ModelAndView enableInscriptions(RedirectAttributes redirectAttributes,
-	                                       @ModelAttribute("user") UserSessionDetails loggedUser) {
-
-//		+++xtodo: Enable this when authorities can be dynamically reloaded
-//		if (!loggedUser.hasAuthority("ENABLE_INSCRIPTION")) {
-//			LOGGER.warn("The user {} is trying to enable inscription and and doesn't have authority ENABLE_INSCRIPTION [POST]", loggedUser.getDni());
+//
+//		ModelAndView mav = new ModelAndView("addUser");
+//		HTTPErrorsController.setAlertMessages(mav, redirectAttributes);
+//		mav.addObject("section2", "addAdmin");
+//
+//		/*+++ximprove */
+//		loadEnableDisableInscription(mav);
+//		return mav;
+//	}
+//
+//	@RequestMapping(value = "/admins/add_admin", method = RequestMethod.POST)
+//	public ModelAndView adminsAddAdminP(
+//			@Valid @ModelAttribute("adminForm") AdminForm adminForm,
+//			final BindingResult errors,
+//			final RedirectAttributes redirectAttributes,
+//			@ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+//		if (!loggedUser.hasAuthority("ADD_ADMIN")) {
+//			LOGGER.warn("The user {} is trying to add an admin and doesn't have authority ADD_ADMIN [POST]", loggedUser.getDni());
 //			return new ModelAndView(UNAUTHORIZED);
 //		}
+//		if (errors.hasErrors()){
+//			LOGGER.warn("The user {} is trying to add an admin and there was an error = {}", loggedUser, errors.getAllErrors());
+//			/* set alert */
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("formWithErrors", null, Locale.getDefault()));
+//			/* --------- */
+//			return adminsAddAdminG(adminForm, redirectAttributes, loggedUser);
+//		}
+//		Admin admin = adminForm.build();
+//		boolean done;
+//		try {
+//			done = adminService.create(admin);
+//		} catch (final DataIntegrityViolationException e) {
+//			done = false;
+//		}
+//		if(!done){
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("USER_EXISTS_DNI", null, Locale.getDefault()));
+//			LOGGER.warn("User {} could not add admin, Result = {}", adminForm.getDni(), done);
+//			return adminsAddAdminG(adminForm, redirectAttributes, loggedUser);
+//		}
+//		redirectAttributes.addFlashAttribute("alert", "success");
+//		redirectAttributes.addFlashAttribute("message", messageSource.getMessage("addAdmin_success",
+//				null,
+//				Locale.getDefault()));
+//		return new ModelAndView("redirect:/admins/");
+//	}
 
-		/* tmp fix */
-		if (!loggedUser.hasAuthority("ADMIN")) {
-			LOGGER.warn("The user {} is trying to enable inscription and and doesn't have authority ADMIN [POST]", loggedUser.getDni());
-			return new ModelAndView(UNAUTHORIZED);
-		}
-
-		boolean done = adminService.enableInscriptions();
-
-		if(!done){
-			LOGGER.warn("User {} could not enable inscriptions, Result = {}", loggedUser.getDni(), done);
-			redirectAttributes.addFlashAttribute("alert", "danger");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
-		}
-		else{
-			LOGGER.info("User {} disabled inscriptions successfully", loggedUser.getDni());
-			redirectAttributes.addFlashAttribute("alert", "success");
-			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("enable_inscriptions_success",
-					null,
-					Locale.getDefault()));
-		}
-
-		final String referrer = request.getHeader("referer");
-		return new ModelAndView("redirect:" + referrer);
-	}
+//	@RequestMapping(value= "/admins/disable_inscriptions", method=RequestMethod.POST)
+//	public ModelAndView disableInscriptions(RedirectAttributes redirectAttributes,
+//	                                        @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+////		+++xtodo: Enable this when authorities can be dynamically reloaded
+////		if (!loggedUser.hasAuthority("DISABLE_INSCRIPTION")) {
+////			LOGGER.warn("The user {} is trying to disable inscription and and doesn't have authority DISABLE_INSCRIPTION [POST]", loggedUser.getDni());
+////			return new ModelAndView(UNAUTHORIZED);
+////		}
+//		/* tmp fix */
+//		if (!loggedUser.hasAuthority("ADMIN")) {
+//			LOGGER.warn("The user {} is trying to disable inscription and and doesn't have authority ADMIN [POST]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		boolean done = adminService.disableInscriptions();
+//		if(!done){
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKWOWN", null, Locale.getDefault()));
+//			LOGGER.warn("User {} could not disable inscriptions, Result = {}", loggedUser.getDni(), done);
+//		} else {
+//			LOGGER.info("User {} disabled inscriptions successfully", loggedUser.getDni());
+//			redirectAttributes.addFlashAttribute("alert", "success");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("disable_inscriptions_success",
+//					null,
+//					Locale.getDefault()));
+//		}
+//
+//		final String referrer = request.getHeader("referer");
+//		return new ModelAndView("redirect:" + referrer);
+//	}
+//
+//	@RequestMapping(value= "/admins/enable_inscriptions", method=RequestMethod.POST)
+//	public ModelAndView enableInscriptions(RedirectAttributes redirectAttributes,
+//	                                       @ModelAttribute("user") UserSessionDetails loggedUser) {
+//
+////		+++xtodo: Enable this when authorities can be dynamically reloaded
+////		if (!loggedUser.hasAuthority("ENABLE_INSCRIPTION")) {
+////			LOGGER.warn("The user {} is trying to enable inscription and and doesn't have authority ENABLE_INSCRIPTION [POST]", loggedUser.getDni());
+////			return new ModelAndView(UNAUTHORIZED);
+////		}
+//
+//		/* tmp fix */
+//		if (!loggedUser.hasAuthority("ADMIN")) {
+//			LOGGER.warn("The user {} is trying to enable inscription and and doesn't have authority ADMIN [POST]", loggedUser.getDni());
+//			return new ModelAndView(UNAUTHORIZED);
+//		}
+//
+//		boolean done = adminService.enableInscriptions();
+//
+//		if(!done){
+//			LOGGER.warn("User {} could not enable inscriptions, Result = {}", loggedUser.getDni(), done);
+//			redirectAttributes.addFlashAttribute("alert", "danger");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("ERROR_UNKNOWN", null, Locale.getDefault()));
+//		}
+//		else{
+//			LOGGER.info("User {} disabled inscriptions successfully", loggedUser.getDni());
+//			redirectAttributes.addFlashAttribute("alert", "success");
+//			redirectAttributes.addFlashAttribute("message", messageSource.getMessage("enable_inscriptions_success",
+//					null,
+//					Locale.getDefault()));
+//		}
+//
+//		final String referrer = request.getHeader("referer");
+//		return new ModelAndView("redirect:" + referrer);
+//	}
 
 	@RequestMapping("/admins/{dni}/info")
 	public ModelAndView viewAdmin (
