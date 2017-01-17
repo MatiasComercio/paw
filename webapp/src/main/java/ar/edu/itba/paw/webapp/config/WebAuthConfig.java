@@ -58,8 +58,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
 				.and().authorizeRequests()
 				.antMatchers("/login").anonymous()
-				.antMatchers("/admin/**").hasRole("VIEW_ADMIN")
-				.antMatchers("/admins/**").hasRole("VIEW_ADMINS")
+//				.antMatchers("/admin/**").hasRole("VIEW_ADMIN")
+//				.antMatchers("/admins/**").hasRole("VIEW_ADMINS")
 //				.antMatchers("/**").authenticated() // TODO: Uncomment
 
 				// configuration when updating database; // for maintenance

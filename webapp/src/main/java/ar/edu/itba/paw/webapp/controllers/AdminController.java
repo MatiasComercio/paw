@@ -4,19 +4,27 @@ import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.webapp.models.AdminDTO;
+import ar.edu.itba.paw.webapp.models.AdminNewDTO;
 import ar.edu.itba.paw.webapp.models.AdminsList;
+import ar.edu.itba.paw.webapp.models.InscriptionSwitchDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static javax.ws.rs.core.Response.created;
+import static javax.ws.rs.core.Response.noContent;
 import static javax.ws.rs.core.Response.ok;
 
 @Component
@@ -33,12 +41,17 @@ public class AdminController {
   @Autowired
   private DTOEntityMapper mapper;
 
+  @Context
+  private UriInfo uriInfo;
+
   /** API Methods **/
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response adminsIndex(@QueryParam("dni") final Integer dni,
+                              @Size(max=50)
                               @QueryParam("firstName") final String firstName,
+                              @Size(max=50)
                               @QueryParam("lastName") final String lastName) {
     final AdminFilter adminFilter = new AdminFilter.AdminFilterBuilder()
             .dni(dni)
@@ -47,11 +60,34 @@ public class AdminController {
             .build();
 
     final List<Admin> admins = as.getByFilter(adminFilter);
-
     final List<AdminDTO> adminsDTOList = admins.stream().map(admin -> mapper.converToAdminDTO(admin)).collect(Collectors.toList());
 
-    System.out.println(adminsDTOList);
-
     return ok(new AdminsList(adminsDTOList)).build();
+  }
+
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response adminsNew(@Valid AdminNewDTO adminNewDTO) {
+    final Admin admin = mapper.convertToAdmin(adminNewDTO);
+
+    if(!as.create(admin)) {
+      return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+    final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(admin.getDni())).build();
+
+    return created(uri).build();
+  }
+
+  @POST
+  @Path("/inscriptions/")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response adminsInscriptionsSwitch(@Valid InscriptionSwitchDTO inscriptionSwitchDTO) {
+    if(inscriptionSwitchDTO.isEnabled()) {
+      as.enableInscriptions();
+    } else {
+      as.disableInscriptions();
+    }
+
+    return noContent().build();
   }
 }
