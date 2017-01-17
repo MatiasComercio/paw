@@ -94,7 +94,11 @@ public class DTOEntityMapper {
     return modelMapper.map(admin, AdminDTO.class);
   }
 
-  public Admin convertToAdmin(AdminNewDTO adminNewDTO) {
+  Admin convertToAdmin(AdminNewDTO adminNewDTO) {
     return modelMapper.map(adminNewDTO, Admin.class);
+  }
+
+  AdminShowDTO converToAdminShowDTO(final Admin admin) {
+    return modelMapper.map(admin, AdminShowDTO.class);
   }
 }

@@ -3,14 +3,12 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
-import ar.edu.itba.paw.webapp.models.AdminDTO;
-import ar.edu.itba.paw.webapp.models.AdminNewDTO;
-import ar.edu.itba.paw.webapp.models.AdminsList;
-import ar.edu.itba.paw.webapp.models.InscriptionSwitchDTO;
+import ar.edu.itba.paw.webapp.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
@@ -23,9 +21,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static javax.ws.rs.core.Response.created;
-import static javax.ws.rs.core.Response.noContent;
-import static javax.ws.rs.core.Response.ok;
+import static javax.ws.rs.core.Response.*;
 
 @Component
 @Path("/admins")
@@ -76,6 +72,19 @@ public class AdminController {
     final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(admin.getDni())).build();
 
     return created(uri).build();
+  }
+
+  @GET
+  @Path("/{dni}")
+  public Response adminsShow(@PathParam("dni") final int dni) {
+    final Admin admin = as.getByDni(dni);
+
+    if(admin == null) {
+      return status(Status.NOT_FOUND).build();
+    }
+    final AdminShowDTO adminShowDTO = mapper.converToAdminShowDTO(admin);
+
+    return ok(adminShowDTO).build();
   }
 
   @POST
