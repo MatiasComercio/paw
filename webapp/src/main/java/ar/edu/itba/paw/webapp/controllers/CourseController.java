@@ -4,7 +4,6 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalInscription;
-import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -13,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.print.attribute.standard.Media;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -119,7 +119,7 @@ public class CourseController {
   @Path("/{courseId}")
   public Response coursesDestroy(@PathParam("courseId") final String courseId) {
     if(!cs.deleteCourse(courseId)) {
-      return Response.status(Status.CONFLICT).build(); //TODO: check what to return
+      return Response.status(Status.CONFLICT).build(); //TODO: check what to return -- Look at PRECONDITION_FAILED
     }
 
     return Response.noContent().build();
@@ -178,6 +178,7 @@ public class CourseController {
 
   @POST
   @Path("/{courseId}/correlatives")
+  @Consumes(MediaType.APPLICATION_JSON)
   public Response coursesCorrelativesNew(@PathParam("courseId") final String courseId,
                                          @Valid final CorrelativeDTO correlativeDTO) {
     if(!cs.addCorrelative(courseId, correlativeDTO.getCorrelativeId())) {

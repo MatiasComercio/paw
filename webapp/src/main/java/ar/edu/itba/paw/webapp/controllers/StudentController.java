@@ -10,6 +10,7 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.models.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -108,9 +109,7 @@ public class StudentController {
     final Student partialStudent = mapper.convertToStudent(studentUpdateDTO);
     ss.update(partialStudent, oldStudent);
 
-    // TODO: Why return the resource location? Can the ID (docket) change?
-    final URI uri = uriInfo.getAbsolutePathBuilder().build();
-    return ok(uri).build();
+    return noContent().build();
   }
 
   @DELETE
@@ -184,6 +183,8 @@ public class StudentController {
           @PathParam("docket") final Integer docket,
           @Valid InscriptionDTO inscriptionDTO){
 
+    //TODO securityContext.getAuthentication().getAuthorities() ADD_INSCRIPTIONS see if we can put it in WebAuthConfig as an antmatcher
+
     final Student student = ss.getByDocket(docket);
     if(student == null){
       return status(Status.NOT_FOUND).build();
@@ -210,6 +211,8 @@ public class StudentController {
   public Response studentsCoursesDestroy(
           @PathParam("docket") final Integer docket,
           @Valid InscriptionDTO inscriptionDTO){
+
+    //TODO securityContext.getAuthentication().getAuthorities() DELETE_INSCRIPTIONS
 
     final Student student = ss.getByDocket(docket);
     if(student == null){
@@ -298,7 +301,6 @@ public class StudentController {
 
     int gradeId = ss.addGrade(grade);
 
-    // TODO: If we return Created, what location should we return? Hibernate's id?
     // (Same goes for an inscription)
     final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(gradeId)).build();
     return created(uri).build();

@@ -37,8 +37,6 @@ public class UserController {
                                       @Valid PasswordForm passwordForm) {
     passwordForm.setDni(dni);
 
-    //TODO: add passwordConfirmation validation (the current one will not work)
-
     if(!us.changePassword(dni, passwordForm.getCurrentPassword(), passwordForm.getNewPassword())) {
       return status(Status.BAD_REQUEST).build();
     }
