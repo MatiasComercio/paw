@@ -1,10 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
-import ar.edu.itba.paw.models.Address;
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.Grade;
-import ar.edu.itba.paw.models.TranscriptGrade;
-import ar.edu.itba.paw.models.FinalInscription;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.webapp.models.*;

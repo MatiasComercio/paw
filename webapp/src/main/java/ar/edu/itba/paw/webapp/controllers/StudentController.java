@@ -10,7 +10,6 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import ar.edu.itba.paw.webapp.models.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;

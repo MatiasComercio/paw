@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.models;
 
 import ar.edu.itba.paw.models.FinalInscription;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
