@@ -17,11 +17,11 @@ public interface CourseDao {
 
     /**
      * Update a course
-     * @param id Id of the old course
+     * @param courseId Id of the old course
      * @param course Modified course
      * @return The result code of the insertion
      */
-    boolean update(int id, Course course);
+    boolean update(String courseId, Course course);
 
     /**
      * Get the course identified by an ID
@@ -30,14 +30,19 @@ public interface CourseDao {
      */
     Course getById(int id);
 
-
+    /**
+     * Gets the desired course by the course's ID code
+     * @param courseID the course's ID code
+     * @return the course if it exists; null otherwise.
+     */
+    Course getByCourseID(String courseID);
 
     /**
      * Gets the desired course by the identifier with the inscribed students
-     * @param id the id of the course
+     * @param courseId the id of the course
      * @return the course created, with a list of the inscribed students
      */
-    Course getCourseStudents(int id);
+    Course getCourseStudents(String courseId);
 
     /**
      * Get all the courses in the storage
@@ -55,21 +60,18 @@ public interface CourseDao {
 
     /**
      * Attempts to delete the course with the given id
-     * @param id of the course to delete
-     * @return OK if the course was deleted;
-     *         COURSE_EXISTS_INSCRIPTION if there are inscriptions in that course;
-     *         COURSE_EXISTS_GRADE if there grades tied to the course;
-     *         INVALID_INPUT_PARAMETERS if the ID is invalid;
-     *         ERROR_UNKNOWN else;
+     * @param courseId of the course to delete
+     * @return true if the course was deleted;
+     *         false in other case;
      */
-    boolean deleteCourse(int id);
+    boolean deleteCourse(String courseId);
 
     /**
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
      * given course)
      */
-    List<Integer> getCorrelatives(int courseId);
+    List<String> getCorrelatives(String courseId);
 
     /**
      * Check if a correlativity loop is formed
@@ -79,7 +81,7 @@ public interface CourseDao {
      * @return The boolean value indicating if the correlativity loop
      * is generated.
      */
-    boolean checkCorrelativityLoop(int id, int correlativeId);
+    boolean checkCorrelativityLoop(String id, String correlativeId);
 
     /**
      * Persist a correlativity
@@ -88,33 +90,33 @@ public interface CourseDao {
      * @param correlativeId The id of the course correlative course
      * @return The insertion result.
      */
-    boolean addCorrelativity(int id, int correlativeId);
+    boolean addCorrelativity(String id, String correlativeId);
 
     /**
      * Check whether a course exists or not
      * @param id The id of the course;
      * @return The boolean indicating if the course exists
      */
-    boolean courseExists(int id);
+    boolean courseExists(String id);
 
     /**
      * @param courseId The id of the course.
      * @return The boolean indicating if the given course has any enrolled students.
      */
-    boolean inscriptionExists(int courseId);
+    boolean inscriptionExists(String courseId);
 
     /**
      * @param courseId The id of the course.
      * @return The boolean indicating whether there are any students with grades of the given course.
      */
-    boolean gradeExists(int courseId);
+    boolean gradeExists(String courseId);
 
     /**
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that require this course to enroll a student in the
      * given course)
      */
-    List<Integer> getUpperCorrelatives(int courseId);
+    List<String> getUpperCorrelatives(String courseId);
 
     /**
      *
@@ -122,7 +124,7 @@ public interface CourseDao {
      * @param correlativeId The id of the correlative for the given course.
      * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
      */
-    boolean deleteCorrelative(int courseId, int correlativeId);
+    boolean deleteCorrelative(String courseId, String correlativeId);
 
     /**
      * Get the number of semesters.
@@ -136,7 +138,7 @@ public interface CourseDao {
      * @return List of correlatives for the given course (i.d. The courses that are required to enroll a student in the
      * given course)
      */
-    List<Course> getCorrelativeCourses(int courseId);
+    List<Course> getCorrelativeCourses(String courseId);
 
     /**
      * Get the total credits of the plan.
@@ -146,7 +148,7 @@ public interface CourseDao {
 
     /* +++ xtest */
     /* +++ xdocument */
-    Course getStudentsThatPassedCourse(int id);
+    Course getStudentsThatPassedCourse(String id);
 
 
     /**

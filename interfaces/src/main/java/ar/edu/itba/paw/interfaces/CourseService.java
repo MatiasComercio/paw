@@ -19,11 +19,11 @@ public interface CourseService {
 
     /**
      * Update a course
-     * @param id Id the previous course.
+     * @param courseId Id the previous course.
      * @param course Modified course.
      * @return The result code of the insertion.
      */
-    boolean update(int id, Course course);
+    boolean update(String courseId, Course course);
 
 	/**
      * Get all the current available courses
@@ -39,11 +39,18 @@ public interface CourseService {
     Course getById(int id);
 
     /**
+     * Gets the desired course by the course's ID code
+     * @param courseID the course's ID code
+     * @return the course if it exists; null otherwise.
+     */
+    Course getByCourseID(String courseID);
+
+    /**
      * Gets the desired course by the identifier with the inscribed students
      * @param id the id of the course
      * @return the course created, with a list of the inscribed students
      */
-    Course getCourseStudents(int id);
+    Course getCourseStudents(String id);
 
     /**
      * Gets the courses that comply with the list of filters
@@ -56,14 +63,10 @@ public interface CourseService {
     /**
      * Attempts to delete the course with the given id
      * @param id of the course to delete
-     * @return OK if the course was deleted;
-     *         ERROR_ID_OUT_OF_BOUNDS if the id is not within the required limits;
-     *         COURSE_EXISTS_INSCRIPTION if there are inscriptions in that course;
-     *         COURSE_EXISTS_GRADE if there grades tied to the course;
-     *         INVALID_INPUT_PARAMETERS if the ID is invalid;
-     *         ERROR_UNKNOWN else;
+     * @return true if the course was deleted;
+     *         false in other case;
      */
-    boolean deleteCourse(int id);
+    boolean deleteCourse(String id);
 
     /**
      * Gets the desired course by the identifier with the inscribed students,
@@ -72,32 +75,32 @@ public interface CourseService {
      * @param studentFilter the filter to be applied to the student
      * @return the list of students enrolled in the given course
      */
-    List<Student> getCourseStudents(int id, StudentFilter studentFilter);
+    List<Student> getCourseStudents(String id, StudentFilter studentFilter);
 
     /**
      * @param courseId The id of the course.
      * @return The id's of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
      * given course)
      */
-    List<Integer> getCorrelatives(int courseId);
+    List<String> getCorrelatives(String courseId);
 
     /**
      * Make the course corresponding to the correlativeId necessary
      * to take the course corresponding to the id. Checks that no correlativity
      * loop is generated.
      *
-     * @param id The id of the course to which a correlative course is going to be added
+     * @param courseId The id of the course to which a correlative course is going to be added
      * @param correlativeId The id of the correlative course
      * @return The result indicating if the action could be done.
      */
-    boolean addCorrelative(int id, int correlativeId);
+    boolean addCorrelative(String courseId, String correlativeId);
 
     /**
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that require this course to enroll a student in the
      * given course)
      */
-    List<Integer> getUpperCorrelatives(int courseId);
+    List<String> getUpperCorrelatives(String courseId);
 
     /**
      *
@@ -105,14 +108,14 @@ public interface CourseService {
      * @param correlativeId The id of the correlative for the given course.
      * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
      */
-    boolean deleteCorrelative(int courseId, int correlativeId);
+    boolean deleteCorrelative(String courseId, String correlativeId);
 
     /**
      *
      * @param courseId Given the id of a course, delete all the correlative
      * @return The result code of the operation
      */
-    boolean deleteCourseCorrelatives(int courseId);
+    boolean deleteCourseCorrelatives(String courseId);
 
     /**
      * Get the number of semesters.
@@ -126,14 +129,14 @@ public interface CourseService {
      * @param courseFilter The course's filter. If null, no filter is applied.
      * @return A list of correlatives courses to the given course, with the filter applied.
      */
-    List<Course> getCorrelativesByFilter(int courseId, CourseFilter courseFilter);
+    List<Course> getCorrelativesByFilter(String courseId, CourseFilter courseFilter);
 
     /**
      *
      * @param courseId The id of the course
      * @return A list of the courses that are available to be added as correlatives for the given course
      */
-    List<Course> getAvailableAddCorrelatives(int courseId, CourseFilter courseFilter);
+    List<Course> getAvailableAddCorrelatives(String courseId, CourseFilter courseFilter);
 
     /**
      * Get the total credits of the plan.
@@ -143,7 +146,7 @@ public interface CourseService {
 
     /* +++xtest */
     /* +++xdocument */
-	Course getStudentsThatPassedCourse(int id, StudentFilter studentFilter);
+	Course getStudentsThatPassedCourse(String courseId, StudentFilter studentFilter);
 
     /**
      * Get the open final inscriptions corresponding to a course.

@@ -1,10 +1,6 @@
 package ar.edu.itba.paw.interfaces;
 
-import ar.edu.itba.paw.models.Course;
-import ar.edu.itba.paw.models.FinalGrade;
-import ar.edu.itba.paw.models.FinalInscription;
-import ar.edu.itba.paw.models.Grade;
-import ar.edu.itba.paw.models.Procedure;
+import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
 
@@ -80,13 +76,17 @@ public interface StudentDao {
 	boolean deleteStudent(int docket);
 
 	/**
+		*
+		* @param address The new address to be persisted
+		*/
+	void editAddress(Address address);
+
+	/**
 	 * Add the grade for a given student and course;
 	 * @param grade which contains the student docket, the course id and the grade
-	 * @return OK if the grade was added;
-	 * 		INVALID_INPUT_PARAMETERS if one or more parameters are invalid;
-	 * 		ERROR_UNKNOWN else;
+	 * @return the created grade's id
 	 */
-	boolean addGrade(Grade grade);
+	int addGrade(Grade grade);
 
 	/**
 	 * Add the final grade for a given student and course;
@@ -112,16 +112,15 @@ public interface StudentDao {
 	 * @param courseId The course id
 	 * @return a Result object containing information of the operation carried out
 	 */
-	boolean enroll(int studentDocket, int courseId);
+	boolean enroll(int studentDocket, String courseId);
 
 	/**
 	 * Unenrolls the student with the given docket of the course with the specified id.
 	 *
 	 * @param studentDocket The student's docket
 	 * @param courseId The course id
-	 * @return a Result object containing information of the operation carried out
 	 */
-	boolean unenroll(int studentDocket, int courseId);
+	void unenroll(int studentDocket, int courseId);
 
 	/**
 	 * Gets the collection of courses the student already approved.
@@ -158,7 +157,7 @@ public interface StudentDao {
 
 	/* +++xtest */
 	/* +++xdocument */
-	List<Student> getStudentsPassed(int id);
+	List<Student> getStudentsPassed(String courseId);
 
 	/**
 	 *

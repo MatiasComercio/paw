@@ -70,6 +70,9 @@ public class StudentServiceImpl implements StudentService {
 		if (student.getEmail() == null || Objects.equals(student.getEmail(), "")) {
 			student.setEmail(userService.createEmail(student));
 		}
+		if(student.getAddress() != null){
+			student.getAddress().setDni(student.getDni());
+		}
 		return studentDao.create(student);
 	}
 
@@ -81,12 +84,10 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean addGrade(final Grade grade) {
-		boolean done = studentDao.addGrade(grade);
-		if (done) {
-			done = studentDao.unenroll(grade.getStudentDocket(), grade.getCourseId());
-		}
-		return done;
+	public int addGrade(final Grade grade) {
+		int id = studentDao.addGrade(grade);
+		studentDao.unenroll(grade.getStudentDocket(), grade.getCourseId());
+		return id;
 	}
 
 	@Transactional
@@ -97,32 +98,65 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean update(final int docket, final Student student) {
+	public boolean update(final Student student, final Student oldStudent) {
+
+		/* Set Remaining information that cannot be updated by the user via this method */
+		student.setDocket(oldStudent.getDocket());
+		student.setId_seq(oldStudent.getId_seq());
+		student.setAddress(oldStudent.getAddress());
+		if(student.getAddress() != null){
+			student.getAddress().setDni(student.getDni());
+		}
+		student.setPassword(oldStudent.getPassword());
+		student.setEmail(oldStudent.getEmail());
+		student.setRole(oldStudent.getRole());
+
+		/* Set student courses */
+		final List<Course> courses = studentDao.getStudentCourses(oldStudent.getDocket());
+		student.setStudentCourses(courses);
+
 		return studentDao.update(student);
 	}
 
-    @Override
-    public int getTotalPlanCredits() {
-        return courseService.getTotalPlanCredits();
-    }
+	@Transactional
+	@Override
+	public void editAddress(final int docket, final Address address) {
+		if(address == null){
+			return;
+		}
+    final Student student = getByDocket(docket);
+    final Address oldAddress = student.getAddress();
+
+		address.setDni(student.getDni());
+    if(oldAddress != null) {
+			address.setId_seq(oldAddress.getId_seq());
+		}
+
+    studentDao.editAddress(address);
+	}
+
+	@Override
+	public int getTotalPlanCredits() {
+		return courseService.getTotalPlanCredits();
+	}
 
 	@Transactional
-    @Override
-    public Integer getPassedCredits(final int docket) {
-        final List<Course> list = (List<Course>) getApprovedCourses(docket);
+	@Override
+	public Integer getPassedCredits(final int docket) {
+		final List<Course> list = (List<Course>) getApprovedCourses(docket);
 
-        Integer amount = 0;
+		Integer amount = 0;
 
-        for (Course course : list) {
-            amount += course.getCredits();
-        }
-        return amount;
-    }
+		for (Course course : list) {
+			amount += course.getCredits();
+		}
+		return amount;
+	}
 
 	@Override
 	public boolean existsEmail(final String email) {
-        return userService.existsEmail(email);
-    }
+		return userService.existsEmail(email);
+	}
 
 	public boolean createProcedure(final Procedure procedure) {
 		return studentDao.createProcedure(procedure);
@@ -137,7 +171,7 @@ public class StudentServiceImpl implements StudentService {
 	}
 
 	@Transactional
-    @Override
+	@Override
 	public Student getGrades(final int docket) {
 		return docket <= 0 ? null : studentDao.getGrades(docket);
 	}
@@ -170,7 +204,7 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean enroll(final int studentDocket, final int courseId) {
+	public boolean enroll(final int studentDocket, final String courseId) {
 		boolean result;
 
 		if (!checkCorrelatives(studentDocket, courseId)) {
@@ -193,17 +227,17 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean checkCorrelatives(final int docket, final int courseId) {
-		List<Integer> correlatives = courseService.getCorrelatives(courseId);
-        List<Integer> approvedCourses = studentDao.getApprovedCoursesId(docket);
+	public boolean checkCorrelatives(final int docket, final String courseId) {
+		List<String> correlatives = courseService.getCorrelatives(courseId);
+		List<Integer> approvedCourses = studentDao.getApprovedCoursesId(docket);
 
-        for (Integer correlative : correlatives){
-            if (!approvedCourses.contains(correlative)){
-                return false;
-            }
-        }
+		for (String correlative : correlatives){
+			if (!approvedCourses.contains(correlative)){
+				return false;
+			}
+		}
 
-        return true;
+		return true;
 	}
 
 	@Transactional
@@ -276,12 +310,9 @@ public class StudentServiceImpl implements StudentService {
 
 	@Transactional
 	@Override
-	public boolean unenroll(final int studentDocket, final int courseId) {
-		final boolean done = studentDao.unenroll(studentDocket, courseId);
-
+	public void unenroll(final int studentDocket, final int courseId) {
+		studentDao.unenroll(studentDocket, courseId);
 		/* notifyUnenrollment(studentDocket, courseId); mail +++xtodo */
-
-		return done;
 	}
 
 	@Transactional
@@ -315,10 +346,10 @@ public class StudentServiceImpl implements StudentService {
 
 		//inscription.getVacancy() < inscription.getMaxVacancy() The inscription should be visible even when full
 		for(FinalInscription inscription : studentDao.getAllFinalInscriptionsFromOpenInstance()){
-            if(studentDao.isApproved(docket, inscription.getCourse().getId()) &&
-					//checks if student is not already included in the current final inscription.
-					!inscription.getStudents().contains(student) && inscription.isOpen()){
-                finalInscriptions.add(inscription);
+			if(studentDao.isApproved(docket, inscription.getCourse().getId()) &&
+							//checks if student is not already included in the current final inscription.
+							!inscription.getStudents().contains(student) && inscription.isOpen()){
+				finalInscriptions.add(inscription);
 			}
 		}
 		return finalInscriptions;
@@ -336,11 +367,15 @@ public class StudentServiceImpl implements StudentService {
 	public boolean addStudentFinalInscription(int docket, int finalInscriptionId) {
 
 		FinalInscription finalInscription = studentDao.getFinalInscription(finalInscriptionId);
-        Student student = studentDao.getByDocket(docket);
+		Student student = studentDao.getByDocket(docket);
 
-        if (!checkFinalCorrelatives(docket, finalInscription.getCourse().getId())){
-            return false;
-        }
+		if(finalInscription == null){
+			return false;
+		}
+
+		if (!checkFinalCorrelatives(docket, finalInscription.getCourse().getCourseId())){
+			return false;
+		}
 
 		if (finalInscription.getVacancy() >= finalInscription.getMaxVacancy()){
 			return false;
@@ -351,7 +386,7 @@ public class StudentServiceImpl implements StudentService {
 
 		for (FinalInscription inscription : finalInscriptionsForCourse) {
 			if (inscription.getHistory().contains(student))
-					return false;
+				return false;
 		}
 
 
@@ -361,77 +396,81 @@ public class StudentServiceImpl implements StudentService {
 		return true;
 	}
 
-    @Transactional
+	@Transactional
 	@Override
 	public List<FinalInscription> getFinalInscriptionsTaken(int docket) {
 		final List<FinalInscription> finalInscriptionsTaken = new ArrayList<>();
-        final Student student = studentDao.getByDocket(docket);
+		final Student student = studentDao.getByDocket(docket);
 		final List<FinalInscription> finalInscriptions = studentDao.getAllFinalInscriptionsFromOpenInstance();
 
-        for (FinalInscription inscription : finalInscriptions) {
-            if (inscription.getStudents().contains(student))
-                finalInscriptionsTaken.add(inscription);
-        }
+		for (FinalInscription inscription : finalInscriptions) {
+			if (inscription.getStudents().contains(student))
+				finalInscriptionsTaken.add(inscription);
+		}
 
-        return finalInscriptionsTaken;
+		return finalInscriptionsTaken;
 
-    }
+	}
 
-    @Transactional
-    @Override
-    public boolean deleteStudentFinalInscription(int docket, int finalInscriptionId) {
-        FinalInscription finalInscription = studentDao.getFinalInscription(finalInscriptionId);
-        Student student = studentDao.getByDocket(docket);
+	@Transactional
+	@Override
+	public boolean deleteStudentFinalInscription(int docket, int finalInscriptionId) {
+		FinalInscription finalInscription = studentDao.getFinalInscription(finalInscriptionId);
+		Student student = studentDao.getByDocket(docket);
 
-        if (finalInscription.getStudents().contains(student)) {
-            finalInscription.getStudents().remove(student);
+		if(finalInscription == null || student == null){
+			return false;
+		}
+
+		if (finalInscription.getStudents().contains(student)) {
+			finalInscription.getStudents().remove(student);
 			finalInscription.getHistory().remove(student);
-            finalInscription.decreaseVacancy();
-        }
+			finalInscription.decreaseVacancy();
+		}
 
-        return true;
-    }
+		return true;
+	}
 
-    @Transactional
-    @Override
-    public boolean checkFinalCorrelatives(int docket, int courseId) {
+	@Transactional
+	@Override
+	public boolean checkFinalCorrelatives(int docket, String courseId) {
 
-        final List<Course> correlatives = courseService.getCorrelativesByFilter(courseId, null);
-        final List<Course> approvedCourses = studentDao.getApprovedFinalCourses(docket);
+		final List<Course> correlatives = courseService.getCorrelativesByFilter(courseId, null);
+		final List<Course> approvedCourses = studentDao.getApprovedFinalCourses(docket);
 
-        if (approvedCourses.containsAll(correlatives))
-            return true;
-        return false;
+		if (approvedCourses.containsAll(correlatives))
+			return true;
+		return false;
 
-    }
+	}
 
-    @Transactional
-    @Override
-    public Set<Student> getFinalStudents(int id) {
-        Set<Student> set = new HashSet<>();
-        set.addAll(studentDao.getFinalInscription(id).getHistory());
-        return set;
-    }
+	@Transactional
+	@Override
+	public Set<Student> getFinalStudents(int id) {
+		Set<Student> set = new HashSet<>();
+		set.addAll(studentDao.getFinalInscription(id).getHistory());
+		return set;
+	}
 
-    @Transactional
-    @Override
-    public boolean addFinalGrade(Integer id, Integer docket, BigDecimal grade) {
-        final FinalInscription fi = studentDao.getFinalInscription(id);
-        final Student student = studentDao.getByDocket(docket);
+	@Transactional
+	@Override
+	public boolean addFinalGrade(Integer id, Integer docket, BigDecimal grade) {
+		final FinalInscription fi = studentDao.getFinalInscription(id);
+		final Student student = studentDao.getByDocket(docket);
 
-        for (Grade grade1 : student.getGrades()) {
-            if (grade1.getCourse().equals(fi.getCourse()) && BigDecimal.valueOf(4).compareTo(grade1.getGrade()) <= 0 && grade1.getFinalGrades().size() < 3){
+		for (Grade grade1 : student.getGrades()) {
+			if (grade1.getCourse().equals(fi.getCourse()) && BigDecimal.valueOf(4).compareTo(grade1.getGrade()) <= 0 && grade1.getFinalGrades().size() < 3){
 
-                FinalGrade fg = new FinalGrade.Builder(null, grade).build();
-                studentDao.addFinalGrade(grade1, fg);
+				FinalGrade fg = new FinalGrade.Builder(null, grade).build();
+				studentDao.addFinalGrade(grade1, fg);
 
-                //Remove student inscription to final exam
-                fi.getStudents().remove(student);
-                return true;
-            }
+				//Remove student inscription to final exam
+				fi.getStudents().remove(student);
+				return true;
+			}
 
-        }
+		}
 
-        return false;
-    }
+		return false;
+	}
 }

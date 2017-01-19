@@ -27,6 +27,9 @@ import java.util.Set;
 @Repository
 public class CourseHibernateDao implements CourseDao {
 
+    private static final String GET_BY_COURSE_ID = "from Course as c where c.courseId = :courseId";
+    private static final String COURSE_ID_PARAM = "courseId";
+
     @PersistenceContext
     private EntityManager em;
 
@@ -43,7 +46,7 @@ public class CourseHibernateDao implements CourseDao {
 
 
     @Override
-    public boolean update(int id, Course course){
+    public boolean update(final String id, final Course course){
 
         //NOTE: In this case if the id is changed an exception is thrown. In the future we shouldn't allow a user to modify the seq_id!
         final List<Course> correlatives = getCorrelativeCourses(id);
@@ -53,7 +56,7 @@ public class CourseHibernateDao implements CourseDao {
         course.setCorrelatives(setCorrelatives);
 
         Session session = em.unwrap(Session.class);
-        Course oldCourse = em.getReference(Course.class, id);
+        Course oldCourse = em.getReference(Course.class, course.getId());
 
         course.setUpperCorrelatives(oldCourse.getUpperCorrelatives());
 
@@ -96,8 +99,17 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public Course getCourseStudents(int id) {
-        Course course = getById(id);
+    public Course getByCourseID(String courseID) {
+        final TypedQuery<Course> query = em.createQuery(GET_BY_COURSE_ID, Course.class);
+        query.setParameter(COURSE_ID_PARAM, courseID);
+        query.setMaxResults(1);
+        final List<Course> courses = query.getResultList();
+        return courses.isEmpty() ? null : courses.get(0);
+    }
+
+    @Override
+    public Course getCourseStudents(String courseId) {
+        Course course = getByCourseID(courseId);
         course.getStudents();
         return course;
     }
@@ -120,7 +132,7 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public List<Course> getByFilter(CourseFilter courseFilter) {
+    public List<Course> getByFilter(final CourseFilter courseFilter) {
         QueryFilter queryFilter = new QueryFilter(em);
 
         if (courseFilter != null) {
@@ -132,34 +144,34 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public boolean deleteCourse(int id) {
-        Course course = getById(id);
+    public boolean deleteCourse(final String courseId) {
+        Course course = getByCourseID(courseId);
         em.remove(course);
 
         return true;
     }
 
     @Override
-    public List<Integer> getCorrelatives(int courseId) {
-        Course course = getById(courseId);
-        List<Integer> correlatives = new ArrayList<Integer>();
+    public List<String> getCorrelatives(String courseId) {
+        Course course = getByCourseID(courseId);
+        List<String> correlatives = new ArrayList<>();
 
         for(Course correlative: course.getCorrelatives()){
-            correlatives.add(correlative.getId());
+            correlatives.add(correlative.getCourseId());
         }
         return correlatives;
     }
 
     @Override
-    public boolean checkCorrelativityLoop(int id, int correlativeId) {
+    public boolean checkCorrelativityLoop(final String id, final String correlativeId) {
 
         /* If the given id is in the list of inmediate correlatives of correlativeId, a cycle is detected, because it would be
         necesary to pass id in order to be able to enroll in correlativeId.
         If no loop is detected in the inmediate correlatives, then we keep searching in the correlative's correlatives until
         the loop is found or no more correlatives can be add. */
 
-        Course course = getById(id);
-        Course correlative = getById(correlativeId);
+        Course course = getByCourseID(id);
+        Course correlative = getByCourseID(correlativeId);
 
         Set<Course> toAdd;
         Set<Course> current = new HashSet<>();
@@ -186,9 +198,9 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public boolean addCorrelativity(int id, int correlativeId) {
-        Course course = getById(id);
-        Course correlative = getById(correlativeId);
+    public boolean addCorrelativity(final String id, final String correlativeId) {
+        Course course = getByCourseID(id);
+        Course correlative = getByCourseID(correlativeId);
         course.getCorrelatives().add(correlative);
 
         Session session = em.unwrap(Session.class);
@@ -198,15 +210,15 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public boolean courseExists(int id) {
-        return getById(id) != null;
+    public boolean courseExists(final String id) {
+        return getByCourseID(id) != null;
     }
 
     //TODO: Requires students
     //TODO: Test this
     @Override
-    public boolean inscriptionExists(int courseId) {
-        Course course = getById(courseId);
+    public boolean inscriptionExists(String courseId) {
+        Course course = getByCourseID(courseId);
         if(course.getStudents() == null || course.getStudents().size() == 0){
             return false;
         }
@@ -214,30 +226,30 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public boolean gradeExists(int courseId) {
+    public boolean gradeExists(String courseId) {
 
-        final TypedQuery<Long> query = em.createQuery("select count(gr) from Grade as gr where gr.course.id = :id", Long.class);
+        final TypedQuery<Long> query = em.createQuery("select count(gr) from Grade as gr where gr.course.courseId = :id", Long.class);
         query.setParameter("id", courseId);
         Long totalGrades = query.getSingleResult();
         return totalGrades > 0;
     }
 
     @Override
-    public List<Integer> getUpperCorrelatives(int courseId) {
-        Course course = getById(courseId);
-        List<Integer> upperCorrelatives = new ArrayList<>();
+    public List<String> getUpperCorrelatives(String courseId) {
+        Course course = getByCourseID(courseId);
+        List<String> upperCorrelatives = new ArrayList<>();
 
         for(Course correlative : course.getUpperCorrelatives()){
-            upperCorrelatives.add(correlative.getId());
+            upperCorrelatives.add(correlative.getCourseId());
         }
         return upperCorrelatives;
 
     }
 
     @Override
-    public boolean deleteCorrelative(int courseId, int correlativeId) { //fixme is ok that always returrs true?
-        Course course = getById(courseId);
-        Course correlative = getById(correlativeId);
+    public boolean deleteCorrelative(String courseId, String correlativeId) { //fixme is ok that always returrs true?
+        Course course = getByCourseID(courseId);
+        Course correlative = getByCourseID(correlativeId);
         course.getCorrelatives().remove(correlative);
         Session session = em.unwrap(Session.class);
         session.save(course);
@@ -254,8 +266,8 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public List<Course> getCorrelativeCourses(int courseId) {
-        Course course = getById(courseId);
+    public List<Course> getCorrelativeCourses(final String courseId) {
+        Course course = getByCourseID(courseId);
         List<Course> correlatives = new ArrayList<>();
 
         for(Course correlative: course.getCorrelatives()){
@@ -273,9 +285,9 @@ public class CourseHibernateDao implements CourseDao {
 
     //TODO: TEST THIS
     @Override
-    public Course getStudentsThatPassedCourse(int id) {
-        Course course = getById(id);
-        List<Student> approvedStudents = studentDao.getStudentsPassed(id);
+    public Course getStudentsThatPassedCourse(final String courseId) {
+        Course course = getByCourseID(courseId);
+        List<Student> approvedStudents = studentDao.getStudentsPassed(courseId);
         course.setApprovedStudents(approvedStudents);
         return course;
     }

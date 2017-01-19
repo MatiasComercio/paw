@@ -60,6 +60,10 @@ public class Student extends User {
 		return grades;
 	}
 
+	public void setDocket(int docket) {
+		this.docket = docket;
+	}
+
 	public BigDecimal getCourseGrade(final Integer i) {
 		if (grades != null) {
 			for (Grade g : grades) {

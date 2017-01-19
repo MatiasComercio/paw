@@ -2,16 +2,11 @@ package ar.edu.itba.paw.webapp.forms;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class PasswordForm {
-
-	/* +++xtodo: @Gonza: improve validations */
-//	@NotBlank
-	@Digits(integer=8, fraction=0)
-	@NotNull
+//	@Digits(integer=8, fraction=0)
+//	@NotNull
 	private int dni;
 
 	@NotBlank

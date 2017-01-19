@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -38,10 +37,7 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	@Override
-	public boolean changePassword(final int dni, final String prevPassword, final String newPassword, final String repeatNewPassword) {
-//		if (!newPassword.equals(repeatNewPassword)) {
-//			return Result.PASSWORDS_DO_NOT_MATCH;
-//		}
+	public boolean changePassword(final int dni, final String prevPassword, final String newPassword) {
 		return userDao.changePassword(dni, prevPassword, newPassword);
 	}
 
