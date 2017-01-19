@@ -1,5 +1,7 @@
 package ar.edu.itba.paw.webapp.config;
 
+import ar.edu.itba.paw.webapp.auth.StatelessAuthenticationFilter;
+import ar.edu.itba.paw.webapp.auth.TokenAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -7,7 +9,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -50,32 +54,37 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(final HttpSecurity http) throws Exception {
 		http
-				.userDetailsService(userDetailsService)
-				.sessionManagement()
+						.sessionManagement()
+							.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+							.sessionFixation().migrateSession() // TODO: Should this be put to none since the sessionCreationPolicy is STATELESS ?
+//				.userDetailsService(userDetailsService)
+//				.sessionManagement()
 //				.invalidSessionUrl("/login")
 				// for maintenance
 //				.invalidSessionUrl("/inMaintenance")
 
-				.and().authorizeRequests()
-				.antMatchers("/login").anonymous()
+				.and()
+						.authorizeRequests()
+							.antMatchers("/login").anonymous()
 //				.antMatchers("/admin/**").hasRole("VIEW_ADMIN")
 //				.antMatchers("/admins/**").hasRole("VIEW_ADMINS")
-//				.antMatchers("/**").authenticated() // TODO: Uncomment
-
-				// configuration when updating database; // for maintenance
-//				.antMatchers("/inMaintenance").anonymous()
-//				.antMatchers("/**").denyAll()
-
-//				.and().formLogin()
+//				.antMatchers("/**").authenticated()
+//
+//				.and()
+//						.addFilterBefore(new StatelessAuthenticationFilter(new TokenAuthenticationService()), UsernamePasswordAuthenticationFilter.class)
+//						.formLogin().loginPage("/login")
 //				.usernameParameter("j_dni")
 //				.passwordParameter("j_password")
 //				.defaultSuccessUrl("/", false)
 ////				.successHandler(authSuccessHandler)
 //				.failureUrl("/login?error")
-//				.loginPage("/login")
 				// for maintenance
 //				.loginPage("/inMaintenance")
 //				.loginProcessingUrl("/login")
+
+// 				configuration when updating database; // for maintenance
+//				.antMatchers("/inMaintenance").anonymous()
+//				.antMatchers("/**").denyAll()
 
 //				.and().rememberMe()
 //				.rememberMeParameter("j_remember_me")
@@ -83,15 +92,15 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 //				.key(KEY)
 //				.tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
 
-				.and().logout()
-				.logoutUrl("/logout")
-				.logoutSuccessUrl("/login?logout")
+				.and()
+						.logout().logoutUrl("/logout")
+//				.logoutSuccessUrl("/login?logout") //There should not be any logout redirection
 
-				.and().exceptionHandling()
-				.accessDeniedPage("/errors/403")
+				.and()
+						.exceptionHandling().accessDeniedPage("/errors/403")
 
-				.and().csrf() /* +++xcheck: how to correctly enable this */
-				.disable();
+				.and()
+						.csrf().disable();
 	}
 
 	@Override
