@@ -1,0 +1,31 @@
+language: java
+jdk:
+  - oraclejdk8
+branches:
+  only:
+  - master
+  - development
+  - stage
+node_js: 6.1
+before_install:
+  - curl -s -o $HOME/.nvm/nvm.sh https://raw.githubusercontent.com/creationix/nvm/v0.31.0/nvm.sh
+  - source $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - pip install --user codecov
+install:
+  - npm install
+  - npm install -g bower
+  - bower install
+script:
+  - npm test
+  - mvn clean package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN}
+  - mvn sonar:sonar -Dsonar.sourceEncoding=UTF-8 -Dsonar.analysis.mode=preview -Dsonar.github.repository=MatiasComercio/paw -Dsonar.github.login=MatiasComercio -Dsonar.github.oauth=${GITHUB_ACCESS_TOKEN} -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN} -Dsonar.github.pullRequest=${TRAVIS_PULL_REQUEST}
+after_success:
+  - mvn clean test jacoco:report coveralls:report
+  - codecov
+cache:
+  directories:
+    - '$HOME/.m2'
+    - '$HOME/.sonar/cache'

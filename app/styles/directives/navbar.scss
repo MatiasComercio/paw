@@ -1,0 +1,119 @@
+@import 'modules/variables/importer';
+
+/* Disable default button style */
+nav {
+  &.navbar {
+    background: $mine-shaft;
+    height: $navbarHeight;
+    box-shadow: 0 2px 5px rgba(0,0,0,.26);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+  }
+
+  &.navbar-fixed-top {
+    border: 0;
+  }
+
+  .navbar-header {
+    flex: 1;
+    .navbar-toggle {
+      &.menu-btn.pull-left {
+        margin-left: 0;
+        margin-right: 0;
+        border: transparent;
+      }
+    }
+  }
+
+  // Top Navigation
+  .top-nav {
+    margin: 0;
+    max-width: $topNavMaxWidth;
+    text-align: right;
+
+    .dropdown {
+      &.open {
+        .dropdown-toggle {
+          background: $black;
+          color: $white;
+        }
+
+        .dropdown-menu {
+          background: $mine-shaft;
+          box-shadow: 0 2px 5px rgba(0,0,0,.26);
+          display: none;
+          outline: none;
+          overflow: hidden;
+          border-radius: 0;
+          border: 0;
+          width: $topNavDropdownMenuMaxWidth;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          flex-direction: column;
+
+          li > a {
+            padding: 15px 15px;
+            display: block;
+            color: $silver-chalice;
+
+            &:hover {
+              color: $white;
+              background-color: $black;
+            }
+          }
+
+          .dropdown-header {
+            @extend .truncate-flex;
+            max-width: $topNavDropdownMenuMaxWidth;
+            padding: 10px 20px;
+          }
+
+          .dropdown-option {
+            width: 100%;
+          }
+        }
+      }
+
+      .dropdown-toggle {
+        color: $silver-chalice;
+        padding: 15px 15px;
+        display: flex;
+        align-items: center;
+        height: $navbarHeight;
+
+        &:hover {
+          background: $black;
+          color: $white;
+        }
+
+        // ellipsis trick for long text
+        span {
+          @extend .truncate-flex;
+          margin: 0 5px;
+        }
+      }
+    }
+  }
+  // \Top Navigation
+
+  // Disable boostrap style
+  .nav > li > a {
+    &:hover,
+    &:focus {
+      background: none;
+    }
+  }
+  // \Disable boostrap style
+}
+
+.truncate-flex {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

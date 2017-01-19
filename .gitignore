@@ -115,3 +115,13 @@ local.properties
 
 .DS_Store
 *.pg_dump
+
+# Front-End files
+*~
+node_modules/
+bower_components/
+dist/
+.sass-cache/
+.tmp/
+
+coverage/
