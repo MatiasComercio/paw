@@ -1,12 +1,11 @@
 @import 'modules/variables/importer';
 
-/* Disable default button style */
 nav {
   &.navbar {
     background: $mine-shaft;
     height: $navbarHeight;
     box-shadow: 0 2px 5px rgba(0,0,0,.26);
-    z-index: 1;
+    z-index: $navbarZIndex;
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -18,11 +17,29 @@ nav {
 
   .navbar-header {
     flex: 1;
+    display: flex;
+    align-items: baseline;
+
     .navbar-toggle {
       &.menu-btn.pull-left {
-        margin-left: 0;
-        margin-right: 0;
-        border: transparent;
+        height: $navbarHeight;
+        margin: 0;
+        padding: 15px;
+        border: none;
+        border-radius: 0;
+
+        &:hover,
+        &:focus {
+          background: $black;
+
+          .icon-bar {
+            background-color: $white;
+          }
+        }
+
+        .icon-bar {
+          background-color: $silver-chalice;
+        }
       }
     }
   }
@@ -60,7 +77,8 @@ nav {
             display: block;
             color: $silver-chalice;
 
-            &:hover {
+            &:hover,
+            &:focus {
               color: $white;
               background-color: $black;
             }
@@ -85,7 +103,8 @@ nav {
         align-items: center;
         height: $navbarHeight;
 
-        &:hover {
+        &:hover,
+        &:focus {
           background: $black;
           color: $white;
         }

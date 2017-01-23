@@ -21,10 +21,11 @@ install:
 script:
   - npm test
   - mvn clean package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN}
-  - mvn sonar:sonar -Dsonar.sourceEncoding=UTF-8 -Dsonar.analysis.mode=preview -Dsonar.github.repository=MatiasComercio/paw -Dsonar.github.login=MatiasComercio -Dsonar.github.oauth=${GITHUB_ACCESS_TOKEN} -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN} -Dsonar.github.pullRequest=${TRAVIS_PULL_REQUEST}
 after_success:
-  - mvn clean test jacoco:report coveralls:report
+  - mvn clean test jacoco:report
+  - npm install -g codeclimate-test-reporter
   - codecov
+  - codeclimate-test-reporter < coverage/**/lcov.info
 cache:
   directories:
     - '$HOME/.m2'

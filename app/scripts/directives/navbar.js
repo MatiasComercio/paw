@@ -1,18 +1,33 @@
 'use strict';
 
-define(['paw'], function(paw) {
-  paw.controller('NavbarController', ['$scope', function NavbarController($scope) {
-    this.user = {
-      'fullName': 'Matías Nicolás Comercio Vázquez asdasdasdasdasdasdasdasdadasdasdas',
-      'profileUrl': '/users/1'
+define(['paw', 'services/navDataService'], function(paw) {
+  paw.directive('xnavbar', ['navDataService',function(navDataService) {
+    function controller() {
+      this.user = {
+        fullName: 'Matías Nicolás Comercio Vázquez asdasdasdasdasdasdasdasdadasdasdas',
+        profileUrl: '/users/1',
+        authorities: {
+          admins: true,
+          students: true,
+          courses: true
+        }
+      };
+
+      navDataService.set('user', this.user);
     };
-  }])
-  .directive('xnavbar', function() {
+
     return {
       restrict: 'E',
-      templateUrl: '/views/navbar.html',
-      controller: 'NavbarController',
-      controllerAs: 'controller'
+      templateUrl: '/views/directives/navbar.html',
+      controller: controller,
+      controllerAs: 'controller',
+      scope: {},
+      bindToController: true,
+      link: function(scope, element, attributes) {
+        scope.sidebarOpen = function() {
+          navDataService.set('sidebarOpen', !navDataService.get('sidebarOpen'));
+        };
+      }
     };
-  });
+  }]);
 });

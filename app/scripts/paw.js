@@ -4,11 +4,19 @@ define(['routes',
   'i18n/i18nLoader!',
   'angular',
   'angular-route',
+  'angular-animate',
   'bootstrap',
-  'angular-translate'],
+  'angular-translate',
+  'angular-bootstrap',
+  'jquery-mousewheel',
+  'angular-material',
+  'angular-aria'],
   function(config, dependencyResolverFor, i18n) {
     var paw = angular.module('paw', [
       'ngRoute',
+      'ngAnimate',
+      'ngMaterial',
+      'ui.bootstrap',
       'pascalprecht.translate'
     ]);
     paw

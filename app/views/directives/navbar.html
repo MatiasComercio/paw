@@ -1,0 +1,43 @@
+<!-- Navigation Bar-->
+<nav class='navbar navbar-inverse navbar-fixed-top'>
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class='navbar-header'>
+        <!-- Menu Sandwich Button -->
+        <button type='button' ng-click='sidebarOpen()' class='navbar-toggle sandwich-icon menu-btn pull-left'>
+            <span class='icon-bar'></span>
+            <span class='icon-bar'></span>
+            <span class='icon-bar'></span>
+        </button>
+        <a class='navbar-brand' href='/'>
+            <strong translate='i18nWebAbbreviation'></strong>
+            <span class='hidden-xs'>
+                -
+                <span translate='i18nWebName'></span>
+            </span>
+        </a>
+    </div>
+
+    <!-- User's Menu -->
+    <ul ng-show='controller.user' class='nav navbar-right pull-right top-nav'>
+        <li class='dropdown'>
+            <a href='#' class='dropdown-toggle' data-toggle='dropdown'>
+                <i class='fa fa-user'></i>
+                <span class='hidden-xs'>{{ controller.user.fullName }}</span>
+                <strong class='caret hidden-xs'></strong>
+            </a>
+            <ul class='dropdown-menu dropdown-menu-right' role='menu'>
+                <li class='dropdown-header visible-xs-inline'>
+                    {{ controller.user.fullName }}
+                </li>
+                <li class='dropdown-option'>
+                    <a ng-href='{{ controller.user.profileUrl }}'><i class='fa fa-fw fa-user'></i> {{ 'i18nProfile' | translate }}</a>
+                </li>
+                <li class='dropdown-option'>
+                    <a href='/logout'><i class="fa fa-fw fa-power-off"></i>  {{ 'i18nLogout' | translate }}</a>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <!-- /User's Menu -->
+</nav>
+<!-- /Medium Navigation Bar-->

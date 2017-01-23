@@ -14,8 +14,8 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       {pattern: 'bower_components/**/*.js', included: false},
-      {pattern: 'app/views/*.html', included: false},
-      {pattern: 'app/scripts/**/*.js', included: false},
+      {pattern: 'app/views/**/*.html', included: false},
+      {pattern: 'app/scripts/**/**/*.js', included: false},
       {pattern: 'app/specs/**/*.js', included: false},
       {pattern: 'app/specs/test-main.js', included: true}
     ],
@@ -32,22 +32,23 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'app/views/*.html': ['ng-html2js'],
+      'app/views/**/*.html': ['ng-html2js'],
       // source files, that you wanna generate coverage for
-      'app/scripts/controllers/*.js': ['coverage'],
+      'app/scripts/controllers/**/*.js': ['coverage'],
       'app/scripts/directives/*.js': ['coverage'],
       'app/scripts/services/!(dependencyResolverFor).js': ['coverage']
     },
 
     // optionally, configure the reporter
     coverageReporter: {
+      includeAllSources: true,
       reporters: [
         {type: 'html', dir: 'coverage/'},
         {type: 'lcov', dir: 'coverage/'}
       ],
       check: {
         global: {
-          statements: 75
+          statements: 90
         }
       }
     },

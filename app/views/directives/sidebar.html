@@ -1,0 +1,253 @@
+<!-- backdrop for responsive sidebar -->
+<xbackdrop></xbackdrop>
+<!-- \backdrop for responsive sidebar -->
+
+<!-- sidebar -->
+<nav class='sidebar-container' ng-hide='windowIsMobile && !sidebarOpen' prevent-scroll>
+  <div class='sidebar'>
+    <!-- admins section -->
+    <xsidebar-item name='sidebar-admins-section' item='controller.sidebar.admins' xtitle='i18nAdminsPanelSection' icon='fa fa-lock'>
+      <ul>
+        <li name='sidebar-admins-section-index'>
+          <a ng-href='{{ controller.sidebar.admins.actions.index.path }}' class='sidebar-sub-item' ng-click='closeSidebar()'>
+            <i class='fa fa-list' aria-hidden='true'></i>
+             <span translate='i18nAdminsIndex'></span>
+          </a>
+        </li>
+        <li name='sidebar-admins-section-new'>
+          <a ng-href='{{ controller.sidebar.admins.actions.new.path }}' class='sidebar-sub-item' ng-click='closeSidebar()'>
+            <i class='fa fa-plus-circle' aria-hidden='true'></i>
+             <span translate='i18nAddAdmin'></span>
+          </a>
+        </li>
+        <li ng-show='controller.sidebar.admins.actions.inscriptions.enabled' name='sidebar-admins-section-disable-inscriptions'>
+          <a type='button' ng-controller='InscriptionsController as modalController'
+             class='sidebar-sub-item' ng-click="closeSidebar(); modalController.open('sm', controller.sidebar.admins.actions.inscriptions.path)">
+            <i class='fa fa-pencil-square-o' aria-hidden='true'></i>
+             <span translate='i18nDisableInscriptions'></span>
+          </a>
+        </li>
+        <li ng-hide='controller.sidebar.admins.actions.inscriptions.enabled' name='sidebar-admins-section-enable-inscriptions'>
+          <a type='button' ng-controller='InscriptionsController as modalController'
+             class='sidebar-sub-item' ng-click="closeSidebar(); modalController.open('sm', controller.sidebar.admins.actions.inscriptions.path)">
+            <i class='fa fa-pencil-square-o' aria-hidden='true'></i>
+             <span translate='i18nEnableInscriptions'></span>
+          </a>
+        </li>
+      </ul>
+    </xsidebar-item>
+    <!-- \admins section -->
+
+    <!-- students section -->
+    <xsidebar-item name='sidebar-students-section' item='controller.sidebar.students' xtitle='i18nStudentsPanelSection' icon='fa fa-fw fa-users'>
+      <ul>
+        <li name='sidebar-students-section-index'>
+          <a ng-href='{{ controller.sidebar.students.actions.index.path }}' class='sidebar-sub-item' ng-click='closeSidebar()'>
+            <i class='fa fa-list' aria-hidden='true'></i>
+             <span translate='i18nStudentsIndex'></span>
+          </a>
+        </li>
+        <li name='sidebar-students-section-new'>
+          <a ng-href='{{ controller.sidebar.students.actions.new.path }}' class='sidebar-sub-item' ng-click='closeSidebar()'>
+            <i class='fa fa-plus-circle' aria-hidden='true'></i>
+             <span translate='i18nAddStudent'></span>
+          </a>
+        </li>
+      </ul>
+    </xsidebar-item>
+    <!-- \students section -->
+
+    <!-- courses section -->
+    <xsidebar-item name='sidebar-courses-section' item='controller.sidebar.courses' xtitle='i18nCoursesPanelSection' icon='fa fa-university'>
+      <ul>
+        <li name='sidebar-courses-section-index'>
+          <a ng-href='{{ controller.sidebar.courses.actions.index.path }}' class='sidebar-sub-item' ng-click='closeSidebar()'>
+            <i class='fa fa-list' aria-hidden='true'></i>
+             <span translate='i18nCoursesIndex'></span>
+          </a>
+        </li>
+        <li name='sidebar-courses-section-new'>
+          <a ng-href='{{ controller.sidebar.courses.actions.new.path }}' class='sidebar-sub-item' ng-click='closeSidebar()'>
+            <i class='fa fa-plus-circle' aria-hidden='true'></i>
+             <span translate='i18nAddCourse'></span>
+          </a>
+        </li>
+      </ul>
+    </xsidebar-item>
+    <!-- \courses section -->
+  </div>
+
+  <!-- current view options -->
+  <div ng-show='controller.subSidebar.admin || controller.subSidebar.student || controller.subSidebar.course' class='sub-sidebar-container full-width'>
+    <hr />
+
+    <!-- admin -->
+    <div ng-show='controller.subSidebar.admin' class='sub-sidebar'>
+      <div class='name break-words'>
+        <p>{{ controller.subSidebar.admin.fullName }}</p>
+      </div>
+      <ul>
+        <li ng-show='controller.subSidebar.admin.actions.show'>
+          <a ng-href='{{ controller.subSidebar.admin.actions.show.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-user' aria-hidden='true'></i>
+             <span translate='i18nAdminShow'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.admin.actions.edit'>
+          <a ng-href='{{ controller.subSidebar.admin.actions.edit.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-pencil-square-o' aria-hidden='true'></i>
+             <span translate='i18nAdminEdit'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.admin.actions.resetPassword'>
+          <a type='button' ng-controller='ResetPasswordController as modalController'
+             class='sub-sidebar-item danger'
+             ng-click="closeSidebar(); modalController.open('md',
+              controller.subSidebar.admin.actions.resetPassword.path,
+              controller.subSidebar.admin.dni,
+              controller.subSidebar.admin.firstName,
+              controller.subSidebar.admin.lastName)">
+            <i class='fa fa-repeat' aria-hidden='true'></i>
+             <span translate='i18nAdminResetPassword'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.admin.actions.updatePassword'>
+          <a ng-href='{{ controller.subSidebar.admin.actions.updatePassword.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-gear' aria-hidden='true'></i>
+             <span translate='i18nAdminUpdatePassword'></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- \admin -->
+
+    <!-- student -->
+    <div ng-show='controller.subSidebar.student' class='sub-sidebar'>
+      <div class='name break-words'>
+        <p>{{ controller.subSidebar.student.fullName }}</p>
+      </div>
+      <ul>
+        <li ng-show='controller.subSidebar.student.actions.show'>
+          <a ng-href='{{ controller.subSidebar.student.actions.show.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-user' aria-hidden='true'></i>
+             <span translate='i18nStudentShow'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.student.actions.edit'>
+          <a ng-href='{{ controller.subSidebar.student.actions.edit.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-pencil-square-o' aria-hidden='true'></i>
+             <span translate='i18nStudentEdit'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.student.actions.resetPassword'>
+          <a type='button' ng-controller='ResetPasswordController as modalController'
+             class='sub-sidebar-item danger'
+             ng-click="closeSidebar(); modalController.open('md',
+              controller.subSidebar.student.actions.resetPassword.path,
+              controller.subSidebar.student.dni,
+              controller.subSidebar.student.firstName,
+              controller.subSidebar.student.lastName)">
+            <i class='fa fa-repeat' aria-hidden='true'></i>
+             <span translate='i18nStudentResetPassword'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.student.actions.updatePassword'>
+          <a ng-href='{{ controller.subSidebar.student.actions.updatePassword.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-gear' aria-hidden='true'></i>
+             <span translate='i18nStudentUpdatePassword'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.student.actions.courses'>
+          <a ng-href='{{ controller.subSidebar.student.actions.courses.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-university' aria-hidden='true'></i>
+             <span translate='i18nStudentCourses'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.student.actions.grades'>
+          <a ng-href='{{ controller.subSidebar.student.actions.grades.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-graduation-cap' aria-hidden='true'></i>
+             <span translate='i18nStudentGrades'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.student.actions.inscriptions'>
+          <a ng-href='{{ controller.subSidebar.student.actions.inscriptions.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-list-alt' aria-hidden='true'></i>
+             <span translate='i18nStudentInscriptions'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.student.actions.finals'>
+          <a ng-href='{{ controller.subSidebar.student.actions.finals.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-pencil' aria-hidden='true'></i>
+             <span translate='i18nStudentFinals'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.student.actions.delete'>
+          <a type='button' ng-controller='DeleteUserController as modalController'
+             class='sub-sidebar-item danger'
+             ng-click="closeSidebar(); modalController.open('md',
+              controller.subSidebar.student.actions.delete.path,
+              controller.subSidebar.student.dni,
+              controller.subSidebar.student.firstName,
+              controller.subSidebar.student.lastName)">
+            <i class='fa fa-trash' aria-hidden='true'></i>
+             <span translate='i18nStudentDelete'></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- \student -->
+
+    <!-- course -->
+    <div ng-show='controller.subSidebar.course' class='sub-sidebar'>
+      <div class='name break-words'>
+        <p>{{ controller.subSidebar.course.name }}</p>
+      </div>
+      <ul>
+        <li ng-show='controller.subSidebar.course.actions.show'>
+          <a ng-href='{{ controller.subSidebar.course.actions.show.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-info-circle' aria-hidden='true'></i>
+             <span translate='i18nCourseShow'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.course.actions.edit'>
+          <a ng-href='{{ controller.subSidebar.course.actions.edit.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-pencil-square-o' aria-hidden='true'></i>
+             <span translate='i18nCourseEdit'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.course.actions.students'>
+          <a ng-href='{{ controller.subSidebar.course.actions.students.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-users' aria-hidden='true'></i>
+             <span translate='i18nCourseStudents'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.course.actions.approved'>
+          <a ng-href='{{ controller.subSidebar.course.actions.approved.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-history' aria-hidden='true'></i>
+             <span translate='i18nCourseApproved'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.course.actions.addCorrelative'>
+          <a ng-href='{{ controller.subSidebar.course.actions.addCorrelative.path }}' class='sub-sidebar-item' ng-click='closeSidebar()'>
+            <i class='fa fa-list-alt' aria-hidden='true'></i>
+             <span translate='i18nCourseAddCorrelative'></span>
+          </a>
+        </li>
+        <li ng-show='controller.subSidebar.course.actions.delete'>
+          <a type='button' ng-controller='DeleteCourseController as modalController'
+             class='sub-sidebar-item danger'
+             ng-click="closeSidebar(); modalController.open('md',
+              controller.subSidebar.course.actions.delete.path,
+              controller.subSidebar.course.id,
+              controller.subSidebar.course.name)">
+            <i class='fa fa-trash' aria-hidden='true'></i>
+             <span translate='i18nCourseDelete'></span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- \course -->
+  </div>
+  <!-- \current view options -->
+</nav>
+<!-- /.sidebar -->

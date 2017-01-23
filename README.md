@@ -1,7 +1,7 @@
 # SGA - Sistema de Gestión Académica
 
 
-[![Build Status](https://travis-ci.org/MatiasComercio/paw.svg?branch=development)](https://travis-ci.org/MatiasComercio/paw) [![codecov](https://codecov.io/gh/MatiasComercio/paw/branch/development/graph/badge.svg)](https://codecov.io/gh/MatiasComercio/paw) [![Code Climate](https://codeclimate.com/github/MatiasComercio/paw/badges/gpa.svg)](https://codeclimate.com/github/MatiasComercio/paw)
+[![Build Status](https://travis-ci.org/MatiasComercio/paw.svg?branch=development)](https://travis-ci.org/MatiasComercio/paw) [![Code Climate](https://codeclimate.com/github/MatiasComercio/paw/badges/gpa.svg)](https://codeclimate.com/github/MatiasComercio/paw)
 
 [![alt text][2]][1]
 

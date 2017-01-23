@@ -46,7 +46,17 @@ require.config({
     transition: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition',
     'font-awesome': '../../bower_components/font-awesome',
     'bootstrap-sass-official': '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap',
-    'navbar-template': '../views/navbar.html'
+    'angular-animate': '../../bower_components/angular-animate/angular-animate',
+    'angular-bootstrap': '../../bower_components/angular-bootstrap/ui-bootstrap-tpls',
+    'jquery-mousewheel': '../../bower_components/jquery-mousewheel/jquery.mousewheel',
+    'angular-material': '../../bower_components/angular-material/angular-material',
+    'angular-aria': '../../bower_components/angular-aria/angular-aria',
+
+    // all directives templates should go here and on shim section
+    'backdrop-template': '../views/directives/backdrop.html',
+    'navbar-template': '../views/directives/navbar.html',
+    'sidebar-template': '../views/directives/sidebar.html',
+    'sidebar-item-template': '../views/directives/sidebar_item.html'
   },
   shim: {
     angular: {
@@ -58,6 +68,11 @@ require.config({
       deps: [
         'angular'
       ]
+    },
+    'angular-animate': {
+        deps: [
+            'angular'
+        ]
     },
     'angular-mocks': {
       deps: [
@@ -85,8 +100,38 @@ require.config({
         'angular'
       ]
     },
+    'angular-bootstrap': {
+        deps: [
+            'angular'
+        ]
+    },
+    'angular-material': {
+        deps: [
+            'angular'
+        ]
+    },
+    'angular-aria': {
+        deps: [
+            'angular'
+        ]
+    },
     // all directives templates should be declared as follows
+    'backdrop-template': {
+      deps: [
+        'angular'
+      ]
+    },
     'navbar-template': {
+      deps: [
+        'angular'
+      ]
+    },
+    'sidebar-template': {
+      deps: [
+        'angular'
+      ]
+    },
+    'sidebar-item-template': {
       deps: [
         'angular'
       ]

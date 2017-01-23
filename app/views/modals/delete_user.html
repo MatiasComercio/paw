@@ -1,0 +1,18 @@
+<div class='modal-header'>
+  <h4 class='modal-title' id='modal-title' translate='i18nUserDelete'></h4>
+</div>
+<div class='modal-body'>
+  <p class='break-words'>
+    <span class='bold' translate='i18nDni'></span>: {{ controller.dni }}
+  </p>
+  <p class='break-words'>
+    <span class='bold' translate='i18nFirstName'></span>: {{ controller.firstName }}
+  </p>
+  <p class='break-words'>
+    <span class='bold' translate='i18nLastName'></span>: {{ controller.lastName }}
+  </p>
+</div>
+<div class='modal-footer'>
+  <button class='btn btn-default' type='button' ng-click="controller.cancel()" translate='i18nCancel'></button>
+  <button class='btn btn-danger' type='button' ng-click='controller.ok()' translate='i18nConfirm'></button>
+</div>

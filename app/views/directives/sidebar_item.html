@@ -1,0 +1,14 @@
+<div class='sidebar-item no-select'>
+  <a ng-show='controller.item' ng-click='select()' ng-class='{active: opened}' class='main-item'>
+    <div class='main-item-text'>
+      <div class='text-container'>
+        <i class='{{ controller.icon }}' aria-hidden='true'></i>
+         <span translate='{{ controller.xtitle }}'></span>
+      </div>
+      <div class='caret-container'>
+        <strong class='caret'></strong>
+      </div>
+    </div>
+  </a>
+  <div ng-transclude='' ng-show='opened' class='transcluded'></div>
+</div>

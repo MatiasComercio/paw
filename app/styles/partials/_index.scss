@@ -1,0 +1,28 @@
+@import 'modules/variables/importer';
+
+.container {
+  margin-top: $navbarHeight;
+  margin-left: $sidebarWidth;
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 100%;
+  padding: $containerPadding;
+  width: calc(100% - #{$sidebarWidth});
+  transition: all linear $sidebarTransitionTime;
+
+  /* Responsive: Portrait tablets and up */
+  @media screen and (max-width: $bootstrapMobileMaxWidth) {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .content-container {
+    .ng-view-container {
+
+    }
+
+    .footer {
+
+    }
+  }
+}

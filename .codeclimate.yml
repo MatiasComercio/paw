@@ -1,0 +1,21 @@
+engines:
+  csslint:
+    enabled: false
+  duplication:
+    enabled: true
+    exclude_fingerprints:
+      - f8ff5182bf5ef6e61d42e67f19c2f626
+      - f6bb76a706e7f9228733a0dce397756f
+    exclude_paths:
+      - "app/specs/"
+    config:
+      languages:
+      - javascript
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - "**.js"
+exclude_paths: []

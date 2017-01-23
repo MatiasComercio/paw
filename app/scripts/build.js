@@ -26,7 +26,12 @@ require.config({
         tooltip: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/tooltip',
         transition: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/transition',
         'font-awesome': '../../bower_components/font-awesome',
-        'bootstrap-sass-official': '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap'
+        'bootstrap-sass-official': '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap',
+        'angular-animate': '../../bower_components/angular-animate/angular-animate',
+        'angular-bootstrap': '../../bower_components/angular-bootstrap/ui-bootstrap-tpls',
+        'jquery-mousewheel': '../../bower_components/jquery-mousewheel/jquery.mousewheel',
+        'angular-material': '../../bower_components/angular-material/angular-material',
+        'angular-aria': '../../bower_components/angular-aria/angular-aria'
     },
     shim: {
         angular: {
@@ -35,6 +40,11 @@ require.config({
             ]
         },
         'angular-route': {
+            deps: [
+                'angular'
+            ]
+        },
+        'angular-animate': {
             deps: [
                 'angular'
             ]
@@ -56,6 +66,21 @@ require.config({
             ]
         },
         'angular-translate': {
+            deps: [
+                'angular'
+            ]
+        },
+        'angular-bootstrap': {
+            deps: [
+                'angular'
+            ]
+        },
+        'angular-material': {
+            deps: [
+                'angular'
+            ]
+        },
+        'angular-aria': {
             deps: [
                 'angular'
             ]
