@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.webapp.forms.PasswordForm;
-import ar.edu.itba.paw.webapp.forms.validators.PasswordValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,6 @@ public class UserController {
   @Autowired
   private UserService us;
 
-  @Autowired
-  PasswordValidator passwordValidator;
 
   @POST
   @Path("/{dni}/password/change")
