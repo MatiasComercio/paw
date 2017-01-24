@@ -70,16 +70,9 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
 
-    <!-- Map all requests for / to the dispatcher servlet -->
+    <!-- Map all requests for /api/v{version number goes here} to the dispatcher servlet -->
     <servlet-mapping>
         <servlet-name>jersey-servlet</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>/api/v1/*</url-pattern>
     </servlet-mapping>
-
-    <!-- Error mapping -->
-    <error-page>
-        <error-code>404</error-code>
-        <location>/errors/404</location>
-    </error-page>
-
 </web-app>
