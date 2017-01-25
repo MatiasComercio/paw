@@ -13,13 +13,12 @@ public class StudentShowDTO {
   private LocalDate birthday;
   private int docket;
   private String email;
-  private String password;
 
   public StudentShowDTO() {
 
   }
 
-  public StudentShowDTO(Integer dni, String firstName, String lastName, User.Genre genre, LocalDate birthday, int docket, String email, String password) {
+  public StudentShowDTO(Integer dni, String firstName, String lastName, User.Genre genre, LocalDate birthday, int docket, String email) {
     this.dni = dni;
     this.firstName = firstName;
     this.lastName = lastName;
@@ -27,7 +26,6 @@ public class StudentShowDTO {
     this.birthday = birthday;
     this.docket = docket;
     this.email = email;
-    this.password = password;
   }
 
   public Integer getDni() {
@@ -84,13 +82,5 @@ public class StudentShowDTO {
 
   public void setEmail(String email) {
     this.email = email;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
   }
 }
