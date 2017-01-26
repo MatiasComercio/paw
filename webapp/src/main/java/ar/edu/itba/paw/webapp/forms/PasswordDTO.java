@@ -4,9 +4,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.Size;
 
-public class PasswordForm {
-//	@Digits(integer=8, fraction=0)
-//	@NotNull
+public class PasswordDTO {
 	private int dni;
 
 	@NotBlank
@@ -15,10 +13,6 @@ public class PasswordForm {
 	@NotBlank
 	@Size(min=8, max=32)
 	private String newPassword;
-
-	@NotBlank
-	@Size(min=8, max=32)
-	private String repeatNewPassword;
 
 	public int getDni() {
 		return dni;
@@ -42,13 +36,5 @@ public class PasswordForm {
 
 	public void setNewPassword(final String newPassword) {
 		this.newPassword = newPassword;
-	}
-
-	public String getRepeatNewPassword() {
-		return repeatNewPassword;
-	}
-
-	public void setRepeatNewPassword(final String repeatNewPassword) {
-		this.repeatNewPassword = repeatNewPassword;
 	}
 }

@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.UserService;
-import ar.edu.itba.paw.webapp.forms.PasswordForm;
+import ar.edu.itba.paw.webapp.forms.PasswordDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +31,10 @@ public class UserController {
   @Path("/{dni}/password/change")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response usersPasswordChange(@PathParam("dni") final int dni,
-                                      @Valid PasswordForm passwordForm) {
-    passwordForm.setDni(dni);
+                                      @Valid PasswordDTO passwordDTO) {
+    passwordDTO.setDni(dni);
 
-    if(!us.changePassword(dni, passwordForm.getCurrentPassword(), passwordForm.getNewPassword())) {
+    if(!us.changePassword(dni, passwordDTO.getCurrentPassword(), passwordDTO.getNewPassword())) {
       return status(Status.BAD_REQUEST).build();
     }
 
