@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class StudentHibernateDao implements StudentDao {
 	private static final String GET_ALL_STUDENTS = "from Student";
 	private static final String GET_BY_DOCKET = "from Student as s where s.docket = :docket";
 	private static final String GET_BY_DNI = "from Student as s where s.dni = :dni";
-	private static final String GET_APPROVED_GRADES_BY_DOCKET = "from Grade as g where g.studentDocket = :docket and g.grade >= 4";
+	private static final String GET_APPROVED_GRADES_BY_DOCKET = "from Grade as g where g.student.docket = :docket and g.grade >= 4";
 	private static final String IS_INSCRIPTION_ENABLED = "from RoleClass as r where r.role = :role";
 
 	private static final String ROLE_COLUMN = "role";
@@ -138,15 +139,14 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public boolean addFinalGrade(final Grade grade, final FinalGrade finalGrade) {
+	public void addFinalGrade(final Grade grade, final FinalGrade finalGrade) {
 		//TODO: Test this
 		LOGGER.info("Will try to persist {}", finalGrade);
 		em.persist(finalGrade);
 		LOGGER.debug("[addFinalGrade] - {} - {}", grade, finalGrade);
 
 		grade.getFinalGrades().add(finalGrade);
-
-		return true;
+		em.merge(grade);
 	}
 
 	@Override
@@ -168,15 +168,13 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public boolean enroll(final int studentDocket, final String courseId) {
+	public void enroll(final int studentDocket, final String courseId) {
 		final Student student = getByDocket(studentDocket);
 		final Course course = courseDao.getByCourseID(courseId);
 		final List<Course> studentCourses = student.getStudentCourses();
 
 		studentCourses.add(course);
 		em.merge(student);
-
-		return true;
 	}
 
 	@Override
@@ -189,43 +187,31 @@ public class StudentHibernateDao implements StudentDao {
 		em.merge(student);
 	}
 
-	//Modified to return courses that are approved and less than 3 finals are taken, or there's a final passed
-	//TODO:TEST
 	@Override
-	public Collection<Course> getApprovedCourses(final int docket) {
-		// +++xcheck why this does not work; figure it out, and replace the code below with this commented one
-//		final Collection<Course> courses = new ArrayList<>();
-//
-//		final TypedQuery<Grade> query = em.createQuery(GET_APPROVED_GRADES_BY_DOCKET, Grade.class);
-//		query.setParameter(DOCKET_PARAM, docket);
-//
-//		final List<Grade> approvedGrades = query.getResultList();
-//
-//		for (Grade grade : approvedGrades) {
-//			courses.add(grade.getCourse());
-//		}
-//
-//		return courses;
-		final Student student = getByDocket(docket);
-		if (student == null) {
-			return null;
-		}
+	public List<Course> getApprovedCourses(final int docket) {
 		final List<Course> courses = new LinkedList<>();
-		for (Grade grade : student.getGrades()) {
-			if (BigDecimal.valueOf(4).compareTo(grade.getGrade()) <= 0) {
-				if (grade.getFinalGrades().size() == MAX_FINALS_CHANCES){
-					for (FinalGrade finalGrade : grade.getFinalGrades()) {
-						if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0){
-							courses.add(grade.getCourse());
-						}
+
+		final TypedQuery<Grade> query = em.createQuery(GET_APPROVED_GRADES_BY_DOCKET, Grade.class);
+		query.setParameter(DOCKET_PARAM, docket);
+
+		final List<Grade> approvedGrades = query.getResultList();
+
+		for (Grade grade : approvedGrades) {
+
+			if (grade.getFinalGrades().size() == MAX_FINALS_CHANCES){
+				for (FinalGrade finalGrade : grade.getFinalGrades()) {
+					if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0){ // Course and Finals were approved
+						courses.add(grade.getCourse());
 					}
-				} else {
-					courses.add(grade.getCourse());
 				}
+
+			} else { // This is the last time the course was approved (Finals are pending or Course&Final were approved)
+				courses.add(grade.getCourse());
 			}
 		}
 
 		return courses;
+
 	}
 
 	//Modified to return courses that are approved and less than 3 finals are taken, or there's a final passed
@@ -251,26 +237,6 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public List<Student> getStudentsPassed(final String courseId) {
-
-		//TODO: Add a Student variable instead of a docket in Grade model
-		final List<Student> studentsPassed = new LinkedList<>();
-		final TypedQuery<Integer> query =
-						em.createQuery("select gr.student.docket from Grade as gr where gr.course.courseId = :id and gr.grade >= 4",
-										Integer.class);
-
-		query.setParameter("id", courseId);
-
-		List<Integer> docketList = query.getResultList();
-
-		for(Integer docket: docketList){
-			studentsPassed.add(getByDocket(docket));
-		}
-
-		return studentsPassed;
-	}
-
-	@Override
 	public boolean createProcedure(final Procedure procedure) {
 		return procedureDao.createProcedure(procedure);
 	}
@@ -288,42 +254,6 @@ public class StudentHibernateDao implements StudentDao {
 		return students.isEmpty() ? null : students.get(FIRST);
 	}
 
-
-	@Override
-	//Return if the docket's student can take a final exam;
-	public boolean isApproved(int docket, int courseId) {
-		//TODO: This is doing 1 query per loop: Improve eficiency. (Use student's grades??)
-		TypedQuery<Grade> query = em.createQuery("from Grade as gr where gr.course.id=:id and gr.student.docket = :docket" +
-						" and gr.grade >= 4", Grade.class);
-		query.setParameter("id", courseId);
-		query.setParameter("docket", docket);
-		List<Grade> approvedGrades = query.getResultList();
-
-		//TODO:Improve this
-		for (Grade grade : approvedGrades) {
-			if (grade.getFinalGrades().size() == MAX_FINALS_CHANCES){
-
-				//for (FinalGrade finalGrade : grade.getFinalGrades()) {
-				//    if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0) {
-				//        return true;
-				//    }
-				//}
-				//return false;
-
-			} else {
-				for (FinalGrade finalGrade : grade.getFinalGrades()) {
-					if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0) {
-						return false;
-					}
-				}
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	@Deprecated
 	@Override
 	public List<FinalInscription> getAllFinalInscriptions() {
 		final TypedQuery<FinalInscription> query = em.createQuery("select inscription from FinalInscription inscription", FinalInscription.class);
@@ -341,13 +271,32 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public List<FinalInscription> getOpenFinalInscriptionsByCourse(Course course){
-		return getAllFinalInscriptionsFromOpenInstance().stream().filter(inscription -> inscription.getCourse().equals(course)).collect(Collectors.toList());
+	public boolean canTakeCourseFinal(int docket, int courseId) {
+		TypedQuery<Grade> query = em.createQuery("from Grade as gr where gr.course.id=:id and gr.student.docket = :docket" +
+						" and gr.grade >= 4", Grade.class);
+		query.setParameter("id", courseId);
+		query.setParameter("docket", docket);
+		List<Grade> approvedGrades = query.getResultList();
+
+		for (Grade grade : approvedGrades) {
+			if (grade.getFinalGrades().size() < MAX_FINALS_CHANCES){
+
+				for (FinalGrade finalGrade : grade.getFinalGrades()) {
+					if (BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0) {
+						return false; // Course and Final was already approved
+					}
+				}
+				return true; // Course was approved and there are still chances to take the final exam
+			}
+		}
+
+		return false; // Never approved the course, or the course was approved but must be retaken
 	}
 
+
 	@Override
-	public FinalInscription getFinalInscription(int id) {
-		return em.find(FinalInscription.class, id);
+	public List<FinalInscription> getOpenFinalInscriptionsByCourse(Course course){
+		return getAllFinalInscriptionsFromOpenInstance().stream().filter(inscription -> inscription.getCourse().equals(course)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -370,6 +319,26 @@ public class StudentHibernateDao implements StudentDao {
 		}
 
 		return courses;
+	}
+
+	@Override
+	public void addStudentFinalInscription(Student student, FinalInscription finalInscription) {
+		FinalInscription inscription = courseDao.getFinalInscription(finalInscription.getId()); // Needed to access History
+
+		inscription.getHistory().add(student);
+		inscription.increaseVacancy();
+		em.merge(inscription);
+	}
+
+	@Override
+	public void deleteStudentFinalInscription(Student student, FinalInscription finalInscription) {
+		FinalInscription inscription = courseDao.getFinalInscription(finalInscription.getId()); // Needed to access History
+
+		if (inscription.getHistory().contains(student)) {
+			inscription.getHistory().remove(student);
+			inscription.decreaseVacancy();
+			em.merge(inscription);
+		}
 	}
 
 }

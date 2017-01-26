@@ -8,6 +8,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -70,24 +72,21 @@ public class DTOEntityMapper {
   }
 
   FinalInscriptionDTO convertToFinalInscriptionDTO(FinalInscription finalInscription, Set<Student> finalStudents) {
-    final FinalInscriptionDTO finalInscriptionDTO = new FinalInscriptionDTO();
-    final CourseDTO courseDTO = convertToCourseDTO(finalInscription.getCourse());
-
-    finalInscriptionDTO.setCourse(courseDTO);
-    finalInscriptionDTO.setId(finalInscription.getId());
-    finalInscriptionDTO.setFinalExamDate(finalInscription.getFinalExamDate());
-    finalInscriptionDTO.setVacancy(finalInscription.getVacancy());
-    finalInscriptionDTO.setMaxVacancy(finalInscription.getMaxVacancy());
-    finalInscriptionDTO.setState(finalInscription.getState());
-
-    //TODO: The students can't be obtained from the finalInscription because Hibernate throws a Lazy initialization
-    finalInscriptionDTO.setStudents(finalStudents.stream().map(this::convertToStudentIndexDTO).collect(Collectors.toList()));
-
+    finalInscription.setHistory(finalStudents);
+    FinalInscriptionDTO finalInscriptionDTO = modelMapper.map(finalInscription, FinalInscriptionDTO.class);
     return finalInscriptionDTO;
   }
 
   public FinalInscriptionIndexDTO convertToFinalInscriptionIndexDTO(FinalInscription finalInscription) {
     return modelMapper.map(finalInscription, FinalInscriptionIndexDTO.class);
+  }
+
+  public FinalInscription convertToFinalInscription(FinalInscriptionDTO finalinscriptionDTO, Course course) {
+    FinalInscription finalinscription = modelMapper.map(finalinscriptionDTO, FinalInscription.class);
+    finalinscription.setState(FinalInscription.FinalInscriptionState.OPEN);
+    finalinscription.setId(null);
+    finalinscription.setCourse(course);
+    return finalinscription;
   }
 
   AdminDTO converToAdminDTO(final Admin admin) {
@@ -105,4 +104,5 @@ public class DTOEntityMapper {
   Admin convertToAdmin(final AdminsUpdateDTO adminsUpdateDTO) {
     return modelMapper.map(adminsUpdateDTO, Admin.class);
   }
+
 }

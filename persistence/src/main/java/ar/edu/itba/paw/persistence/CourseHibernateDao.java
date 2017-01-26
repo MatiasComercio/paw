@@ -4,7 +4,9 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.CourseDao;
 import ar.edu.itba.paw.interfaces.StudentDao;
 import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalGrade;
 import ar.edu.itba.paw.models.FinalInscription;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import org.hibernate.Session;
@@ -19,10 +21,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Repository
 public class CourseHibernateDao implements CourseDao {
@@ -283,22 +283,59 @@ public class CourseHibernateDao implements CourseDao {
         return totalCredits;
     }
 
-    //TODO: TEST THIS
     @Override
-    public Course getStudentsThatPassedCourse(final String courseId) {
-        Course course = getByCourseID(courseId);
-        List<Student> approvedStudents = studentDao.getStudentsPassed(courseId);
-        course.setApprovedStudents(approvedStudents);
-        return course;
+    public List<Student> getStudentsThatPassedCourse(final String courseId) {
+        final List<Student> studentsPassed = new LinkedList<>();
+
+        final TypedQuery<Grade> query = em.createQuery("select gr from Grade as gr where gr.course.courseId = :id and gr.grade >= 4", Grade.class);
+        query.setParameter("id", courseId);
+        List<Grade> grades = query.getResultList();
+
+        if(grades != null){
+            for(Grade grade : grades){
+                for(FinalGrade finalGrade : grade.getFinalGrades()){
+                    if(BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0){
+                        studentsPassed.add(grade.getStudent());
+                    }
+                }
+            }
+        }
+
+        return studentsPassed;
     }
 
     @Override
-    public List<FinalInscription> getOpenFinalInsciptions(Integer id) {
-        final TypedQuery<FinalInscription> query = em.createQuery("from FinalInscription as fi where fi.course.id = :id and fi.state = :state", FinalInscription.class);
-        query.setParameter("id", id);
+    public List<FinalInscription> getCourseFinalInscriptions(String courseId) {
+        final TypedQuery<FinalInscription> query = em.createQuery("from FinalInscription as fi where fi.course.courseId = :courseId", FinalInscription.class);
+        query.setParameter("courseId", courseId);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<FinalInscription> getCourseOpenFinalInscriptions(String courseId) {
+        final TypedQuery<FinalInscription> query = em.createQuery("from FinalInscription as fi where fi.course.courseId = :courseId and fi.state = :state", FinalInscription.class);
+        query.setParameter("courseId", courseId);
         query.setParameter("state", FinalInscription.FinalInscriptionState.OPEN);
 
         return query.getResultList();
+    }
+
+    @Override
+    public FinalInscription getFinalInscription(int id) {
+        return em.find(FinalInscription.class, id);
+    }
+
+    @Override
+    public int addFinalInscription(FinalInscription finalInscription) {
+        Session session = em.unwrap(Session.class);
+        session.save(finalInscription);
+        return finalInscription.getId();
+    }
+
+    @Override
+    public void deleteFinalInscription(int finalInscriptionId) {
+        FinalInscription finalInscription = getFinalInscription(finalInscriptionId);
+        em.remove(finalInscription);
     }
 
     //QueryFilter

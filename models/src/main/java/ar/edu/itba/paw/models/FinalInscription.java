@@ -13,7 +13,7 @@ public class FinalInscription {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "finalInscription_finalInscriptionid_seq")
     @SequenceGenerator(sequenceName = "finalInscription_finalInscriptionid_seq", name = "finalInscription_finalInscriptionid_seq", allocationSize = 1)
-    private int id;
+    private Integer id;
 
     @Basic
     private int vacancy;
@@ -21,27 +21,11 @@ public class FinalInscription {
     @Basic
     private int maxVacancy;
 
-    @ManyToMany(
-            cascade = CascadeType.ALL
-    )
-//    @JoinTable(name="inscription", joinColumns=@JoinColumn(name="course_id", referencedColumnName = "id"),
-//            inverseJoinColumns=@JoinColumn(name="docket", referencedColumnName = "docket")
-//    )
-    private Set<Student> students;
-
     @ManyToMany()
     @JoinTable(name="finalinscription_student_history")
     private Set<Student> history;
 
-    public Set<Student> getHistory() {
-        return history;
-    }
-
-    public void setHistory(Set<Student> history) {
-        this.history = history;
-    }
-
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Course course;
 
     @Column(nullable = false)
@@ -68,7 +52,7 @@ public class FinalInscription {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -82,14 +66,6 @@ public class FinalInscription {
 
     public void setMaxVacancy(int maxVacancy) {
         this.maxVacancy = maxVacancy;
-    }
-
-    public Set<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(Set<Student> students) {
-        this.students = students;
     }
 
     public Course getCourse() {
@@ -114,6 +90,37 @@ public class FinalInscription {
 
     public void setState(FinalInscriptionState state) {
         this.state = state;
+    }
+
+    public Set<Student> getHistory() {
+        return history;
+    }
+
+    public void setHistory(Set<Student> history) {
+        this.history = history;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FinalInscription that = (FinalInscription) o;
+
+        if (maxVacancy != that.maxVacancy) return false;
+        if (!id.equals(that.id)) return false;
+        if (!course.equals(that.course)) return false;
+        return finalExamDate.equals(that.finalExamDate);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + maxVacancy;
+        result = 31 * result + course.hashCode();
+        result = 31 * result + finalExamDate.hashCode();
+        return result;
     }
 
     protected FinalInscription(){

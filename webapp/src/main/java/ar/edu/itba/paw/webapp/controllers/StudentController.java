@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -135,7 +136,7 @@ public class StudentController {
   @Path("/{docket}/address")
   public Response studentsAddressUpdate(
           @PathParam("docket") final int docket,
-          @Valid AddressDTO addressDTO) {
+          @Valid final AddressDTO addressDTO) {
     final Student student = ss.getByDocket(docket);
 
     if(student == null){
@@ -180,7 +181,7 @@ public class StudentController {
   @Path("/{docket}/courses")
   public Response studentsCoursesNew(
           @PathParam("docket") final Integer docket,
-          @Valid InscriptionDTO inscriptionDTO){
+          @Valid final InscriptionDTO inscriptionDTO){
 
     //TODO securityContext.getAuthentication().getAuthorities() ADD_INSCRIPTIONS see if we can put it in WebAuthConfig as an antmatcher
 
@@ -194,22 +195,22 @@ public class StudentController {
       return status(Status.BAD_REQUEST).build();
     }
 
-    boolean result = ss.enroll(docket, course.getCourseId());
+    boolean result = ss.enroll(student, course);
 
     if(!result){
       return status(Status.BAD_REQUEST).build();
       // TODO: Decide what to return
-      // return status(Status.PRECONDITION_FAILED).build();
     }
     return status(Status.OK).build();
   }
 
   @DELETE
   @Consumes(MediaType.APPLICATION_JSON)
-  @Path("/{docket}/courses")
+  @Path("/{docket}/courses/{courseId}")
   public Response studentsCoursesDestroy(
           @PathParam("docket") final Integer docket,
-          @Valid InscriptionDTO inscriptionDTO){
+          @Pattern(regexp="\\d{2}\\.\\d{2}")
+          @PathParam("courseId") final String courseId){
 
     //TODO securityContext.getAuthentication().getAuthorities() DELETE_INSCRIPTIONS
 
@@ -218,9 +219,9 @@ public class StudentController {
       return status(Status.NOT_FOUND).build();
     }
 
-    final Course course = cs.getByCourseID(inscriptionDTO.getCourseId());
+    final Course course = cs.getByCourseID(courseId);
     if(course == null){
-      return status(Status.BAD_REQUEST).build();
+      return status(Status.NOT_FOUND).build();
     }
 
     ss.unenroll(docket, course.getId());
@@ -279,7 +280,7 @@ public class StudentController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/{docket}/grades")
   public Response studentsGradesNew(@PathParam("docket") final Integer docket,
-                                       @Valid GradeDTO gradeDTO){
+                                       @Valid final GradeDTO gradeDTO){
 
     final Student student = ss.getByDocket(docket);
     if(student == null){
@@ -293,7 +294,7 @@ public class StudentController {
 
     final List<Course> studentCourses = ss.getStudentCourses(docket, null);
     if(studentCourses == null || !studentCourses.contains(course)){
-      return status(Status.BAD_REQUEST).build(); //TODO: Return Precondition Failed status??
+      return status(Status.BAD_REQUEST).build();
     }
 
     Grade grade = mapper.convertToGrade(gradeDTO, student, course, null);
@@ -312,7 +313,7 @@ public class StudentController {
           @PathParam("docket") final Integer docket,
           @Min(1)
           @PathParam("gradeId") final Integer gradeId,
-          @Valid GradeDTO gradeDTO){
+          @Valid final GradeDTO gradeDTO){
 
     final Student student = ss.getByDocket(docket);
     if(student == null){
@@ -332,19 +333,16 @@ public class StudentController {
 
   }
 
-  /*************************  NOT WORKING ************************************************/
-
   @GET
   @Path("/{docket}/finalInscriptions")
   public Response studentsFinalInscriptionsIndex(@PathParam("docket") final Integer docket){
-    // TODO: Test this method
 
     final Student student = ss.getByDocket(docket);
     if(student == null){
       return status(Status.NOT_FOUND).build();
     }
 
-    final List<FinalInscription> finalInscriptions = ss.getFinalInscriptionsTaken(docket);
+    final List<FinalInscription> finalInscriptions = ss.getFinalInscriptionsTaken(student);
 
     final List<FinalInscriptionIndexDTO> list = finalInscriptions.stream()
             .map(finalInscription -> mapper.convertToFinalInscriptionIndexDTO(finalInscription)).collect(Collectors.toList());
@@ -359,14 +357,17 @@ public class StudentController {
           @Min(1)
           @PathParam("finalInscriptionId") final Integer inscriptionId){
 
-    // TODO: Test this method
-
     final Student student = ss.getByDocket(docket);
     if(student == null){
       return status(Status.NOT_FOUND).build();
     }
 
-    boolean done = ss.addStudentFinalInscription(docket, inscriptionId);
+    final FinalInscription finalInscription = cs.getFinalInscription(inscriptionId);
+    if(finalInscription == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    boolean done = ss.addStudentFinalInscription(student, finalInscription);
     if(!done){
       return status(Status.BAD_REQUEST).build();
     }
@@ -378,32 +379,34 @@ public class StudentController {
   @Path("/{docket}/finalInscriptions/{finalInscriptionId}")
   public Response studentsFinalInscriptionsDestroy(
           @PathParam("docket") final Integer docket,
-          @Min(1)
           @PathParam("finalInscriptionId") final Integer inscriptionId) {
-
-    // TODO: Test this method
 
     final Student student = ss.getByDocket(docket);
     if(student == null){
       return status(Status.NOT_FOUND).build();
     }
-    ss.deleteStudentFinalInscription(docket, inscriptionId);
 
-    return ok().build(); // TODO: No content??
+    final FinalInscription finalInscription = cs.getFinalInscription(inscriptionId);
+    if(finalInscription == null){
+      return status(Status.NOT_FOUND).build();
+    }
 
+    ss.deleteStudentFinalInscription(student, finalInscription);
+
+    return noContent().build();
   }
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{docket}/finalInscriptions/available")
   public Response studentsFinalInscriptionsAvailable(@PathParam("docket") final Integer docket){
-    // TODO: Test this method
+
     final Student student = ss.getByDocket(docket);
     if(student == null){
       return status(Status.NOT_FOUND).build();
     }
 
-    final List<FinalInscription> finalInscriptions = ss.getAvailableFinalInscriptions(docket);
+    final List<FinalInscription> finalInscriptions = ss.getAvailableFinalInscriptions(student);
 
     final List<FinalInscriptionIndexDTO> list = finalInscriptions.stream()
             .map(finalInscription -> mapper.convertToFinalInscriptionIndexDTO(finalInscription)).collect(Collectors.toList());
@@ -411,6 +414,28 @@ public class StudentController {
     return ok(new FinalInscriptionsList(list)).build();
   }
 
-  /*************************  NOT WORKING ************************************************/
+  @POST
+  @Path("/{docket}/finalInscriptions/{finalInscriptionId}/qualify")
+  public Response studentsFinalInscriptionsQualify(
+          @PathParam("docket") final Integer docket,
+          @PathParam("finalInscriptionId") final int inscriptionId,
+          @Valid GradeFinalInscriptionDTO gradeDTO) {
+
+    final Student student = ss.getByDocket(docket);
+    if(student == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final FinalInscription finalInscription = cs.getFinalInscription(inscriptionId);
+    if(finalInscription == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    if(!ss.addFinalGrade(inscriptionId, docket, gradeDTO.getGrade())) {
+      return status(Status.BAD_REQUEST).build();
+    }
+
+    return noContent().build();
+  }
 
 }

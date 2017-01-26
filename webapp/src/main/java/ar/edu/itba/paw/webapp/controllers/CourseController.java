@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -160,15 +161,14 @@ public class CourseController {
                                              @Size(max=50)
                                              @QueryParam("lastName") final String lastName) {
     final Course course = cs.getByCourseID(courseId);
-
     if(course == null) {
       return status(Status.NOT_FOUND).build();
     }
 
     final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
             .docket(docket).firstName(firstName).lastName(lastName).build();
-    final Course courseWithStudents = cs.getStudentsThatPassedCourse(courseId, studentFilter);
-    final List<Student> approvedStudents = courseWithStudents.getApprovedStudents();
+
+    final List<Student> approvedStudents = cs.getStudentsThatPassedCourse(courseId, studentFilter);
 
     final List<StudentIndexDTO> studentsList = approvedStudents.stream().map(student -> mapper.convertToStudentIndexDTO(student)).collect(Collectors.toList());
 
@@ -191,6 +191,8 @@ public class CourseController {
   @Path("/{courseId}/correlatives/{correlativeId}")
   public Response coursesCorrelativesDestroy(@PathParam("courseId") final String courseId,
                                              @PathParam("correlativeId") final String correlativeId) {
+
+
     if(!cs.deleteCorrelative(courseId, correlativeId)) {
       return status(Status.BAD_REQUEST).build();
     }
@@ -199,11 +201,60 @@ public class CourseController {
   }
 
   @GET
-  @Path("/finalInscriptions/{finalInscriptionId}")
+  @Path("/{courseId}/finalInscriptions")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response coursesFinalInscriptionsShow(@PathParam("finalInscriptionId") final int finalInscriptionId) {
-    final FinalInscription finalInscription = cs.getFinalInscription(finalInscriptionId);
+  public Response coursesFinalInscriptionsIndex(
+          @Pattern(regexp="\\d{2}\\.\\d{2}")
+          @PathParam("courseId") final String courseId) {
 
+    final Course course = cs.getByCourseID(courseId);
+    if(course == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    List<FinalInscription> finalInscriptions = cs.getCourseFinalInscriptions(courseId);
+
+    final List<FinalInscriptionIndexDTO> list = finalInscriptions.stream()
+            .map(finalInscription -> mapper.convertToFinalInscriptionIndexDTO(finalInscription)).collect(Collectors.toList());
+
+    return ok(new FinalInscriptionsList(list)).build();
+  }
+
+  @POST
+  @Path("/{courseId}/finalInscriptions")
+  @Consumes(MediaType.APPLICATION_JSON)
+  public Response coursesFinalInscriptionsNew(
+          @Pattern(regexp="\\d{2}\\.\\d{2}")
+          @PathParam("courseId") final String courseId,
+          @Valid final FinalInscriptionDTO finalinscriptionDTO) {
+
+    final Course course = cs.getByCourseID(courseId);
+    if(course == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    FinalInscription finalInscription = mapper.convertToFinalInscription(finalinscriptionDTO, course);
+
+    int id = cs.addFinalInscription(finalInscription);
+
+    final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(id)).build();
+    return created(uri).build();
+  }
+
+  @GET
+  @Path("/{courseId}/finalInscriptions/{finalInscriptionId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response coursesFinalInscriptionsShow(
+          @Pattern(regexp="\\d{2}\\.\\d{2}")
+          @PathParam("courseId") final String courseId,
+          @PathParam("finalInscriptionId") final int finalInscriptionId) {
+
+    final Course course = cs.getByCourseID(courseId);
+    if(course == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final FinalInscription finalInscription = cs.getFinalInscription(finalInscriptionId);
     if(finalInscription == null) {
       return status(Status.NOT_FOUND).build();
     }
@@ -215,15 +266,20 @@ public class CourseController {
     return ok(finalInscriptionDTO).build();
   }
 
-  @POST
-  @Path("/finalInscriptions/{finalInscriptionId}/grades")
-  public Response coursesFinalInscriptionsQualify(@PathParam("finalInscriptionId") final int finalInscriptionId,
-                                                 @Valid GradeFinalInscriptionDTO gradeDTO) {
-    //TODO see if gradeDTO.getGrade can be improved
-    if(!ss.addFinalGrade(finalInscriptionId, gradeDTO.getDocket(), gradeDTO.getGrade())) {
-      return status(Status.BAD_REQUEST).build();
+  @DELETE
+  @Path("/{courseId}/finalInscriptions/{finalInscriptionId}")
+  public Response coursesFinalInscriptionsDestroy(
+          @Pattern(regexp="\\d{2}\\.\\d{2}")
+          @PathParam("courseId") final String courseId,
+          @PathParam("finalInscriptionId") final int finalInscriptionId) {
+
+    final Course course = cs.getByCourseID(courseId);
+    if(course == null){
+      return status(Status.NOT_FOUND).build();
     }
 
+    cs.deleteFinalInscription(finalInscriptionId);
     return noContent().build();
   }
+
 }

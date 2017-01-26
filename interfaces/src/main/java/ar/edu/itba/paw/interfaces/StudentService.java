@@ -109,15 +109,15 @@ public interface StudentService {
      */
     List<Course> getAvailableInscriptionCourses(int docket, CourseFilter courseFilter);
 
+
     /**
-     * Enrolls the student with the given docket into the course with the specified id,
+     * Enrolls the given student into the specified course,
      * if the student has already approved all its corresponding correlatives.
-     *
-     * @param studentDocket The student's docket
-     * @param courseId      The course id
-     * @return a Result object containing information of the operation carried out
+     * @param student The student
+     * @param course The course
+     * @return True if the enroll was made, false otherwise
      */
-    boolean enroll(int studentDocket, String courseId);
+    boolean enroll(Student student, Course course);
 
     /**
      * Unenrolls the student with the given docket of the course with the specified id.
@@ -128,13 +128,15 @@ public interface StudentService {
     void unenroll(int studentDocket, int courseId);
 
     /**
-     * Gets the collection of courses the student already approved.
+     * Gets the list of courses the student already approved. This means: a) the course is approved and not all
+     * all 3 finals have been failed (i.e. the student doesn't have to take the course again);
+     * b) the course is approved and at least one final exam was approved
      *
      * @param docket The student's docket
      * @return The collection of the courses the student with the given docket has already approved;
      * an empty collection will be returned if no course was approved
      */
-    Collection<Course> getApprovedCourses(int docket);
+    List<Course> getApprovedCourses(int docket);
 
 
     /**
@@ -193,50 +195,34 @@ public interface StudentService {
     /**
      * Get the final exams inscriptions available for the given student
      *
-     * @param docket The student's docket.
+     * @param student The student.
      * @return The final inscriptions
      */
-    List<FinalInscription> getAvailableFinalInscriptions(int docket);
-
-    /**
-     * Get a final inscription by it's id
-     *
-     * @param id The given's final inscription's id
-     * @return The Final Inscription
-     */
-    FinalInscription getFinalInscription(int id);
+    List<FinalInscription> getAvailableFinalInscriptions(Student student);
 
     /**
      * Adds the given student to the Final Inscription instance
-     *
-     * @param docket The student's docket
+     * @param student
+     * @param finalInscription
+     * @return True if the inscription was successful, false otherwise
      */
-    boolean addStudentFinalInscription(int docket, int finalInscriptionId);
+    boolean addStudentFinalInscription(Student student, FinalInscription finalInscription);
 
     /**
      * Get the final exams inscriptions that a student is taking
      *
-     * @param docket The student's docket.
+     * @param student The student
      * @return The final inscriptions
      */
-    List<FinalInscription> getFinalInscriptionsTaken(int docket);
+    List<FinalInscription> getFinalInscriptionsTaken(Student student);
 
     /**
      * Remove the given student from the Final Inscription instance
      *
-     * @param docket
-     * @param finalInscriptionId
-     * @return
+     * @param student The student
+     * @param finalInscription The final inscription
      */
-    boolean deleteStudentFinalInscription(int docket, int finalInscriptionId);
-
-    /**
-     * Get the student's inscribed in a FinalInscription
-     *
-     * @param id The FinalInscription's id
-     * @return The list of students
-     */
-    Set<Student> getFinalStudents(int id);
+    void deleteStudentFinalInscription(Student student, FinalInscription finalInscription);
 
     /**
      * Add a final grade
@@ -263,4 +249,5 @@ public interface StudentService {
      * @return
      */
     List<Procedure> getProcedures(int docket);
+
 }

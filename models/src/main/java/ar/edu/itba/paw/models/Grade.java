@@ -29,12 +29,8 @@ public class Grade {
 	@Transient
 	private Boolean taking;
 
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<FinalGrade> finalGrades;
-
-	public void setTaking(final Boolean taking) {
-		this.taking = taking;
-	}
 
 	@ManyToOne
 	@JoinColumn(name = "docket", referencedColumnName = "docket", nullable = false)
@@ -104,6 +100,10 @@ public class Grade {
 
 	public Boolean getTaking() {
 		return taking;
+	}
+
+	public void setTaking(final Boolean taking) {
+		this.taking = taking;
 	}
 
 	public void setStudent(final Student student) {

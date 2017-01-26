@@ -8,6 +8,7 @@ import java.util.List;
 
 public class TranscriptGradeDTO {
 
+  private Integer id;
   private Integer docket;
   private String courseName;
   private BigDecimal grade;
@@ -17,6 +18,14 @@ public class TranscriptGradeDTO {
   private String courseCodId;
 
   public TranscriptGradeDTO() {
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
   }
 
   public Integer getDocket() {

@@ -3,13 +3,15 @@ package ar.edu.itba.paw.webapp.models;
 import ar.edu.itba.paw.models.FinalInscription;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class FinalInscriptionIndexDTO {
 
-  private CourseDTO course;
+  //private CourseDTO course;
+  private String courseId;
 
   private int id;
-  private LocalDate finalExamDate;
+  private LocalDateTime finalExamDate;
   private int vacancy;
   private int maxVacancy;
   private FinalInscription.FinalInscriptionState state;
@@ -17,12 +19,12 @@ public class FinalInscriptionIndexDTO {
   public FinalInscriptionIndexDTO() {
   }
 
-  public CourseDTO getCourse() {
-    return course;
+  public String getCourseId() {
+    return courseId;
   }
 
-  public void setCourse(CourseDTO course) {
-    this.course = course;
+  public void setCourseId(String courseId) {
+    this.courseId = courseId;
   }
 
   public int getId() {
@@ -33,11 +35,11 @@ public class FinalInscriptionIndexDTO {
     this.id = id;
   }
 
-  public LocalDate getFinalExamDate() {
+  public LocalDateTime getFinalExamDate() {
     return finalExamDate;
   }
 
-  public void setFinalExamDate(LocalDate finalExamDate) {
+  public void setFinalExamDate(LocalDateTime finalExamDate) {
     this.finalExamDate = finalExamDate;
   }
 

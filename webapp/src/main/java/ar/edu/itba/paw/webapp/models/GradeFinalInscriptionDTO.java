@@ -7,23 +7,12 @@ import java.math.BigDecimal;
 
 public class GradeFinalInscriptionDTO {
   @NotNull
-  private int docket;
-
-  @NotNull
   @Min(0)
   @Max(10)
   private BigDecimal grade;
 
   public GradeFinalInscriptionDTO() {
 
-  }
-
-  public int getDocket() {
-    return docket;
-  }
-
-  public void setDocket(int docket) {
-    this.docket = docket;
   }
 
   public BigDecimal getGrade() {

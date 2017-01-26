@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -209,7 +210,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public boolean deleteCourseCorrelatives(final String courseId) {
+    public void deleteCourseCorrelatives(final String courseId) {
         List<String> correlatives = getCorrelatives(courseId);
         List<String> upperCorrelatives = getUpperCorrelatives(courseId);
 
@@ -234,8 +235,6 @@ public class CourseServiceImpl implements CourseService {
                 deleteCorrelative(courseId, upperCorrelative);
             }
         }
-//        return Result.OK;
-        return true;
     }
 
     @Transactional
@@ -282,43 +281,57 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public Course getStudentsThatPassedCourse(final String courseId, final StudentFilter studentFilter) {
-        final Course course = courseDao.getStudentsThatPassedCourse(courseId);
-        if (course == null) {
-            return null;
-        }
+    public List<Student> getStudentsThatPassedCourse(final String courseId, final StudentFilter studentFilter) {
+        final List<Student> passedStudents = courseDao.getStudentsThatPassedCourse(courseId);
+        final List<Student> result = new LinkedList<>();
 
-        //TODO: DELETE - final List<Student> students = course.getStudents();
-        final List<Student> students = course.getApprovedStudents();
-        final List<Student> st = new LinkedList<>();
-        if (students  != null) {
-            final List<Student> studentsFilter = studentService.getByFilter(studentFilter);
-            for (Student s : studentsFilter) {
-                if (students.contains(s)) {
-                    s.setGrades(s.getGrades());
-                    st.add(s);
-                }
+        final List<Student> studentsFilter = studentService.getByFilter(studentFilter);
+        for (Student student : studentsFilter) {
+            if (passedStudents.contains(student)) {
+                student.setGrades(student.getGrades());
+                result.add(student);
             }
         }
-        // Care with this! if the method or class is annotated with @Transactional, this could
-        // be updating course students, and data could be lost
-        course.setApprovedStudents(st);
 
-        return course;
+        return result;
     }
 
+    @Transactional
     @Override
-    public List<FinalInscription> getOpenFinalInsciptions(Integer id) {
-        return courseDao.getOpenFinalInsciptions(id);
+    public List<FinalInscription> getCourseFinalInscriptions(String courseId) {
+        return courseDao.getCourseFinalInscriptions(courseId);
     }
 
+    @Transactional
     @Override
-    public Set<Student> getFinalStudents(int id) {
-        return  studentService.getFinalStudents(id);
+    public List<FinalInscription> getCourseOpenFinalInscriptions(final String courseId) {
+        return courseDao.getCourseOpenFinalInscriptions(courseId);
     }
 
+    @Transactional
     @Override
     public FinalInscription getFinalInscription(int id) {
-        return studentService.getFinalInscription(id);
+        return courseDao.getFinalInscription(id);
     }
+
+    @Transactional
+    @Override
+    public int addFinalInscription(FinalInscription finalInscription) {
+        return courseDao.addFinalInscription(finalInscription);
+    }
+
+    @Transactional
+    @Override
+    public void deleteFinalInscription(int finalInscriptionId) {
+        courseDao.deleteFinalInscription(finalInscriptionId);
+    }
+
+    @Transactional
+    @Override
+    public Set<Student> getFinalStudents(int id) {
+        Set<Student> set = new HashSet<>();
+        set.addAll(getFinalInscription(id).getHistory());
+        return set;
+    }
+
 }

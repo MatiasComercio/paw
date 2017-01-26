@@ -25,7 +25,7 @@ public interface CourseService {
      */
     boolean update(String courseId, Course course);
 
-	/**
+    /**
      * Get all the current available courses
      * @return a list containing all the current available courses, if any.
      */
@@ -113,9 +113,8 @@ public interface CourseService {
     /**
      *
      * @param courseId Given the id of a course, delete all the correlative
-     * @return The result code of the operation
      */
-    boolean deleteCourseCorrelatives(String courseId);
+    void deleteCourseCorrelatives(String courseId);
 
     /**
      * Get the number of semesters.
@@ -144,16 +143,41 @@ public interface CourseService {
      */
     int getTotalPlanCredits();
 
-    /* +++xtest */
-    /* +++xdocument */
-	Course getStudentsThatPassedCourse(String courseId, StudentFilter studentFilter);
+  /**
+   * Gets the student that passed both the given course and the course's final exam
+   * @param courseId The Course's Id
+   * @param studentFilter The list of filters to apply
+   * @return The list of students that passed the course and complies with the given filters
+   */
+    List<Student> getStudentsThatPassedCourse(String courseId, StudentFilter studentFilter);
+
+    /**
+     * Get the final inscriptions corresponding to a course.
+     * @param courseId The course's id
+     * @return A list of all the final inscriptions for the given course
+     */
+    List<FinalInscription> getCourseFinalInscriptions(String courseId);
 
     /**
      * Get the open final inscriptions corresponding to a course.
-     * @param id The course's id
-     * @return The list containing all the final inscriptions.
+     * @param courseId The course's id
+     * @return A list of all the open final inscriptions for the given course
      */
-    List<FinalInscription> getOpenFinalInsciptions(Integer id);
+    List<FinalInscription> getCourseOpenFinalInscriptions(String courseId);
+
+    /**
+     * Get a final inscription by it's id
+     * @param id The given's final inscription's id
+     * @return The Final Inscription
+     */
+    FinalInscription getFinalInscription(int id);
+
+    /**
+     * Creates a new final inscription
+     * @param finalInscription The final inscription to be created
+     * @return The created inscription's id
+     */
+    int addFinalInscription(FinalInscription finalInscription);
 
     /**
      * Get the student's inscribed in a FinalInscription
@@ -162,11 +186,9 @@ public interface CourseService {
      */
     Set<Student> getFinalStudents(int id);
 
-
     /**
-     * Get a final inscription by it's id
-     * @param id The given's final inscription's id
-     * @return The Final Inscription
+     * Deletes the a final inscription with the given id
+     * @param finalInscriptionId The final inscription's id
      */
-    FinalInscription getFinalInscription(int id);
+    void deleteFinalInscription(int finalInscriptionId);
 }

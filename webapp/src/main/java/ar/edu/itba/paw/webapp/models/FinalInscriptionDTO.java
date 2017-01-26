@@ -2,22 +2,38 @@ package ar.edu.itba.paw.webapp.models;
 
 import ar.edu.itba.paw.models.FinalInscription;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 public class FinalInscriptionDTO {
-  private CourseDTO course;
-  private List<StudentIndexDTO> students;
 
-  private int id;
-  private LocalDateTime finalExamDate;
+  private Integer id;
+  private CourseDTO course;
+  private List<StudentIndexDTO> history;
   private int vacancy;
-  private int maxVacancy;
   private FinalInscription.FinalInscriptionState state;
+
+  @NotNull
+  @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
+  private LocalDateTime finalExamDate;
+
+  @NotNull
+  @Min(0)
+  private int maxVacancy;
 
   public FinalInscriptionDTO() {
 
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
   }
 
   public CourseDTO getCourse() {
@@ -28,28 +44,12 @@ public class FinalInscriptionDTO {
     this.course = course;
   }
 
-  public Collection<StudentIndexDTO> getStudents() {
-    return students;
+  public List<StudentIndexDTO> getHistory() {
+    return history;
   }
 
-  public void setStudents(List<StudentIndexDTO> students) {
-    this.students = students;
-  }
-
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
-  }
-
-  public LocalDateTime getFinalExamDate() {
-    return finalExamDate;
-  }
-
-  public void setFinalExamDate(LocalDateTime finalExamDate) {
-    this.finalExamDate = finalExamDate;
+  public void setHistory(List<StudentIndexDTO> history) {
+    this.history = history;
   }
 
   public int getVacancy() {
@@ -60,6 +60,22 @@ public class FinalInscriptionDTO {
     this.vacancy = vacancy;
   }
 
+  public FinalInscription.FinalInscriptionState getState() {
+    return state;
+  }
+
+  public void setState(FinalInscription.FinalInscriptionState state) {
+    this.state = state;
+  }
+
+  public LocalDateTime getFinalExamDate() {
+    return finalExamDate;
+  }
+
+  public void setFinalExamDate(LocalDateTime finalExamDate) {
+    this.finalExamDate = finalExamDate;
+  }
+
   public int getMaxVacancy() {
     return maxVacancy;
   }
@@ -68,11 +84,4 @@ public class FinalInscriptionDTO {
     this.maxVacancy = maxVacancy;
   }
 
-  public FinalInscription.FinalInscriptionState getState() {
-    return state;
-  }
-
-  public void setState(FinalInscription.FinalInscriptionState state) {
-    this.state = state;
-  }
 }
