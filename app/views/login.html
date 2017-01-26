@@ -1,0 +1,7 @@
+<div ng-controller="LoginCtrl as controller">
+  <form name="loginForm" novalidate class='simple-form'>
+    <label>DNI: <input type='text' ng-model='controller.user.dni' required/></label><br />
+    <label>Password: <input type='password' ng-model='controller.user.password' required/></label><br />
+    <input type='submit' ng-click='loginForm.$valid && controller.login(controller.user)' value='Login' />
+  </form>
+</div>

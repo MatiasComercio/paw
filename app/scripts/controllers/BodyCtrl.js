@@ -5,7 +5,7 @@ define(
   'directives/navbar',
   'directives/sidebar'],
   function(paw) {
-    paw.controller('BodyController', [function() {
+    paw.controller('BodyCtrl', [function() {
     }]);
   }
 );

@@ -1,9 +1,49 @@
 'use strict';
 
-define(['paw', 'services/navDataService'], function(paw) {
+define(['paw',
+'services/navDataService',
+'services/Students',
+'services/Courses'],
+function(paw) {
   paw.controller('HomeCtrl',
-    ['navDataService',
-    function(navDataService) {
+    ['navDataService', 'Students', 'Courses',
+    function(navDataService, Students, Courses) {
+      this.courses = [];
+      this.students = [];
+
+      var _this = this;
+
+      this.toggleCourses = function() {
+        if (_this.courses.length === 0) {
+          Courses.getList().then(function(courses) {
+            _this.courses = _this.courses.concat(courses);
+          });
+        } else {
+          _this.courses = [];
+        }
+      };
+
+      this.toggleCourse = function(course) {
+        course.get().then(function(courseData) {
+          _this.course = courseData;
+        });
+      };
+
+      this.toggleStudents = function() {
+        if (_this.students.length === 0) {
+          Students.getList().then(function(students) {
+            _this.students = _this.students.concat(students);
+          });
+        } else {
+          _this.students = [];
+        }
+      };
+
+      this.toggleStudent = function(student) {
+        student.get().then(function(studentData) {
+          _this.student = studentData;
+        });
+      };
 
       this.fetchCourse = function() {
         return {
@@ -91,7 +131,6 @@ define(['paw', 'services/navDataService'], function(paw) {
         };
       };
 
-      var _this = this;
       function fetchData() {
         return {
           // admin: _this.fetchAdmin()

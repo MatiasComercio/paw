@@ -37,10 +37,10 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 				.and()
 					.authorizeRequests()
-					.antMatchers(HttpMethod.POST,"/login").permitAll()
+					.antMatchers(HttpMethod.POST,"/api/v1/login").permitAll()
 					.antMatchers("/**").authenticated()
 				.and()
-					.addFilterBefore(new StatelessLoginFilter("/login", tokenAuthenticationService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+					.addFilterBefore(new StatelessLoginFilter("/api/v1/login", tokenAuthenticationService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)
 					.addFilterBefore(new StatelessAuthenticationFilter(tokenAuthenticationService), UsernamePasswordAuthenticationFilter.class)
 					.exceptionHandling().authenticationEntryPoint(new PlainTextBasicAuthenticationEntryPoint());
 	}

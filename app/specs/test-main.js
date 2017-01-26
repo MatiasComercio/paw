@@ -18,6 +18,8 @@ require.config({
   // the specified files
   paths: {
     'paw': 'paw',
+    'spec-utils': '../specs/specUtils',
+    'api-responses': '../specs/apiResponses',
     'routes': 'routes',
     'services/dependencyResolverFor': 'services/dependencyResolverFor',
     'i18n/i18nLoader': 'i18n/i18nLoader',
@@ -26,6 +28,7 @@ require.config({
     alert: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert',
     angular: '../../bower_components/angular/angular',
     'angular-route': '../../bower_components/angular-route/angular-route',
+    'angular-cookies': '../../bower_components/angular-cookies/angular-cookies',
     'angular-translate': '../../bower_components/angular-translate/angular-translate',
     'angular-mocks': '../../bower_components/angular-mocks/angular-mocks',
     button: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button',
@@ -51,6 +54,8 @@ require.config({
     'jquery-mousewheel': '../../bower_components/jquery-mousewheel/jquery.mousewheel',
     'angular-material': '../../bower_components/angular-material/angular-material',
     'angular-aria': '../../bower_components/angular-aria/angular-aria',
+    lodash: '../../bower_components/lodash/dist/lodash',
+    restangular: '../../bower_components/restangular/dist/restangular',
 
     // all directives templates should go here and on shim section
     'backdrop-template': '../views/directives/backdrop.html',
@@ -62,9 +67,15 @@ require.config({
     angular: {
       deps: [
         'jquery'
-      ]
+      ],
+      exports: 'angular'
     },
     'angular-route': {
+      deps: [
+        'angular'
+      ]
+    },
+    'angular-cookies': {
       deps: [
         'angular'
       ]
@@ -113,6 +124,15 @@ require.config({
     'angular-aria': {
         deps: [
             'angular'
+        ]
+    },
+    lodash: {
+        exports: '_'
+    },
+    restangular: {
+        deps: [
+            'angular',
+            'lodash'
         ]
     },
     // all directives templates should be declared as follows

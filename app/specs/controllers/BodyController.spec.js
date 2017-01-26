@@ -7,7 +7,7 @@
 
 define(['paw',
 'angular-mocks',
-'controllers/BodyController'],
+'controllers/BodyCtrl'],
 function() {
   describe('Body Controller', function() {
     beforeEach(module('paw'));
@@ -16,7 +16,7 @@ function() {
 
     beforeEach(inject(function(_$controller_) {
       $controller = _$controller_;
-      controller = $controller('BodyController');
+      controller = $controller('BodyCtrl');
     }));
 
     it('exists', function() {

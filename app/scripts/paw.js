@@ -4,6 +4,7 @@ define(['routes',
   'i18n/i18nLoader!',
   'angular',
   'angular-route',
+  'angular-cookies',
   'angular-animate',
   'bootstrap',
   'angular-translate',
@@ -14,9 +15,11 @@ define(['routes',
   function(config, dependencyResolverFor, i18n) {
     var paw = angular.module('paw', [
       'ngRoute',
+      'ngCookies',
       'ngAnimate',
       'ngMaterial',
       'ui.bootstrap',
+      'restangular',
       'pascalprecht.translate'
     ]);
     paw
@@ -27,7 +30,8 @@ define(['routes',
       '$filterProvider',
       '$provide',
       '$translateProvider',
-      function($routeProvider, $controllerProvider, $compileProvider, $filterProvider, $provide, $translateProvider) {
+      'RestangularProvider',
+      function($routeProvider, $controllerProvider, $compileProvider, $filterProvider, $provide, $translateProvider, RestangularProvider) {
 
         paw.controller = $controllerProvider.register;
         paw.directive = $compileProvider.directive;
@@ -47,6 +51,8 @@ define(['routes',
         $translateProvider.translations('preferredLanguage', i18n);
         $translateProvider.preferredLanguage('preferredLanguage');
         $translateProvider.useSanitizeValueStrategy('escape');
+
+        RestangularProvider.setBaseUrl('/api/v1/');
       }]);
       return paw;
     }

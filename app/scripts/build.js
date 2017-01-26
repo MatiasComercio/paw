@@ -7,6 +7,7 @@ require.config({
         alert: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/alert',
         angular: '../../bower_components/angular/angular',
         'angular-route': '../../bower_components/angular-route/angular-route',
+        'angular-cookies': '../../bower_components/angular-cookies/angular-cookies',
         'angular-translate': '../../bower_components/angular-translate/angular-translate',
         'angular-mocks': '../../bower_components/angular-mocks/angular-mocks',
         button: '../../bower_components/bootstrap-sass-official/assets/javascripts/bootstrap/button',
@@ -31,15 +32,23 @@ require.config({
         'angular-bootstrap': '../../bower_components/angular-bootstrap/ui-bootstrap-tpls',
         'jquery-mousewheel': '../../bower_components/jquery-mousewheel/jquery.mousewheel',
         'angular-material': '../../bower_components/angular-material/angular-material',
-        'angular-aria': '../../bower_components/angular-aria/angular-aria'
+        'angular-aria': '../../bower_components/angular-aria/angular-aria',
+        lodash: '../../bower_components/lodash/dist/lodash',
+        restangular: '../../bower_components/restangular/dist/restangular'
     },
     shim: {
         angular: {
             deps: [
                 'jquery'
-            ]
+            ],
+            exports: 'angular'
         },
         'angular-route': {
+            deps: [
+                'angular'
+            ]
+        },
+        'angular-cookies': {
             deps: [
                 'angular'
             ]
@@ -84,6 +93,15 @@ require.config({
             deps: [
                 'angular'
             ]
+        },
+        lodash: {
+            exports: '_'
+        },
+        restangular: {
+            deps: [
+                'angular',
+                'lodash'
+            ]
         }
     },
     packages: [
@@ -99,8 +117,9 @@ if (paths) {
 
 require([
         'angular',
+        'restangular',
         'paw',
-        'controllers/BodyController'
+        'controllers/BodyCtrl'
     ],
     function() {
         angular.bootstrap(document, ['paw']);

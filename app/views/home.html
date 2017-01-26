@@ -1,4 +1,32 @@
 <div ng-controller='HomeCtrl as controller'>
+  <div class='row'>
+    <div class='col-xs-6'>
+      <a class='btn btn-success' ng-click='controller.toggleCourses()'>toggleCourses</a>
+      <div ng-show='controller.course'>
+        <p>{{ controller.course.courseId }} - {{ controller.course.name }}</p>
+        <p>{{ controller.course.credits }}</p>
+      </div>
+      <div ng-repeat='course in controller.courses'>
+        <hr />
+        <a ng-show='course' ng-click='controller.toggleCourse(course)' class='btn btn-info'>
+        <p>{{ course.courseId }} - {{ course.name }}</p>
+      </div>
+    </div>
+    <div class='col-xs-6'>
+      <a class='btn btn-success' ng-click='controller.toggleStudents()'>toggleStudents</a>
+      <div ng-show='controller.student'>
+        <p>{{ controller.student.docket }} - {{ controller.student.fullName }}</p>
+        <p>{{ controller.student.email }}</p>
+      </div>
+      <div ng-repeat='student in controller.students'>
+        <hr />
+        <a ng-show='student' ng-click='controller.toggleStudent(student)' class='btn btn-info'>
+          {{ student.docket }} - {{ student.fullName }}
+        </a>
+      </div>
+    </div>
+  </div>
+  <hr />
   Show: <input type="checkbox" ng-model="checked" aria-label="Toggle ngShow"><br />
   <div class="check-element animate-show-hide" ng-show="checked">
     <div class='nested'>
