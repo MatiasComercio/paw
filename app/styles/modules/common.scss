@@ -58,6 +58,7 @@ hr {
 // Customize scrollbar for Chrome and Opera browsers
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 /* Track */
@@ -68,4 +69,17 @@ hr {
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: $silver-chalice;
+}
+
+.row {
+  margin: 0;
+}
+
+.page-header {
+  margin: 0 0 10px;
+  padding-bottom: 15px;
+}
+
+.btn {
+  border-radius: 0;
 }

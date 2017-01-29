@@ -5,7 +5,6 @@
   margin-left: $sidebarWidth;
   margin-right: 0;
   margin-bottom: 0;
-  width: 100%;
   padding: $containerPadding;
   width: calc(100% - #{$sidebarWidth});
   transition: all linear $sidebarTransitionTime;

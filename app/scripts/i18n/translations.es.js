@@ -52,11 +52,19 @@ define([], function() {
 
     //
     i18nDni: 'DNI',
+    i18Docket: 'Legajo',
     i18nFirstName: 'Nombre',
     i18nLastName: 'Apellido',
+    i18Actions: 'Acciones',
 
     //
     i18nId: 'Código',
-    i18nName: 'Nombre'
+    i18nName: 'Nombre',
+
+    // Search filters
+    i18SearchButton: 'Buscar',
+    i18ResetButton: 'Resetear',
+    i18NoStudentsFound: 'No se encontraron alumnos'
+
   };
 });

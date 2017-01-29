@@ -7,8 +7,11 @@ $fa-font-path: "/bower_components/font-awesome/fonts";
 
 @import 'modules/variables/importer';
 @import 'modules/common';
+@import 'modules/_tables';
+@import 'modules/filters';
 @import 'directives/navbar';
 @import 'directives/sidebar';
 @import 'directives/backdrop';
 @import 'partials/index';
 @import 'partials/home';
+@import 'partials/students/_index';
