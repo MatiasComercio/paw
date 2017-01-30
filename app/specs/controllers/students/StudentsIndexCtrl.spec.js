@@ -7,7 +7,7 @@
 
 define(['paw',
 'angular-mocks',
-'controllers/StudentsIndexCtrl'],
+'controllers/students/StudentsIndexCtrl'],
 function() {
   describe('Students Index Ctrl', function() {
     beforeEach(module('paw'));
