@@ -11,7 +11,7 @@ define(
     function(navDataService, windowSize) {
       return {
         restrict: 'E',
-        templateUrl: '/views/directives/backdrop.html',
+        templateUrl: 'views/directives/backdrop.html',
         scope: true,
         bindToController: true,
         link: function(scope, element, attributes) {

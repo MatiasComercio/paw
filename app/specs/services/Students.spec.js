@@ -36,7 +36,7 @@ define(['paw', 'spec-utils', 'api-responses'], function() {
       var students;
 
       beforeEach(function() {
-        $httpBackend.expectGET('/api/v1/students').respond(JSON.stringify({students: expectedStudents}));
+        $httpBackend.expectGET('api/v1/students').respond(JSON.stringify({students: expectedStudents}));
         StudentsService.getList().then(function(apiStudents) {
           students = specUtilsService.sanitizeRestangularAll(apiStudents);
         });
@@ -63,8 +63,8 @@ define(['paw', 'spec-utils', 'api-responses'], function() {
 
       beforeEach(function() {
         expectedStudentInfo = apiResponsesService.student;
-        $httpBackend.expectGET('/api/v1/students').respond(JSON.stringify({students: expectedStudents}));
-        $httpBackend.expectGET('/api/v1/students/5').respond(JSON.stringify(expectedStudentInfo));
+        $httpBackend.expectGET('api/v1/students').respond(JSON.stringify({students: expectedStudents}));
+        $httpBackend.expectGET('api/v1/students/5').respond(JSON.stringify(expectedStudentInfo));
         StudentsService.getList().then(function(apiStudents) {
           var student = apiStudents[0];
           student.get().then(function(apiStudentInfo) {

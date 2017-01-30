@@ -32,7 +32,7 @@ function() {
       var token;
       beforeEach(function() {
         var user = {'dni': 12345678, 'password': 'pass'};
-        $httpBackend.expectPOST('/api/v1/login').respond(200, '', {'x-auth-token': expectedToken});
+        $httpBackend.expectPOST('api/v1/login').respond(200, '', {'x-auth-token': expectedToken});
         AuthenticationService.login(user).then(function(apiToken) {
           token = apiToken;
         });

@@ -2,11 +2,12 @@
 
 
 [![Build Status](https://travis-ci.org/MatiasComercio/paw.svg?branch=development)](https://travis-ci.org/MatiasComercio/paw) [![Code Climate](https://codeclimate.com/github/MatiasComercio/paw/badges/gpa.svg)](https://codeclimate.com/github/MatiasComercio/paw)
+[![Test Coverage](https://codeclimate.com/github/MatiasComercio/paw/badges/coverage.svg)](https://codeclimate.com/github/MatiasComercio/paw/coverage)
 
 [![alt text][2]][1]
 
   [1]: https://sonarqube.com/dashboard?id=ar.edu.itba.paw%3Apaw
-  [2]: http://www.qatestingtools.com/sites/default/files/tools_shortcuts/sonarqube-150px.png (hover text)
+  [2]: http://www.qatestingtools.com/sites/default/files/tools_shortcuts/sonarqube-150px.png
 
 ![Quality Gate](https://sonarqube.com/api/badges/gate?key=ar.edu.itba.paw:paw) ![Coverage Gate](https://sonarqube.com/api/badges/measure?key=ar.edu.itba.paw:paw&metric=coverage&blinking=true) ![Code Smells Gate](https://sonarqube.com/api/badges/measure?key=ar.edu.itba.paw:paw&metric=code_smells&blinking=true) ![Bugs Gate](https://sonarqube.com/api/badges/measure?key=ar.edu.itba.paw:paw&metric=bugs&blinking=true) ![Vulnerabilities](https://sonarqube.com/api/badges/measure?key=ar.edu.itba.paw:paw&metric=vulnerabilities&blinking=true)
 

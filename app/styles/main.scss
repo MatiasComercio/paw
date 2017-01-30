@@ -1,17 +1,16 @@
-$icon-font-path: "../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/";
-$fa-font-path: "/bower_components/font-awesome/fonts";
+$icon-font-path: '../bower_components/bootstrap-sass-official/assets/fonts/bootstrap/';
+$fa-font-path: '../bower_components/font-awesome/fonts';
 // bower:scss
-@import 'bootstrap-sass-official/assets/stylesheets/_bootstrap.scss';
-@import 'font-awesome/scss/font-awesome.scss';
+@import 'bootstrap-sass-official/assets/stylesheets/bootstrap';
+@import 'font-awesome/scss/font-awesome';
 // endbower
 
 @import 'modules/variables/importer';
 @import 'modules/common';
-@import 'modules/_tables';
+@import 'modules/tables';
 @import 'modules/filters';
 @import 'directives/navbar';
 @import 'directives/sidebar';
 @import 'directives/backdrop';
 @import 'partials/index';
 @import 'partials/home';
-@import 'partials/students/_index';

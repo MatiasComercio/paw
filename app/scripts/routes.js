@@ -5,15 +5,15 @@ define([], function() {
         defaultRoutePath: '/',
         routes: {
             '/': {
-                templateUrl: '/views/home.html',
+                templateUrl: 'views/home.html',
                 controller: 'HomeCtrl'
             },
             '/login': {
-                templateUrl: '/views/login.html',
+                templateUrl: 'views/login.html',
                 controller: 'LoginCtrl'
             },
             '/students': {
-                templateUrl: '/views/students/index.html',
+                templateUrl: 'views/students/index.html',
                 controller: 'StudentsIndexCtrl'
             }
             /* ===== yeoman hook ===== */

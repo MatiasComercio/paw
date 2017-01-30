@@ -340,6 +340,12 @@ module.exports = function (grunt) { // eslint-disable-line strict
           cwd: '.',
           src: 'bower_components/bootstrap-sass-official/assets/fonts/bootstrap/*',
           dest: '<%= yeoman.dist %>'
+        },
+        {
+          expand: true,
+          cwd: '.',
+          src: 'bower_components/font-awesome/fonts/*',
+          dest: '<%= yeoman.dist %>'
         }, {
           expand: true,
           cwd: '.',
@@ -375,11 +381,9 @@ module.exports = function (grunt) { // eslint-disable-line strict
           removeCombined: true,
           preserveLicenseComments: false,
           findNestedDependencies: true,
-          dir: 'dist/scripts',
+          dir: '<%= yeoman.dist %>/scripts',
           modules: [
-            {
-              name: 'build'
-            }
+            {name: 'build'}
           ],
           optimize: 'uglify2',
           paths: {
@@ -393,7 +397,6 @@ module.exports = function (grunt) { // eslint-disable-line strict
         dist: {
             options: {
                 baseRoot: '<%= yeoman.dist %>/scripts',
-                baseUrl: 'scripts',
                 outputFile: '<%= yeoman.dist %>/scripts/paths.js'
             }
         }
@@ -421,14 +424,14 @@ module.exports = function (grunt) { // eslint-disable-line strict
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
       baseRoot: '',
-      baseUrl: ''
+      baseUrl: "<%= grunt.option('urlPath') %>/scripts/"
     });
 
     if (!options.outputFile) {
       grunt.fail.warn('Option `outputFile` not specified.');
     }
 
-    var templateString = 'var paths = <%= JSON.stringify(moduleMappings, null, 2) %>;';
+    var templateString = 'var paths = <%= JSON.stringify(moduleMappings, replacer, 2) %>;';
 
     var assets = grunt.filerev.summary;
     var path = require('path');
@@ -455,7 +458,17 @@ module.exports = function (grunt) { // eslint-disable-line strict
 
     var data = {
       baseUrl: options.baseUrl,
-      moduleMappings: mappings
+      moduleMappings: mappings,
+      replacer: function(key, value) {
+        if (typeof value !== 'string') {
+          return value;
+        }
+        if (value.startsWith('controllers') ||
+            value.startsWith('services') ||
+            value.startsWith('directives')) {
+              return options.baseUrl + value;
+            }
+      }
     };
 
     var outFile = options.outputFile;
@@ -469,18 +482,22 @@ module.exports = function (grunt) { // eslint-disable-line strict
     }
 
     var content = grunt.template.process(templateString, {data: data});
-    grunt.file.write(options.outputFile, content);
-    grunt.log.writeln('File "' + options.outputFile + '" created.');
+    grunt.file.write(outFile, content);
+    grunt.log.writeln('File "' + outFile + '" created.');
   });
 
   grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
     if (target) {
-      return grunt.task.run(['build:' + target, 'connect:dist:keepalive']);
+      return grunt.task.run([
+        'build:' + target,
+        'connect:' + target + ':keepalive'
+      ]);
     }
 
     grunt.task.run([
       'clean:server',
-      'wiredep:serve',
+      // commented as it introduce linter errors on files
+      // 'wiredep:serve',
       'concurrent:server',
       'autoprefixer',
       'bower',
@@ -496,12 +513,21 @@ module.exports = function (grunt) { // eslint-disable-line strict
   });
 
   grunt.registerTask('build', 'Compiles app for production or release candidate', function () {
+    if (grunt.option('urlPath') === undefined) {
+      grunt.fail.warn("You have to specify your app's path. If '/', then specify ''\n" +
+      'Examples: \n' +
+      "  `grunt build --urlPath=''` if deployng app to '/'\n" +
+      "  `grunt build --urlPath='/grupo1'` if deployng app to '/grupo1'\n"
+      );
+    }
+
     grunt.task.run([
       'clean:dist',
       // copy stylesheets, in: app/styles/ out: .tmp/styles
       'copy:styles',
       // Wires in bower dependencies where they belong in: <<>> out: <<>>
-      'wiredep:dist',
+      // commented as it may introduce linter errors on files
+      // 'wiredep:dist',
       // In theory avoids problems related to name mangling by minifiers in: app/scripts out: .tmp/scripts
       'ngAnnotate',
       // Optimizer in: .tmp/scripts out: dist/scripts

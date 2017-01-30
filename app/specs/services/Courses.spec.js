@@ -29,7 +29,7 @@ define(['paw', 'spec-utils', 'api-responses'], function() {
       var courses;
 
       beforeEach(function() {
-        $httpBackend.expectGET('/api/v1/courses').respond(JSON.stringify({courses: expectedCourses}));
+        $httpBackend.expectGET('api/v1/courses').respond(JSON.stringify({courses: expectedCourses}));
         CoursesService.getList().then(function(apiCourses) {
           courses = specUtilsService.sanitizeRestangularAll(apiCourses);
         });
@@ -55,8 +55,8 @@ define(['paw', 'spec-utils', 'api-responses'], function() {
 
       beforeEach(function() {
         expectedCourseInfo = apiResponsesService.course;
-        $httpBackend.expectGET('/api/v1/courses').respond(JSON.stringify({courses: expectedCourses}));
-        $httpBackend.expectGET('/api/v1/courses/72.03').respond(JSON.stringify(expectedCourseInfo));
+        $httpBackend.expectGET('api/v1/courses').respond(JSON.stringify({courses: expectedCourses}));
+        $httpBackend.expectGET('api/v1/courses/72.03').respond(JSON.stringify(expectedCourseInfo));
         CoursesService.getList().then(function(apiCourses) {
           var course = apiCourses[0];
           course.get().then(function(apiCourseInfo) {

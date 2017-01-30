@@ -52,7 +52,7 @@ define(['routes',
         $translateProvider.preferredLanguage('preferredLanguage');
         $translateProvider.useSanitizeValueStrategy('escape');
 
-        RestangularProvider.setBaseUrl('/api/v1/');
+        RestangularProvider.setBaseUrl('api/v1/');
       }]);
       return paw;
     }

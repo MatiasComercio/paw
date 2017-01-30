@@ -59,7 +59,7 @@ define(
 
       return {
         restrict: 'E',
-        templateUrl: '/views/directives/sidebar.html',
+        templateUrl: 'views/directives/sidebar.html',
         controller: controller,
         controllerAs: 'controller',
         scope: {},

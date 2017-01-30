@@ -14,13 +14,14 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - pip install --user codecov
+  - gem install compass
 install:
   - npm install
   - npm install -g bower
   - bower install
 script:
   - npm test
-  - mvn clean package sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN}
+  - mvn clean package -DurlPath='' sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN}
 after_success:
   - mvn clean test jacoco:report
   - npm install -g codeclimate-test-reporter

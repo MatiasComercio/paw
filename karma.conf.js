@@ -2,10 +2,36 @@
 // Generated on Sat Jan 14 2017 12:51:36 GMT-0300 (ART)
 'use strict';
 module.exports = function(config) {
+
+  // Create symlink to bower_components from the app's folder
+  // Why do we need this?
+  // basePath is used as a starting path for all other paths inside this
+  // config file.
+  // For example, with the following config
+  //   basePath: 'app', files: [{pattern: index.js}, {pattern: ../other.js}], port: 9876
+  // the files that will be match will be
+  //   '<project_path>/app/index.html'
+  //   '<project_path>/other.html'
+  //
+  // However, the files will be served as:
+  //    http://localhost:9876/base/index.js
+  //    http://localhost:9876/absolute/absoultePathToProject/other.js
+  //
+  // Due to we need to set basePath to 'app' to be able to test directives with templateUrl,
+  // and to avoid the case of the 'other.js' example of above with bower_components, we need
+  // to make reference to the bower_components folder somehow.
+  // This 'somehow' was resolved to be a symlink.
+  var fs = require('fs');
+  // First arg: reference for the symlink
+  // Second arg: where the symlink will be created
+  // Third arg: type of symlink
+  // Fourth arg: callback function
+  fs.symlink('../bower_components', './app/bower_components', 'dir', function() {});
+
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: './',
+    basePath: 'app',
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -45,14 +71,13 @@ module.exports = function(config) {
       {pattern: 'bower_components/angular-aria/angular-aria.js', included: false},
       {pattern: 'bower_components/lodash/dist/lodash.js', included: false},
       {pattern: 'bower_components/restangular/dist/restangular.js', included: false},
-      {pattern: 'app/views/**/*.html', included: false},
-      {pattern: 'app/scripts/**/*.js', included: false},
-      {pattern: 'app/specs/**/*.js', included: false},
-      {pattern: 'app/specs/test-main.js', included: true}
+      {pattern: 'views/**/*.html', included: false},
+      {pattern: 'scripts/**/*.js', included: false},
+      {pattern: 'specs/**/*.js', included: false},
+      {pattern: 'specs/test-main.js', included: true}
     ],
 
     ngHtml2JsPreprocessor: {
-      stripPrefix: 'app',
       moduleName: 'directive-templates'
     },
 
@@ -63,11 +88,11 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'app/views/**/*.html': ['ng-html2js'],
+      'views/**/*.html': ['ng-html2js'],
       // source files, that you wanna generate coverage for
-      'app/scripts/controllers/**/*.js': ['coverage'],
-      'app/scripts/directives/*.js': ['coverage'],
-      'app/scripts/services/!(dependencyResolverFor).js': ['coverage']
+      'scripts/controllers/**/*.js': ['coverage'],
+      'scripts/directives/*.js': ['coverage'],
+      'scripts/services/!(dependencyResolverFor).js': ['coverage']
     },
 
     // optionally, configure the reporter

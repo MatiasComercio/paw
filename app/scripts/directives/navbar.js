@@ -18,7 +18,7 @@ define(['paw', 'services/navDataService'], function(paw) {
 
     return {
       restrict: 'E',
-      templateUrl: '/views/directives/navbar.html',
+      templateUrl: 'views/directives/navbar.html',
       controller: controller,
       controllerAs: 'controller',
       scope: {},

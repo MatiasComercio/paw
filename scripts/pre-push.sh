@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "\033[34mRunning maven package\033[0m"
-RUN_CHECK_CMD='mvn clean package'
+RUN_CHECK_CMD="mvn clean package -DurlPath=''"
 RUN_TESTS_OUTPUT=`${RUN_CHECK_CMD}`
 
 if [ $? -ne 0 ]

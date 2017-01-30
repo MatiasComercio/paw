@@ -38,7 +38,7 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 				.and()
 					.authorizeRequests()
 					.antMatchers(HttpMethod.POST,"/api/v1/login").permitAll()
-					.anyRequest().authenticated()
+					.antMatchers("/api/v1/**").authenticated()
 				.and()
 					.addFilterBefore(new StatelessLoginFilter("/api/v1/login", tokenAuthenticationService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)
 					.addFilterBefore(new StatelessAuthenticationFilter(tokenAuthenticationService), UsernamePasswordAuthenticationFilter.class)

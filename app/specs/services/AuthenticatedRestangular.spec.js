@@ -32,7 +32,7 @@ define(['paw', 'spec-utils', 'api-responses', 'services/AuthenticatedRestangular
       });
 
       it("contains the token's header with the correct value", function () {
-        $httpBackend.expectGET('/api/v1/', apiResponsesService.header).respond('data');
+        $httpBackend.expectGET('api/v1/', apiResponsesService.header).respond('data');
         AuthenticatedRestangularService.all('/').customGET().then(function() {});
         $httpBackend.flush();
         $rootScope.$apply();
