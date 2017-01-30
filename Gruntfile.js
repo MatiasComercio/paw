@@ -80,6 +80,7 @@ module.exports = function (grunt) { // eslint-disable-line strict
         },
         files: [
           '<%= yeoman.app %>/**/*.html',
+          '!**/coverage/**',
           '.tmp/styles/**/*.css',
           '<%= yeoman.app %>/images/**/*.{png,jpg,jpeg,gif,webp,svg}'
         ]

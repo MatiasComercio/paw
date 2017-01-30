@@ -2,7 +2,7 @@
 
 define([], function() {
   return {
-    i18nProfile: 'Mi perfil',
+    i18nMyProfile: 'Mi perfil',
     i18nLogout: 'Cerrar sesión',
     i18nWebAbbreviation: 'SGA',
     i18nWebName: 'Sistema de Gestión Académica',
@@ -49,13 +49,28 @@ define([], function() {
     i18nCourseAddCorrelative: 'Agregar correlativa',
     i18nCourseDelete: 'Eliminar',
 
+    // Tables common headers
+    i18Actions: 'Acciones',
 
-    //
+    // User show
+    i18nStudents: 'Alumnos',
+    i18nProfile: 'Perfil',
     i18nDni: 'DNI',
     i18Docket: 'Legajo',
     i18nFirstName: 'Nombre',
     i18nLastName: 'Apellido',
-    i18Actions: 'Acciones',
+    i18Birthday: 'Fecha de nacimiento',
+    i18Email: 'Email',
+    i18Genre: 'Género',
+    i18Telephone: 'Teléfono',
+    i18Country: 'País',
+    i18City: 'Ciudad',
+    i18Neighborhood: 'Localidad',
+    i18Street: 'Calle',
+    i18Number: 'Altura',
+    i18Floor: 'Piso nro.',
+    i18Door: 'Departamento',
+    i18ZipCode: 'Código postal',
 
     //
     i18nId: 'Código',
