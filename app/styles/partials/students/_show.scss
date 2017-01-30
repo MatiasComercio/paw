@@ -1,0 +1,24 @@
+.students-show-container {
+  .data-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .data-item {
+      width: 240px;
+      padding: 5px;
+
+      .break-words {
+        display: inline-block;
+        word-wrap: break-word; /* Internet Explorer 5.5+ */
+        width: 230px; /* width is mandatory to make break-word work on Mozzila */
+      }
+    }
+  }
+
+  .user-address-data {
+    padding-top: 15px;
+    border-top: 1px solid #eeeeee;
+  }
+}
