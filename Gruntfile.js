@@ -30,7 +30,7 @@ module.exports = function (grunt) { // eslint-disable-line strict
             https: false,
             changeOrigin: true,
             rewrite: {
-              '^/api/v1': '/grupo1/api/v1'
+              '^/api/v1': '/grupo1-stage/api/v1'
             }
           }
         ]
