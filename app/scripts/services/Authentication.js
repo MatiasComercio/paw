@@ -1,9 +1,15 @@
 'use strict';
 
-define(['paw', 'restangular'], function(paw) {
-  paw.service('Authentication', ['Restangular', '$cookies',
-  function(Restangular, $cookies) {
-    var _this = this;
+define([], function() {
+  // we define this 'service' as a function returning the
+  // authentication service itself so as to be able to use it
+  // when the 'paw' module hasn't been yet acquired by requirejs
+  // This function should be called on the paw's module initialization
+  // (paw.js file)
+  return function(Restangular, $cookies) {
+    // note that we should return this object, which is the service itself
+    // all Authentication variables and methods should be assigned to this object
+    var authenticationService = {};
     var tokenKey = 'ur';
 
     var rest = Restangular.withConfig(function(RestangularConfigurer) {
@@ -14,20 +20,26 @@ define(['paw', 'restangular'], function(paw) {
       );
     });
 
-    this.setToken = function(token) {
+    authenticationService.setToken = function(token) {
       $cookies.put(tokenKey, token);
     };
 
-    this.getToken = function(token) {
+    authenticationService.getToken = function(token) {
       return $cookies.get(tokenKey);
     };
 
-    this.getHeader = function() {
-      return {'x-auth-token': _this.getToken()};
+    authenticationService.getHeader = function() {
+      return {'x-auth-token': authenticationService.getToken()};
     };
 
-    this.login = function(user) {
+    authenticationService.login = function(user) {
       return rest.all('login').customPOST(user);
     };
-  }]);
+
+    authenticationService.isLoggedIn = function() {
+      return authenticationService.getToken() !== undefined;
+    };
+
+    return authenticationService;
+  };
 });
