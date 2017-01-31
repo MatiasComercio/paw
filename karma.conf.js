@@ -71,6 +71,7 @@ module.exports = function(config) {
       {pattern: 'bower_components/angular-aria/angular-aria.js', included: false},
       {pattern: 'bower_components/lodash/dist/lodash.js', included: false},
       {pattern: 'bower_components/restangular/dist/restangular.js', included: false},
+      {pattern: 'bower_components/angular-messages/angular-messages.js', included: false},
       {pattern: 'views/**/*.html', included: false},
       {pattern: 'scripts/**/*.js', included: false},
       {pattern: 'specs/**/*.js', included: false},

@@ -50,36 +50,50 @@ define([], function() {
     i18nCourseDelete: 'Eliminar',
 
     // Tables common headers
-    i18Actions: 'Acciones',
+    i18nActions: 'Acciones',
 
-    // User show
+    // User Update
+    i18nRequiredFields: 'Campos Obligatorios',
+    i18nRequiredIcon: '*',
+    i18nMale: 'Masculino',
+    i18nFemale: 'Femenino',
+    i18nBirthdayPlaceholder: 'yyyy-mm-dd',
+    i18nButtonSaveChanges: 'Guardar Cambios',
+    i18nButtonCancel: 'Cancelar',
+
+    // User Show
     i18nStudents: 'Alumnos',
     i18nProfile: 'Perfil',
     i18nDni: 'DNI',
-    i18Docket: 'Legajo',
+    i18nDocket: 'Legajo',
     i18nFirstName: 'Nombre',
     i18nLastName: 'Apellido',
-    i18Birthday: 'Fecha de nacimiento',
-    i18Email: 'Email',
-    i18Genre: 'Género',
-    i18Telephone: 'Teléfono',
-    i18Country: 'País',
-    i18City: 'Ciudad',
-    i18Neighborhood: 'Localidad',
-    i18Street: 'Calle',
-    i18Number: 'Altura',
-    i18Floor: 'Piso nro.',
-    i18Door: 'Departamento',
-    i18ZipCode: 'Código postal',
+    i18nBirthday: 'Fecha de Nacimiento',
+    i18nEmail: 'Email',
+    i18nGenre: 'Género',
+    i18nTelephone: 'Teléfono',
+    i18nCountry: 'País',
+    i18nCity: 'Ciudad',
+    i18nNeighborhood: 'Localidad',
+    i18nStreet: 'Calle',
+    i18nNumber: 'Altura',
+    i18nFloor: 'Piso Nro.',
+    i18nDoor: 'Dpto.',
+    i18nZipCode: 'Cód. Postal',
 
     //
     i18nId: 'Código',
     i18nName: 'Nombre',
 
     // Search filters
-    i18SearchButton: 'Buscar',
-    i18ResetButton: 'Resetear',
-    i18NoStudentsFound: 'No se encontraron alumnos'
+    i18nSearchButton: 'Buscar',
+    i18nResetButton: 'Resetear',
+    i18nNoStudentsFound: 'No se encontraron alumnos',
 
+    // Form errors
+    i18nRequiredField: 'Este campo es requerido',
+    i18nLengthPrefix: 'Este campo debe tener entre',
+    i18nLengthAnd: 'y',
+    i18nLengthSuffix: 'caracteres.'
   };
 });

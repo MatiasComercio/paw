@@ -34,7 +34,8 @@ require.config({
         'angular-material': '../../bower_components/angular-material/angular-material',
         'angular-aria': '../../bower_components/angular-aria/angular-aria',
         lodash: '../../bower_components/lodash/dist/lodash',
-        restangular: '../../bower_components/restangular/dist/restangular'
+        restangular: '../../bower_components/restangular/dist/restangular',
+        'angular-messages': '../../bower_components/angular-messages/angular-messages'
     },
     shim: {
         angular: {
@@ -101,6 +102,11 @@ require.config({
             deps: [
                 'angular',
                 'lodash'
+            ]
+        },
+        'angular-messages': {
+            deps: [
+                'angular'
             ]
         }
     },

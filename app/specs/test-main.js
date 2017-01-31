@@ -56,6 +56,7 @@ require.config({
     'angular-aria': '../bower_components/angular-aria/angular-aria',
     lodash: '../bower_components/lodash/dist/lodash',
     restangular: '../bower_components/restangular/dist/restangular',
+    'angular-messages': '../bower_components/angular-messages/angular-messages',
 
     // all directives templates should go here and on shim section
     'backdrop-template': '../views/directives/backdrop.html',
@@ -133,6 +134,11 @@ require.config({
         deps: [
             'angular',
             'lodash'
+        ]
+    },
+    'angular-messages': {
+        deps: [
+            'angular'
         ]
     },
     // all directives templates should be declared as follows

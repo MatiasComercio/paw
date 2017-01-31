@@ -1,6 +1,6 @@
 @import 'modules/variables/importer';
 
-.students-show-container {
+.students-edit-container {
   .data-container {
     width: 100%;
     display: flex;
@@ -11,10 +11,16 @@
       width: 230px;
       padding: 5px;
 
-      .break-words {
-        display: inline-block;
-        word-wrap: break-word; /* Internet Explorer 5.5+ */
-        width: 220px; /* width is mandatory to make break-word work on Mozzila */
+      .align-to-input-field {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 35px;
+      }
+
+      .align-data-to-input-field {
+        height: 35px;
+        line-height: 35px;
       }
     }
   }

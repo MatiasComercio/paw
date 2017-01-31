@@ -8,8 +8,8 @@
     <div class='filter-container'>
       <div class='filter-fields'>
         <div class='own-input-group'>
-          <span class='search-label' translate=i18Docket></span>
-          <input type='text' class='form-input-field' ng-model='controller.filter.docket' placeholder="{{ 'i18Docket' | translate }}..."/>
+          <span class='search-label' translate=i18nDocket></span>
+          <input type='text' class='form-input-field' ng-model='controller.filter.docket' placeholder="{{ 'i18nDocket' | translate }}..."/>
         </div>
         <div class='own-input-group'>
           <span class='search-label' translate='i18nFirstName'></span>
@@ -23,11 +23,11 @@
       <div class='filter-buttons'>
         <button class='btn btn-default' type='submit'>
           <span class='fa fa-search' aria-hidden='true'></span>
-          <span translate='i18SearchButton' translate ></span>
+          <span translate='i18nSearchButton' translate ></span>
         </button>
         <button class='btn btn-default' ng-click='controller.resetSearch()' type='submit'>
           <span class='fa fa-repeat' aria-hidden='true'></span>
-          <span translate='i18ResetButton'></span>
+          <span translate='i18nResetButton'></span>
         </button>
       </div>
     </div>
@@ -38,22 +38,22 @@
       <table class='table table-hover'>
         <thead>
           <tr>
-            <th translate='i18Docket'></th>
+            <th translate='i18nDocket'></th>
             <th translate='i18nFirstName'></th>
             <th translate='i18nLastName'></th>
-            <th translate='i18Actions'></th>
+            <th translate='i18nActions'></th>
           </tr>
         </thead>
         <tbody>
           <tr ng-hide='controller.students.length > 0' class='bg-warning'>
-            <td colspan='4' class='text-danger text-center' translate='i18NoStudentsFound'></td>
+            <td colspan='4' class='text-danger text-center' translate='i18nNoStudentsFound'></td>
           </tr>
           <tr ng-repeat='student in controller.students'>
             <td>{{ student.docket }}</td>
             <td>{{ student.firstName }}</td>
             <td>{{ student.lastName }}</td>
             <td class='actions-container'>
-              <a class='btn btn-default fullWidthButton' role='button'>
+              <a class='btn btn-default' role='button'>
                 <span class='fa fa-user' aria-hidden='true'></span>
                 <span translate='i18nStudentShow'></span>
               </a>

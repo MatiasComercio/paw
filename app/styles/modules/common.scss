@@ -75,10 +75,33 @@ hr {
 }
 
 .page-header {
-  margin: 0 0 10px;
+  margin: 0 0 15px;
   padding-bottom: 15px;
 }
 
 .btn {
   border-radius: 0;
+  outline: none !important;
+}
+
+.btn-action {
+  background-color: $tropical-rain-forest;
+  border-color: $aqua-deep;
+  color: $gallery;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: $aqua-deep;
+    border-color: $aqua-deep;
+    color: $white;
+  }
+}
+
+.btn-default {
+  &:hover,
+  &:focus,
+  &:active {
+    color: $black;
+  }
 }
