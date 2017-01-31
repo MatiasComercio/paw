@@ -56,10 +56,11 @@ module.exports = function (grunt) { // eslint-disable-line strict
       }
     },
     watch: {
-      bower: {
-        files: ['bower.json'],
-        tasks: ['wiredep:serve']
-      },
+      // commented as it may introduce linter errors on files
+      // bower: {
+      //   files: ['bower.json'],
+      //   tasks: ['wiredep:serve']
+      // },
       js: {
         files: ['<%= yeoman.app %>/scripts/**/*.js'],
         tasks: ['newer:eslint:all'],

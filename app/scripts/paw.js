@@ -11,13 +11,15 @@ define(['routes',
   'angular-bootstrap',
   'jquery-mousewheel',
   'angular-material',
-  'angular-aria'],
+  'angular-aria',
+  'angular-messages'],
   function(config, dependencyResolverFor, i18n) {
     var paw = angular.module('paw', [
       'ngRoute',
       'ngCookies',
       'ngAnimate',
       'ngMaterial',
+      'ngMessages',
       'ui.bootstrap',
       'restangular',
       'pascalprecht.translate'

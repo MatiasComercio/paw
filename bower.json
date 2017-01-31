@@ -18,7 +18,8 @@
     "angular-material": "~1.1.1",
     "angular-aria": "~1.6.1",
     "restangular": "~1.6.1",
-    "angular-cookies": "~1.6.1"
+    "angular-cookies": "~1.6.1",
+    "angular-messages": "~1.6.1"
   },
   "devDependencies": {
     "bootstrap": "~3.3.7"

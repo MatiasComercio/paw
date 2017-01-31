@@ -1,0 +1,217 @@
+<div ng-controller='StudentsEditCtrl as controller' class='students-edit-container'>
+  <!-- Page Heading -->
+  <div class='page-header break-words'>
+    <h1 class='inline'>
+      <span translate='i18nStudents'></span>
+    </h1>
+    <h2 class='inline'>
+      <span> - </span>
+      <span> {{controller.student.firstName}} {{controller.student.lastName}}</span>
+      <small> - </small>
+      <small translate='i18nStudentEdit'></small>
+    </h2>
+  </div>
+  <!-- /Page Heading -->
+
+  <!-- Content -->
+  <div class='required-fields'>
+    <span translate='i18nRequiredFields'/>
+    (<span class='text-danger' translate='i18nRequiredIcon'/>)
+  </div>
+  <form name='form' novalidate class='data-container'>
+    <!-- User Data -->
+    <div class='data-container'>
+      <!-- dni and docket -->
+        <div class='data-item'>
+          <label for='dni'>
+            <span translate='i18nDni'/>
+            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+          </label>
+          <div class='align-data-to-input-field'>
+            <p id='dni'>{{ controller.editedStudent.dni }}</p>
+          </div>
+        </div>
+        <div class='data-item'>
+          <label for='docket'>
+            <span translate='i18nDocket'/>
+            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+          </label>
+          <div class='align-data-to-input-field'>
+            <p id='docket'>{{ controller.editedStudent.docket }}</p>
+          </div>
+        </div>
+      <!-- /dni and docket -->
+
+      <!-- firstName and lastName -->
+        <div class='data-item'>
+          <label for='firstName'>
+            <span translate='i18nFirstName'/>
+            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+          </label>
+          <input type='text' name='firstName' id='firstName' class='form-input-field' ng-model='controller.editedStudent.firstName' required ng-minlength='2' ng-maxlength='50'/>
+          <div ng-messages='form.firstName.$error' ng-show='form.firstName.$touched || form.$submitted' class='form-errors' role='alert'>
+            <div ng-message='required'>
+              <p translate='i18nRequiredField'></p>
+            </div>
+            <div ng-message-exp="['minlength', 'maxlength']">
+              <span translate='i18nLengthPrefix'></span>
+              <span> 2 </span>
+              <span translate='i18nLengthAnd'></span>
+              <span> 50 </span>
+              <span translate='i18nLengthSuffix'></span>
+            </div>
+          </div>
+        </div>
+        <div class='data-item'>
+          <label for='lastName'>
+            <span translate='i18nLastName'/>
+            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+          </label>
+          <input type='text' name='lastName' id='lastName' class='form-input-field' ng-model='controller.editedStudent.lastName' required ng-minlength='2' ng-maxlength='50'/>
+          <div ng-messages='form.lastName.$error' ng-show='form.lastName.$touched || form.$submitted' class='form-errors' role='alert' ng-messages-multiple>
+            <div ng-message='required'>
+              <p translate='i18nRequiredField'></p>
+            </div>
+            <div ng-message-exp="['minlength', 'maxlength']">
+              <span translate='i18nLengthPrefix'></span>
+              <span> 2 </span>
+              <span translate='i18nLengthAnd'></span>
+              <span> 50 </span>
+              <span translate='i18nLengthSuffix'></span>
+            </div>
+          </div>
+        </div>
+      <!-- /firstName and lastName -->
+
+      <!-- birthday and genre -->
+        <div class='data-item'>
+          <label for='birthday'>
+            <span translate='i18nBirthday'/>
+          </label>
+          <input type='text' id='birthday' class='form-input-field' ng-model='controller.editedStudent.birthday' placeholder="{{ 'i18nBirthdayPlaceholder' | translate}}"/>
+        </div>
+        <div class='data-item'>
+          <label translate='i18nGenre'/>
+          <div class='align-to-input-field'>
+            <label class='radio-inline'>
+              <input type='radio' name='genre' ng-model='controller.editedStudent.genre' value="{{'i18nMale' | translate }}"/> <span translate='i18nMale'/>
+            </label>
+            <label class='radio-inline'>
+              <input type='radio' name='genre' ng-model='controller.editedStudent.genre' value="{{'i18nFemale' | translate }}"/> <span translate='i18nFemale'/>
+            </label>
+          </div>
+        </div>
+      <!-- /birthday and genre -->
+
+      <!-- telephone and email -->
+        <div class='data-item'>
+          <label for='telephone'>
+            <span translate='i18nTelephone'/>
+          </label>
+          <input type='text' id='telephone' class='form-input-field' ng-model='controller.editedStudent.address.telephone'/>
+        </div>
+        <div class='data-item'>
+          <label for='email'>
+            <span translate='i18nEmail'/>
+          </label>
+          <div class='align-data-to-input-field'>
+            <p id='email'>{{ controller.editedStudent.email }}</p>
+          </div>
+        </div>
+      <!-- /telephone and email -->
+    </div>
+    <!-- \User Data -->
+
+    <!-- User Address Data -->
+    <div class='data-container user-address-data'>
+      <!-- country and city -->
+        <div class='data-item'>
+          <label for='country'>
+            <span translate='i18nCountry'/>
+            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+          </label>
+          <input type='text' name='country' id='country' class='form-input-field' ng-model='controller.editedStudent.address.country' required/>
+          <div ng-messages='form.country.$error' ng-show='form.country.$touched || form.$submitted' class='form-errors' role='alert'>
+            <div ng-message='required'>
+              <p translate='i18nRequiredField'></p>
+            </div>
+          </div>
+        </div>
+        <div class='data-item'>
+          <label for='city'>
+            <span translate='i18nCity'/>
+            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+          </label>
+          <input type='text' name='city' id='city' class='form-input-field' ng-model='controller.editedStudent.address.city' required/>
+          <div ng-messages='form.city.$error' ng-show='form.city.$touched || form.$submitted' class='form-errors' role='alert'>
+            <div ng-message='required'>
+              <p translate='i18nRequiredField'></p>
+            </div>
+          </div>
+        </div>
+      <!-- /country and city -->
+
+      <!-- neighborhood and street -->
+        <div class='data-item'>
+          <label for='neighborhood'>
+            <span translate='i18nNeighborhood'/>
+            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+          </label>
+          <input type='text' name='neighborhood' id='neighborhood' class='form-input-field' ng-model='controller.editedStudent.address.neighborhood' required/>
+          <div ng-messages='form.neighborhood.$error' ng-show='form.neighborhood.$touched || form.$submitted' class='form-errors' role='alert'>
+            <div ng-message='required'>
+              <p translate='i18nRequiredField'></p>
+            </div>
+          </div>
+        </div>
+        <div class='data-item'>
+          <label for='street'>
+            <span translate='i18nStreet'/>
+            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+          </label>
+          <input type='text' name='street' id='street' class='form-input-field' ng-model='controller.editedStudent.address.street' required/>
+          <div ng-messages='form.street.$error' ng-show='form.street.$touched || form.$submitted' class='form-errors' role='alert'>
+            <div ng-message='required'>
+              <p translate='i18nRequiredField'></p>
+            </div>
+          </div>
+        </div>
+      <!-- /neighborhood and street -->
+
+      <!-- number and floor -->
+        <div class='data-item'>
+          <label for='number'>
+            <span translate='i18nNumber'/>
+            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+          </label>
+          <input type='text' name='number' id='number' class='form-input-field' ng-model='controller.editedStudent.address.number' required/>
+          <div ng-messages='form.number.$error' ng-show='form.number.$touched || form.$submitted' class='form-errors' role='alert'>
+            <div ng-message='required'>
+              <p translate='i18nRequiredField'></p>
+            </div>
+          </div>
+        </div>
+        <div class='data-item'>
+          <label for='floor' translate='i18nFloor'/>
+          <input type='text' id='floor' class='form-input-field' ng-model='controller.editedStudent.address.floor'/>
+        </div>
+      <!-- /number and floor -->
+
+      <!-- door and zipcode -->
+        <div class='data-item'>
+          <label for='door' translate='i18nDoor'/>
+          <input type='text' id='door' class='form-input-field' ng-model='controller.editedStudent.address.door'/>
+        </div>
+        <div class='data-item'>
+          <label for='zipCode' translate='i18nZipCode'/>
+          <input type='text' id='zipCode' class='form-input-field' ng-model='controller.editedStudent.address.zipCode'/>
+        </div>
+      <!-- /door and zipcode -->
+    </div>
+    <!-- \User Address Data -->
+    <div class='buttons-container'>
+      <input type='submit' class='btn btn-action' ng-click='form.$valid && controller.update(controller.editedStudent)' value="{{ 'i18nButtonSaveChanges' | translate }}" />
+      <input type='button' class='btn btn-default' ng-click='controller.cancel()' value="{{ 'i18nButtonCancel' | translate }}" />
+    </div>
+  </form>
+</div>
