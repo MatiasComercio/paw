@@ -1,12 +1,21 @@
 package ar.edu.itba.paw.webapp.auth;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.time.ZonedDateTime;
+import java.util.Date;
+
+/**
+ * Creates a JWT Token and retreives information from it
+ */
 public class JWTTokenHandler implements TokenHandler {
+
+  /**
+   * Key used to sign the JWT Token
+   */
   private static final String KEY = "B/1+wzD9jv8UwBZke9EZHfAclHDYre9msPR54UfhXmhx8OBQXrQb0URl9mBwGPBK\n" +
           "ZExc4gxayeTxEPT3DIwMCZfCdMBVh4yjhzJ46AzummsrpyHeo2TgRtWRW+KCTtwo\n" +
           "19kyrxbMpc8dEY9YO2ghNT0ZOcwtvEu13kzngevUsPV9pWsKdRXGgt5HV3rpuvJ7\n" +
@@ -30,31 +39,52 @@ public class JWTTokenHandler implements TokenHandler {
           "vUf8FRscFkvo2EbtKPPLQiY6A1yuvrpobCgWj6TOKeujALF6jzdhepsk7sL2Qg1g\n" +
           "6Nah/Tu9I0VOloJlciQenA==\n";
 
-  private UserDetailsService userDetailsServices = new UserDetailsServiceImpl();
+  private final int DAYS_TO_EXPIRE = 1;
 
+  /**
+   * Creates a new JWT token based on the current date/time and the username.
+   * This method creates the token independent of whether a token with the same username
+   * was created before the expiration time.
+   * The username is used as a subject.
+   * The expiration date is set with {@link #DAYS_TO_EXPIRE}. As the expiration date uses the current date,
+   * the token created will be, in general, different to any previous and future tokens created with the same username.
+   * @param username the username that may be used to create the token
+   * @return a JWT token with the specified parameters
+   */
   @Override
-  public String createToken(final UserDetails user) {
+  public String createToken(final String username) {
+    final ZonedDateTime now = ZonedDateTime.now();
+    final Date expirationDateTime = Date.from(now.plusDays(DAYS_TO_EXPIRE).toInstant()); // io.jsonwebtoken requires java.util.Date
+
     final String token = Jwts.builder()
-            .setSubject(user.getUsername())
+            .setSubject(username)
+            .setExpiration(expirationDateTime)
             .signWith(SignatureAlgorithm.HS512, KEY)
             .compact();
 
     return token;
   }
 
+  /**
+   * Attempts to retrieve the username from the JWT token.
+   * @param token the JWT token
+   * @return the username that corresponds to the token
+   *         null if a SignatureException or an ExpiredJwtException was raised.
+   *         The former corresponds to an error when calculating/verifying the signature.
+   *         The latter occurs when the token has expired.
+   */
   public String getUsername(final String token) {
-    String username = null;
-
     try {
-      username = Jwts.parser()
+      final String username = Jwts.parser()
               .setSigningKey(KEY)
               .parseClaimsJws(token)
               .getBody()
               .getSubject();
-    } catch (SignatureException e) {
+
+      return username;
+    } catch (SignatureException | ExpiredJwtException e) {
       return null;
     }
-    return username;
 
   }
 }
