@@ -9,6 +9,7 @@ define(['paw',
 'angular-mocks',
 'spec-utils',
 'api-responses',
+'services/Paths',
 'controllers/LoginCtrl'],
 function() {
   describe('Login Ctrl', function() {
@@ -53,9 +54,9 @@ function() {
           expect(AuthenticationService.setToken).toHaveBeenCalledWith(expectedToken);
         });
 
-        it('redirects to /', function() {
-          expect($location.path).toHaveBeenCalledWith('/');
-        });
+        it('redirects to index', inject(function(Paths) {
+          expect($location.path).toHaveBeenCalledWith(Paths.get().index().absolutePath());
+        }));
       });
 
       describe('unsuccessfully', function() {
