@@ -81,14 +81,18 @@ define([], function() {
     i18nDoor: 'Dpto.',
     i18nZipCode: 'Cód. Postal',
 
-    //
-    i18nId: 'Código',
-    i18nName: 'Nombre',
+    // Courses Index
+    i18nCourseId: 'Código',
+    i18nCourseName: 'Nombre',
+    i18nCredits: 'Créditos',
+    i18nSemester: 'Cuatrimestre',
+
 
     // Search filters
     i18nSearchButton: 'Buscar',
     i18nResetButton: 'Resetear',
-    i18nNoStudentsFound: 'No se encontraron alumnos',
+    i18nNoStudentsFound: 'No se encontraron alumnos disponibles',
+    i18nNoCoursesFound: 'No se encontraron materias disponibles',
 
     // Form errors
     i18nRequiredField: 'Este campo es requerido',
