@@ -7,9 +7,10 @@
 
 define(['paw',
 'angular-mocks',
+'services/Paths',
 'controllers/students/StudentsEditCtrl'],
 function() {
-  describe('Students Update Ctrl', function() {
+  describe('Students Edit Ctrl', function() {
     beforeEach(module('paw'));
 
     // Hardcoded data until Service call is tested
@@ -33,7 +34,7 @@ function() {
         zipCode: '1100'
       }
     };
-    var docket = 123;
+    var docket = 55019;
 
     var $controller, $rootScope, $log, $window, $location, controller;
 
@@ -78,21 +79,21 @@ function() {
       });
 
       describe('when calling the update function', function() {
-        var editedStudent, expectedLog;
-        beforeEach(function() {
+        var editedStudent, expectedLog, expectedPath;
+        beforeEach(inject(function(Paths) {
           editedStudent = expectedStudent;
           editedStudent.firstName = 'Other name';
           controller.update(editedStudent);
-
-          expectedLog = 'POST /students/' + docket + ' ' + JSON.stringify(editedStudent);
-        });
+          expectedPath = Paths.get().students({docket: docket}).absolutePath();
+          expectedLog = 'POST ' + expectedPath + ' ' + JSON.stringify(editedStudent);
+        }));
 
         it('is expected to correctly log the post', function() {
           expect($log.info).toHaveBeenCalledWith(expectedLog);
         });
 
         it('is expected to redirect to student show view', function() {
-          expect($location.path).toHaveBeenCalledWith('/students/' + docket);
+          expect($location.path).toHaveBeenCalledWith(expectedPath);
         });
       });
     });

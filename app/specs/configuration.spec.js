@@ -5,23 +5,12 @@
 
 'use strict';
 
-define(['paw', 'spec-utils', 'api-responses', 'services/Authentication'],
+define(['paw', 'spec-utils', 'api-responses', 'services/Authentication', 'services/Paths'],
 function() {
   describe('Authentication Configuration', function() {
     beforeEach(module('paw'));
 
-    var paths = {
-      login: function() {
-        return '/login';
-      },
-      index: function() {
-        return '/';
-      },
-      unauthorized: function() {
-        return '/unauthorized';
-      }
-    };
-
+    var paths;
     var $rootScope;
     var $httpBackend;
     var $location;
@@ -31,7 +20,7 @@ function() {
     var RestangularService;
 
     beforeEach(inject(function(_$rootScope_, _$httpBackend_, _$location_, specUtils,
-      apiResponses, Authentication, Restangular) {
+      apiResponses, Authentication, Restangular, Paths) {
         $rootScope = _$rootScope_;
         $httpBackend = _$httpBackend_;
         $location = _$location_;
@@ -40,6 +29,18 @@ function() {
         apiResponsesService = apiResponses;
         AuthenticationService = Authentication;
         RestangularService = Restangular;
+
+        paths = {
+         login: function() {
+           return Paths.get().login().absolutePath();
+         },
+         index: function() {
+           return Paths.get().index().absolutePath();
+         },
+         unauthorized: function() {
+           return Paths.get().unauthorized().absolutePath();
+         }
+       };
       }));
 
       describe('when not logged in', function() {
@@ -99,7 +100,7 @@ function() {
           $rootScope.$apply();
         });
 
-        it('should redirect to login page', function() {
+        it('should redirect to unauthorized page', function() {
           expect($location.path).toHaveBeenCalledWith(paths.unauthorized());
         });
       });

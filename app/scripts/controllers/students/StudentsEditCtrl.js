@@ -1,13 +1,12 @@
 'use strict';
 
-define(['paw'], function(paw) {
+define(['paw', 'services/Paths'], function(paw) {
   paw.controller('StudentsEditCtrl', [
     '$routeParams',
     '$log',
     '$window',
-    '$location',
-    function($routeParams, $log, $window, $location) {
-
+    'Paths',
+    function($routeParams, $log, $window, Paths) {
       var _this = this;
 
       var docket = $routeParams.docket;
@@ -40,8 +39,9 @@ define(['paw'], function(paw) {
       };
 
       this.update = function(editedStudent) {
-        $log.info('POST /students/' + docket + ' ' + JSON.stringify(editedStudent));
-        $location.path('/students/' + docket);
+        var path = Paths.get().students(_this.student);
+        $log.info('POST ' + path.absolutePath() + ' ' + JSON.stringify(editedStudent));
+        path.go();
       };
     }]);
   });

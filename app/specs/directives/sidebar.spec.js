@@ -185,8 +185,8 @@ define(['paw',
           expect(section.find(sectionSelector('.actions.resetPassword')).length).toBe(1);
         });
 
-        it('contains an update password option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.updatePassword')).length).toBe(1);
+        it('contains an edit password option if action is present', function() {
+          expect(section.find(sectionSelector('.actions.editPassword')).length).toBe(1);
         });
       });
 
@@ -217,7 +217,7 @@ define(['paw',
         });
 
         it('contains an update password option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.updatePassword')).length).toBe(1);
+          expect(section.find(sectionSelector('.actions.editPassword')).length).toBe(1);
         });
 
         it('contains a courses option if action is present', function() {

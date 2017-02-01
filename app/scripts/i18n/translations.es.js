@@ -26,14 +26,14 @@ define([], function() {
     i18nAdminShow: 'Ver perfil',
     i18nAdminEdit: 'Editar perfil',
     i18nAdminResetPassword: 'Resetear contraseña',
-    i18nAdminUpdatePassword: 'Cambiar contraseña',
+    i18nAdminEditPassword: 'Cambiar contraseña',
 
     // Student subSidebar
     i18nStudentShow: 'Ver perfil',
     i18nStudentEdit: 'Editar perfil',
     i18nStudentResetPassword: 'Resetear contraseña',
     i18nResetPasswordModalTitle: 'Resetear contraseña',
-    i18nStudentUpdatePassword: 'Cambiar contraseña',
+    i18nStudentEditPassword: 'Cambiar contraseña',
     i18nStudentCourses: 'Materias en progreso',
     i18nStudentGrades: 'Analítico de notas',
     i18nStudentInscriptions: 'Matriculaciones',

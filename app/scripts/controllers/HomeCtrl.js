@@ -6,8 +6,8 @@ define(['paw',
 'services/Courses'],
 function(paw) {
   paw.controller('HomeCtrl',
-    ['navDataService', 'Students', 'Courses',
-    function(navDataService, Students, Courses) {
+    ['navDataService', 'Students', 'Courses', 'Paths',
+    function(navDataService, Students, Courses, Paths) {
       this.courses = [];
       this.students = [];
 
@@ -46,96 +46,42 @@ function(paw) {
       };
 
       this.fetchCourse = function() {
-        return {
-          id: '123',
-          name: 'Introducción a la informática y todoestechoclodetextoparaverqueandebien',
-          actions: {
-            show: {
-              path: '/courses/123'
-            },
-            edit: {
-              path: '/courses/123/edit'
-            },
-            students: {
-              path: '/courses/123/students'
-            },
-            approved: {
-              path: '/courses/123/approved'
-            },
-            addCorrelative: {
-              path: '/courses/123/correlatives/new'
-            },
-            delete: {
-              path: '/courses/123/delete'
-            }
-          }
+        var course = {
+          courseId: '123',
+          name: 'Introducción a la informática y todoestechoclodetextoparaverqueandebien'
         };
+        course.actions = Paths.getCourseActions(course);
+        return course;
       };
 
       this.fetchAdmin = function() {
-        return {
+        var admin = {
           dni: '38457013',
           firstName: '[ADMIN] Matías Nicolás',
-          lastName: 'Comercio Vázquez asdasdasdasdasdasdasdasdadasdasdas',
-          actions: {
-            show: {
-              path: '/admins/123'
-            },
-            edit: {
-              path: '/admins/123/edit'
-            },
-            resetPassword: {
-              path: '/admins/123/resetPassword'
-            },
-            updatePassword: {
-              path: '/admins/123/updatePassword'
-            }
-          }
+          lastName: 'Comercio Vázquez asdasdasdasdasdasdasdasdadasdasdas'
         };
+        admin.actions = Paths.getAdminActions(admin);
+        return admin;
       };
 
       this.fetchStudent = function() {
-        return {
+        var student = {
           dni: '38457013',
+          docket: '55',
           firstName: 'Matías Nicolás',
-          lastName: 'Comercio Vázquez asdasdasdasdasdasdasdasdadasdasdas',
-          actions: {
-            show: {
-              path: '/students/123'
-            },
-            edit: {
-              path: '/students/123/edit'
-            },
-            resetPassword: {
-              path: '/students/123/resetPassword'
-            },
-            updatePassword: {
-              path: '/students/123/updatePassword'
-            },
-            courses: {
-              path: '/students/123/courses'
-            },
-            grades: {
-              path: '/students/123/grades'
-            },
-            inscriptions: {
-              path: '/students/123/inscriptions'
-            },
-            finals: {
-              path: '/students/123/finals'
-            },
-            delete: {
-              path: '/users/123/delete'
-            }
-          }
+          lastName: 'Comercio Vázquez asdasdasdasdasdasdasdasdadasdasdas'
         };
+        student.actions = Paths.getStudentActions(student);
+        return student;
       };
+
+
 
       function fetchData() {
         return {
-          // admin: _this.fetchAdmin()
-          student: _this.fetchStudent()
-          // course: _this.fetchCourse()
+          admin: _this.fetchAdmin(),
+          student: _this.fetchStudent(),
+          course: _this.fetchCourse()
         };
       };
 

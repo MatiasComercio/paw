@@ -1,7 +1,7 @@
 'use strict';
 
-define(['paw', 'services/navDataService'], function(paw) {
-  paw.directive('xnavbar', ['navDataService',function(navDataService) {
+define(['paw', 'services/navDataService', 'services/Paths'], function(paw) {
+  paw.directive('xnavbar', ['navDataService', 'Paths', function(navDataService, Paths) {
     function controller() {
       this.user = {
         fullName: 'Matías Nicolás Comercio Vázquez asdasdasdasdasdasdasdasdadasdasdas',
@@ -24,6 +24,11 @@ define(['paw', 'services/navDataService'], function(paw) {
       scope: {},
       bindToController: true,
       link: function(scope, element, attributes) {
+        scope.paths = {
+          index: Paths.get().index().path,
+          logout: Paths.get().logout().path
+        };
+
         scope.sidebarOpen = function() {
           navDataService.set('sidebarOpen', !navDataService.get('sidebarOpen'));
         };

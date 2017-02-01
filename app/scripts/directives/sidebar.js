@@ -4,6 +4,7 @@ define(
   ['paw',
   'services/navDataService',
   'services/windowSize',
+  'services/Paths',
   'directives/sidebarItem',
   'directives/preventScroll',
   'directives/backdrop',
@@ -12,8 +13,8 @@ define(
   'controllers/modals/DeleteUserController',
   'controllers/modals/DeleteCourseController'],
   function(paw) {
-    paw.directive('xsidebar', ['navDataService', 'windowSize',
-    function(navDataService, windowSize) {
+    paw.directive('xsidebar', ['navDataService', 'windowSize', 'Paths',
+    function(navDataService, windowSize, Paths) {
       function controller(navDataService) {
         this.sidebar = {};
 
@@ -41,7 +42,7 @@ define(
         var inscriptionsEnabledCallback = function() {
           if (_this.sidebar.admins) {
             _this.sidebar.admins.actions.inscriptions.enabled =
-              navDataService.get('inscriptionsEnabled');
+            navDataService.get('inscriptionsEnabled');
           }
         };
         navDataService.registerObserverCallback('inscriptionsEnabled', inscriptionsEnabledCallback);
@@ -87,50 +88,51 @@ define(
           };
         }
       };
+
+      function sidebarAdmins() {
+        return {
+          actions: {
+            index: {
+              path: Paths.get().admins().path
+            },
+            new: {
+              path: Paths.get().admins().new().path
+            },
+            inscriptions: {
+              enabled: true,
+              // +++xremove
+              path: '/courses/inscriptions'
+            }
+          }
+        };
+      }
+
+      function sidebarStudents() {
+        return {
+          actions: {
+            index: {
+              path: Paths.get().students().path
+            },
+            new: {
+              path: Paths.get().students().new().path
+            }
+          }
+        };
+      }
+
+
+      function sidebarCourses() {
+        return {
+          actions: {
+            index: {
+              path: Paths.get().courses().path
+            },
+            new: {
+              path: Paths.get().courses().new().path
+            }
+          }
+        };
+      }
     }]);
-
-    function sidebarAdmins() {
-      return {
-        actions: {
-          index: {
-            path: '/admins'
-          },
-          new: {
-            path: '/admins/new'
-          },
-          inscriptions: {
-            enabled: true,
-            path: '/courses/inscriptions'
-          }
-        }
-      };
-    }
-
-    function sidebarStudents() {
-      return {
-        actions: {
-          index: {
-            path: '/students'
-          },
-          new: {
-            path: '/students/new'
-          }
-        }
-      };
-    }
-
-
-    function sidebarCourses() {
-      return {
-        actions: {
-          index: {
-            path: '/courses'
-          },
-          new: {
-            path: '/courses/new'
-          }
-        }
-      };
-    }
   }
 );
