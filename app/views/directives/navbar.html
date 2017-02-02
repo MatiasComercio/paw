@@ -33,7 +33,7 @@
                     <a ng-href='{{ controller.user.profileUrl }}'><i class='fa fa-fw fa-user'></i> {{ 'i18nMyProfile' | translate }}</a>
                 </li>
                 <li class='dropdown-option'>
-                    <a ng-href='{{ paths.logout }}'><i class="fa fa-fw fa-power-off"></i>  {{ 'i18nLogout' | translate }}</a>
+                    <a class='sym-button no-select' ng-click='logout()'><i class="fa fa-fw fa-power-off"></i>  {{ 'i18nLogout' | translate }}</a>
                 </li>
             </ul>
         </li>

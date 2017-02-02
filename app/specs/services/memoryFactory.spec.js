@@ -40,5 +40,48 @@ define(['paw', 'angular-mocks'], function() {
         expect(callbackValue).toBeUndefined();
       });
     });
+
+
+    describe('when getting a value with the same key', function() {
+      beforeEach(inject(function(memoryFactory) {
+        memory.set(validKey, expectedValue);
+      }));
+
+      it('returns the expected value', function() {
+        expect(memory.get(validKey)).toEqual(expectedValue);
+      });
+    });
+
+    describe('when getting a value with a different key', function() {
+      beforeEach(inject(function(memoryFactory) {
+        memory.set(invalidKey, expectedValue);
+      }));
+
+      it('returns undefined', function() {
+        expect(memory.get(validKey)).toBeUndefined();
+      });
+    });
+
+    describe('when removing a value with a valid key', function() {
+      beforeEach(inject(function(memoryFactory) {
+        memory.set(validKey, expectedValue);
+        memory.remove(validKey);
+      }));
+
+      it('does not remove the element', function() {
+        expect(memory.get(validKey)).toBeUndefined();
+      });
+    });
+
+    describe('when removing a value with a different key', function() {
+      beforeEach(inject(function(memoryFactory) {
+        memory.set(validKey, expectedValue);
+        memory.remove(invalidKey);
+      }));
+
+      it('does not remove the element', function() {
+        expect(memory.get(validKey)).toEqual(expectedValue);
+      });
+    });
   });
 });

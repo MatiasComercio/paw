@@ -2,8 +2,8 @@
 
 define(['paw', 'services/navDataService', 'services/Paths'],
 function(paw) {
-  paw.directive('xnavbar', ['navDataService', 'Paths',
-  function(navDataService, Paths, NavbarService) {
+  paw.directive('xnavbar', ['navDataService', 'Paths', 'Authentication',
+  function(navDataService, Paths, Authentication) {
     function controller() {
       var _this = this;
 
@@ -36,6 +36,12 @@ function(paw) {
 
         scope.sidebarOpen = function() {
           navDataService.set('sidebarOpen', !navDataService.get('sidebarOpen'));
+        };
+
+        scope.logout = function() {
+          navDataService.remove('user');
+          Authentication.logout();
+          Paths.get().login().go();
         };
       }
     };
