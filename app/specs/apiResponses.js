@@ -101,6 +101,31 @@ define(['paw'], function(paw) {
         'firstName': 'Matias Nicolas',
         'lastName': 'Comercio Vazquez'
       };
+
+      this.currentAdmin = {
+        'birthday': '1995-06-10',
+        'dni': 38457013,
+        'email': 'a38457012@bait.edu.ar',
+        'firstName': 'Matias Nicolas',
+        'genre': 'M',
+        'lastName': 'Comercio Vazquez',
+        'role': 'ADMIN',
+        'address': {
+          'city': 'CABA',
+          'country': 'Argentina',
+          'door': '',
+          'neighborhood': 'Puerto Madero',
+          'number': 399,
+          'street': 'E. Madero'
+        },
+        'authorities': {
+          students: true,
+          courses: true,
+          admins: true
+        },
+        profileUrl: '#!/admins/38457013'
+      };
+      this.currentAdmin.fullName = this.currentAdmin.firstName + ' ' + this.currentAdmin.lastName;
     }
   ]);
 });

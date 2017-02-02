@@ -9,6 +9,11 @@
   width: calc(100% - #{$sidebarWidth});
   transition: all linear $sidebarTransitionTime;
 
+  &.sidebar-hidden {
+    margin-left: 0;
+    width: 100%;
+  }
+
   /* Responsive: Portrait tablets and up */
   @media screen and (max-width: $bootstrapMobileMaxWidth) {
     margin-left: 0;

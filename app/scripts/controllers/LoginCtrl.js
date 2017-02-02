@@ -1,8 +1,10 @@
 'use strict';
 
-define(['paw', 'restangular', 'services/Authentication', 'services/Paths'], function(paw) {
-  paw.controller('LoginCtrl', ['Paths', '$log', 'Authentication',
-  function(Paths, $log, Authentication) {
+define(['paw', 'restangular', 'services/Authentication',
+'services/Paths', 'services/navDataService'],
+function(paw) {
+  paw.controller('LoginCtrl', ['Paths', '$log', 'Authentication', 'navDataService',
+  function(Paths, $log, Authentication, navDataService) {
     var _this = this;
 
     this.login = function(user) {
@@ -10,6 +12,7 @@ define(['paw', 'restangular', 'services/Authentication', 'services/Paths'], func
       // and that means that the user has to have some value defined
       Authentication.login(user).then(function(authToken) {
         Authentication.setToken(authToken);
+        navDataService.fetchUser();
         Paths.get().index().go();
       }, function(response) {
         // here we should handle any issue and show a nice error message

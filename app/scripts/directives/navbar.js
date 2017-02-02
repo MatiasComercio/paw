@@ -1,19 +1,24 @@
 'use strict';
 
-define(['paw', 'services/navDataService', 'services/Paths'], function(paw) {
-  paw.directive('xnavbar', ['navDataService', 'Paths', function(navDataService, Paths) {
+define(['paw', 'services/navDataService', 'services/Paths'],
+function(paw) {
+  paw.directive('xnavbar', ['navDataService', 'Paths',
+  function(navDataService, Paths, NavbarService) {
     function controller() {
-      this.user = {
-        fullName: 'Matías Nicolás Comercio Vázquez asdasdasdasdasdasdasdasdadasdasdas',
-        profileUrl: '/users/1',
-        authorities: {
-          admins: true,
-          students: true,
-          courses: true
-        }
+      var _this = this;
+
+      var fetchUser = function () {
+        _this.user = navDataService.get('user');
       };
 
-      navDataService.set('user', this.user);
+      // If the user might change, we fetch it again
+      navDataService.registerObserverCallback('user', fetchUser);
+
+      // Try to force navDataService to fetch the user
+      navDataService.fetchUser();
+
+      // Actually fetch the user
+      fetchUser();
     };
 
     return {

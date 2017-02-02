@@ -1,27 +1,26 @@
 'use strict';
 
-define(['paw', 'angular-mocks', 'directives/navbar', 'navbar-template'], function() {
+define([
+'paw',
+'angular-mocks',
+'directives/navbar',
+'navbar-template',
+'api-responses',
+'services/navDataService'], function() {
   describe('NavbarDirective', function() {
     beforeEach(module('paw'));
     beforeEach(module('directive-templates'));
 
-    var $compile, $rootScope, scope, navbar, controller;
+    var $compile, $rootScope, scope, navbar, controller, navDataServiceService,
+        apiResponsesService;
     var element = angular.element('<xnavbar></xnavbar>');
 
-    // for now, hardcoded data (when API integration is ready ==> replace this)
-    var user = {
-      fullName: 'Matías Nicolás Comercio Vázquez asdasdasdasdasdasdasdasdadasdasdas',
-      profileUrl: '/users/1',
-      authorities: {
-        admins: true,
-        students: true,
-        courses: true
-      }
-    };
-
-    beforeEach(inject(function(_$compile_, _$rootScope_) {
+    beforeEach(inject(function(_$compile_, _$rootScope_, navDataService, apiResponses) {
       $compile = _$compile_;
       $rootScope = _$rootScope_;
+      navDataServiceService = navDataService;
+      apiResponsesService = apiResponses;
+      spyOn(navDataServiceService, 'fetchUser');
       scope = $rootScope.$new();
       navbar = compileDirective(scope);
       controller = navbar.controller('xnavbar');
@@ -41,10 +40,20 @@ define(['paw', 'angular-mocks', 'directives/navbar', 'navbar-template'], functio
       expect(navbar.find('.top-nav')[0]).toBeDefined();
     });
 
-    it('correctly fetch the user', function() {
-      expect(controller.user).toEqual(user);
-    });
+    describe('when testing how the user is fetched', function() {
+      var expectedUser;
+      beforeEach(function() {
+        expectedUser = apiResponsesService.currentAdmin;
+        scope.$apply(function() {
+          controller.user = undefined;
+          navDataServiceService.set('user', expectedUser);
+        });
+      });
 
+      it('fetchs the user from a callback on navDataService', function() {
+        expect(controller.user).toEqual(expectedUser);
+      });
+    });
 
     describe('when user does not exist on controller', function() {
       beforeEach(function() {
@@ -56,12 +65,16 @@ define(['paw', 'angular-mocks', 'directives/navbar', 'navbar-template'], functio
       it('does not show the user menu', function() {
         expect(navbar.find('.top-nav').hasClass('ng-hide')).toBe(true);
       });
+
+      it('does not show the sandwich-icon', function() {
+        expect(navbar.find('.sandwich-icon').hasClass('ng-hide')).toBe(true);
+      });
     });
 
     describe('when user exists on controller', function() {
       beforeEach(function() {
         scope.$apply(function() {
-          controller.user = user;
+          controller.user = apiResponsesService.currentAdmin;
         });
       });
 
