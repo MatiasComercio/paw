@@ -4,7 +4,7 @@ define(['paw', 'services/modalFactory'], function(paw) {
   paw.controller('DeleteCourseController',
     ['modalFactory', '$log',
     function (modalFactory, $log) {
-      var modalTemplateUrl = '/views/modals/delete_course.html';
+      var modalTemplateUrl = 'views/modals/delete_course.html';
       var onSuccess = function(url) {
         $log.info('POST ' + url);
       };

@@ -4,7 +4,7 @@ define(['paw', 'services/modalFactory'], function(paw) {
   paw.controller('ResetPasswordController',
     ['modalFactory', '$log',
     function (modalFactory, $log) {
-      var modalTemplateUrl = '/views/modals/reset_password.html';
+      var modalTemplateUrl = 'views/modals/reset_password.html';
       var onSuccess = function(url) {
         $log.info('POST ' + url);
       };

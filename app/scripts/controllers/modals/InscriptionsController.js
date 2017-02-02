@@ -4,7 +4,7 @@ define(['paw', 'services/modalFactory', 'services/navDataService'], function(paw
   paw.controller('InscriptionsController',
     ['modalFactory', '$log', 'navDataService',
     function (modalFactory, $log, navDataService) {
-      var modalTemplateUrl = '/views/modals/inscriptions.html';
+      var modalTemplateUrl = 'views/modals/inscriptions.html';
       var onSuccess = function(url) {
         navDataService.set('inscriptionsEnabled', !navDataService.get('inscriptionsEnabled'));
         $log.info('POST ' + url + ' {enable: ' + navDataService.get('inscriptionsEnabled') + '}');

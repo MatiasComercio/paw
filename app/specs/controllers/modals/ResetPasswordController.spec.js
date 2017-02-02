@@ -65,7 +65,7 @@ function() {
       });
 
       describe('and it is expected that', function() {
-        var modalTemplateUrl = '/views/modals/reset_password.html';
+        var modalTemplateUrl = 'views/modals/reset_password.html';
         var args;
 
         beforeEach(function() {
