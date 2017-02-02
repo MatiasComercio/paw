@@ -21,6 +21,11 @@
   overflow-y: auto;
   color: $silver-chalice;
 
+  &.own-hidden {
+    left: -$sidebarWidth;
+    box-shadow: none;
+  }
+
   .sidebar {
     width: 100%;
 

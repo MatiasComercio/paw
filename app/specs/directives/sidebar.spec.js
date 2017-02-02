@@ -7,7 +7,9 @@
 
 define(['paw',
   'angular-mocks',
-  'directives/sidebar', 'sidebar-template',
+  'directives/sidebar',
+  'api-responses',
+  'sidebar-template',
   'sidebar-item-template'], function() {
   describe('Sidebar Directive', function() {
     beforeEach(module('paw'));
@@ -16,20 +18,12 @@ define(['paw',
     var $compile, $rootScope, scope, sidebarContainer, controller;
     var element = angular.element('<xsidebar></xsidebar>');
 
-    // for now, hardcoded data (when API integration is ready ==> replace this)
-    var user = {
-      fullName: 'Matías Nicolás Comercio Vázquez asdasdasdasdasdasdasdasdadasdasdas',
-      profileUrl: '/users/1',
-      authorities: {
-        admins: true,
-        students: true,
-        courses: true
-      }
-    };
+    var user;
 
-    beforeEach(inject(function(_$compile_, _$rootScope_) {
+    beforeEach(inject(function(_$compile_, _$rootScope_, apiResponses) {
       $compile = _$compile_;
       $rootScope = _$rootScope_;
+      user = apiResponses.currentAdmin;
       scope = $rootScope.$new();
       sidebarContainer = compileDirective(scope);
       controller = sidebarContainer.controller('xsidebar');

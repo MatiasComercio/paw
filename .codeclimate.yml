@@ -6,8 +6,19 @@ engines:
     exclude_fingerprints:
       - f8ff5182bf5ef6e61d42e67f19c2f626
       - f6bb76a706e7f9228733a0dce397756f
+      # app/scripts/services/navDataService.js:28
+      # app/scripts/services/navDataService.js:31
+      - 91551b4331243dfbdf688d307854fe64
+      # app/scripts/directives/sidebar.js:114
+      # app/scripts/directives/sidebar.js:128
+      - e328a668e91fa9068b8c4772406d32df
+      # app/scripts/services/Paths.js:121
+      # app/scripts/services/Paths.js:126
+      # app/scripts/services/Paths.js:156
+      - b80316107eb8426f812376a2b1db6edc
     exclude_paths:
       - "app/specs/"
+      - "Gruntfile.js"
     config:
       languages:
       - javascript

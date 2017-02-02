@@ -3,7 +3,7 @@
 <!-- \backdrop for responsive sidebar -->
 
 <!-- sidebar -->
-<nav class='sidebar-container' ng-hide='windowIsMobile && !sidebarOpen' prevent-scroll>
+<nav class='sidebar-container' ng-hide='windowIsMobile && !sidebarOpen' ng-class="{'own-hidden': !controller.user}" prevent-scroll>
   <div class='sidebar'>
     <!-- admins section -->
     <xsidebar-item name='sidebar-admins-section' item='controller.sidebar.admins' xtitle='i18nAdminsPanelSection' icon='fa fa-lock'>
