@@ -3,15 +3,13 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.webapp.models.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
 
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class DTOEntityMapper {
 
@@ -77,11 +75,11 @@ public class DTOEntityMapper {
     return finalInscriptionDTO;
   }
 
-  public FinalInscriptionIndexDTO convertToFinalInscriptionIndexDTO(FinalInscription finalInscription) {
+  FinalInscriptionIndexDTO convertToFinalInscriptionIndexDTO(FinalInscription finalInscription) {
     return modelMapper.map(finalInscription, FinalInscriptionIndexDTO.class);
   }
 
-  public FinalInscription convertToFinalInscription(FinalInscriptionDTO finalinscriptionDTO, Course course) {
+  FinalInscription convertToFinalInscription(FinalInscriptionDTO finalinscriptionDTO, Course course) {
     FinalInscription finalinscription = modelMapper.map(finalinscriptionDTO, FinalInscription.class);
     finalinscription.setState(FinalInscription.FinalInscriptionState.OPEN);
     finalinscription.setId(null);
@@ -105,4 +103,23 @@ public class DTOEntityMapper {
     return modelMapper.map(adminsUpdateDTO, Admin.class);
   }
 
+  UserSessionDTO convertToAdminSessionDTO(final User user) {
+    final UserSessionDTO userSessionDTO = modelMapper.map(user, UserSessionDTO.class);
+    final AddressDTO addressDTO = convertToAddressDTO(user.getAddress());
+
+    userSessionDTO.setAddress(addressDTO);
+    userSessionDTO.setRole(Role.ADMIN);
+
+    return userSessionDTO;
+  }
+
+  StudentSessionDTO convertToStudentSessionDTO(final User user) {
+    final StudentSessionDTO userSessionDTO = modelMapper.map(user, StudentSessionDTO.class);
+    final AddressDTO addressDTO = convertToAddressDTO(user.getAddress());
+
+    userSessionDTO.setAddress(addressDTO);
+    userSessionDTO.setRole(Role.STUDENT);
+
+    return userSessionDTO;
+  }
 }
