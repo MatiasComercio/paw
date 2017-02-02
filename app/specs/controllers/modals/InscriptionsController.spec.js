@@ -63,7 +63,7 @@ function() {
       });
 
       describe('and it is expected that', function() {
-        var modalTemplateUrl = '/views/modals/inscriptions.html';
+        var modalTemplateUrl = 'views/modals/inscriptions.html';
         var args;
 
         beforeEach(function() {

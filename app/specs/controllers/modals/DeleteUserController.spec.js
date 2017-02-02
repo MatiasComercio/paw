@@ -64,7 +64,7 @@ function() {
       });
 
       describe('and it is expected that', function() {
-        var modalTemplateUrl = '/views/modals/delete_user.html';
+        var modalTemplateUrl = 'views/modals/delete_user.html';
         var args;
 
         beforeEach(function() {
