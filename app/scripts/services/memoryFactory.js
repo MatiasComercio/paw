@@ -34,6 +34,11 @@ define(['paw'], function(paw) {
 
         get: function(key) {
           return this.memory[key];
+        },
+
+        remove: function(key) {
+          this.memory[key] = undefined;
+          this.notifyObservers(key);
         }
       };
     };

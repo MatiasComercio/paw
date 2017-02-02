@@ -40,6 +40,10 @@ define([], function() {
       return authenticationService.getToken() !== undefined;
     };
 
+    authenticationService.logout = function() {
+      return $cookies.remove(tokenKey);
+    };
+
     return authenticationService;
   };
 });

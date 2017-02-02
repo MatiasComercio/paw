@@ -92,5 +92,16 @@ function() {
         expect(header).toEqual(expectedHeader);
       });
     });
+
+    describe('when logging out', function() {
+      beforeEach(function() {
+        AuthenticationService.setToken(expectedToken);
+        AuthenticationService.logout();
+      });
+
+      it('removes the token', function () {
+        expect(AuthenticationService.getToken()).toBeUndefined();
+      });
+    });
   });
 });

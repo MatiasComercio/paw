@@ -6,7 +6,8 @@ define([
 'directives/navbar',
 'navbar-template',
 'api-responses',
-'services/navDataService'], function() {
+'services/navDataService',
+'services/Authentication'], function() {
   describe('NavbarDirective', function() {
     beforeEach(module('paw'));
     beforeEach(module('directive-templates'));
@@ -119,6 +120,35 @@ define([
           expect(sidebarOpen).toBe(true);
         });
       });
+    });
+
+    // Notice that the logout button is on the top-nav, and this means
+    // it is only available when the user is logged in, as tested before
+    describe('when clicking the logout button', function() {
+      var navDataServiceService, AuthenticationService, $location;
+
+      // navDataService should be already required by the directive
+      beforeEach(inject(function(navDataService, Authentication, _$location_) {
+        navDataServiceService = navDataService;
+        AuthenticationService = Authentication;
+        $location = _$location_;
+        spyOn(AuthenticationService, 'logout');
+        spyOn(navDataServiceService, 'remove');
+        spyOn($location, 'path');
+        navbar.find("[ng-click='logout()']").triggerHandler('click');
+      }));
+
+      it('calls the Authentication service to logout', function() {
+        expect(AuthenticationService.logout).toHaveBeenCalled();
+      });
+
+      it('removes the user from the navDataService', function() {
+        expect(navDataServiceService.remove).toHaveBeenCalledWith('user');
+      });
+
+      it('redirects to the login page', inject(function(Paths) {
+        expect($location.path).toHaveBeenCalledWith(Paths.get().login().absolutePath());
+      }));
     });
   });
 });
