@@ -2,8 +2,7 @@ package ar.edu.itba.paw.webapp.models;
 
 import ar.edu.itba.paw.models.users.User;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Min;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -11,9 +10,6 @@ import java.time.LocalDate;
 
 public class StudentsUpdateDTO {
 
-  @Digits(integer=8, fraction=0)
-  @Min(value = 1)
-  @NotNull()
   private Integer dni;
 
   @NotNull()
@@ -30,16 +26,12 @@ public class StudentsUpdateDTO {
   @XmlJavaTypeAdapter(LocalDateAdapter.class) //TODO: Improve, see if we can validate if the date is incorrect, so an error is returned, instead of mapping it to null
   private LocalDate birthday;
 
+  @NotNull
+  @Valid
+  private AddressDTO address;
+
   public StudentsUpdateDTO() {
 
-  }
-
-  public StudentsUpdateDTO(Integer dni, String firstName, String lastName, User.Genre genre, LocalDate birthday) {
-    this.dni = dni;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.genre = genre;
-    this.birthday = birthday;
   }
 
   public Integer getDni() {
@@ -80,5 +72,13 @@ public class StudentsUpdateDTO {
 
   public void setBirthday(LocalDate birthday) {
     this.birthday = birthday;
+  }
+
+  public AddressDTO getAddress() {
+    return address;
+  }
+
+  public void setAddress(AddressDTO address) {
+    this.address = address;
   }
 }
