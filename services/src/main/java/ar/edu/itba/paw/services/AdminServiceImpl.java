@@ -47,7 +47,9 @@ public class AdminServiceImpl implements AdminService {
         admin.setId_seq(oldAdmin.getId_seq());
         admin.setPassword(oldAdmin.getPassword());
         admin.setEmail(oldAdmin.getEmail());
-        admin.getAddress().setId_seq(oldAdmin.getId_seq());
+        if(oldAdmin.getAddress() != null) {
+            admin.getAddress().setId_seq(oldAdmin.getAddress().getId_seq());
+        }
         admin.getAddress().setDni(admin.getDni());
         admin.setRole(oldAdmin.getRole());
 

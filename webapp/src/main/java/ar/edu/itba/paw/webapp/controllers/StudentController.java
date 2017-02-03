@@ -10,6 +10,7 @@ import ar.edu.itba.paw.models.TranscriptGrade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
+import ar.edu.itba.paw.webapp.auth.LoggedUser;
 import ar.edu.itba.paw.webapp.models.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,9 @@ public class StudentController {
     if(student == null) {
       return status(Status.NOT_FOUND).build();
     }
+
+
+
     final StudentShowDTO studentShowDTO = mapper.convertToStudentShowDTO(student);
     return ok(studentShowDTO).build();
   }
@@ -113,6 +117,12 @@ public class StudentController {
     if(oldStudent == null) {
       return status(Status.NOT_FOUND).build();
     }
+
+	  final int dni = LoggedUser.getDni();
+	  if(dni != oldStudent.getDni()) {
+		  return status(Status.FORBIDDEN).build();
+	  }
+
     final Student partialStudent = mapper.convertToStudent(studentUpdateDTO);
     partialStudent.setDocket(docket);
     ss.update(partialStudent);
@@ -123,7 +133,7 @@ public class StudentController {
   @DELETE
   @Path("/{docket}")
   public Response studentsDestroy(@PathParam("docket") final int docket) {
-    ss.deleteStudent(docket);
+	  ss.deleteStudent(docket);
     return noContent().build();
   }
 
@@ -161,12 +171,14 @@ public class StudentController {
   public Response studentsCoursesNew(
           @PathParam("docket") final Integer docket,
           @Valid final InscriptionDTO inscriptionDTO){
-
-    //TODO securityContext.getAuthentication().getAuthorities() ADD_INSCRIPTIONS see if we can put it in WebAuthConfig as an antmatcher
-
     final Student student = ss.getByDocket(docket);
     if(student == null){
       return status(Status.NOT_FOUND).build();
+    }
+
+    final int dni = LoggedUser.getDni();
+    if(dni != student.getDni()) {
+    	return status(Status.FORBIDDEN).build();
     }
 
     final Course course = cs.getByCourseID(inscriptionDTO.getCourseId());
@@ -190,12 +202,14 @@ public class StudentController {
           @PathParam("docket") final Integer docket,
           @Pattern(regexp="\\d{2}\\.\\d{2}")
           @PathParam("courseId") final String courseId){
+	  final Student student = ss.getByDocket(docket);
+	  if(student == null){
+		  return status(Status.NOT_FOUND).build();
+	  }
 
-    //TODO securityContext.getAuthentication().getAuthorities() DELETE_INSCRIPTIONS
-
-    final Student student = ss.getByDocket(docket);
-    if(student == null){
-      return status(Status.NOT_FOUND).build();
+    final int dni = LoggedUser.getDni();
+    if(dni != student.getDni()) {
+    	return status(Status.FORBIDDEN).build();
     }
 
     final Course course = cs.getByCourseID(courseId);
@@ -239,10 +253,14 @@ public class StudentController {
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{docket}/grades")
   public Response studentsGradesIndex(@PathParam("docket") final Integer docket){
-
     final Student student = ss.getByDocket(docket);
     if(student == null){
       return status(Status.NOT_FOUND).build();
+    }
+
+    final int dni = LoggedUser.getDni();
+    if(dni != student.getDni()) {
+      return status(Status.FORBIDDEN).build();
     }
 
     final Collection<Collection<TranscriptGrade>> transcript = ss.getTranscript(docket);
@@ -299,6 +317,11 @@ public class StudentController {
       return status(Status.NOT_FOUND).build();
     }
 
+	  final int dni = LoggedUser.getDni();
+	  if(dni != student.getDni()) {
+		  return status(Status.FORBIDDEN).build();
+	  }
+
     final Course course = cs.getByCourseID(gradeDTO.getCourseId());
     if(course == null){
       return status(Status.BAD_REQUEST).build();
@@ -341,6 +364,11 @@ public class StudentController {
       return status(Status.NOT_FOUND).build();
     }
 
+    final int dni = LoggedUser.getDni();
+    if(dni != student.getDni()) {
+      return status(Status.FORBIDDEN).build();
+    }
+
     final FinalInscription finalInscription = cs.getFinalInscription(inscriptionId);
     if(finalInscription == null){
       return status(Status.NOT_FOUND).build();
@@ -365,6 +393,11 @@ public class StudentController {
       return status(Status.NOT_FOUND).build();
     }
 
+    final int dni = LoggedUser.getDni();
+    if(dni != student.getDni()) {
+      return status(Status.FORBIDDEN).build();
+    }
+
     final FinalInscription finalInscription = cs.getFinalInscription(inscriptionId);
     if(finalInscription == null){
       return status(Status.NOT_FOUND).build();
@@ -383,6 +416,11 @@ public class StudentController {
     final Student student = ss.getByDocket(docket);
     if(student == null){
       return status(Status.NOT_FOUND).build();
+    }
+
+    final int dni = LoggedUser.getDni();
+    if(dni != student.getDni()) {
+      return status(Status.FORBIDDEN).build();
     }
 
     final List<FinalInscription> finalInscriptions = ss.getAvailableFinalInscriptions(student);

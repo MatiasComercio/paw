@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.AdminService;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
+import ar.edu.itba.paw.webapp.auth.LoggedUser;
 import ar.edu.itba.paw.webapp.models.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,8 +100,14 @@ public class AdminController {
     if(oldAdmin == null) {
       return status(Status.NOT_FOUND).build();
     }
+
+    final int loggedDni = LoggedUser.getDni();
+    if(loggedDni != dni) {
+      return status(Status.FORBIDDEN).build();
+    }
+
     final Admin partialAdmin = mapper.convertToAdmin(adminsUpdateDTO);
-    partialAdmin.setDni(dni);
+    partialAdmin.setDni(loggedDni);
     as.update(partialAdmin);
 
     return noContent().build();

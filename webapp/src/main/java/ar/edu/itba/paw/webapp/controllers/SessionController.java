@@ -6,12 +6,12 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.webapp.auth.LoggedUser;
 import ar.edu.itba.paw.webapp.models.StudentSessionDTO;
 import ar.edu.itba.paw.webapp.models.UserSessionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -41,7 +41,7 @@ public class SessionController {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response sessionShow() {
-		final int dni = Integer.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
+		final int dni = LoggedUser.getDni();
 		final List<Role> roles = us.getRole(dni);
 
 		if(roles.contains(Role.ADMIN)) {
