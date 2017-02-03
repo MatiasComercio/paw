@@ -1,9 +1,6 @@
 package ar.edu.itba.paw.webapp.config;
 
-import ar.edu.itba.paw.webapp.auth.PlainTextBasicAuthenticationEntryPoint;
-import ar.edu.itba.paw.webapp.auth.StatelessAuthenticationFilter;
-import ar.edu.itba.paw.webapp.auth.StatelessLoginFilter;
-import ar.edu.itba.paw.webapp.auth.TokenAuthenticationService;
+import ar.edu.itba.paw.webapp.auth.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 )
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
+	private static final String API_PREFIX_VERSION = "/api/v1";
+
 	@Autowired
 	private UserDetailsService userDetailsService;
 
@@ -34,15 +33,47 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(final HttpSecurity http) throws Exception {
 		http.csrf().disable(); //Configure CSRF Token
 
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-				.and()
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+
+		http
 					.authorizeRequests()
-					.antMatchers(HttpMethod.POST,"/api/v1/login").permitAll()
-					.antMatchers("/api/v1/**").authenticated()
-				.and()
+
+						// StudentController permissions
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students/*/grades/*").hasAuthority("EDIT_GRADE")
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students/*/grades").hasAuthority("ADD_GRADE")
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students").hasAuthority("ADD_STUDENT")
+						.antMatchers(HttpMethod.DELETE, API_PREFIX_VERSION + "/students").hasAuthority("DELETE_STUDENT")
+
+						// CourseController permissions
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "courses/finalInscriptions/*/grades").hasAuthority("QUALIFY_COURSE_FINAL")
+						.antMatchers(HttpMethod.GET,    API_PREFIX_VERSION + "courses/finalInscriptions/*").hasAuthority("VIEW_COURSE_FINAL_INSCRIPTIONS")
+						.antMatchers(HttpMethod.GET,    API_PREFIX_VERSION + "/courses/*/students/passed").hasAuthority("VIEW_STUDENTS_APPROVED")
+						.antMatchers(HttpMethod.GET,    API_PREFIX_VERSION + "/courses/*/students").hasAuthority("VIEW_COURSE_STUDENTS")
+						.antMatchers(HttpMethod.DELETE, API_PREFIX_VERSION + "/courses/*/correlatives/*").hasAuthority("DELETE_CORRELATIVE")
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/courses/*/correlatives").hasAuthority("ADD_CORRELATIVE")
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/courses/*").hasAuthority("EDIT_COURSE")
+						.antMatchers(HttpMethod.DELETE, API_PREFIX_VERSION + "/courses/*").hasAuthority("DELETE_COURSE")
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/courses").hasAuthority("ADD_COURSE")
+
+						// UserController permissions
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/users/*/password/reset").hasAuthority("RESET_PASSWORD")
+
+						// AdminController
+						.antMatchers(API_PREFIX_VERSION + "/admins/**").hasAuthority("ADMIN")
+
+
+						.antMatchers(HttpMethod.POST,API_PREFIX_VERSION + "/login").permitAll()
+						.antMatchers(API_PREFIX_VERSION + "/**").authenticated(); // For every resource except /login the user must be authenticated
+
+		http
 					.addFilterBefore(new StatelessLoginFilter("/api/v1/login", tokenAuthenticationService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)
 					.addFilterBefore(new StatelessAuthenticationFilter(tokenAuthenticationService), UsernamePasswordAuthenticationFilter.class)
-					.exceptionHandling().authenticationEntryPoint(new PlainTextBasicAuthenticationEntryPoint());
+					.exceptionHandling().authenticationEntryPoint(new PlainTextBasicAuthenticationEntryPoint()) // resolves 401 Unauthenticated
+					.and()
+					.exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler()); // resolves 403 unauthorized to 404 Not found
+
+
 	}
 
 	@Override
