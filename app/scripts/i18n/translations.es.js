@@ -101,6 +101,9 @@ define([], function() {
 
     // Courses Students Index
     i18nQualify: 'Calificar',
+    // Courses Students Approved
+    i18nGrade: 'Nota',
+
 
     // Search filters
     i18nSearchButton: 'Buscar',
