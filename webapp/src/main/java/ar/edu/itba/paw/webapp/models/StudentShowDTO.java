@@ -13,19 +13,10 @@ public class StudentShowDTO {
   private LocalDate birthday;
   private int docket;
   private String email;
+  private AddressDTO address;
 
   public StudentShowDTO() {
 
-  }
-
-  public StudentShowDTO(Integer dni, String firstName, String lastName, User.Genre genre, LocalDate birthday, int docket, String email) {
-    this.dni = dni;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.genre = genre;
-    this.birthday = birthday;
-    this.docket = docket;
-    this.email = email;
   }
 
   public Integer getDni() {
@@ -82,5 +73,13 @@ public class StudentShowDTO {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public AddressDTO getAddress() {
+    return address;
+  }
+
+  public void setAddress(AddressDTO address) {
+    this.address = address;
   }
 }

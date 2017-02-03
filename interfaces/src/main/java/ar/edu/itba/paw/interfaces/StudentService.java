@@ -8,7 +8,6 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public interface StudentService {
 
@@ -40,10 +39,8 @@ public interface StudentService {
      * Update student
      *
      * @param newStudent The new student
-     * @param oldStudent The old student
-     * @return true if the student was updated; else false
      */
-    boolean update(Student newStudent, Student oldStudent);
+    void update(Student newStudent);
 
     /**
      * Delete the student that matches the given docket.

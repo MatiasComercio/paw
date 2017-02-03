@@ -96,15 +96,14 @@ public class StudentServiceImpl implements StudentService {
 
   @Transactional
   @Override
-  public boolean update(final Student student, final Student oldStudent) {
+  public void update(final Student student) {
+    final Student oldStudent = getByDocket(student.getDocket());
 
 		/* Set Remaining information that cannot be updated by the user via this method */
-    student.setDocket(oldStudent.getDocket());
+		student.setDni(oldStudent.getDni());
     student.setId_seq(oldStudent.getId_seq());
-    student.setAddress(oldStudent.getAddress());
-    if(student.getAddress() != null){
-      student.getAddress().setDni(student.getDni());
-    }
+		student.setDocket(oldStudent.getDocket());
+    student.getAddress().setId_seq(oldStudent.getAddress().getId_seq());
     student.setPassword(oldStudent.getPassword());
     student.setEmail(oldStudent.getEmail());
     student.setRole(oldStudent.getRole());
@@ -113,7 +112,7 @@ public class StudentServiceImpl implements StudentService {
     final List<Course> courses = studentDao.getStudentCourses(oldStudent.getDocket());
     student.setStudentCourses(courses);
 
-    return studentDao.update(student);
+    studentDao.update(student);
   }
 
   @Transactional

@@ -3,7 +3,10 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
-import ar.edu.itba.paw.models.*;
+import ar.edu.itba.paw.models.Course;
+import ar.edu.itba.paw.models.FinalInscription;
+import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.TranscriptGrade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -106,12 +109,13 @@ public class StudentController {
                                  @Valid final StudentsUpdateDTO studentUpdateDTO) {
 
     final Student oldStudent = ss.getByDocket(docket);
+
     if(oldStudent == null) {
       return status(Status.NOT_FOUND).build();
     }
-
     final Student partialStudent = mapper.convertToStudent(studentUpdateDTO);
-    ss.update(partialStudent, oldStudent);
+    partialStudent.setDocket(docket);
+    ss.update(partialStudent);
 
     return noContent().build();
   }
@@ -121,35 +125,6 @@ public class StudentController {
   public Response studentsDestroy(@PathParam("docket") final int docket) {
     ss.deleteStudent(docket);
     return noContent().build();
-  }
-
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  @Path("/{docket}/address")
-  public Response studentsAddressShow(@PathParam("docket") final int docket){
-    final Student student = ss.getByDocket(docket);
-    if(student == null || student.getAddress() == null) {
-      return status(Status.NOT_FOUND).build();
-    }
-    final AddressDTO addressDTO = mapper.convertToAddressDTO(student.getAddress());
-    return ok(addressDTO).build();
-  }
-
-  @POST
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Path("/{docket}/address")
-  public Response studentsAddressUpdate(
-          @PathParam("docket") final int docket,
-          @Valid final AddressDTO addressDTO) {
-    final Student student = ss.getByDocket(docket);
-
-    if(student == null){
-      return status(Status.NOT_FOUND).build();
-    }
-
-    Address address = mapper.convertToAddress(addressDTO);
-    ss.editAddress(docket, address);
-    return ok().build();
   }
 
   @GET

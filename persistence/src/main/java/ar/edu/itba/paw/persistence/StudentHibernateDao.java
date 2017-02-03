@@ -15,8 +15,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -103,11 +101,9 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public boolean update(final Student student) {
+	public void update(final Student student) {
 		em.merge(student);
 		LOGGER.debug("[update] - {}", student);
-
-		return true;
 	}
 
 	@Override

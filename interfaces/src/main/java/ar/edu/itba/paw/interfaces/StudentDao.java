@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.List;
 
 public interface StudentDao {
@@ -54,9 +53,8 @@ public interface StudentDao {
 	/**
 		* Update student
 		* @param student The new student
-		* @return The Result code of update
 		*/
-	boolean update(Student student);
+	void update(Student student);
 
 	/**
 		* Gets the students that comply to a list of filters
