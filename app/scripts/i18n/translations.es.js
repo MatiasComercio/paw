@@ -81,12 +81,23 @@ define([], function() {
     i18nDoor: 'Dpto.',
     i18nZipCode: 'Cód. Postal',
 
-    // Courses Index
+    // Course Show
+    i18nCourses: 'Materias',
+    i18nInformation: 'Información',
     i18nCourseId: 'Código',
     i18nCourseName: 'Nombre',
     i18nCredits: 'Créditos',
     i18nSemester: 'Cuatrimestre',
-
+    i18nCorrelatives: 'Correlativas',
+    i18nDeleteCorrelative: 'Eliminar correlatividad',
+    i18nNoCorrelativesFound: 'Esta materia no tiene correlativas',
+    i18nFinalExams: 'Exámenes Finales',
+    i18nVacancy: 'Cupos',
+    i18nState: 'Estado',
+    i18nFinalExamDate: 'Fecha del examen',
+    i18nNoFinalExamsFound: 'No se encontraron fechas de examen final',
+    i18nInscriptionOpen: 'Abierto',
+    i18nInscriptionClosed: 'Cerrado',
 
     // Search filters
     i18nSearchButton: 'Buscar',
