@@ -556,7 +556,7 @@
 //    }
 //
 //    @Test
-//    public void getCorrelatives(){
+//    public void getCorrelativesIds(){
 //        final Map<String, Object> correlativeArgs = new HashMap<>();
 //        final Map<String, Object> correlativeArgs2 = new HashMap<>();
 //
@@ -568,7 +568,7 @@
 //        correlativeArgs2.put(CORRELATIVE__CORRELATIVE_ID_COLUMN, COURSE_ID_2);
 //        correlativeInsert.execute(correlativeArgs2);
 //
-//        List<Integer> list = courseJdbcDao.getCorrelatives(COURSE_ID_3);
+//        List<Integer> list = courseJdbcDao.getCorrelativesIds(COURSE_ID_3);
 //
 //        assertEquals(list.size(), 2);
 //        assertTrue( (list.get(0).equals(COURSE_ID_1) || list.get(0).equals(COURSE_ID_2) ));

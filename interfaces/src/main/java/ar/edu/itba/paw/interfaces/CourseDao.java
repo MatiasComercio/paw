@@ -72,7 +72,7 @@ public interface CourseDao {
      * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
      * given course)
      */
-    List<String> getCorrelatives(String courseId);
+    List<String> getCorrelativesIds(String courseId);
 
     /**
      * Check if a correlativity loop is formed

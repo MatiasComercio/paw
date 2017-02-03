@@ -1,7 +1,6 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.CourseService;
-import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.users.Student;
@@ -22,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,9 +38,6 @@ public class CourseController {
 
   @Autowired
   private CourseService cs;
-
-  @Autowired
-  private StudentService ss;
 
   @Autowired
   private DTOEntityMapper mapper;
@@ -173,6 +170,24 @@ public class CourseController {
     final List<StudentIndexDTO> studentsList = approvedStudents.stream().map(student -> mapper.convertToStudentIndexDTO(student)).collect(Collectors.toList());
 
     return ok(new StudentsList(studentsList)).build();
+  }
+
+  @GET
+  @Path("/{courseId}/correlatives")
+  public Response coursesCorrelativesShow(@PathParam("courseId") final String courseId) {
+    if(cs.getByCourseID(courseId) == null) {
+      return status(Status.NOT_FOUND).build();
+    }
+    final List<String> correlativesIds = cs.getCorrelativesIds(courseId);
+    final List<Course> correlatives = new ArrayList<>(correlativesIds.size());
+
+    for(String correlativeId : correlativesIds) {
+      correlatives.add(cs.getByCourseID(correlativeId));
+    }
+
+    final List<CourseDTO> correlativesDTO = correlatives.stream().map(correlative -> mapper.convertToCourseDTO(correlative)).collect(Collectors.toList());
+
+    return ok(new CoursesList(correlativesDTO)).build();
   }
 
   @POST

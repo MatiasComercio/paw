@@ -79,10 +79,10 @@ public interface CourseService {
 
     /**
      * @param courseId The id of the course.
-     * @return The id's of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
+     * @return The id's of correlatives for the given course (i.d. The courses that are required to enroll a student in the
      * given course)
      */
-    List<String> getCorrelatives(String courseId);
+    List<String> getCorrelativesIds(String courseId);
 
     /**
      * Make the course corresponding to the correlativeId necessary

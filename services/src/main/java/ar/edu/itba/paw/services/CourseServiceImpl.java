@@ -185,10 +185,16 @@ public class CourseServiceImpl implements CourseService {
 
     //TODO: IF NOT CALLED FROM CONTROLLER, DELETE IMPLEMENTATION AND DELETE FROM INTERFACE
 
+    /**
+     * Gets the correlatives of a given course.
+     * It is assumed that the courseId exists
+     * @param courseId The id of the course.
+     * @return a list of the course id's of the correlatives in a String manner
+     */
     @Transactional
     @Override
-    public List<String> getCorrelatives(final String courseId) {
-        return courseDao.getCorrelatives(courseId);
+    public List<String> getCorrelativesIds(final String courseId) {
+        return courseDao.getCorrelativesIds(courseId);
     }
 
     @Transactional
@@ -211,7 +217,7 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     @Override
     public void deleteCourseCorrelatives(final String courseId) {
-        List<String> correlatives = getCorrelatives(courseId);
+        List<String> correlatives = getCorrelativesIds(courseId);
         List<String> upperCorrelatives = getUpperCorrelatives(courseId);
 
         /* Adds transitive correlatives:

@@ -152,9 +152,9 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public List<String> getCorrelatives(String courseId) {
-        Course course = getByCourseID(courseId);
-        List<String> correlatives = new ArrayList<>();
+    public List<String> getCorrelativesIds(final String courseId) {
+        final Course course = getByCourseID(courseId);
+        final List<String> correlatives = new ArrayList<>();
 
         for(Course correlative: course.getCorrelatives()){
             correlatives.add(correlative.getCourseId());
@@ -188,7 +188,7 @@ public class CourseHibernateDao implements CourseDao {
                 toAdd = new HashSet<>();
                 prevSize = current.size();
                 for(Course auxCourse: current){
-                    //current.addAll(auxCourse.getCorrelatives());
+                    //current.addAll(auxCourse.getCorrelativesIds());
                     toAdd.addAll(auxCourse.getCorrelatives());
                 }
                 current.addAll(toAdd);
