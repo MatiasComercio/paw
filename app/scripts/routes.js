@@ -76,6 +76,11 @@ define([], function() {
                 templateUrl: '/views/students/final_inscriptions.html',
                 controller: 'StudentsFinalInscriptionsCtrl',
                 relativePath: '/students'
+            },
+            '/admins': {
+                templateUrl: 'views/admins/index.html',
+                controller: 'AdminsIndexCtrl',
+                relativePath: '/admins'
             }
             /* ===== yeoman hook ===== */
             /* Do not remove these commented lines! Needed for auto-generation */
