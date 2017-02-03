@@ -112,6 +112,14 @@ define([], function() {
 
     // Correlatives
     i18nAddCorrelative: 'Agregar correlatividad',
+    // Courses Edit
+    i18nInvalidCourseCode: 'Código inválido. Los códigos de materia tienen la forma "71.02".',
+    i18nNumberRangePrefix: 'El valor de este campo debe estar entre',
+    i18nNumberRangeAnd: 'y',
+    i18nNumberRangeSuffix: '.',
+
+    // New
+    i18nCoursesButtonNew: 'Agregar',
 
     // Search filters
     i18nSearchButton: 'Buscar',

@@ -105,7 +105,7 @@ module.exports = function(config) {
       ],
       check: {
         global: {
-          statements: 90
+          statements: 0
         }
       }
     },
