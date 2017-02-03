@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.users.User;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -34,6 +35,8 @@ public class UserNewDTO {
   @Size(min=8, max=32)
   private String password;
 
+  @Valid
+  @NotNull
   private AddressDTO address;
 
   public UserNewDTO() {

@@ -1,13 +1,13 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.UserService;
+import ar.edu.itba.paw.webapp.auth.LoggedUser;
 import ar.edu.itba.paw.webapp.forms.PasswordDTO;
 import ar.edu.itba.paw.webapp.models.AuthoritiesDTO;
 import ar.edu.itba.paw.webapp.models.AuthorityDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import javax.validation.Valid;
@@ -97,7 +97,7 @@ public class UserController {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response usersAuthorities(){
-    List<String> actions = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().map(o -> o.toString()).collect(Collectors.toList());
+    List<String> actions = LoggedUser.getAuthorities().stream().map(Object::toString).collect(Collectors.toList());
     List<AuthorityDTO> authoritiesList = new LinkedList<>();
 
     for(String action: actions){
@@ -112,9 +112,15 @@ public class UserController {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response usersPasswordChange(@PathParam("dni") final int dni,
                                       @Valid PasswordDTO passwordDTO) {
-    passwordDTO.setDni(dni);
 
-    if(!us.changePassword(dni, passwordDTO.getCurrentPassword(), passwordDTO.getNewPassword())) {
+    final int loggedDni = LoggedUser.getDni();
+    if(loggedDni != dni) {
+      return status(Status.FORBIDDEN).build();
+    }
+
+    passwordDTO.setDni(loggedDni);
+
+    if(!us.changePassword(loggedDni, passwordDTO.getCurrentPassword(), passwordDTO.getNewPassword())) {
       return status(Status.BAD_REQUEST).build();
     }
 
