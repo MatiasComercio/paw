@@ -1,0 +1,19 @@
+@import 'modules/variables/importer';
+
+.students-final-inscriptions-container {
+  .table {
+    .actions-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+
+      .btn {
+        flex: 1;
+        min-width: 175px;
+        max-width: 200px;
+        margin: 10px;
+        margin-left: 0;
+      }
+    }
+  }
+}

@@ -1,0 +1,89 @@
+<div ng-controller='StudentsFinalInscriptionsCtrl as controller' class='students-final-inscriptions-container'>
+  <!-- Page Heading -->
+  <div class='page-header break-words'>
+    <h1 class='inline'>
+      <span translate='i18nStudents'></span>
+    </h1>
+    <h2 class='inline'>
+      <span> - </span>
+      <span> {{controller.student.firstName}} {{controller.student.lastName}}</span>
+      <small> - </small>
+      <small translate='i18nStudentFinals'></small>
+    </h2>
+  </div>
+  <!-- /Page Heading -->
+
+  <!-- Final Exams -->
+  <h3 translate='i18nFinalExams' class='page-sub-header'></h3>
+  <div class='table-responsive'>
+    <table class='table table-hover'>
+      <thead>
+        <tr>
+          <th translate='i18nFinalExamDate'></th>
+          <th translate='i18nVacancy'></th>
+          <th translate='i18nState'></th>
+          <th translate='i18nActions'></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-hide='controller.student.finalInscriptionsAvailable.length > 0' class='bg-warning'>
+          <td colspan='4' class='text-danger text-center' translate='i18nNoFinalExamsFound'></td>
+        </tr>
+        <tr ng-repeat='inscription in controller.student.finalInscriptionsAvailable'>
+          <td>{{controller.formatDate(inscription.finalExamDate)}}</td>
+          <td>{{ inscription.vacancy }}/{{ inscription.maxVacancy }}</td>
+          <td ng-show="inscription.state == 'OPEN'" translate='i18nInscriptionOpen'></td>
+          <td ng-show="inscription.state == 'CLOSED'" translate='i18nInscriptionClosed'></td>
+          <td class='actions-container'>
+            <a class='btn btn-default' role='button'>
+              <span class='fa fa-info-circle' aria-hidden='true'></span>
+              <span translate='i18nInformation'></span>
+            </a>
+            <a class='btn btn-info' role='button'>
+              <span class='fa fa-list-alt' aria-hidden='true'></span>
+              <span translate='i18nFinalEnroll'></span>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- /Final Exams -->
+
+  <!-- Final Exams Taken -->
+  <h3 translate='i18nFinalExamsTaken' class='page-sub-header'></h3>
+  <div class='table-responsive'>
+    <table class='table table-hover'>
+      <thead>
+        <tr>
+          <th translate='i18nFinalExamDate'></th>
+          <th translate='i18nVacancy'></th>
+          <th translate='i18nState'></th>
+          <th translate='i18nActions'></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-hide='controller.student.finalInscriptionsTaken.length > 0' class='bg-warning'>
+          <td colspan='4' class='text-danger text-center' translate='i18nNoFinalExamsFound'></td>
+        </tr>
+        <tr ng-repeat='inscription in controller.student.finalInscriptionsTaken'>
+          <td>{{controller.formatDate(inscription.finalExamDate)}}</td>
+          <td>{{ inscription.vacancy }}/{{ inscription.maxVacancy }}</td>
+          <td ng-show="inscription.state == 'OPEN'" translate='i18nInscriptionOpen'></td>
+          <td ng-show="inscription.state == 'CLOSED'" translate='i18nInscriptionClosed'></td>
+          <td class='actions-container'>
+            <a class='btn btn-default' role='button'>
+              <span class='fa fa-info-circle' aria-hidden='true'></span>
+              <span translate='i18nInformation'></span>
+            </a>
+            <a class='btn btn-danger' role='button'>
+              <span class='fa fa-list-alt' aria-hidden='true'></span>
+              <span translate='i18nUnenroll'></span>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- /Final Exams Taken -->
+</div>
