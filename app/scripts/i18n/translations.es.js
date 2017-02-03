@@ -86,6 +86,9 @@ define([], function() {
     i18nInformation: 'Información',
     // Students Inscriptions
     i18nUnenroll: 'Dar de Baja',
+    // Students Inscriptions
+    i18nEnroll: 'Matricularse',
+
     // Courses Index
     i18nCourseId: 'Código',
     i18nCourseName: 'Nombre',
