@@ -104,6 +104,8 @@ define([], function() {
     // Courses Students Approved
     i18nGrade: 'Nota',
 
+    // Correlatives
+    i18nAddCorrelative: 'Agregar correlatividad',
 
     // Search filters
     i18nSearchButton: 'Buscar',
