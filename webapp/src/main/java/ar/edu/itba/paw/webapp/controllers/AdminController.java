@@ -87,6 +87,23 @@ public class AdminController {
   }
 
   @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Path("/{dni}")
+  public Response adminsUpdate(@PathParam("dni") final int dni,
+                               @Valid final AdminsUpdateDTO adminsUpdateDTO) {
+    final Admin oldAdmin = as.getByDni(dni);
+
+    if(oldAdmin == null) {
+      return status(Status.NOT_FOUND).build();
+    }
+    final Admin partialAdmin = mapper.convertToAdmin(adminsUpdateDTO);
+    partialAdmin.setDni(dni);
+    as.update(partialAdmin);
+
+    return noContent().build();
+  }
+
+  @POST
   @Path("/inscriptions/")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response adminsInscriptionsSwitch(@Valid InscriptionSwitchDTO inscriptionSwitchDTO) {

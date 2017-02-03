@@ -70,9 +70,8 @@ public interface AdminDao {
 	/**
      * Updates the given admin, if possible
      * @param admin the admin to be updated, containing the updated values
-     * @return The Result code of the operation
      */
-    boolean update(final Admin admin);
+    void update(final Admin admin);
 
     /**
      * Get all the procedures, despite their state
