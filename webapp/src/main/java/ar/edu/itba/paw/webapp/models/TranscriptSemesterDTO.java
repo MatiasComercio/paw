@@ -1,22 +1,22 @@
 package ar.edu.itba.paw.webapp.models;
-
 import java.util.List;
 
+
 public class TranscriptSemesterDTO {
-  List<TranscriptGradeDTO> grades;
+  List<TranscriptGradeDTO> semester;
 
   public TranscriptSemesterDTO() {
   }
 
-  public TranscriptSemesterDTO(List<TranscriptGradeDTO> grades) {
-    this.grades = grades;
+  public TranscriptSemesterDTO(List<TranscriptGradeDTO> semester) {
+    this.semester = semester;
   }
 
-  public List<TranscriptGradeDTO> getGrades() {
-    return grades;
+  public List<TranscriptGradeDTO> getSemester() {
+    return semester;
   }
 
-  public void setGrades(List<TranscriptGradeDTO> grades) {
-    this.grades = grades;
+  public void setSemester(List<TranscriptGradeDTO> semester) {
+    this.semester = semester;
   }
 }
