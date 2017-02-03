@@ -65,6 +65,9 @@ public class AdminController {
   public Response adminsNew(@Valid AdminNewDTO adminNewDTO) {
     final Admin admin = mapper.convertToAdmin(adminNewDTO);
 
+    if(as.getByDni(admin.getDni()) != null) {
+      return status(Status.CONFLICT).build();
+    }
     if(!as.create(admin)) {
       return Response.status(Response.Status.BAD_REQUEST).build();
     }

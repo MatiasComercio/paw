@@ -75,6 +75,10 @@ public class StudentController {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response studentsNew(@Valid final UserNewDTO userNewDTO) throws ValidationException{
     final Student student = mapper.convertToStudent(userNewDTO);
+
+    if(ss.getByDni(student.getDni()) != null) {
+      return status(Status.CONFLICT).build();
+    }
     if(!ss.create(student)) {
       return status(Status.BAD_REQUEST).build();
     }
