@@ -99,6 +99,9 @@ define([], function() {
     i18nInscriptionOpen: 'Abierto',
     i18nInscriptionClosed: 'Cerrado',
 
+    // Courses Students Index
+    i18nQualify: 'Calificar',
+
     // Search filters
     i18nSearchButton: 'Buscar',
     i18nResetButton: 'Resetear',

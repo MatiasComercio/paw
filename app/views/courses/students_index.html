@@ -1,0 +1,79 @@
+<div ng-controller='CoursesStudentsIndexCtrl as controller' class='courses-students-index-container'>
+  <!-- Page Heading -->
+  <div class='page-header break-words'>
+    <h1 class='inline'>
+      <span translate='i18nCoursesPanelSection'></span>
+    </h1>
+    <h2 class='inline'>
+      <span> - </span>
+      <span> {{controller.course.name}} </span>
+      <small> - </small>
+      <small translate='i18nCourseStudents'></small>
+    </h2>
+  </div>
+  <!-- /Page Heading -->
+
+  <!-- Filter -->
+  <div class='filter-container'>
+    <div class='filter-fields'>
+      <div class='own-input-group'>
+        <span class='search-label' translate=i18nDocket></span>
+        <input type='text' class='form-input-field' ng-model='controller.filter.docket' placeholder="{{ 'i18nDocket' | translate }}..."/>
+      </div>
+      <div class='own-input-group'>
+        <span class='search-label' translate='i18nFirstName'></span>
+        <input type='text' class='form-input-field' ng-model='controller.filter.firstName' placeholder="{{ 'i18nFirstName' | translate }}..."/>
+      </div>
+      <div class='own-input-group'>
+        <span class='search-label' translate='i18nLastName'></span>
+        <input type='text' class='form-input-field' ng-model='controller.filter.lastName' placeholder="{{ 'i18nLastName' | translate }}..."/>
+      </div>
+    </div>
+    <div class='filter-buttons'>
+      <button class='btn btn-default' type='submit'>
+        <span class='fa fa-search' aria-hidden='true'></span>
+        <span translate='i18nSearchButton' translate ></span>
+      </button>
+      <button class='btn btn-default' ng-click='controller.resetSearch()' type='submit'>
+        <span class='fa fa-repeat' aria-hidden='true'></span>
+        <span translate='i18nResetButton'></span>
+      </button>
+    </div>
+  </div>
+  <!-- /Filter -->
+
+  <!-- Students -->
+  <div class='table-responsive'>
+    <table class='table table-hover'>
+      <thead>
+        <tr>
+          <th translate='i18nDocket'></th>
+          <th translate='i18nFirstName'></th>
+          <th translate='i18nLastName'></th>
+          <th translate='i18nActions'></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-hide='controller.course.students.length > 0' class='bg-warning'>
+          <td colspan='4' class='text-danger text-center' translate='i18nNoStudentsFound'></td>
+        </tr>
+        <tr ng-repeat='student in controller.course.students'>
+          <td>{{ student.docket }}</td>
+          <td>{{ student.firstName }}</td>
+          <td>{{ student.lastName }}</td>
+          <td class='actions-container'>
+            <a class='btn btn-default' role='button'>
+              <span class='fa fa-user' aria-hidden='true'></span>
+              <span translate='i18nStudentShow'></span>
+            </a>
+            <a class='btn btn-info' role='button'>
+              <span class='fa fa-graduation-cap' aria-hidden='true'></span>
+              <span translate='i18nQualify'></span>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- /Students -->
+</div>
