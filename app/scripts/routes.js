@@ -51,6 +51,11 @@ define([], function() {
                 templateUrl: 'views/courses/correlatives_new.html',
                 controller: 'CoursesCorrelativesNewCtrl',
                 relativePath: '/courses'
+            },
+            '/students/:docket/courses': {
+                templateUrl: 'views/students/courses_index.html',
+                controller: 'StudentsCoursesIndexCtrl',
+                relativePath: '/students'
             }
             /* ===== yeoman hook ===== */
             /* Do not remove these commented lines! Needed for auto-generation */
