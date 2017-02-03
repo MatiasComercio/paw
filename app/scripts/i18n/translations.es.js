@@ -88,6 +88,16 @@ define([], function() {
     i18nUnenroll: 'Dar de Baja',
     // Students Inscriptions
     i18nEnroll: 'Matricularse',
+    // Final Exams
+    i18nFinalExams: 'Exámenes Finales',
+    i18nFinalExamsTaken: 'Exámenes a los que se encuentra inscripto',
+    i18nVacancy: 'Cupos',
+    i18nState: 'Estado',
+    i18nFinalExamDate: 'Fecha del examen',
+    i18nNoFinalExamsFound: 'No se encontraron fechas de examen final',
+    i18nInscriptionOpen: 'Abierto',
+    i18nInscriptionClosed: 'Cerrado',
+    i18nFinalEnroll: 'Inscribirse',
 
     // Courses Index
     i18nCourseId: 'Código',
@@ -97,13 +107,6 @@ define([], function() {
     i18nCorrelatives: 'Correlativas',
     i18nDeleteCorrelative: 'Eliminar correlatividad',
     i18nNoCorrelativesFound: 'Esta materia no tiene correlativas',
-    i18nFinalExams: 'Exámenes Finales',
-    i18nVacancy: 'Cupos',
-    i18nState: 'Estado',
-    i18nFinalExamDate: 'Fecha del examen',
-    i18nNoFinalExamsFound: 'No se encontraron fechas de examen final',
-    i18nInscriptionOpen: 'Abierto',
-    i18nInscriptionClosed: 'Cerrado',
 
     // Courses Students Index
     i18nQualify: 'Calificar',
