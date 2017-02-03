@@ -217,7 +217,7 @@ public class StudentServiceImpl implements StudentService {
   @Transactional
   @Override
   public boolean checkCorrelatives(final int docket, final String courseId) {
-    final List<String> correlatives = courseService.getCorrelatives(courseId);
+    final List<String> correlatives = courseService.getCorrelativesIds(courseId);
     final List<String> approvedCourses = getApprovedCourses(docket).stream().map(course -> course.getCourseId()).collect(Collectors.toList());;
 
     for (String correlative : correlatives){
