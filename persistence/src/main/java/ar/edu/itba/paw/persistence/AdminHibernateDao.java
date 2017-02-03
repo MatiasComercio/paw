@@ -77,11 +77,9 @@ public class AdminHibernateDao implements AdminDao {
 	}
 
 	@Override
-	public boolean update(final Admin admin) {
+	public void update(final Admin admin) {
 		em.merge(admin);
 		LOGGER.debug("[update] - {}", admin);
-
-		return true;
 	}
 
 	@Override

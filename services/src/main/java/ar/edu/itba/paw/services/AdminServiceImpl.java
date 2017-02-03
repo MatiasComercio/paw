@@ -41,8 +41,17 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public boolean update(final int dni, final Admin admin) {
-        return adminDao.update(admin);
+    public void update(final Admin admin) {
+        final Admin oldAdmin = getByDni(admin.getDni());
+
+        admin.setId_seq(oldAdmin.getId_seq());
+        admin.setPassword(oldAdmin.getPassword());
+        admin.setEmail(oldAdmin.getEmail());
+        admin.getAddress().setId_seq(oldAdmin.getId_seq());
+        admin.getAddress().setDni(admin.getDni());
+        admin.setRole(oldAdmin.getRole());
+
+        adminDao.update(admin);
     }
 
     @Transactional

@@ -42,6 +42,11 @@ public interface AdminService {
     List<Admin> getByFilter(AdminFilter adminFilter);
 
     /**
+     * @param admin The updated admin
+     */
+    void update(Admin admin);
+
+    /**
      * Delete the admin that matches the given dni.
      * @param dni The admin's dni
      * @return 	OK if the admin was deleted;
@@ -49,14 +54,6 @@ public interface AdminService {
      * 		ERROR_UNKNOWN else;
      */
     boolean deleteAdmin(int dni);
-
-    /**
-     * Update an admin
-     * @param dni  The dni of the old admin
-     * @param admin The new student
-     * @return The Result code of update
-     */
-    boolean update(int dni, Admin admin);
 
     /**
      * Disables inscription authority for Students
