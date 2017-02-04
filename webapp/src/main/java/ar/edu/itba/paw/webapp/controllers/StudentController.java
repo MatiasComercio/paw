@@ -262,6 +262,8 @@ public class StudentController {
     if(dni != student.getDni()) {
       return status(Status.FORBIDDEN).build();
     }
+    final int totalCredits = cs.getTotalPlanCredits();
+    final int currentCredits = ss.getPassedCredits(docket);
 
     final Collection<Collection<TranscriptGrade>> transcript = ss.getTranscript(docket);
 
@@ -270,7 +272,7 @@ public class StudentController {
                     .map(transcriptGrade -> mapper.convertToTranscriptGradeDTO(transcriptGrade)).collect(Collectors.toList()))
             .collect(Collectors.toList());
 
-    return ok(new TranscriptDTO(transcriptDTO)).build();
+    return ok(new TranscriptDTO(transcriptDTO, totalCredits, currentCredits)).build();
   }
 
   @POST

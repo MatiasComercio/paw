@@ -17,6 +17,16 @@ define([], function() {
                 controller: 'StudentsIndexCtrl',
                 relativePath: '/students'
             },
+            '/students/new': {
+                templateUrl: 'views/students/new.html',
+                controller: 'StudentsNewCtrl',
+                relativePath: '/students'
+            },
+            '/admins/new': {
+                templateUrl: 'views/admins/new.html',
+                controller: 'AdminsNewCtrl',
+                relativePath: '/admins'
+            },
             '/students/:docket': {
                 templateUrl: 'views/students/show.html',
                 controller: 'StudentsShowCtrl',
