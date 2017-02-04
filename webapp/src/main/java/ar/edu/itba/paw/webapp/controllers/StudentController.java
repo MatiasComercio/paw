@@ -119,7 +119,7 @@ public class StudentController {
     }
 
 	  final int dni = LoggedUser.getDni();
-	  if(dni != oldStudent.getDni() || !LoggedUser.isAdmin()) {
+	  if(dni != oldStudent.getDni() && !LoggedUser.isAdmin()) {
 		  return status(Status.FORBIDDEN).build();
 	  }
 
@@ -177,7 +177,7 @@ public class StudentController {
     }
 
     final int dni = LoggedUser.getDni();
-    if(dni != student.getDni() || !LoggedUser.isAdmin()) {
+    if(dni != student.getDni() && !LoggedUser.isAdmin()) {
     	return status(Status.FORBIDDEN).build();
     }
 
@@ -208,7 +208,7 @@ public class StudentController {
 	  }
 
     final int dni = LoggedUser.getDni();
-    if(dni != student.getDni() || !LoggedUser.isAdmin()) {
+    if(dni != student.getDni() && !LoggedUser.isAdmin()) {
     	return status(Status.FORBIDDEN).build();
     }
 
@@ -259,7 +259,7 @@ public class StudentController {
     }
 
     final int dni = LoggedUser.getDni();
-    if(dni != student.getDni() || !LoggedUser.isAdmin()) {
+    if(dni != student.getDni() && !LoggedUser.isAdmin()) {
       return status(Status.FORBIDDEN).build();
     }
     final int totalCredits = cs.getTotalPlanCredits();
@@ -320,7 +320,7 @@ public class StudentController {
     }
 
 	  final int dni = LoggedUser.getDni();
-	  if(dni != student.getDni() || !LoggedUser.isAdmin()) {
+	  if(dni != student.getDni() && !LoggedUser.isAdmin()) {
 		  return status(Status.FORBIDDEN).build();
 	  }
 
@@ -367,7 +367,7 @@ public class StudentController {
     }
 
     final int dni = LoggedUser.getDni();
-    if(dni != student.getDni() || !LoggedUser.isAdmin()) {
+    if(dni != student.getDni() && !LoggedUser.isAdmin()) {
       return status(Status.FORBIDDEN).build();
     }
 
@@ -396,7 +396,7 @@ public class StudentController {
     }
 
     final int dni = LoggedUser.getDni();
-    if(dni != student.getDni() || !LoggedUser.isAdmin()) {
+    if(dni != student.getDni() && !LoggedUser.isAdmin()) {
       return status(Status.FORBIDDEN).build();
     }
 
@@ -421,7 +421,7 @@ public class StudentController {
     }
 
     final int dni = LoggedUser.getDni();
-    if(dni != student.getDni() || !LoggedUser.isAdmin()) {
+    if(dni != student.getDni() && !LoggedUser.isAdmin()) {
       return status(Status.FORBIDDEN).build();
     }
 
