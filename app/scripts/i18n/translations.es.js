@@ -116,6 +116,8 @@ define([], function() {
     i18nFullName: 'Nombre y Apellido',
     i18nGradeInvalidRange: 'La nota debe ser mayor o igual a 1 y menor o igual a 10',
     i18nOneDecimalOnly: 'La nota debe ser un número entero o un número decimal con un sólo decimal. Ejemplos: 10 ; 5.5 ; 3.4',
+    i18nCarreerPercentageCompleted: 'Porcentaje de carrera completado',
+    i18nApprovedCredits: 'Créditos aprobados',
 
     // Courses Index
     i18nCourseId: 'Código',

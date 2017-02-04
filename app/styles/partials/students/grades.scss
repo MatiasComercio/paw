@@ -1,6 +1,20 @@
 @import 'modules/variables/importer';
 
 .students-grades-container {
+  .carreer-info-container {
+    .progress-bar-container {
+      border-radius: 0;
+      height: 35px;
+      margin: 0;
+
+      .progress-bar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
   .no-courses-on-sga {
     padding: 15px;
     border: 1px solid $persian-red;

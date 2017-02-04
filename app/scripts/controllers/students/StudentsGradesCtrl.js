@@ -18,6 +18,9 @@ define(
         _this.student = student;
         _this.student.getList('grades').then(function(transcript) {
           _this.student.transcript = transcript;
+          if (transcript.totalCredits > 0) {
+            _this.carreerPrecentage = transcript.currentCredits / transcript.totalCredits * 100;
+          }
         });
       }, function(response) {
         $log.info('Response status: ' + response.status);
