@@ -1,0 +1,85 @@
+<div ng-controller='AdminsShowCtrl as controller' class='admins-show-container' >
+  <!-- Page Heading -->
+  <div class='page-header break-words'>
+    <h1 class='inline'>
+      <span translate='i18nAdminsPanelSection'></span>
+    </h1>
+    <h2 class='inline'>
+      <span> - </span>
+      <span> {{controller.admin.firstName}} {{controller.admin.lastName}} </span>
+      <small> - </small>
+      <small translate='i18nProfile'></small>
+    </h2>
+  </div>
+  <!-- /Page Heading -->
+
+  <!-- User Data -->
+  <div class='data-container'>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nDni'></p>
+      <p class='break-words'>{{controller.admin.dni}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nFirstName'></p>
+      <p class='break-words'>{{controller.admin.firstName}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nLastName'></p>
+      <p class='break-words'>{{controller.admin.lastName}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nBirthday'></p>
+      <p class='break-words'>{{controller.admin.birthday}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nGenre'></p>
+      <p class='break-words'>{{controller.admin.genre}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nTelephone'></p>
+      <p class='break-words'>{{controller.admin.address.telephone}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nEmail'></p>
+      <p class='break-words'>{{controller.admin.email}}</p>
+    </div>
+  </div>
+  <!-- /User Data -->
+
+  <!-- Address Data -->
+  <div class='data-container user-address-data'>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nCountry'></p>
+      <p class='break-words'>{{controller.admin.address.country}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nCity'></p>
+      <p class='break-words'>{{controller.admin.address.city}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nNeighborhood'></p>
+      <p class='break-words'>{{controller.admin.address.neighborhood}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nStreet'></p>
+      <p class='break-words'>{{controller.admin.address.street}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nNumber'></p>
+      <p class='break-words'>{{controller.admin.address.number}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nFloor'></p>
+      <p class='break-words'>{{controller.admin.address.floor}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nDoor'></p>
+      <p class='break-words'>{{controller.admin.address.door}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nZipCode'></p>
+      <p class='break-words'>{{controller.admin.address.zipCode}}</p>
+    </div>
+  </div>
+  <!-- /Address Data -->
+</div>
