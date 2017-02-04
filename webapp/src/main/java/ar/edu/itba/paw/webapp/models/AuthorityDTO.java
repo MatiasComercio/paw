@@ -1,31 +1,25 @@
 package ar.edu.itba.paw.webapp.models;
 
+import org.springframework.security.core.GrantedAuthority;
+
 public class AuthorityDTO {
 
-  private String action;
-  private String location;
 
-  public AuthorityDTO() {}
+  private String authority;
 
-  public AuthorityDTO(String action, String location) {
-    this.action = action;
-    this.location = location;
+  public AuthorityDTO() {
+
   }
 
-  public String getAction() {
-    return action;
+  public AuthorityDTO(final GrantedAuthority authority) {
+    this.authority = authority.getAuthority();
   }
 
-  public void setAction(String action) {
-    this.action = action;
+  public String getAuthority() {
+    return authority;
   }
 
-  public String getLocation() {
-    return location;
+  public void setAuthority(String authority) {
+    this.authority = authority;
   }
-
-  public void setLocation(String location) {
-    this.location = location;
-  }
-
 }

@@ -8,8 +8,11 @@ import ar.edu.itba.paw.webapp.models.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
+import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DTOEntityMapper {
 
@@ -103,23 +106,38 @@ public class DTOEntityMapper {
     return modelMapper.map(adminsUpdateDTO, Admin.class);
   }
 
-  UserSessionDTO convertToAdminSessionDTO(final User user) {
-    final UserSessionDTO userSessionDTO = modelMapper.map(user, UserSessionDTO.class);
+  UserSessionDTO convertToAdminSessionDTO(final User user, Collection<? extends GrantedAuthority> authorities) {
+    final UserSessionDTO adminSessionDTO = new UserSessionDTO();
     final AddressDTO addressDTO = convertToAddressDTO(user.getAddress());
 
-    userSessionDTO.setAddress(addressDTO);
-    userSessionDTO.setRole(Role.ADMIN);
+    adminSessionDTO.setDni(user.getDni());
+    adminSessionDTO.setFirstName(user.getFirstName());
+    adminSessionDTO.setLastName(user.getLastName());
+    adminSessionDTO.setGenre(user.getGenre());
+    adminSessionDTO.setBirthday(user.getBirthday());
+    adminSessionDTO.setEmail(user.getEmail());
+    adminSessionDTO.setRole(user.getRole());
+    adminSessionDTO.setAddress(addressDTO);
+    adminSessionDTO.setAuthorities(authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
 
-    return userSessionDTO;
+    return adminSessionDTO;
   }
 
-  StudentSessionDTO convertToStudentSessionDTO(final User user) {
-    final StudentSessionDTO userSessionDTO = modelMapper.map(user, StudentSessionDTO.class);
-    final AddressDTO addressDTO = convertToAddressDTO(user.getAddress());
+  StudentSessionDTO convertToStudentSessionDTO(final Student student, final Collection<? extends GrantedAuthority> authorities) {
+    final StudentSessionDTO studentSessionDTO = new StudentSessionDTO();
+    final AddressDTO addressDTO = convertToAddressDTO(student.getAddress());
 
-    userSessionDTO.setAddress(addressDTO);
-    userSessionDTO.setRole(Role.STUDENT);
+    studentSessionDTO.setDni(student.getDni());
+    studentSessionDTO.setFirstName(student.getFirstName());
+    studentSessionDTO.setLastName(student.getLastName());
+    studentSessionDTO.setGenre(student.getGenre());
+    studentSessionDTO.setBirthday(student.getBirthday());
+    studentSessionDTO.setEmail(student.getEmail());
+    studentSessionDTO.setRole(student.getRole());
+    studentSessionDTO.setDocket(student.getDocket());
+    studentSessionDTO.setAddress(addressDTO);
+    studentSessionDTO.setAuthorities(authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
 
-    return userSessionDTO;
+    return studentSessionDTO;
   }
 }

@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.User;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Used for returning info about the logged in user with role STUDENT
@@ -24,6 +25,7 @@ public class StudentSessionDTO {
 	private Role role;
 	private AddressDTO address;
 	private int docket;
+	private List<String> authorities;
 
 	public StudentSessionDTO() {
 	}
@@ -98,5 +100,13 @@ public class StudentSessionDTO {
 
 	public void setDocket(int docket) {
 		this.docket = docket;
+	}
+
+	public List<String> getAuthorities() {
+		return authorities;
+	}
+
+	public void setAuthorities(List<String> authorities) {
+		this.authorities = authorities;
 	}
 }
