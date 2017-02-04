@@ -202,6 +202,24 @@ public class CourseController {
     return noContent().build();
   }
 
+
+  @GET
+  @Path("/{courseId}/correlatives/available")
+  public Response coursesCorrelativesAvailableIndex(@Size(max=5)  @PathParam("courseId") final String courseId,
+                                                    @Size(max=5)  @QueryParam("correlativeId") final String correlativeId,
+                                                    @Size(max=50) @QueryParam("name") final String name) {
+    final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder()
+            .id(correlativeId)
+            .keyword(name)
+            .build();
+
+    final List<Course> coursesFiltered = cs.getAvailableAddCorrelatives(courseId, courseFilter);
+    final List<CourseDTO> coursesList = coursesFiltered.stream().map(course -> mapper.convertToCourseDTO(course)).collect(Collectors.toList());
+
+    return ok(new CoursesList(coursesList)).build();
+
+  }
+
   @DELETE
   @Path("/{courseId}/correlatives/{correlativeId}")
   public Response coursesCorrelativesDestroy(@PathParam("courseId") final String courseId,
