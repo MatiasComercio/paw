@@ -22,6 +22,13 @@
 
   <!-- dynamic content -->
   <div class='container' ng-class="{'sidebar-hidden' : !controller.user}">
+    <div class='flash-messages' ng-show='controller.flashMessages'>
+      <xalert ng-repeat='error in controller.flashMessages.errors' msg='{{ error }}' type='danger'>
+      </xalert>
+      <xalert ng-repeat='success in controller.flashMessages.successes' msg='{{ success }}' type='success'>
+      </xalert>
+    </div>
+
     <!--[if lt IE 7]>
     <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
