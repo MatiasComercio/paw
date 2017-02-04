@@ -13,6 +13,7 @@ public class AdminShowDTO {
   private int docket;
   private String email;
   private String password;
+  private AddressDTO address;
 
   public AdminShowDTO() {
   }
@@ -79,5 +80,13 @@ public class AdminShowDTO {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public AddressDTO getAddress() {
+    return address;
+  }
+
+  public void setAddress(final AddressDTO address) {
+    this.address = address;
   }
 }
