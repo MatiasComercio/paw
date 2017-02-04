@@ -14,4 +14,8 @@ public class LoggedUser {
 	public static Collection<? extends GrantedAuthority> getAuthorities() {
 		return SecurityContextHolder.getContext().getAuthentication().getAuthorities();
 	}
+
+	public static boolean isAdmin() {
+		return SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains("ADMIN");
+	}
 }
