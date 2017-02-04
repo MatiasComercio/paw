@@ -21,32 +21,43 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
     LOGGER.warn("Exception: {}", (Object[]) e.getStackTrace());
     final StringBuilder responseEntity = new StringBuilder();
 
-    responseEntity.append("{ errors: [\n");
-    for (ConstraintViolation<?> cv : e.getConstraintViolations()) {
-      final String propertyName;
-      final Iterator<Path.Node> iterator = cv.getPropertyPath().iterator();
-      Path.Node next = null;
-
-      while(iterator.hasNext()) {
-        next = iterator.next();
-      }
-
-      propertyName = next.getName();
+    responseEntity.append("{ \"errors\": [\n");
+    final Iterator<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations().iterator();
+//    for (ConstraintViolation<?> cv : e.getConstraintViolations()) {
+    while(constraintViolations.hasNext()) {
+      final ConstraintViolation<?> cv = constraintViolations.next();
 
       responseEntity.append("{");
       responseEntity
               .append("\"")
-              .append(propertyName)
+              .append(getPropertyName(cv))
               .append("\"")
               .append(":")
               .append("\"")
               .append(cv.getMessage())
               .append("\"")
-              .append("},")
-              .append("\n");
+              .append("}");
+
+              if(constraintViolations.hasNext()) {
+                responseEntity.append(", ");
+              }
+
+              responseEntity.append("\n");
     }
     responseEntity.append("] }");
     return Response.status(Response.Status.BAD_REQUEST).entity(responseEntity.toString()).build();
+  }
+
+  private String getPropertyName(final ConstraintViolation<?> cv) {
+    final Iterator<Path.Node> iterator = cv.getPropertyPath().iterator();
+
+    Path.Node next = null;
+
+    while(iterator.hasNext()) {
+      next = iterator.next();
+    }
+
+    return next.getName();
   }
 
 }
