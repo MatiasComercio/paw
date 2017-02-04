@@ -16,6 +16,6 @@ public class LoggedUser {
 	}
 
 	public static boolean isAdmin() {
-		return SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains("ADMIN");
+		return getAuthorities().contains("ROLE_ADMIN");
 	}
 }
