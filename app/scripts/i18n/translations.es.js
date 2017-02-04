@@ -21,6 +21,7 @@ define([], function() {
     i18nAddStudent: 'Agregar alumno',
     i18nCoursesIndex: 'Ver todas',
     i18nAddCourse: 'Agregar materia',
+    i18nAddFinalInscription: 'Agregar inscripción a final',
 
     // Login
     i18nLogin: 'Iniciar Sesión',
@@ -64,6 +65,7 @@ define([], function() {
     // New
     i18nStudentsNewButton: 'Agregar Alumno',
     i18nAdminsNewButton: 'Agregar Administrador',
+    i18nFinalInscriptionNewButton: 'Agregar',
 
     // User Update
     i18nRequiredFields: 'Campos Obligatorios',
@@ -101,16 +103,6 @@ define([], function() {
     i18nUnenroll: 'Dar de Baja',
     // Students Inscriptions
     i18nEnroll: 'Matricularse',
-    // Final Exams
-    i18nFinalExams: 'Exámenes Finales',
-    i18nFinalExamsTaken: 'Exámenes a los que se encuentra inscripto',
-    i18nVacancy: 'Cupos',
-    i18nState: 'Estado',
-    i18nFinalExamDate: 'Fecha del examen',
-    i18nNoFinalExamsFound: 'No se encontraron fechas de examen final',
-    i18nInscriptionOpen: 'Abierto',
-    i18nInscriptionClosed: 'Cerrado',
-    i18nFinalEnroll: 'Inscribirse',
 
     // Courses Index
     i18nCourseId: 'Código',
@@ -136,6 +128,19 @@ define([], function() {
 
     // New
     i18nCoursesButtonNew: 'Agregar',
+    // Final Exams
+    i18nFinalExams: 'Exámenes Finales',
+    i18nFinalExam: 'Exámen Final',
+    i18nFinalExamsTaken: 'Exámenes a los que se encuentra inscripto',
+    i18nVacancy: 'Cupos',
+    i18nState: 'Estado',
+    i18nFinalExamDate: 'Fecha del examen',
+    i18nNoFinalExamsFound: 'No se encontraron fechas de examen final',
+    i18nInscriptionOpen: 'Abierto',
+    i18nInscriptionClosed: 'Cerrado',
+    i18nFinalEnroll: 'Inscribirse',
+    i18nFinalStudents: 'Alumnos inscriptos',
+    i18nfinalExamDatePlaceholder: 'yyyy-MM-ddTHH:mm:ss',
 
     // Search filters
     i18nSearchButton: 'Buscar',
@@ -144,6 +149,7 @@ define([], function() {
     i18nNoCoursesFound: 'No se encontraron materias disponibles',
 
     // Form errors
+    i18nInvalidDate: 'La fecha seleccionada es inválida.',
     i18nFormErrorDni: 'El DNI debe tener 8 dígitos.',
     i18nNumericField: 'El valor ingresado debe ser un número válido.',
     i18nFormErrorTelephone: 'El número de teléfono ingresado es inválido.',
@@ -151,6 +157,7 @@ define([], function() {
     i18nLengthPrefix: 'Este campo debe tener entre',
     i18nLengthAnd: 'y',
     i18nLengthSuffix: 'caracteres.'
+
 
   };
 });
