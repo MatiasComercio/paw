@@ -88,7 +88,7 @@
           <label for='birthday'>
             <span translate='i18nBirthday'/>
           </label>
-          <input type='text' id='birthday' class='form-input-field' ng-model='controller.editedStudent.birthday' placeholder="{{ 'i18nBirthdayPlaceholder' | translate}}"/>
+          <input type='date' name='birthday' id='birthday' class='form-input-field' ng-model='controller.editedStudent.birthday' placeholder="{{ 'i18nBirthdayPlaceholder' | translate}}"/>
         </div>
         <div class='data-item'>
           <label translate='i18nGenre'/>
@@ -108,7 +108,12 @@
           <label for='telephone'>
             <span translate='i18nTelephone'/>
           </label>
-          <input type='text' id='telephone' class='form-input-field' ng-model='controller.editedStudent.address.telephone'/>
+          <input type='text' name='telephone' id='telephone' class='form-input-field' ng-model='controller.editedStudent.address.telephone' ng-pattern="'^[0-9]{1,15}$'"/>
+          <div ng-messages='form.telephone.$error' ng-show='form.telephone.$touched || form.$submitted' class='form-errors' role='alert'>
+            <div ng-message='pattern'>
+              <p translate='i18nFormErrorTelephone'></p>
+            </div>
+          </div>
         </div>
         <div class='data-item'>
           <label for='email'>
@@ -130,10 +135,17 @@
             <span translate='i18nCountry'/>
             (<span class='text-danger' translate='i18nRequiredIcon'/>)
           </label>
-          <input type='text' name='country' id='country' class='form-input-field' ng-model='controller.editedStudent.address.country' required/>
+          <input type='text' name='country' id='country' class='form-input-field' ng-model='controller.editedStudent.address.country' required ng-minlength='2' ng-maxlength='50'/>
           <div ng-messages='form.country.$error' ng-show='form.country.$touched || form.$submitted' class='form-errors' role='alert'>
             <div ng-message='required'>
               <p translate='i18nRequiredField'></p>
+            </div>
+            <div ng-message-exp="['minlength', 'maxlength']">
+              <span translate='i18nLengthPrefix'></span>
+              <span> 2 </span>
+              <span translate='i18nLengthAnd'></span>
+              <span> 50 </span>
+              <span translate='i18nLengthSuffix'></span>
             </div>
           </div>
         </div>
@@ -142,10 +154,17 @@
             <span translate='i18nCity'/>
             (<span class='text-danger' translate='i18nRequiredIcon'/>)
           </label>
-          <input type='text' name='city' id='city' class='form-input-field' ng-model='controller.editedStudent.address.city' required/>
+          <input type='text' name='city' id='city' class='form-input-field' ng-model='controller.editedStudent.address.city' required ng-minlength='2' ng-maxlength='50'/>
           <div ng-messages='form.city.$error' ng-show='form.city.$touched || form.$submitted' class='form-errors' role='alert'>
             <div ng-message='required'>
               <p translate='i18nRequiredField'></p>
+            </div>
+            <div ng-message-exp="['minlength', 'maxlength']">
+              <span translate='i18nLengthPrefix'></span>
+              <span> 2 </span>
+              <span translate='i18nLengthAnd'></span>
+              <span> 50 </span>
+              <span translate='i18nLengthSuffix'></span>
             </div>
           </div>
         </div>
@@ -157,10 +176,17 @@
             <span translate='i18nNeighborhood'/>
             (<span class='text-danger' translate='i18nRequiredIcon'/>)
           </label>
-          <input type='text' name='neighborhood' id='neighborhood' class='form-input-field' ng-model='controller.editedStudent.address.neighborhood' required/>
+          <input type='text' name='neighborhood' id='neighborhood' class='form-input-field' ng-model='controller.editedStudent.address.neighborhood' required ng-minlength='2' ng-maxlength='50'/>
           <div ng-messages='form.neighborhood.$error' ng-show='form.neighborhood.$touched || form.$submitted' class='form-errors' role='alert'>
             <div ng-message='required'>
               <p translate='i18nRequiredField'></p>
+            </div>
+            <div ng-message-exp="['minlength', 'maxlength']">
+              <span translate='i18nLengthPrefix'></span>
+              <span> 2 </span>
+              <span translate='i18nLengthAnd'></span>
+              <span> 50 </span>
+              <span translate='i18nLengthSuffix'></span>
             </div>
           </div>
         </div>
@@ -169,10 +195,17 @@
             <span translate='i18nStreet'/>
             (<span class='text-danger' translate='i18nRequiredIcon'/>)
           </label>
-          <input type='text' name='street' id='street' class='form-input-field' ng-model='controller.editedStudent.address.street' required/>
+          <input type='text' name='street' id='street' class='form-input-field' ng-model='controller.editedStudent.address.street' required  ng-minlength='2' ng-maxlength='50'/>
           <div ng-messages='form.street.$error' ng-show='form.street.$touched || form.$submitted' class='form-errors' role='alert'>
             <div ng-message='required'>
               <p translate='i18nRequiredField'></p>
+            </div>
+            <div ng-message-exp="['minlength', 'maxlength']">
+              <span translate='i18nLengthPrefix'></span>
+              <span> 2 </span>
+              <span translate='i18nLengthAnd'></span>
+              <span> 50 </span>
+              <span translate='i18nLengthSuffix'></span>
             </div>
           </div>
         </div>
@@ -184,16 +217,24 @@
             <span translate='i18nNumber'/>
             (<span class='text-danger' translate='i18nRequiredIcon'/>)
           </label>
-          <input type='text' name='number' id='number' class='form-input-field' ng-model='controller.editedStudent.address.number' required/>
+          <input type='text' name='number' id='number' class='form-input-field' ng-model='controller.editedStudent.address.number' required ng-pattern="'^[1-9][0-9]{0,15}$'"/>
           <div ng-messages='form.number.$error' ng-show='form.number.$touched || form.$submitted' class='form-errors' role='alert'>
             <div ng-message='required'>
               <p translate='i18nRequiredField'></p>
+            </div>
+            <div ng-message='pattern'>
+              <p translate='i18nNumericField'></p>
             </div>
           </div>
         </div>
         <div class='data-item'>
           <label for='floor' translate='i18nFloor'/>
-          <input type='text' id='floor' class='form-input-field' ng-model='controller.editedStudent.address.floor'/>
+          <input type='text' name='floor' id='floor' class='form-input-field' ng-model='controller.editedStudent.address.floor' ng-pattern="'^[1-9][0-9]{0,15}$'"/>
+          <div ng-messages='form.floor.$error' ng-show='form.floor.$touched || form.$submitted' class='form-errors' role='alert'>
+            <div ng-message='pattern'>
+              <p translate='i18nNumericField'></p>
+            </div>
+          </div>
         </div>
       <!-- /number and floor -->
 
@@ -204,7 +245,12 @@
         </div>
         <div class='data-item'>
           <label for='zipCode' translate='i18nZipCode'/>
-          <input type='text' id='zipCode' class='form-input-field' ng-model='controller.editedStudent.address.zipCode'/>
+          <input type='text' name='zipCode' id='zipCode' class='form-input-field' ng-model='controller.editedStudent.address.zipCode' ng-pattern="'^[1-9][0-9]{0,15}$'"/>
+          <div ng-messages='form.zipCode.$error' ng-show='form.zipCode.$touched || form.$submitted' class='form-errors' role='alert'>
+            <div ng-message='pattern'>
+              <p translate='i18nNumericField'></p>
+            </div>
+          </div>
         </div>
       <!-- /door and zipcode -->
     </div>
