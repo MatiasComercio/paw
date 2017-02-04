@@ -52,6 +52,10 @@ define([], function() {
     // Tables common headers
     i18nActions: 'Acciones',
 
+    // New
+    i18nStudentsNewButton: 'Agregar Alumno',
+    i18nAdminsNewButton: 'Agregar Administrador',
+
     // User Update
     i18nRequiredFields: 'Campos Obligatorios',
     i18nRequiredIcon: '*',
@@ -131,9 +135,13 @@ define([], function() {
     i18nNoCoursesFound: 'No se encontraron materias disponibles',
 
     // Form errors
+    i18nFormErrorDni: 'El DNI debe tener 8 dígitos.',
+    i18nNumericField: 'El valor ingresado debe ser un número válido.',
+    i18nFormErrorTelephone: 'El número de teléfono ingresado es inválido.',
     i18nRequiredField: 'Este campo es requerido',
     i18nLengthPrefix: 'Este campo debe tener entre',
     i18nLengthAnd: 'y',
     i18nLengthSuffix: 'caracteres.'
+
   };
 });
