@@ -13,7 +13,10 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
               return data.students;
             }
             if (what === 'grades') {
-              return data.transcript;
+              var transcript = data.transcript;
+              transcript.currentCredits = data.currentCredits;
+              transcript.totalCredits = data.totalCredits;
+              return transcript;
             }
             return data;
           } else if (operation === 'post') {

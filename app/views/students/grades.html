@@ -13,6 +13,19 @@
   </div>
   <!-- /Page Heading -->
 
+  <!-- Carreer info -->
+  <div class='carreer-info-container'>
+    <div>
+      <span class='bold' translate='i18nApprovedCredits'></span>
+      <span>: {{ controller.student.transcript.currentCredits }} / {{ controller.student.transcript.totalCredits }}</span>
+    </div>
+    <div>
+      <p class='bold' translate='i18nCarreerPercentageCompleted'></p>
+      <uib-progressbar class='progress-bar-container progress-striped active' value='controller.carreerPrecentage'><i>{{controller.carreerPrecentage}}%</i></uib-progressbar>
+    </div>
+  </div>
+  <!-- /Carreer info -->
+
   <!-- Semesters -->
   <div ng-show='controller.student.transcript.length  <= 0' class='bg-warning'>
     <p class='text-danger text-center no-courses-on-sga' translate='i18nNoCoursesOnSga'></p>
