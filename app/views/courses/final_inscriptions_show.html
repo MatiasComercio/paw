@@ -1,0 +1,76 @@
+<div ng-controller='CoursesFinalInscriptionShowCtrl as controller' class='courses-final-inscriptions-show-container'>
+  <!-- Page Heading -->
+  <div class='page-header break-words'>
+    <h1 class='inline'>
+      <span translate='i18nCoursesPanelSection'></span>
+    </h1>
+    <h2 class='inline'>
+      <span> - </span>
+      <span> {{controller.course.name}} </span>
+      <small> - </small>
+      <small translate='i18nFinalExam'></small>
+    </h2>
+  </div>
+  <!-- /Page Heading -->
+
+  <!-- Final Inscription Data -->
+  <div class='data-container'>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nFinalExamDate'></p>
+      <p class='break-words'>{{controller.formatDate(controller.course.inscription.finalExamDate)}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nVacancy'></p>
+      <p class='break-words'>{{ controller.course.inscription.vacancy }}/{{ controller.course.inscription.maxVacancy }}</p>
+    </div>
+    <div class='data-item' ng-show="controller.course.inscription.state == 'OPEN'">
+      <p class='bold static-label' translate='i18nState'></p>
+      <p class='break-words' translate='i18nInscriptionOpen'/>
+    </div>
+    <div class='data-item' ng-show="controller.course.inscription.state == 'CLOSED'">
+      <p class='bold static-label' translate='i18nState'></p>
+      <p class='break-words' translate='i18nInscriptionClosed'/>
+    </div>
+  </div>
+  <!-- /Final Inscription Data -->
+
+  <!-- Students -->
+  <h3 translate='i18nFinalStudents' class='page-sub-header'></h3>
+  <div class='table-responsive'>
+    <table class='table table-hover'>
+      <thead>
+        <tr>
+          <th translate='i18nDocket'></th>
+          <th translate='i18nFirstName'></th>
+          <th translate='i18nLastName'></th>
+          <th translate='i18nActions'></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-hide='controller.course.inscription.students.length > 0' class='bg-warning'>
+          <td colspan='4' class='text-danger text-center' translate='i18nNoStudentsFound'></td>
+        </tr>
+        <tr ng-repeat='student in controller.course.inscription.students'>
+          <td>{{ student.docket }}</td>
+          <td>{{ student.firstName }}</td>
+          <td>{{ student.lastName }}</td>
+          <td class='actions-container'>
+            <a class='btn btn-default' role='button'>
+              <span class='fa fa-user' aria-hidden='true'></span>
+              <span translate='i18nStudentShow'></span>
+            </a>
+            <a class='btn btn-info' role='button'>
+              <span class='fa fa-pencil-square-o' aria-hidden='true'></span>
+              <span translate='i18nQualify'></span>
+            </a>
+            <a class='btn btn-danger' role='button'>
+              <span class='fa fa-list-alt' aria-hidden='true'></span>
+              <span translate='i18nUnenroll'></span>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- /Students -->
+</div>
