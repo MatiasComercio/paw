@@ -34,7 +34,7 @@ public class UserController {
                                       @Valid PasswordDTO passwordDTO) {
 
     final int loggedDni = LoggedUser.getDni();
-    if(loggedDni != dni) {
+    if(loggedDni != dni  || !LoggedUser.isAdmin()) {
       return status(Status.FORBIDDEN).build();
     }
 
