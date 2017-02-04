@@ -12,6 +12,7 @@ import ar.edu.itba.paw.webapp.models.UserSessionDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
@@ -19,6 +20,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Collection;
 import java.util.List;
 
 @Component
@@ -42,16 +44,17 @@ public class SessionController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response sessionShow() {
 		final int dni = LoggedUser.getDni();
+		final Collection<? extends GrantedAuthority> authorities = LoggedUser.getAuthorities();
 		final List<Role> roles = us.getRole(dni);
 
 		if(roles.contains(Role.ADMIN)) {
 			final Admin admin = as.getByDni(dni);
-			final UserSessionDTO adminSessionDTO = mapper.convertToAdminSessionDTO(admin);
+			final UserSessionDTO adminSessionDTO = mapper.convertToAdminSessionDTO(admin, authorities);
 
 			return Response.ok(adminSessionDTO).build();
 		} else if(roles.contains(Role.STUDENT)) {
 			final Student student = ss.getByDni(dni);
-			final StudentSessionDTO studentSessionDTO = mapper.convertToStudentSessionDTO(student);
+			final StudentSessionDTO studentSessionDTO = mapper.convertToStudentSessionDTO(student, authorities);
 
 			return Response.ok(studentSessionDTO).build();
 		} else {

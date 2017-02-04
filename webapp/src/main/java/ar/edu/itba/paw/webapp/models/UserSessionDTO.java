@@ -4,6 +4,7 @@ import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.User;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Used for returning info about the logged in user with role ADMIN
@@ -19,8 +20,13 @@ public class UserSessionDTO {
 	private Role role;
 	private AddressDTO address;
 
+
+	private List<String> authorities;
+
 	public UserSessionDTO() {
 	}
+
+
 
 	public Integer getDni() {
 		return dni;
@@ -84,5 +90,13 @@ public class UserSessionDTO {
 
 	public void setAddress(final AddressDTO address) {
 		this.address = address;
+	}
+
+	public List<String> getAuthorities() {
+		return authorities;
+	}
+
+	public void setAuthorities(final List<String> authorities) {
+		this.authorities = authorities;
 	}
 }
