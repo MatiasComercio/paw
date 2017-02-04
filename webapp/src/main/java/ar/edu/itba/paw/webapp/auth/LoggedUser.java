@@ -1,11 +1,14 @@
 package ar.edu.itba.paw.webapp.auth;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collection;
 
 public class LoggedUser {
+
+	private static final SimpleGrantedAuthority adminAuthority = new SimpleGrantedAuthority("ADMIN");
 
 	public static int getDni() {
 		return Integer.valueOf(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
@@ -16,6 +19,6 @@ public class LoggedUser {
 	}
 
 	public static boolean isAdmin() {
-		return getAuthorities().contains("ROLE_ADMIN");
+		return getAuthorities().contains(adminAuthority);
 	}
 }
