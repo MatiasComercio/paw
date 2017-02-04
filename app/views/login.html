@@ -1,7 +1,43 @@
-<div ng-controller="LoginCtrl as controller">
-  <form name="loginForm" novalidate class='simple-form'>
-    <label>DNI: <input type='text' ng-model='controller.user.dni' required/></label><br />
-    <label>Password: <input type='password' ng-model='controller.user.password' required/></label><br />
-    <input type='submit' ng-click='loginForm.$valid && controller.login(controller.user)' value='Login' />
+<div ng-controller="LoginCtrl as controller" class='login-container'>
+  <!-- Page Heading -->
+  <div class='page-header-container'>
+    <h1 translate='i18nLogin' class='page-header'></h1>
+  </div>
+  <!-- /Page Heading -->
+
+  <!-- Login Form -->
+  <form name="form" novalidate class='simple-form'>
+    <div class='data-container'>
+      <!-- DNI -->
+      <div class='data-item'>
+        <label for='dni'>
+          <span translate='i18nDni'/>
+        </label>
+        <input type='text' name='dni' id='dni' class='form-input-field' ng-model='controller.user.dni' required/>
+        <div ng-messages='form.dni.$error' ng-show='form.dni.$touched || form.$submitted' class='form-errors' role='alert'>
+          <div ng-message='required'>
+            <p translate='i18nRequiredField'></p>
+          </div>
+        </div>
+      </div>
+      <!-- /DNI -->
+      <!-- Password -->
+      <div class='data-item'>
+        <label for='password'>
+          <span translate='i18nPassword'/>
+        </label>
+        <input type='password' name='password' id='password' class='form-input-field' ng-model='controller.user.password' required/>
+        <div ng-messages='form.password.$error' ng-show='form.password.$touched || form.$submitted' class='form-errors' role='alert'>
+          <div ng-message='required'>
+            <p translate='i18nRequiredField'></p>
+          </div>
+        </div>
+      </div>
+      <!-- /Password -->
+    </div>
+    <div class='buttons-container'>
+      <input type='submit' class='btn btn-action' ng-click='form.$valid && controller.login(controller.user)' translate='i18nLogin' value="{{ 'i18nLogin' | translate }}" />
+    </div>
   </form>
+  <!-- /Login Form -->
 </div>

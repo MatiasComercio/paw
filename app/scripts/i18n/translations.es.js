@@ -22,6 +22,15 @@ define([], function() {
     i18nCoursesIndex: 'Ver todas',
     i18nAddCourse: 'Agregar materia',
 
+    // Login
+    i18nLogin: 'Iniciar Sesión',
+    i18nPassword: 'Contraseña',
+    i18nChangePassword: 'Cambiar contraseña',
+    i18nCurrentPassword: 'Contraseña actual',
+    i18nNewPassword: 'Contraseña nueva',
+    i18nRepeatPassword: 'Repetir contraseña nueva',
+    i18nPasswordNotMatch: 'Las contraseñas deben coincidir',
+
     // Admin subSidebar
     i18nAdminShow: 'Ver perfil',
     i18nAdminEdit: 'Editar perfil',
