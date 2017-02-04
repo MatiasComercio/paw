@@ -104,6 +104,19 @@ define([], function() {
     // Students Inscriptions
     i18nEnroll: 'Matricularse',
 
+    // Students Grades
+    i18nCourseGrade: 'Cursada',
+    i18nFinalGrade: 'Finales',
+    i18nUpdatedAt: 'Modificado',
+    i18nNoCoursesOnSga: 'No hay ninguna materia en su plan de carrera',
+    i18nEditCourseGrade: 'Editar cursada',
+    i18nCourse: 'Materia',
+    i18nShowCourse: 'Ver materia',
+    i18nStudyBeingTaken: 'Cursando',
+    i18nFullName: 'Nombre y Apellido',
+    i18nGradeInvalidRange: 'La nota debe ser mayor o igual a 1 y menor o igual a 10',
+    i18nOneDecimalOnly: 'La nota debe ser un número entero o un número decimal con un sólo decimal. Ejemplos: 10 ; 5.5 ; 3.4',
+
     // Courses Index
     i18nCourseId: 'Código',
     i18nCourseName: 'Nombre',
@@ -156,8 +169,12 @@ define([], function() {
     i18nRequiredField: 'Este campo es requerido',
     i18nLengthPrefix: 'Este campo debe tener entre',
     i18nLengthAnd: 'y',
-    i18nLengthSuffix: 'caracteres.'
+    i18nLengthSuffix: 'caracteres.',
 
-
+    // Flash messages
+    i18nEditSuccess: 'La edición ha sido exitosa',
+    i18nFormErrors: 'Hay errores en los datos ingresados',
+    i18nSuccess: '¡Éxito! - ',
+    i18nError: '¡Error! - '
   };
 });

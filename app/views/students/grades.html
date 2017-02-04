@@ -1,0 +1,71 @@
+<div ng-controller='StudentsGradesCtrl as controller' class='students-grades-container'>
+  <!-- Page Heading -->
+  <div class='page-header break-words'>
+    <h1 class='inline'>
+      <span translate='i18nStudents'></span>
+    </h1>
+    <h2 class='inline'>
+      <span> - </span>
+      <span> {{controller.student.fullName}}</span>
+      <small> - </small>
+      <small translate='i18nStudentGrades'></small>
+    </h2>
+  </div>
+  <!-- /Page Heading -->
+
+  <!-- Semesters -->
+  <div ng-show='controller.student.transcript.length  <= 0' class='bg-warning'>
+    <p class='text-danger text-center no-courses-on-sga' translate='i18nNoCoursesOnSga'></p>
+  </div>
+  <div ng-repeat='semesterContainer in controller.student.transcript'>
+    <h3 class='page-sub-header'>
+      <span translate='i18nSemester'></span>
+      <span>{{$index + 1}}</span>
+    </h3>
+    <div class='table-responsive'>
+      <table class='table table-hover'>
+        <thead>
+          <tr>
+            <th class='course-id-col' translate='i18nCourseId'></th>
+            <th class='course-name-col' translate='i18nCourse'></th>
+            <th class='grade-col' translate='i18nCourseGrade'></th>
+            <th class='grade-col' translate='i18nFinalGrade'></th>
+            <th class='actions-col' translate='i18nActions'></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat='study in semesterContainer.semester'>
+            <td>{{ study.courseCodId }}</td>
+            <td>{{ study.courseName }}</td>
+            <td class='bold'>
+              <div ng-show='study.grade' ng-class="{'text-successful': study.grade >= 4, 'text-failure': study.grade < 4}">
+                {{ study.grade }} ({{ study.modified | date: "dd-MM-yyyy" }})
+              </div>
+              <div ng-hide='study.grade || !study.taking' class='text-information'>
+                <span translate='i18nStudyBeingTaken'></span>
+              </div>
+            </td>
+            <td>
+              <div ng-repeat='finalGrade in study.finalGrades' class='bold' ng-class="{'text-successful': finalGrade.grade >= 4, 'text-failure': finalGrade.grade < 4}">
+                {{ finalGrade.grade }} ({{ finalGrade.modified | date: "dd-MM-yyyy" }})
+              </div>
+            </td>
+            <td class='actions-container'>
+              <a ng-href='{{ controller.getCoursePath(study.courseCodId) }}' class='btn btn-default' role='button'>
+                <span class='fa fa-info-circle' aria-hidden='true'></span>
+                <span translate='i18nShowCourse'></span>
+              </a>
+              <a class='btn btn-action' role='button' ng-show='study.grade && study.finalGrades.length === 0'
+                  ng-controller='EditCourseGradeController as modalController'
+                  ng-click="modalController.open('md', controller.student.docket, controller.student.fullName, study.courseCodId, study.courseName, study.grade, study.id)">
+                <span class='fa fa-pencil-square-o' aria-hidden='true'></span>
+                <span translate='i18nEditCourseGrade'></span>
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- /Semesters -->
+</div>

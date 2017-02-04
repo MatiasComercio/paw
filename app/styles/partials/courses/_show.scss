@@ -14,7 +14,7 @@
       .break-words {
         display: inline-block;
         word-wrap: break-word; /* Internet Explorer 5.5+ */
-        width: 190; /* width is mandatory to make break-word work on Mozzila */
+        width: 190px; /* width is mandatory to make break-word work on Mozzila */
       }
     }
   }

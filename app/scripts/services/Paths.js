@@ -117,6 +117,10 @@ define([], function() {
         return append('/unauthorized');
       };
 
+      _this.notFound = function() {
+        return append('/notFound');
+      };
+
       // users
       _this.admins = function(admin) {
         var updated = append('/admins');

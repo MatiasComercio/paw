@@ -8,7 +8,19 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
     var rest = AuthenticatedRestangular.withConfig(function(RestangularConfigurer) {
       RestangularConfigurer.addResponseInterceptor(
         function(data, operation, what, url, response, deferred) {
-          return operation === 'getList' ? data.students : data;
+          if (operation === 'getList') {
+            if (what === 'students') {
+              return data.students;
+            }
+            if (what === 'grades') {
+              return data.transcript;
+            }
+            return data;
+          } else if (operation === 'post') {
+            return response;
+          } else {
+            return data;
+          }
         }
       );
       RestangularConfigurer.setRestangularFields({
@@ -20,9 +32,23 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
       });
     });
 
+    var subject = rest.all('students');
+
     // add own methods as follows
     rest.getList = function() {
-      return rest.all('students').getList();
+      return subject.getList();
+    };
+
+    rest.get = function(docket) {
+      return subject.get(docket);
+    };
+
+    rest.updateGrade = function(docket, gradeId, courseId, newGrade) {
+      var body = {
+        courseId: courseId,
+        grade: newGrade
+      };
+      return rest.one('students', docket).one('grades', gradeId).customPOST(body);
     };
 
     return rest;

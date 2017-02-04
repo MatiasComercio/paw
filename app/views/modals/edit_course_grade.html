@@ -1,0 +1,40 @@
+<div class='modal-header'>
+  <h4 class='modal-title' id='modal-title' translate='i18nEditCourseGrade'></h4>
+</div>
+<div class='modal-body edit-course-grade'>
+  <p class='break-words'>
+    <span class='bold' translate='i18nDocket'></span>: {{ controller.docket }}
+  </p>
+  <p class='break-words'>
+    <span class='bold' translate='i18nFullName'></span>: {{ controller.fullName }}
+  </p>
+  <p class='break-words'>
+    <span class='bold' translate='i18nCourseId'></span>: {{ controller.courseId }}
+  </p>
+  <p class='break-words'>
+    <span class='bold' translate='i18nCourseName'></span>: {{ controller.courseName }}
+  </p>
+  <form name='form' novalidate>
+    <div class='data-item'>
+      <label for='grade' class='inline'>
+        <span translate='i18nGrade'/>
+      </label>
+      <input type='number' step="0.1" name='grade' id='grade' class='form-input-field' ng-model='controller.grade' required min='1' max='10'/>
+    </div>
+    <div ng-messages='form.grade.$error' ng-show='form.grade.$touched || form.$submitted' class='form-errors' role='alert'>
+      <div ng-message='required'>
+        <p translate='i18nRequiredField'></p>
+      </div>
+      <div ng-message='step'>
+        <p translate='i18nOneDecimalOnly'></p>
+      </div>
+      <div ng-message-exp="['min', 'max']">
+        <span translate='i18nGradeInvalidRange'></span>
+      </div>
+    </div>
+  </form>
+</div>
+<div class='modal-footer'>
+  <button class='btn btn-default' type='button' ng-click="controller.cancel()" translate='i18nCancel'></button>
+  <button class='btn btn-action' type='button' ng-click='form.$valid && controller.ok()' translate='i18nConfirm'></button>
+</div>

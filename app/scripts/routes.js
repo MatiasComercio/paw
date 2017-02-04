@@ -67,6 +67,11 @@ define([], function() {
         controller: 'StudentsCoursesIndexCtrl',
         relativePath: '/students'
       },
+      '/students/:docket/grades': {
+        templateUrl: 'views/students/grades.html',
+        controller: 'StudentsGradesCtrl',
+        relativePath: '/students'
+      },
       '/students/:docket/inscriptions': {
         templateUrl: 'views/students/inscriptions.html',
         controller: 'StudentsInscriptionsCtrl',
