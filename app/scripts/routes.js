@@ -96,6 +96,11 @@ define([], function() {
                 templateUrl: '/views/admins/show.html',
                 controller: 'AdminsShowCtrl',
                 relativePath: '/admins'
+            },
+            '/user/change_password': {
+                templateUrl: 'views/user/change_password.html',
+                controller: 'UserChangePasswordCtrl',
+                relativePath: '/user'
             }
             /* ===== yeoman hook ===== */
             /* Do not remove these commented lines! Needed for auto-generation */
