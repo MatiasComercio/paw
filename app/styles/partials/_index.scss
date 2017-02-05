@@ -6,6 +6,7 @@
   margin-right: 0;
   margin-bottom: 0;
   padding: $containerPadding;
+  padding-bottom: 0;
   width: calc(100% - #{$sidebarWidth});
   transition: all linear $sidebarTransitionTime;
 
@@ -22,11 +23,20 @@
 
   .content-container {
     .ng-view-container {
-
     }
+  }
 
-    .footer {
-
+  .footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: $mine-shaft;
+    color: $silver-chalice;
+    margin: 15px -30px 0;
+    padding: 15px;
+    .no-margin {
+      margin: 0;
     }
   }
 }

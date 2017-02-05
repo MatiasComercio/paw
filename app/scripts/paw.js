@@ -99,6 +99,10 @@ function(config, dependencyResolverFor, i18n, authenticationService, pathsServic
           // invalid permissions
           Paths.get().notFound().go();
           propagateError = false;
+        } else if (response.status === 500 || response.status === 503) {
+          // invalid permissions
+          Paths.get().serverError().go();
+          propagateError = false;
         }
 
         return propagateError;

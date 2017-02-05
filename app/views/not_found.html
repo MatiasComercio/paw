@@ -1,0 +1,13 @@
+<div class='not-found-container' ng-controller='NotFoundCtrl as controller'>
+  <h2 class='not-found-title page-header'>
+    <span translate='i18nNotFoundPageTitle'></span>
+  </h2>
+  <div class='not-found-description-container'>
+    <p class='not-found-description'>
+      <span translate='i18nNotFoundPageDescription'></span>
+    </p>
+    <a ng-href='{{controller.indexPath}}' class='btn btn-action not-found-btn' role='button'>
+      <span translate='i18nGoHome'></span>
+    </a>
+  </div>
+</div>

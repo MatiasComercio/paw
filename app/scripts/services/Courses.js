@@ -113,6 +113,10 @@ define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], 
       return rest.one('courses', courseId).one('finalInscriptions', id).customDELETE();
     };
 
+    rest.remove = function(course) {
+      return course.remove();
+    };
+
     return rest;
   }]);
 });

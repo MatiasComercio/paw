@@ -1,32 +1,43 @@
 'use strict';
 
-define(['paw', 'services/modalFactory'], function(paw) {
+define(['paw', 'services/modalFactory',
+'services/Students', 'services/Admins', 'services/flashMessages', 'services/Paths'], function(paw) {
   paw.controller('DeleteUserController',
-    ['modalFactory', '$log',
-    function (modalFactory, $log) {
+    ['modalFactory', '$log', 'Students', 'Admins', 'flashMessages', 'Paths',
+    function (modalFactory, $log, Students, Admins, flashMessages, Paths) {
       var modalTemplateUrl = 'views/modals/delete_user.html';
-      var onSuccess = function(url) {
-        $log.info('POST ' + url);
+      var onSuccess = function(user) {
+        if (user.admin) {
+          Admins.remove(user).then(function() {
+            flashMessages.setSuccess('i18nAdminSuccessfullyDeleted');
+            Paths.get().admins().go();
+          });
+        } else {
+          Students.remove(user).then(function() {
+            flashMessages.setSuccess('i18nStudentSuccessfullyDeleted');
+            Paths.get().students().go();
+          });
+        }
       };
 
       var onFailure = function(msg) {
         $log.info(msg);
       };
 
-      this.open = function (size, url, dni, firstName, lastName) {
-        var resolve = getResolve(url, dni, firstName, lastName);
+      this.open = function (size, user) {
+        var resolve = getResolve(user);
         modalFactory.create(size, 'DeleteUserModalInstanceController', modalTemplateUrl, resolve, onSuccess, onFailure);
       };
     }]);
 
     paw.controller('DeleteUserModalInstanceController',
-    function($uibModalInstance, url, dni, firstName, lastName) {
-      this.dni = dni;
-      this.firstName = firstName;
-      this.lastName = lastName;
+    function($uibModalInstance, user) {
+      this.dni = user.dni;
+      this.firstName = user.firstName;
+      this.lastName = user.lastName;
 
       this.ok = function () {
-        $uibModalInstance.close(url);
+        $uibModalInstance.close(user);
       };
 
       this.cancel = function () {
@@ -34,19 +45,10 @@ define(['paw', 'services/modalFactory'], function(paw) {
       };
     });
 
-    function getResolve(url, dni, firstName, lastName) {
+    function getResolve(user) {
       return {
-        url: function () {
-          return url;
-        },
-        dni: function () {
-          return dni;
-        },
-        firstName: function () {
-          return firstName;
-        },
-        lastName: function () {
-          return lastName;
+        user: function () {
+          return user;
         }
       };
     };
