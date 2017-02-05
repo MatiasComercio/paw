@@ -19,7 +19,7 @@ public class ProcedureHibernateDao implements ProcedureDao {
     // Queries //
 
     private static final String GET_BY_SENDER =
-            "from Procedure as p where p.sender_id = :userId"; //fixme
+            "from Procedure as p where p.sender_id = :userId";
     private static final String GET_ALL =
             "from Procedure";
 
@@ -30,24 +30,18 @@ public class ProcedureHibernateDao implements ProcedureDao {
     @PersistenceContext
     private EntityManager em;
 
-    //TODO catch exception and return false
     @Transactional
     @Override
-    public boolean createProcedure(final Procedure procedure) {
+    public void createProcedure(final Procedure procedure) {
         em.persist(procedure);
         LOGGER.debug("[create] - {}", procedure);
-
-        return true;
     }
 
     @Transactional
     @Override
-    public boolean updateProcedure(final Procedure procedure) {
-        /* +++xcheck that this is correct */
+    public void updateProcedure(final Procedure procedure) {
         em.merge(procedure);
         LOGGER.debug("[update] - {}", procedure);
-
-        return true;
     }
 
     @Override

@@ -14,7 +14,6 @@ public interface UserService {
 	 */
 	List<Role> getRole(int dni);
 
-	/* +++xdocument +++xtest */
 	String createEmail(final User user);
 
 	/**

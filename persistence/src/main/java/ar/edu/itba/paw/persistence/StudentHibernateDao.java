@@ -23,18 +23,14 @@ import java.util.stream.Collectors;
 public class StudentHibernateDao implements StudentDao {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StudentHibernateDao.class);
-	private static final String GET_ALL_STUDENTS = "from Student";
 	private static final String GET_BY_DOCKET = "from Student as s where s.docket = :docket";
 	private static final String GET_BY_DNI = "from Student as s where s.dni = :dni";
 	private static final String GET_APPROVED_GRADES_BY_DOCKET = "from Grade as g where g.student.docket = :docket and g.grade >= 4";
-	private static final String IS_INSCRIPTION_ENABLED = "from RoleClass as r where r.role = :role";
 
-	private static final String ROLE_COLUMN = "role";
 	private static final int FIRST = 0;
 	private static final int ONE = 1;
 	private static final String DOCKET_PARAM = "docket";
 	private static final String DNI_PARAM = "dni";
-	private static final String GET_GRADES = "from Grade as g where g.studentDocket = :docket";
 
 	private static final Integer MAX_FINALS_CHANCES = 3;
 
@@ -85,19 +81,14 @@ public class StudentHibernateDao implements StudentDao {
 		query.setParameter(DOCKET_PARAM, docket);
 		query.setMaxResults(ONE);
 		final List<Student> students = query.getResultList();
-		if (students.isEmpty()) {
-			return null;
-		}
 
 		return students.get(FIRST).getStudentCourses();
 	}
 
 	@Override
-	public boolean create(final Student student) {
+	public void create(final Student student) {
 		em.persist(student);
 		LOGGER.debug("[create] - {}", student);
-
-		return true;
 	}
 
 	@Override
@@ -107,12 +98,10 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public boolean deleteStudent(final int docket) {
+	public void deleteStudent(final int docket) {
 		final Student student = getByDocket(docket);
 		em.remove(student);
 		LOGGER.debug("[delete] - {}", student);
-
-		return true;
 	}
 
 	@Override
@@ -131,12 +120,12 @@ public class StudentHibernateDao implements StudentDao {
 	public int addGrade(final Grade grade) {
 		em.persist(grade);
 		LOGGER.debug("[addGrade] - {}", grade);
+
 		return grade.getId();
 	}
 
 	@Override
 	public void addFinalGrade(final Grade grade, final FinalGrade finalGrade) {
-		//TODO: Test this
 		LOGGER.info("Will try to persist {}", finalGrade);
 		em.persist(finalGrade);
 		LOGGER.debug("[addFinalGrade] - {} - {}", grade, finalGrade);
@@ -146,16 +135,9 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public boolean editGrade(final Grade newGrade, final BigDecimal oldGrade) {
+	public void editGrade(final Grade newGrade) {
 		em.merge(newGrade);
-//		final CriteriaBuilder cb = em.getCriteriaBuilder();
-//		final CriteriaUpdate<Grade> query = cb.createCriteriaUpdate(Grade.class);
-//		final Root<Grade> root = query.from(Grade.class);
-//		private final List<Predicate> predicates;
-//		final Predicate pCourseId = builder.equal(root.get("id"), id);
-
 		LOGGER.debug("[editGrade] - {}", newGrade);
-		return true;
 	}
 
 	@Override
@@ -211,7 +193,6 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	//Modified to return courses that are approved and less than 3 finals are taken, or there's a final passed
-	//TODO:TEST
 	@Override
 	public List<Integer> getApprovedCoursesId(final int docket) {
 		final Student student = getByDocket(docket);
@@ -233,8 +214,8 @@ public class StudentHibernateDao implements StudentDao {
 	}
 
 	@Override
-	public boolean createProcedure(final Procedure procedure) {
-		return procedureDao.createProcedure(procedure);
+	public void createProcedure(final Procedure procedure) {
+		procedureDao.createProcedure(procedure);
 	}
 
 	@Override
@@ -268,11 +249,11 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public boolean canTakeCourseFinal(int docket, int courseId) {
-		TypedQuery<Grade> query = em.createQuery("from Grade as gr where gr.course.id=:id and gr.student.docket = :docket" +
+		final TypedQuery<Grade> query = em.createQuery("from Grade as gr where gr.course.id=:id and gr.student.docket = :docket" +
 						" and gr.grade >= 4", Grade.class);
 		query.setParameter("id", courseId);
 		query.setParameter("docket", docket);
-		List<Grade> approvedGrades = query.getResultList();
+		final List<Grade> approvedGrades = query.getResultList();
 
 		for (Grade grade : approvedGrades) {
 			if (grade.getFinalGrades().size() < MAX_FINALS_CHANCES){
@@ -319,7 +300,7 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public void addStudentFinalInscription(Student student, FinalInscription finalInscription) {
-		FinalInscription inscription = courseDao.getFinalInscription(finalInscription.getId()); // Needed to access History
+		final FinalInscription inscription = courseDao.getFinalInscription(finalInscription.getId()); // Needed to access History
 
 		inscription.getHistory().add(student);
 		inscription.increaseVacancy();
@@ -328,7 +309,7 @@ public class StudentHibernateDao implements StudentDao {
 
 	@Override
 	public void deleteStudentFinalInscription(Student student, FinalInscription finalInscription) {
-		FinalInscription inscription = courseDao.getFinalInscription(finalInscription.getId()); // Needed to access History
+		final FinalInscription inscription = courseDao.getFinalInscription(finalInscription.getId()); // Needed to access History
 
 		if (inscription.getHistory().contains(student)) {
 			inscription.getHistory().remove(student);

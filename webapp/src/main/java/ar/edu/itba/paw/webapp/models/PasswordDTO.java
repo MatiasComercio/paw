@@ -1,4 +1,4 @@
-package ar.edu.itba.paw.webapp.forms;
+package ar.edu.itba.paw.webapp.models;
 
 import org.hibernate.validator.constraints.NotBlank;
 

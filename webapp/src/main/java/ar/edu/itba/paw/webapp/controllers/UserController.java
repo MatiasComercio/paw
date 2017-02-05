@@ -2,7 +2,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.webapp.auth.LoggedUser;
-import ar.edu.itba.paw.webapp.forms.PasswordDTO;
+import ar.edu.itba.paw.webapp.models.PasswordDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

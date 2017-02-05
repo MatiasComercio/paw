@@ -22,9 +22,8 @@ public interface StudentService {
 
     /**
      * @param student The student to be persisted in the database.
-     * @return true if the student was inserted; else false
      */
-    boolean create(Student student);
+    void create(Student student);
 
     /**
      * Gets the student's main data that matches the given docket.
@@ -46,9 +45,8 @@ public interface StudentService {
      * Delete the student that matches the given docket.
      *
      * @param docket The student's docket
-     * @return true if the student was deleted; false else
      */
-    boolean deleteStudent(int docket);
+    void deleteStudent(int docket);
 
     /**
      *
@@ -76,10 +74,9 @@ public interface StudentService {
 
     /**
      * @param newGrade The new grade values
-     * @param oldGrade The grade to be updated
-     * @return The result code of the Update
+     *
      */
-    boolean editGrade(Grade newGrade, BigDecimal oldGrade);
+    void editGrade(Grade newGrade);
 
 
     /**
@@ -169,7 +166,7 @@ public interface StudentService {
     /**
      * Get the representation of a student's transcript
      *
-     * @param docket
+     * @param docket the id of the student
      * @return A list containing lists in which all the grades of a semester are placed
      */
     Collection<Collection<TranscriptGrade>> getTranscript(int docket);
@@ -187,7 +184,7 @@ public interface StudentService {
      * @param docket The student's docket.
      * @return Integer indicating the amount of credits passed.
      */
-    Integer getPassedCredits(int docket);
+    int getPassedCredits(int docket);
 
     /**
      * Get the final exams inscriptions available for the given student
@@ -199,8 +196,8 @@ public interface StudentService {
 
     /**
      * Adds the given student to the Final Inscription instance
-     * @param student
-     * @param finalInscription
+     * @param student the student
+     * @param finalInscription the final inscription to have added the student
      * @return True if the inscription was successful, false otherwise
      */
     boolean addStudentFinalInscription(Student student, FinalInscription finalInscription);
@@ -223,27 +220,26 @@ public interface StudentService {
 
     /**
      * Add a final grade
-     *
      * @param id     The FinalInscriptionId
      * @param docket The student's docket
      * @param grade  The grade
-     * @return
+     * @return true if the final grade was added;
+     *         else false
      */
-    boolean addFinalGrade(Integer id, Integer docket, BigDecimal grade);
+    boolean addFinalGrade(final int id, final int docket, final BigDecimal grade);
 
 
     boolean existsEmail(String email);
 
 
     /**
-     * @param procedure
-     * @return
+     * @param procedure the procedure to be created
      */
-    boolean createProcedure(Procedure procedure);
+    void createProcedure(Procedure procedure);
 
     /**
-     * @param docket
-     * @return
+     * @param docket the student's id to obtain its procedures
+     * @return a list containing the procedures
      */
     List<Procedure> getProcedures(int docket);
 

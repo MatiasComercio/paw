@@ -8,16 +8,14 @@ public interface ProcedureDao {
     /**
      * Create a new procedure
      * @param procedure the procedure to persist
-     * @return true if the procedure was created successfully; else false
      */
-    boolean createProcedure(Procedure procedure);
+    void createProcedure(Procedure procedure);
 
     /**
      * Respond to a specific procedure already created
      * @param procedure the original procedure with the changes
-     * @return true if the procedure was modified successfully; else false
      */
-    public boolean updateProcedure(Procedure procedure);
+    void updateProcedure(Procedure procedure);
 
     /**
      * Get all the procedures created by a user

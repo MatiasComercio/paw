@@ -42,18 +42,6 @@ public class AdminHibernateDao implements AdminDao {
 
 	@Override
 	public List<Admin> getAllAdmins() {
-		/*
-		final CriteriaBuilder builder = em.getCriteriaBuilder();
-		final CriteriaQuery<String> query = builder.createQuery(String.class);
-		final Root<User> user = query.from(User.class);
-		final Predicate equalsPredicate = builder.equal(user.get("email"), email);
-
-		final List<String> emails = em.createQuery(query.select(user.get("email")).where(equalsPredicate))
-				.setMaxResults(1).getResultList();
-
-		return !emails.isEmpty();
-		 */
-
 		final CriteriaBuilder builder = em.getCriteriaBuilder();
 		final CriteriaQuery<Admin> queryForAdmins = builder.createQuery(Admin.class);
 		final Root<Admin> fromAdmins = queryForAdmins.from(Admin.class);
@@ -69,11 +57,9 @@ public class AdminHibernateDao implements AdminDao {
 	}
 
 	@Override
-	public boolean create(final Admin admin) {
+	public void create(final Admin admin) {
 		em.persist(admin);
 		LOGGER.debug("[create] - {}", admin);
-
-		return true;
 	}
 
 	@Override
@@ -88,18 +74,15 @@ public class AdminHibernateDao implements AdminDao {
 	}
 
 	@Override
-	public boolean answerProcedure(final Procedure procedure) {
-		return procedureDao.updateProcedure(procedure);
+	public void answerProcedure(final Procedure procedure) {
+		procedureDao.updateProcedure(procedure);
 	}
 
 	@Override
-	public boolean delete(final int dni) {
-		// +++xtodo: have to implement front end
+	public void delete(final int dni) {
 		final Admin admin = getByDni(dni);
 		em.remove(admin);
 		LOGGER.debug("[delete] - {}", admin);
-
-		return true;
 	}
 
 	@Override
@@ -108,6 +91,7 @@ public class AdminHibernateDao implements AdminDao {
 		query.setParameter(DNI_PARAM, dni);
 		query.setMaxResults(ONE);
 		final List<Admin> admins = query.getResultList();
+
 		return admins.isEmpty() ? null : admins.get(FIRST);
 	}
 
@@ -122,18 +106,14 @@ public class AdminHibernateDao implements AdminDao {
 		return em.createQuery(queryFilter.getQuery()).getResultList();
 	}
 
-	private boolean disableAddInscriptions() {
+	private void disableAddInscriptions() {
 		removeAuthority(Role.STUDENT, "ADD_INSCRIPTION");
 		removeAuthority(Role.ADMIN,   "ADD_INSCRIPTION");
-
-		return true;
 	}
 
-	private boolean disableDeleteInscriptions() {
+	private void disableDeleteInscriptions() {
 		removeAuthority(Role.STUDENT, "DELETE_INSCRIPTION");
 		removeAuthority(Role.ADMIN,   "DELETE_INSCRIPTION");
-
-		return true;
 	}
 
 	private void removeAuthority(final Role role, final String authority) {
@@ -148,7 +128,7 @@ public class AdminHibernateDao implements AdminDao {
 		em.persist(roleClass);
 	}
 
-	private boolean addAuthority(final Role role, final String authority) {
+	private void addAuthority(final Role role, final String authority) {
 		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
 		query.setParameter(ROLE_COLUMN, role);
 		query.setMaxResults(ONE);
@@ -158,46 +138,28 @@ public class AdminHibernateDao implements AdminDao {
 		authorities.add(new Authority(authority));
 
 		em.persist(roleClass);
-
-		return true;
 	}
 
 	@Override
-	public boolean disableInscriptions() {
-		if(disableAddInscriptions()) {
-			if(!disableDeleteInscriptions()) {
-				enableAddInscriptions();
-			} else {
-				return true;
-			}
-		}
-		return false;
+	public void disableInscriptions() {
+		disableAddInscriptions();
+		disableDeleteInscriptions();
 	}
 
 	@Override
-	public boolean enableInscriptions() {
-		if(enableAddInscriptions()) {
-			if(!enableDeleteInscriptions()) {
-				disableAddInscriptions();
-			} else {
-				return true;
-			}
-		}
-		return false;
+	public void enableInscriptions() {
+		enableAddInscriptions();
+		enableDeleteInscriptions();
 	}
 
-	private boolean enableAddInscriptions() {
+	private void enableAddInscriptions() {
 		addAuthority(Role.STUDENT, "ADD_INSCRIPTION");
 		addAuthority(Role.ADMIN, "ADD_INSCRIPTION");
-
-		return true;
 	}
 
-	private boolean enableDeleteInscriptions() {
+	private void enableDeleteInscriptions() {
 		addAuthority(Role.STUDENT, "DELETE_INSCRIPTION");
 		addAuthority(Role.ADMIN, "DELETE_INSCRIPTION");
-
-		return true;
 	}
 
 	@Override

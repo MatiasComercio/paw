@@ -64,10 +64,8 @@ public interface CourseDao {
     /**
      * Attempts to delete the course with the given id
      * @param courseId of the course to delete
-     * @return true if the course was deleted;
-     *         false in other case;
      */
-    boolean deleteCourse(String courseId);
+    void deleteCourse(String courseId);
 
     /**
      * @param courseId The id of the course.
@@ -91,9 +89,8 @@ public interface CourseDao {
      *
      * @param id The id of the course who will have the correlativity
      * @param correlativeId The id of the course correlative course
-     * @return The insertion result.
      */
-    boolean addCorrelativity(String id, String correlativeId);
+    void addCorrelativity(String id, String correlativeId);
 
     /**
      * Check whether a course exists or not
@@ -125,15 +122,14 @@ public interface CourseDao {
      *
      * @param courseId The id of the course.
      * @param correlativeId The id of the correlative for the given course.
-     * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
      */
-    boolean deleteCorrelative(String courseId, String correlativeId);
+    void deleteCorrelative(String courseId, String correlativeId);
 
     /**
      * Get the number of semesters.
      * @return Integer indicating the number of semesters
      */
-    Integer getTotalSemesters();
+    int getTotalSemesters();
 
     /**
      *
@@ -147,7 +143,7 @@ public interface CourseDao {
      * Get the total credits of the plan.
      * @return Integer indicating the total credits of the plan.
      */
-    Integer getTotalPlanCredits();
+    int getTotalPlanCredits();
 
     /**
      * Gets the student that passed both the given course and the course's final exam

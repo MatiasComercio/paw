@@ -4,7 +4,6 @@ import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.StudentFilter;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface StudentDao {
@@ -46,9 +45,8 @@ public interface StudentDao {
 	/**
 		*
 		* @param student The student to be persisted in the database.
-		* @return true if the student was inserted; else false
 		*/
-	boolean create(Student student);
+	void create(Student student);
 
 	/**
 		* Update student
@@ -68,10 +66,8 @@ public interface StudentDao {
 	/**
 		* Delete the student that matches the given docket.
 		* @param docket The student's docket
-		* @return 	OK if the student was deleted;
-		* 		ERROR_UNKNOWN else;
 		*/
-	boolean deleteStudent(int docket);
+	void deleteStudent(int docket);
 
 	/**
 		*
@@ -94,11 +90,10 @@ public interface StudentDao {
 	void addFinalGrade(Grade grade, FinalGrade finalGrade);
 
 	/**
-		* @param newGrade The new grade values
-		* @param oldGrade The grade to be updated
-		* @return The result code of the Update
-		*/
-	boolean editGrade(Grade newGrade, BigDecimal oldGrade);
+	 * @param newGrade The new grade values
+	 *
+	 */
+	void editGrade(Grade newGrade);
 
 	/**
 		* Enrolls the student with the given docket into the course with the specified id.
@@ -108,7 +103,7 @@ public interface StudentDao {
 	void enroll(int studentDocket, String courseId);
 
 	/**
-		* Unenrolls the student with the given docket of the course with the specified id.
+	 * Unrolls the student with the given docket of the course with the specified id.
 		*
 		* @param studentDocket The student's docket
 		* @param courseId The course id
@@ -181,17 +176,16 @@ public interface StudentDao {
 	List<FinalInscription> getAllFinalInscriptionsFromOpenInstance();
 
 	/**
-		*
-		* @param procedure
-		* @return
+	 * Create a new procedure
+	 * @param procedure the procedure to be created
 		*/
-	boolean createProcedure(Procedure procedure);
+	void createProcedure(Procedure procedure);
 
 	/**
 		* Gets the final inscriptions for a course corresponding to the open final instance.
 		*
 		* @param course The course corresponding to de final inscriptions
-		* @return
+	 * @return the list of final inscriptions
 		*/
 	List<FinalInscription> getOpenFinalInscriptionsByCourse(Course course);
 

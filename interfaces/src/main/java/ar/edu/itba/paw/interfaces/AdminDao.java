@@ -20,16 +20,13 @@ public interface AdminDao {
     /**
      *
      * @param admin The admin to be persisted in the database.
-     * @return  OK if the admin could be created;
-     *          ADMIN_EXISTS_DNI if there is an admin whose dni is equal to this new admin;
-     *          ERROR_UNKNOWN else;
      */
-    boolean create(Admin admin);
+    void create(Admin admin);
 
     /**
      * Gets all the data associated with the user that has the
      * given dni.
-     * @param dni
+     * @param dni the dni of the admin
      * @return The admin that has the given dni; null if no admin was found.
      */
     Admin getByDni(int dni);
@@ -45,22 +42,18 @@ public interface AdminDao {
     /**
      * Delete the admin that matches the given dni.
      * @param dni The admin's dni
-     * @return 	OK if the dni was deleted;
-     * 		ERROR_UNKNOWN else;
      */
-    boolean delete(int dni);
+    void delete(int dni);
 
     /**
      * Enable the student's authority to add and delete inscriptions
-     * @return true if the inscriptions were enabled properly; else false
      */
-    boolean enableInscriptions();
+    void enableInscriptions();
 
     /**
      * Disable the student's authority to add and delete inscriptions
-     * @return true if the inscriptions were disabled properly; else false
      */
-    boolean disableInscriptions();
+    void disableInscriptions();
 
     /**
      * @return A boolean indicating whether the inscriptions are enabled
@@ -81,8 +74,7 @@ public interface AdminDao {
 
     /**
      * Answer an existing procedure
-     * @param procedure
-     * @return if the procedure was successfully answered
+     * @param procedure the answer to a procedure
      */
-    boolean answerProcedure(Procedure procedure);
+    void answerProcedure(Procedure procedure);
 }

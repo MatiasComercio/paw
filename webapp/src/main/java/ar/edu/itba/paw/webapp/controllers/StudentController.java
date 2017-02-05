@@ -83,11 +83,10 @@ public class StudentController {
     if (us.userExists(student.getDni())) {
       return status(Status.CONFLICT).build();
     }
-    if(!ss.create(student)) {
-      return status(Status.BAD_REQUEST).build();
-    }
+    ss.create(student);
     final int docket = ss.getByDni(userNewDTO.getDni()).getDocket();
     final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(docket)).build();
+
     return created(uri).build();
   }
 
@@ -190,12 +189,12 @@ public class StudentController {
       return status(Status.BAD_REQUEST).build();
     }
 
-	  boolean enrolled = ss.enroll(student, course);
+    boolean enrolled = ss.enroll(student, course);
 
-	  if (!enrolled) {
-		  return status(Status.CONFLICT).build();
-	  }
-    return status(Status.OK).build();
+    if (!enrolled) {
+      return status(Status.CONFLICT).build();
+    }
+    return noContent().build();
   }
 
   @DELETE
@@ -221,7 +220,7 @@ public class StudentController {
 
     ss.unenroll(docket, course.getId());
 
-    return Response.noContent().build();
+    return noContent().build();
   }
 
   @GET
@@ -243,7 +242,7 @@ public class StudentController {
     final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
             id(courseID).keyword(courseName).build();
 
-    List<Course> courses = ss.getAvailableInscriptionCourses(docket, courseFilter);
+    final List<Course> courses = ss.getAvailableInscriptionCourses(docket, courseFilter);
 
     final List<CourseDTO> coursesList = courses.stream()
             .map(course -> mapper.convertToCourseDTO(course)).collect(Collectors.toList());
@@ -259,8 +258,8 @@ public class StudentController {
     if(student == null){
       return status(Status.NOT_FOUND).build();
     }
-
     final int dni = LoggedUser.getDni();
+
     if(dni != student.getDni() && !LoggedUser.isAdmin()) {
       return status(Status.FORBIDDEN).build();
     }
@@ -333,9 +332,9 @@ public class StudentController {
 
     Grade grade = mapper.convertToGrade(gradeDTO, student, course, gradeId);
 
-    ss.editGrade(grade, null);
+    ss.editGrade(grade);
 
-    return ok().build();
+    return noContent().build();
 
   }
 
@@ -383,7 +382,7 @@ public class StudentController {
       return status(Status.BAD_REQUEST).build();
     }
 
-    return ok().build();
+    return noContent().build();
   }
 
   @DELETE

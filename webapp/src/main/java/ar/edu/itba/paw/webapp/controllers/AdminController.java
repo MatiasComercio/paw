@@ -72,9 +72,7 @@ public class AdminController {
     if (us.userExists(adminNewDTO.getDni())) {
       return status(Status.CONFLICT).build();
     }
-    if(!as.create(admin)) {
-      return Response.status(Response.Status.BAD_REQUEST).build();
-    }
+    as.create(admin);
     final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(admin.getDni())).build();
 
     return created(uri).build();

@@ -32,14 +32,14 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public boolean create(final Admin admin) {
+    public void create(final Admin admin) {
         admin.setRole(Role.ADMIN);
 	    admin.getAddress().setDni(admin.getDni());
 	    admin.setPassword(User.DEFAULT_PASSWORD);
 	    if (admin.getEmail() == null || Objects.equals(admin.getEmail(), "")) {
             admin.setEmail(userService.createEmail(admin));
         }
-        return adminDao.create(admin);
+        adminDao.create(admin);
     }
 
     @Transactional
@@ -61,8 +61,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public boolean deleteAdmin(final int dni) {
-        return adminDao.delete(dni);
+    public void deleteAdmin(final int dni) {
+        adminDao.delete(dni);
     }
 
     @Transactional
@@ -79,41 +79,18 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public boolean disableInscriptions() {
+    public void disableInscriptions() {
         if(isInscriptionEnabled()) {
-            return adminDao.disableInscriptions();
+            adminDao.disableInscriptions();
         }
-        return false;
-//        final boolean done = adminDao.disableAddInscriptions();
-//
-//        if(!done) {
-//            return false;
-//        }
-//        adminDao.disableDeleteInscriptions();
     }
 
     @Transactional
     @Override
-    public boolean enableInscriptions() {
+    public void enableInscriptions() {
         if(!isInscriptionEnabled()) {
-            return adminDao.enableInscriptions();
+            adminDao.enableInscriptions();
         }
-        return false;
-//        // +++ ximprove: this should be only one method.
-//        boolean enableAddResult = adminDao.enableAddInscriptions();
-//        boolean enableDeleteResult = adminDao.enableDeleteInscriptions();
-//
-//        if(enableAddResult.equals(Result.ERROR_UNKNOWN) || enableDeleteResult.equals(Result.ERROR_UNKNOWN)){
-//            return false;
-//        }
-//
-////        if(enableAddResult.equals(Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS) &&
-////                enableDeleteResult.equals(Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS)){
-////            return Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS;
-////        }
-//
-////        return Result.OK;
-//        return true;
     }
 
     @Transactional
@@ -134,7 +111,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public boolean answerProcedure(final Procedure procedure) {
-        return adminDao.answerProcedure(procedure);
+    public void answerProcedure(final Procedure procedure) {
+        adminDao.answerProcedure(procedure);
     }
 }

@@ -28,19 +28,16 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public boolean create(Course course) {
-        if(getByCourseID(course.getCourseId()) != null) {
-            return false;
-        }
-        return courseDao.create(course);
+    public void create(final Course course) {
+        courseDao.create(course);
     }
 
     @Transactional
     @Override
     public boolean update(final String courseId, final Course courseUpdated){
 
-        final List<Course> correlatives = getCorrelativesByFilter(courseId, null);
-        final Course courseOld = courseDao.getByCourseID(courseId);
+	    final List<Course> correlatives = getCorrelativeCourses(courseId);
+	    final Course courseOld = courseDao.getByCourseID(courseId);
 
         courseUpdated.setId(courseOld.getId());
         for (Course correlative : correlatives){
@@ -100,25 +97,23 @@ public class CourseServiceImpl implements CourseService {
             return true;
         }
         if(courseDao.inscriptionExists(courseId)){
-//            return Result.COURSE_EXISTS_INSCRIPTION;
             return false;
         }
 
         if(courseDao.gradeExists(courseId)){
-//            return Result.COURSE_EXISTS_GRADE;
             return false;
         }
 
         deleteCourseCorrelatives(courseId);
 
-        return courseDao.deleteCourse(courseId);
+        courseDao.deleteCourse(courseId);
 
+        return true;
     }
 
     @Transactional
     @Override
     public List<Student> getCourseStudents(final String id, final StudentFilter studentFilter) {
-
         final Course course = courseDao.getCourseStudents(id);
         if (course == null) {
             return null;
@@ -128,7 +123,7 @@ public class CourseServiceImpl implements CourseService {
             return null;
         }
 
-        List<Student> studentsFiltered = studentService.getByFilter(studentFilter);
+        final List<Student> studentsFiltered = studentService.getByFilter(studentFilter);
 
         return studentsFiltered
                 .stream()
@@ -167,21 +162,10 @@ public class CourseServiceImpl implements CourseService {
         if (course.getSemester() <= correlativeCourse.getSemester()) {
             return false;
         }
+        courseDao.addCorrelativity(courseId, correlativeId);
 
-        return courseDao.addCorrelativity(courseId, correlativeId);
+        return true;
     }
-
-    /* Test purpose only */
-	/* default */ void setCourseDao(CourseDao courseDao) {
-        this.courseDao = courseDao;
-    }
-    /* Test purpose only */
-	/* default */ void setStudentService(StudentService studentService) {
-        this.studentService = studentService;
-    }
-
-
-    //TODO: IF NOT CALLED FROM CONTROLLER, DELETE IMPLEMENTATION AND DELETE FROM INTERFACE
 
     /**
      * Gets the correlatives of a given course.
@@ -201,24 +185,19 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.getUpperCorrelatives(courseId);
     }
 
-    //////////////////////////////////////////////////
-
     @Transactional
     @Override
-    public boolean deleteCorrelative(final String courseId, final String correlativeId) {
-        if(getByCourseID(courseId) == null || getByCourseID(correlativeId) == null) {
-            return false;
-        }
-        return courseDao.deleteCorrelative(courseId, correlativeId);
+    public void deleteCorrelative(final String courseId, final String correlativeId) {
+        courseDao.deleteCorrelative(courseId, correlativeId);
     }
 
     @Transactional
     @Override
     public void deleteCourseCorrelatives(final String courseId) {
-        List<String> correlatives = getCorrelativesIds(courseId);
-        List<String> upperCorrelatives = getUpperCorrelatives(courseId);
+        final List<String> correlatives = getCorrelativesIds(courseId);
+        final List<String> upperCorrelatives = getUpperCorrelatives(courseId);
 
-        /* Adds transitive correlatives:
+        /* Example: adding transitive correlatives:
          * Say c2 is the given courseId and the following correlativities exist:
          * (c3,c2) and (c2, c1), in that case (c3, c1) is added to the correlatives table.
          */
@@ -243,37 +222,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public List<Course> getCorrelativesByFilter(final String courseId, final CourseFilter courseFilter) {
-
-        final List<Course> courses = getByFilter(courseFilter);
-
-        if (courses == null) {
-            return null;
-        }
-
-        List<Course> correlatives = courseDao.getCorrelativeCourses(courseId);
-        if(correlatives == null){
-            return null;
-        }
-
-        //Remove all courses that do not match the filter
-        final List<Course> rCourses = new LinkedList<>();
-        for (Course c : courses) {
-            if (correlatives.contains(c)) {
-                rCourses.add(c);
-            }
-        }
-
-        return rCourses;
+    public List<Course> getCorrelativeCourses(final String courseId) {
+	    return courseDao.getCorrelativeCourses(courseId);
     }
 
     @Transactional
     @Override
     public List<Course> getAvailableAddCorrelatives(final String courseId, final CourseFilter courseFilter) {
-        List<Course> courses =  getByFilter(courseFilter);
-        List<Course> correlatives = getCorrelativesByFilter(courseId, null);
-
-        // +++ximprove: should not show incompatible correlative courses
+        final List<Course> courses = getByFilter(courseFilter);
+	    final List<Course> correlatives = getCorrelativeCourses(courseId);
 
         //Remove all correlatives from the list
         courses.removeAll(correlatives);
@@ -332,8 +289,10 @@ public class CourseServiceImpl implements CourseService {
     @Transactional
     @Override
     public Set<Student> getFinalStudents(int id) {
-        Set<Student> set = new HashSet<>();
+        final Set<Student> set = new HashSet<>();
+
         set.addAll(getFinalInscription(id).getHistory());
+
         return set;
     }
 
