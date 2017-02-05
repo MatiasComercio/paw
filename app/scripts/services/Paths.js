@@ -152,8 +152,9 @@ define([], function() {
         return append('/inscriptions');
       };
 
-      _this.finals = function() {
-        return append('/finals');
+      _this.finals = function(final) {
+        var updated = append('/final_inscriptions');
+        return final === undefined ? updated : append('/' + final.inscriptionId);
       };
 
       // courses

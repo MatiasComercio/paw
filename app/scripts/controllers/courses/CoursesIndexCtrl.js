@@ -1,6 +1,7 @@
 'use strict';
-define(['paw'], function(paw) {
-  paw.controller('CoursesIndexCtrl', ['$routeParams', function($routeParams) {
+
+define(['paw','services/Courses','services/Paths'], function(paw) {
+  paw.controller('CoursesIndexCtrl', ['$routeParams', 'Courses', '$log', 'Paths', function($routeParams, Courses, $log, Paths) {
     var _this = this;
     this.filter = {
       courseId: $routeParams.courseId,
@@ -9,19 +10,14 @@ define(['paw'], function(paw) {
     this.resetSearch = function() {
       this.filter = {};
     };
-    this.courses = [
-      {
-        courseId: '72.03',
-        credits: 3,
-        name: 'Introducción a Informática',
-        semester: 1
-      },
-      {
-        courseId: '94.21',
-        credits: 6,
-        name: 'Formacion General I',
-        semester: 5
+
+    Courses.getList().then(function(courses) {
+      _this.courses = courses;
+    }, function(response) {
+      $log.info('Response status: ' + response.status);
+      if (response.status === 404) {
+        Paths.get().notFound().go();
       }
-    ];
+    });
   }]);
 });

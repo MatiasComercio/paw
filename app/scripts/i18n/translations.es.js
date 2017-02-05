@@ -173,8 +173,18 @@ define([], function() {
     i18nLengthAnd: 'y',
     i18nLengthSuffix: 'caracteres.',
 
+    // Modals
+    i18nModalStudentDocket: 'Legajo del alumno',
+    i18nModalCourseName: 'Nombre del curso',
+    i18nModalCourseId: 'Código del curso',
+    i18nModalCorrelativeName: 'Nombre de la correlativa',
+    i18nModalCorrelativeId: 'Código de la correlativa',
+
     // Flash messages
     i18nEditSuccess: 'La edición ha sido exitosa',
+    i18nDeleteCorrelativeSuccess: 'Se ha eliminado la correlatividad',
+    i18nAddCorrelativeSuccess: 'Se ha agregado la correlatividad',
+    i18nUnenrollSuccess: 'Se ha eliminado la inscripción',
     i18nFormErrors: 'Hay errores en los datos ingresados',
     i18nSuccess: '¡Éxito! - ',
     i18nError: '¡Error! - '

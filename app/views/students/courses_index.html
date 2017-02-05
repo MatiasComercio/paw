@@ -60,11 +60,12 @@
           <td>{{ course.credits }}</td>
           <td>{{ course.semester }}</td>
           <td class='actions-container'>
-            <a class='btn btn-default' role='button'>
+            <a ng-href='{{ controller.getCoursePath(course.courseId) }}' class='btn btn-default' role='button'>
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nCourseShow'></span>
             </a>
-            <a class='btn btn-danger' role='button'>
+            <a class='btn btn-danger' role='button' ng-controller='UnenrollController as modalController'
+            ng-click="modalController.open('md', controller.student.docket, course.name, course.courseId)">
               <span class='fa fa-trash' aria-hidden='true'></span>
               <span translate='i18nUnenroll'></span>
             </a>

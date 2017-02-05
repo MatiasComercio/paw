@@ -57,11 +57,12 @@
           <td>{{ course.credits }}</td>
           <td>{{ course.semester }}</td>
           <td class='actions-container'>
-            <a class='btn btn-default' role='button'>
+            <a ng-href='{{ controller.getCorrelativePath(course.courseId) }}' class='btn btn-default' role='button'>
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nInformation'></span>
             </a>
-            <a class='btn btn-danger' role='button'>
+            <a class='btn btn-danger' role='button' ng-controller='DeleteCorrelativeController as modalController'
+            ng-click="modalController.open('md', controller.course.courseId, controller.course.name, course.courseId, course.name)">
               <span class='fa fa-trash' aria-hidden='true'></span>
               <span translate='i18nDeleteCorrelative'></span>
             </a>
@@ -94,7 +95,7 @@
           <td ng-show="inscription.state == 'OPEN'" translate='i18nInscriptionOpen'></td>
           <td ng-show="inscription.state == 'CLOSED'" translate='i18nInscriptionClosed'></td>
           <td class='actions-container'>
-            <a class='btn btn-default' role='button'>
+            <a ng-href='{{ controller.getFinalInscriptionPath(inscription.id) }}' class='btn btn-default' role='button'>
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nInformation'></span>
             </a>

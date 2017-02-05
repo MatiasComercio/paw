@@ -12,6 +12,11 @@ define([], function() {
         templateUrl: 'views/login.html',
         controller: 'LoginCtrl'
       },
+      '/users/:dni/change_password': {
+        templateUrl: 'views/user/change_password.html',
+        controller: 'UserChangePasswordCtrl',
+        relativePath: '/user'
+      },
       '/students': {
         templateUrl: 'views/students/index.html',
         controller: 'StudentsIndexCtrl',
@@ -21,11 +26,6 @@ define([], function() {
         templateUrl: 'views/students/new.html',
         controller: 'StudentsNewCtrl',
         relativePath: '/students'
-      },
-      '/admins/new': {
-        templateUrl: 'views/admins/new.html',
-        controller: 'AdminsNewCtrl',
-        relativePath: '/admins'
       },
       '/students/:docket': {
         templateUrl: 'views/students/show.html',
@@ -37,14 +37,44 @@ define([], function() {
         controller: 'StudentsEditCtrl',
         relativePath: '/students'
       },
+      '/students/:docket/courses': {
+        templateUrl: 'views/students/courses_index.html',
+        controller: 'StudentsCoursesIndexCtrl',
+        relativePath: '/students'
+      },
+      '/students/:docket/grades': {
+        templateUrl: 'views/students/grades.html',
+        controller: 'StudentsGradesCtrl',
+        relativePath: '/students'
+      },
+      '/students/:docket/inscriptions': {
+        templateUrl: 'views/students/inscriptions.html',
+        controller: 'StudentsInscriptionsCtrl',
+        relativePath: '/students'
+      },
+      '/students/:docket/final_inscriptions': {
+        templateUrl: '/views/students/final_inscriptions.html',
+        controller: 'StudentsFinalInscriptionsCtrl',
+        relativePath: '/students'
+      },
       '/courses': {
         templateUrl: 'views/courses/index.html',
         controller: 'CoursesIndexCtrl',
         relativePath: '/courses'
       },
+      '/courses/new': {
+        templateUrl: 'views/courses/new.html',
+        controller: 'CoursesNewCtrl',
+        relativePath: '/courses'
+      },
       '/courses/:courseId': {
         templateUrl: 'views/courses/show.html',
         controller: 'CoursesShowCtrl',
+        relativePath: '/courses'
+      },
+      '/courses/:courseId/edit': {
+        templateUrl: 'views/courses/edit.html',
+        controller: 'CoursesEditCtrl',
         relativePath: '/courses'
       },
       '/courses/:courseId/students': {
@@ -62,51 +92,6 @@ define([], function() {
         controller: 'CoursesCorrelativesNewCtrl',
         relativePath: '/courses'
       },
-      '/students/:docket/courses': {
-        templateUrl: 'views/students/courses_index.html',
-        controller: 'StudentsCoursesIndexCtrl',
-        relativePath: '/students'
-      },
-      '/students/:docket/grades': {
-        templateUrl: 'views/students/grades.html',
-        controller: 'StudentsGradesCtrl',
-        relativePath: '/students'
-      },
-      '/students/:docket/inscriptions': {
-        templateUrl: 'views/students/inscriptions.html',
-        controller: 'StudentsInscriptionsCtrl',
-        relativePath: '/students'
-      },
-      '/courses/:courseId/edit': {
-        templateUrl: 'views/courses/edit.html',
-        controller: 'CoursesEditCtrl',
-        relativePath: '/courses'
-      },
-      '/courses/new': {
-        templateUrl: 'views/courses/new.html',
-        controller: 'CoursesNewCtrl',
-        relativePath: '/courses'
-      },
-      '/students/:docket/final_inscriptions': {
-        templateUrl: '/views/students/final_inscriptions.html',
-        controller: 'StudentsFinalInscriptionsCtrl',
-        relativePath: '/students'
-      },
-      '/admins': {
-        templateUrl: 'views/admins/index.html',
-        controller: 'AdminsIndexCtrl',
-        relativePath: '/admins'
-      },
-      '/admins/:adminDni': {
-        templateUrl: '/views/admins/show.html',
-        controller: 'AdminsShowCtrl',
-        relativePath: '/admins'
-      },
-      '/user/change_password': {
-        templateUrl: 'views/user/change_password.html',
-        controller: 'UserChangePasswordCtrl',
-        relativePath: '/user'
-      },
       '/courses/:courseId/final_inscriptions/new': {
         templateUrl: 'views/courses/final_inscriptions_new.html',
         controller: 'CoursesFinalInscriptionNewCtrl',
@@ -116,6 +101,21 @@ define([], function() {
         templateUrl: 'views/courses/final_inscriptions_show.html',
         controller: 'CoursesFinalInscriptionShowCtrl',
         relativePath: '/courses'
+      },
+      '/admins': {
+        templateUrl: 'views/admins/index.html',
+        controller: 'AdminsIndexCtrl',
+        relativePath: '/admins'
+      },
+      '/admins/new': {
+        templateUrl: 'views/admins/new.html',
+        controller: 'AdminsNewCtrl',
+        relativePath: '/admins'
+      },
+      '/admins/:adminDni': {
+        templateUrl: '/views/admins/show.html',
+        controller: 'AdminsShowCtrl',
+        relativePath: '/admins'
       },
       '/admins/:adminDni/edit': {
           templateUrl: 'views/admins/edit.html',
