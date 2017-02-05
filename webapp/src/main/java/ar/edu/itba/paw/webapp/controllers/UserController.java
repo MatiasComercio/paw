@@ -34,14 +34,18 @@ public class UserController {
                                       @Valid PasswordDTO passwordDTO) {
 
     final int loggedDni = LoggedUser.getDni();
-    if(loggedDni != dni  && !LoggedUser.isAdmin()) {
-      return status(Status.FORBIDDEN).build();
+	  if (loggedDni != dni) {
+		  return status(Status.FORBIDDEN).build();
     }
+
+	  if (!us.userExists(dni)) {
+		  return status(Status.NOT_FOUND).build();
+	  }
 
     passwordDTO.setDni(loggedDni);
 
     if(!us.changePassword(loggedDni, passwordDTO.getCurrentPassword(), passwordDTO.getNewPassword())) {
-      return status(Status.BAD_REQUEST).build();
+	    return status(Status.CONFLICT).build();
     }
 
     return noContent().build();
@@ -50,6 +54,10 @@ public class UserController {
   @POST
   @Path("/{dni}/password/reset")
   public Response usersPasswordReset(@PathParam("dni") final int dni) {
+	  if (!us.userExists(dni)) {
+		  return status(Status.NOT_FOUND).build();
+	  }
+
     us.resetPassword(dni);
 
     return noContent().build();

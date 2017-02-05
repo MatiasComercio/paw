@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.AdminService;
+import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.users.Admin;
 import ar.edu.itba.paw.shared.AdminFilter;
 import ar.edu.itba.paw.webapp.models.*;
@@ -29,6 +30,9 @@ public class AdminController {
   /** Fields **/
 
   private final static Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
+
+  @Autowired
+  private UserService us;
 
   @Autowired
   private AdminService as;
@@ -65,7 +69,7 @@ public class AdminController {
   public Response adminsNew(@Valid AdminNewDTO adminNewDTO) {
     final Admin admin = mapper.convertToAdmin(adminNewDTO);
 
-    if(as.getByDni(admin.getDni()) != null) {
+    if (us.userExists(adminNewDTO.getDni())) {
       return status(Status.CONFLICT).build();
     }
     if(!as.create(admin)) {

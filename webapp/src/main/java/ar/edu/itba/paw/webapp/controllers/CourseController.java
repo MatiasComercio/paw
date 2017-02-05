@@ -104,20 +104,44 @@ public class CourseController {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response coursesUpdate(@PathParam("courseId") final String courseId,
                                 @Valid final CourseDTO courseDTO) {
-
     if(cs.getByCourseID(courseId) == null) {
       return status(Status.NOT_FOUND).build();
     }
-    final Course courseUpdated = mapper.convertToCourse(courseDTO);
 
+	  if (cs.getByCourseID(courseDTO.getCourseId()) != null && !courseId.equals(courseDTO.getCourseId())) {
+		  LOGGER.debug("Attempting to update course {} with courseId {}, which already exists", courseId, courseDTO.getCourseId());
+		  return status(Status.CONFLICT).entity(createJSONEntryMessage("conflictField", "courseId")).build();
+	  }
+
+    final Course courseUpdated = mapper.convertToCourse(courseDTO);
     if(!cs.update(courseId, courseUpdated)) {
-      return status(Status.BAD_REQUEST).build(); //TODO: Decide what to return
+	    return status(Status.CONFLICT).entity(createJSONEntryMessage("conflictField", "semester")).build();
     }
 
-    final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(courseUpdated.getCourseId())).build();
+	  if (!courseId.equals(courseDTO.getCourseId())) {
+		  final URI uri = uriInfo.getBaseUriBuilder().path("/courses/" + String.valueOf(courseUpdated.getCourseId())).build();
+		  return ok(uri).build();
+	  }
 
-    return ok(uri).build();
+	  return noContent().build();
   }
+
+	private String createJSONEntryMessage(final String key, final String value) {
+		final StringBuilder json = new StringBuilder();
+
+		json
+						.append("{")
+						.append("\"")
+						.append(key)
+						.append("\"")
+						.append(":")
+						.append("\"")
+						.append(value)
+						.append("\"")
+						.append("}");
+
+		return json.toString();
+	}
 
   @DELETE
   @Path("/{courseId}")

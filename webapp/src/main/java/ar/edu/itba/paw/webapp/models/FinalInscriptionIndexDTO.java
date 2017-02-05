@@ -2,7 +2,6 @@ package ar.edu.itba.paw.webapp.models;
 
 import ar.edu.itba.paw.models.FinalInscription;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class FinalInscriptionIndexDTO {
@@ -26,13 +25,6 @@ public class FinalInscriptionIndexDTO {
 
   public void setCourseId(String courseId) {
     this.courseId = courseId;
-  }
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   public int getId() {
@@ -74,4 +66,12 @@ public class FinalInscriptionIndexDTO {
   public void setState(FinalInscription.FinalInscriptionState state) {
     this.state = state;
   }
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
 }

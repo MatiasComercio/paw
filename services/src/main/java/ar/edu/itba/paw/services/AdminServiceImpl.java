@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
+import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.AdminFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,9 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public boolean create(final Admin admin) {
         admin.setRole(Role.ADMIN);
-        if (admin.getEmail() == null || Objects.equals(admin.getEmail(), "")) {
+	    admin.getAddress().setDni(admin.getDni());
+	    admin.setPassword(User.DEFAULT_PASSWORD);
+	    if (admin.getEmail() == null || Objects.equals(admin.getEmail(), "")) {
             admin.setEmail(userService.createEmail(admin));
         }
         return adminDao.create(admin);
