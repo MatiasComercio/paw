@@ -77,7 +77,10 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     @Override
     public boolean disableInscriptions() {
-        return adminDao.disableInscriptions();
+        if(isInscriptionEnabled()) {
+            return adminDao.disableInscriptions();
+        }
+        return false;
 //        final boolean done = adminDao.disableAddInscriptions();
 //
 //        if(!done) {
@@ -89,7 +92,10 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     @Override
     public boolean enableInscriptions() {
-        return adminDao.enableInscriptions();
+        if(!isInscriptionEnabled()) {
+            return adminDao.enableInscriptions();
+        }
+        return false;
 //        // +++ ximprove: this should be only one method.
 //        boolean enableAddResult = adminDao.enableAddInscriptions();
 //        boolean enableDeleteResult = adminDao.enableDeleteInscriptions();
