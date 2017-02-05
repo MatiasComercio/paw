@@ -58,9 +58,9 @@ public class AdminHibernateDao implements AdminDao {
 		final CriteriaQuery<Admin> queryForAdmins = builder.createQuery(Admin.class);
 		final Root<Admin> fromAdmins = queryForAdmins.from(Admin.class);
 		final CriteriaQuery<Admin> orderBy = queryForAdmins.orderBy(
-				builder.asc(fromAdmins.get("lastName")),
-				builder.asc(fromAdmins.get("firstName")),
-				builder.asc(fromAdmins.get("dni"))
+						builder.asc(fromAdmins.get("lastName")),
+						builder.asc(fromAdmins.get("firstName")),
+						builder.asc(fromAdmins.get("dni"))
 		);
 
 		final TypedQuery<Admin> query = em.createQuery(orderBy);
@@ -122,33 +122,42 @@ public class AdminHibernateDao implements AdminDao {
 		return em.createQuery(queryFilter.getQuery()).getResultList();
 	}
 
-	/* +++xchange: all this logic should be on the service when authorities are migrated to runtime */
 	private boolean disableAddInscriptions() {
-		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
-		query.setParameter(ROLE_COLUMN, Role.STUDENT);
-		query.setMaxResults(ONE);
-		final List<RoleClass> roles = query.getResultList();
-		final RoleClass role =  roles.get(FIRST);
-		final Collection<Authority> authorities = role.getMutableAuthorities();
-
-		authorities.remove(new Authority("ADD_INSCRIPTION"));
-
-		em.persist(role);
+		removeAuthority(Role.STUDENT, "ADD_INSCRIPTION");
+		removeAuthority(Role.ADMIN,   "ADD_INSCRIPTION");
 
 		return true;
 	}
 
 	private boolean disableDeleteInscriptions() {
+		removeAuthority(Role.STUDENT, "DELETE_INSCRIPTION");
+		removeAuthority(Role.ADMIN,   "DELETE_INSCRIPTION");
+
+		return true;
+	}
+
+	private void removeAuthority(final Role role, final String authority) {
 		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
-		query.setParameter(ROLE_COLUMN, Role.STUDENT);
+		query.setParameter(ROLE_COLUMN, role);
 		query.setMaxResults(ONE);
-		final List<RoleClass> roles = query.getResultList();
-		final RoleClass role =  roles.get(FIRST);
-		final Collection<Authority> authorities = role.getMutableAuthorities();
+		final RoleClass roleClass = query.getResultList().get(FIRST);
+		final Collection<Authority> authorities = roleClass.getMutableAuthorities();
 
-		authorities.remove(new Authority("DELETE_INSCRIPTION"));
+		authorities.remove(new Authority(authority));
 
-		em.persist(role);
+		em.persist(roleClass);
+	}
+
+	private boolean addAuthority(final Role role, final String authority) {
+		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
+		query.setParameter(ROLE_COLUMN, role);
+		query.setMaxResults(ONE);
+		final RoleClass roleClass = query.getResultList().get(FIRST);
+		final Collection<Authority> authorities = roleClass.getMutableAuthorities();
+
+		authorities.add(new Authority(authority));
+
+		em.persist(roleClass);
 
 		return true;
 	}
@@ -178,31 +187,15 @@ public class AdminHibernateDao implements AdminDao {
 	}
 
 	private boolean enableAddInscriptions() {
-		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
-		query.setParameter(ROLE_COLUMN, Role.STUDENT);
-		query.setMaxResults(ONE);
-		final List<RoleClass> roles = query.getResultList();
-		final RoleClass role =  roles.get(FIRST);
-		final Collection<Authority> authorities = role.getMutableAuthorities();
-
-		authorities.add(new Authority("ADD_INSCRIPTION"));
-
-		em.persist(role);
+		addAuthority(Role.STUDENT, "ADD_INSCRIPTION");
+		addAuthority(Role.ADMIN, "ADD_INSCRIPTION");
 
 		return true;
 	}
 
 	private boolean enableDeleteInscriptions() {
-		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
-		query.setParameter(ROLE_COLUMN, Role.STUDENT);
-		query.setMaxResults(ONE);
-		final List<RoleClass> roles = query.getResultList();
-		final RoleClass role =  roles.get(FIRST);
-		final Collection<Authority> authorities = role.getMutableAuthorities();
-
-		authorities.add(new Authority("DELETE_INSCRIPTION"));
-
-		em.persist(role);
+		addAuthority(Role.STUDENT, "DELETE_INSCRIPTION");
+		addAuthority(Role.ADMIN, "DELETE_INSCRIPTION");
 
 		return true;
 	}
