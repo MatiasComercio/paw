@@ -115,7 +115,7 @@
                   <arguments>build --urlPath=${urlPath}</arguments>
                 </configuration>
               </execution>
-              <execution>
+              <!-- <execution>
                 <id>javascript tests</id>
                 <goals>
                   <goal>karma</goal>
@@ -123,7 +123,7 @@
                 <configuration>
                   <karmaConfPath>karma.conf.ci.js</karmaConfPath>
                 </configuration>
-              </execution>
+              </execution> -->
             </executions>
           </plugin>
         </plugins>

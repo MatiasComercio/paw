@@ -41,6 +41,10 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
       return subject.get(dni);
     };
 
+    rest.inscriptions = function(body) {
+      return subject.all('inscriptions').customPOST(body);
+    };
+
     return rest;
   }]);
 });

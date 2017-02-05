@@ -8,7 +8,7 @@ define(
   'services/navDataService',
   'services/flashMessages'],
   function(paw) {
-    paw.controller('BodyCtrl', ['$rootScope', 'navDataService', 'flashMessages',
+    paw.controller('BodyCtrl', ['$rootScope', 'navDataService', 'flashMessages', '$location',
     function($rootScope, navDataService, flashMessages) {
       var _this = this;
       var getUser = function() {
@@ -20,6 +20,7 @@ define(
       this.flashMessages = {};
 
       $rootScope.$on('$routeChangeStart', function (event, next, current) {
+        // flash messages
         _this.flashMessages = {};
         _this.flashMessages.errors = flashMessages.getErrors();
         _this.flashMessages.successes = flashMessages.getSuccesses();

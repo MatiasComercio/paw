@@ -15,19 +15,38 @@ define(
       var memory = memoryFactory.newMemory();
       var userKey = 'user';
 
+      function areInscriptionsEnabled(user) {
+        var disableInscriptionsDefined = user.authorities.find(function(a) {
+          return a === 'ADD_INSCRIPTION';
+        });
+        return disableInscriptionsDefined ? true : false;
+      }
+
       var rest = AuthenticatedRestangular.withConfig(function(RestangularConfigurer) {
         RestangularConfigurer.extendModel('user', function(user) {
           user.fullName = user.firstName + ' ' + user.lastName;
 
-          user.authorities = {
-            students: true,
-            courses: true
-          };
+          if (user.authorities === undefined) {
+            return user;
+          }
+
+          user.authorities.students = true;
+          user.authorities.courses = true;
+
+          var inscriptionsEnabled = areInscriptionsEnabled(user);
+          memory.set('inscriptionsEnabled', inscriptionsEnabled);
+
+          user.authorities.viewInscriptions = inscriptionsEnabled;
+          user.authorities.addInscription = inscriptionsEnabled;
+          user.authorities.deleteInscription = inscriptionsEnabled;
 
           if (user.role === 'ADMIN') {
+            user.admin = true;
             user.authorities.admins = true;
             user.profileUrl = Paths.get().admins(user).path;
+            user.authorities.disableInscriptions = inscriptionsEnabled;
           } else { // role === 'STUDENT'
+            user.student = true;
             user.authorities.admins = false;
             user.profileUrl = Paths.get().students(user).path;
           };

@@ -1,10 +1,11 @@
 'use strict';
 
 define(['paw', 'restangular', 'services/Authentication',
-'services/Paths', 'services/navDataService'],
+'services/Paths', 'services/navDataService', 'services/flashMessages'],
 function(paw) {
   paw.controller('LoginCtrl', ['Paths', '$log', 'Authentication', 'navDataService',
-  function(Paths, $log, Authentication, navDataService) {
+  'flashMessages', '$route',
+  function(Paths, $log, Authentication, navDataService, flashMessages, $route) {
     var _this = this;
 
     this.login = function(user) {
@@ -17,6 +18,8 @@ function(paw) {
       }, function(response) {
         // here we should handle any issue and show a nice error message
         $log.info('Response status: ' + response.status);
+        flashMessages.setError('i18nInvalidUsernameOrPassword');
+        $route.reload();
       });
     };
   }]);

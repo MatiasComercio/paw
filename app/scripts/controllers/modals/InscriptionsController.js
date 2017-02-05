@@ -1,31 +1,31 @@
 'use strict';
 
-define(['paw', 'services/modalFactory', 'services/navDataService'], function(paw) {
+define(['paw', 'services/modalFactory', 'services/navDataService', 'services/Admins'], function(paw) {
   paw.controller('InscriptionsController',
-    ['modalFactory', '$log', 'navDataService',
-    function (modalFactory, $log, navDataService) {
+    ['modalFactory', '$log', 'navDataService', 'Admins',
+    function (modalFactory, $log, navDataService, Admins) {
       var modalTemplateUrl = 'views/modals/inscriptions.html';
-      var onSuccess = function(url) {
+      var onSuccess = function() {
         navDataService.set('inscriptionsEnabled', !navDataService.get('inscriptionsEnabled'));
-        $log.info('POST ' + url + ' {enable: ' + navDataService.get('inscriptionsEnabled') + '}');
+        Admins.inscriptions({enabled: navDataService.get('inscriptionsEnabled')});
       };
 
       var onFailure = function(msg) {
         $log.info(msg);
       };
 
-      this.open = function (size, url) {
-        var resolve = getResolveBasedOnCurrentValue(navDataService.get('inscriptionsEnabled'), url);
+      this.open = function (size) {
+        var resolve = getResolveBasedOnCurrentValue(navDataService.get('inscriptionsEnabled'));
         modalFactory.create(size, 'InscriptionsControllerModalInstance', modalTemplateUrl, resolve, onSuccess, onFailure);
       };
     }]);
 
-    paw.controller('InscriptionsControllerModalInstance', function ($uibModalInstance, title, url) {
+    paw.controller('InscriptionsControllerModalInstance', function ($uibModalInstance, title) {
       var _this = this;
       _this.title = title;
 
       _this.ok = function () {
-        $uibModalInstance.close(url);
+        $uibModalInstance.close();
       };
 
       _this.cancel = function () {
@@ -33,7 +33,7 @@ define(['paw', 'services/modalFactory', 'services/navDataService'], function(paw
       };
     });
 
-    function getResolveBasedOnCurrentValue(inscriptionsEnabled, url) {
+    function getResolveBasedOnCurrentValue(inscriptionsEnabled) {
       return {
         // title that will be displayed in the modal
         title: function () {
@@ -41,9 +41,6 @@ define(['paw', 'services/modalFactory', 'services/navDataService'], function(paw
             return 'i18nDisableInscriptionsModalTitle';
           }
           return 'i18nEnableInscriptionsModalTitle';
-        },
-        url: function() {
-          return url;
         }
       };
     };

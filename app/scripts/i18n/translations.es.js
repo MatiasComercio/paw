@@ -187,6 +187,8 @@ define([], function() {
     i18nUnenrollSuccess: 'Se ha eliminado la inscripción',
     i18nFormErrors: 'Hay errores en los datos ingresados',
     i18nSuccess: '¡Éxito! - ',
-    i18nError: '¡Error! - '
+    i18nError: '¡Error! - ',
+    i18nPasswordResetSuccess: 'La contraseña ha sido reseteada exitosamente',
+    i18nInvalidUsernameOrPassword: 'Usuario y/o contraseña incorrecta'
   };
 });
