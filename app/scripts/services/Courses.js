@@ -101,6 +101,18 @@ define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], 
       return originalCourse.customPOST(editedCourse);
     };
 
+    rest.newFinalInscription = function(courseId, finalInscription) {
+      var body = {
+        finalExamDate: finalInscription.finalExamDate,
+        maxVacancy: finalInscription.vacancy
+      };
+      return rest.one('courses', courseId).all('finalInscriptions').customPOST(body);
+    };
+
+    rest.deleteFinalInscription = function(courseId, id) {
+      return rest.one('courses', courseId).one('finalInscriptions', id).customDELETE();
+    };
+
     return rest;
   }]);
 });
