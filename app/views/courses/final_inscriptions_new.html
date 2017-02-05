@@ -35,12 +35,15 @@
           (<span class='text-danger' translate='i18nRequiredIcon'/>)
         </label>
         <input type='datetime-local' name='finalExamDate' id='finalExamDate' class='form-input-field' ng-model='controller.finalInscription.finalExamDate' required min='{{controller.currentDate}}' placeholder="{{ 'i18nfinalExamDatePlaceholder' | translate}}"/>
-        <div ng-messages='form.finalExamDate.$error' ng-show='form.finalExamDate.$touched || form.$submitted' class='form-errors' role='alert' ng-messages-multiple>
+        <div ng-messages='form.finalExamDate.$error' ng-show='form.finalExamDate.$touched || form.$submitted' class='form-errors' role='alert'>
           <div ng-message='required'>
             <p translate='i18nRequiredField'></p>
           </div>
           <div ng-message='min'>
             <p translate='i18nInvalidDate'></p>
+          </div>
+          <div ng-message='date'>
+            <p translate='i18nInvalidFormatDate'></p>
           </div>
         </div>
       </div>

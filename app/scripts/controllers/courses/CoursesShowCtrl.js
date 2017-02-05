@@ -1,15 +1,9 @@
 'use strict';
 
-define(['paw','services/Courses','services/Paths', 'controllers/modals/DeleteCorrelativeController'], function(paw) {
+define(['paw','services/Courses','services/Paths', 'controllers/modals/DeleteCorrelativeController', 'controllers/modals/DeleteFinalController'], function(paw) {
   paw.controller('CoursesShowCtrl', ['$routeParams', 'Courses', '$log', 'Paths', function($routeParams, Courses, $log, Paths) {
     var _this = this;
     var courseId = $routeParams.courseId;
-
-    this.formatDate = function(finalExamDate) {
-      var date = finalExamDate.split('T')[0];
-      var time = finalExamDate.split('T')[1];
-      return date.split('-')[2] + '/' + date.split('-')[1] + '/' + date.split('-')[0] + ' ' + time;
-    };
 
     Courses.get(courseId).then(function(course) {
       _this.course = course;

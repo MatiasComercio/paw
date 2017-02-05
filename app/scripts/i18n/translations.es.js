@@ -58,6 +58,7 @@ define([], function() {
     i18nCourseApproved: 'Historial de aprobados',
     i18nCourseAddCorrelative: 'Agregar correlativa',
     i18nCourseDelete: 'Eliminar',
+    i18nFinalDelete: 'Eliminar',
 
     // Tables common headers
     i18nActions: 'Acciones',
@@ -152,6 +153,7 @@ define([], function() {
     i18nCourseSuccessfullyCreated: 'El curso se ha creado exitosamente',
     i18nCourseSuccessfullyUpdated: 'El curso se ha editado exitosamente',
     i18nInvalidBirthday: 'La fecha debe ser anterior a la fecha actual',
+    i18nInvalidFinalExamDate: 'La fecha del examen debe ser posterior a la fecha actual',
 
     // Final Exams
     i18nFinalExams: 'Exámenes Finales',
@@ -189,10 +191,12 @@ define([], function() {
     i18nModalCourseId: 'Código del curso',
     i18nModalCorrelativeName: 'Nombre de la correlativa',
     i18nModalCorrelativeId: 'Código de la correlativa',
-    i18nModalStudentFullName: 'Nombre del estudiante',
+    i18nModalStudentFullName: 'Nombre del alumno',
+    i18nModalDeleteFinal: 'Eliminar examen final',
 
     // Flash messages
     i18nEditSuccess: 'La edición ha sido exitosa',
+    i18nDeleteFinalSuccess: 'Se ha eliminado el examen final',
     i18nDeleteCorrelativeSuccess: 'Se ha eliminado la correlatividad',
     i18nAddCorrelativeSuccess: 'Se ha agregado la correlatividad',
     i18nEnrollSuccess: 'Se ha agregado la inscripción',
@@ -202,6 +206,7 @@ define([], function() {
     i18nFormErrors: 'Hay errores en los datos ingresados',
     i18nSuccess: '¡Éxito! - ',
     i18nError: '¡Error! - ',
+    i18nFinalSuccessfullyCreated: 'Se ha creado la inscripción',
     i18nPasswordResetSuccess: 'La contraseña ha sido reseteada exitosamente',
     i18nInvalidUsernameOrPassword: 'Usuario y/o contraseña incorrecta',
     i18nStudentSuccessfullyCreated: 'El alumno se ha creado exitosamente',

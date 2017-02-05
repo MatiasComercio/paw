@@ -1,0 +1,18 @@
+<div class='modal-header'>
+  <h4 class='modal-title' id='modal-title' translate='i18nModalDeleteFinal'></h4>
+</div>
+<div class='modal-body'>
+  <p class='break-words'>
+    <span class='bold' translate='i18nModalCourseId'></span>: {{ controller.courseId }}
+  </p>
+  <p class='break-words'>
+    <span class='bold' translate='i18nModalCourseName'></span>: {{ controller.courseName }}
+  </p>
+  <p class='break-words'>
+    <span class='bold' translate='i18nFinalExamDate'></span>: {{ controller.finalExamDate | date: 'dd/MM/yyyy HH:mm'}}
+  </p>
+</div>
+<div class='modal-footer'>
+  <button class='btn btn-default' type='button' ng-click="controller.cancel()" translate='i18nCancel'></button>
+  <button class='btn btn-danger' type='button' ng-click='controller.ok()' translate='i18nConfirm'></button>
+</div>

@@ -90,7 +90,7 @@
           <td colspan='4' class='text-danger text-center' translate='i18nNoFinalExamsFound'></td>
         </tr>
         <tr ng-repeat='inscription in controller.course.finalInscriptions'>
-          <td>{{controller.formatDate(inscription.finalExamDate)}}</td>
+          <td>{{inscription.finalExamDate | date: 'dd/MM/yyyy HH:mm'}}</td>
           <td>{{ inscription.vacancy }}/{{ inscription.maxVacancy }}</td>
           <td ng-show="inscription.state == 'OPEN'" translate='i18nInscriptionOpen'></td>
           <td ng-show="inscription.state == 'CLOSED'" translate='i18nInscriptionClosed'></td>
@@ -98,6 +98,11 @@
             <a ng-href='{{ controller.getFinalInscriptionPath(inscription.id) }}' class='btn btn-default' role='button'>
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nInformation'></span>
+            </a>
+            <a class='btn btn-danger' role='button' ng-controller='DeleteFinalController as modalController'
+            ng-click="modalController.open('md', 'i18nFinalDelete', controller.course.courseId, controller.course.name, inscription.finalExamDate, inscription.id)">
+              <span class='fa fa-trash' aria-hidden='true'></span>
+              <span translate='i18nFinalDelete'></span>
             </a>
           </td>
         </tr>
