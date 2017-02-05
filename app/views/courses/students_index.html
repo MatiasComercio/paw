@@ -62,7 +62,7 @@
           <td>{{ student.firstName }}</td>
           <td>{{ student.lastName }}</td>
           <td class='actions-container'>
-            <a class='btn btn-default' role='button'>
+            <a ng-href='{{ controller.getStudentPath(student.docket) }}' class='btn btn-default' role='button'>
               <span class='fa fa-user' aria-hidden='true'></span>
               <span translate='i18nStudentShow'></span>
             </a>

@@ -12,6 +12,9 @@ define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], 
             if (what === 'courses') {
               return data.courses;
             }
+            if (what === 'students') {
+              return data.students;
+            }
             if (what === 'correlatives') {
               return data.courses;
             }
@@ -22,6 +25,9 @@ define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], 
           } else if (operation === 'get') {
             if (what === 'available') {
               return data.courses;
+            }
+            if (what === 'passed') {
+              return data.students;
             }
             return data;
           } else if (operation === 'post') {

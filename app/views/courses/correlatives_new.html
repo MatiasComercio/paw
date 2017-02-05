@@ -60,11 +60,11 @@
           <td>{{ course.credits }}</td>
           <td>{{ course.semester }}</td>
           <td class='actions-container'>
-            <a ng-href='{{controller.getCoursePath(course.courseId)}}'class='btn btn-default' role='button'>
+            <a ng-href='{{ controller.getCoursePath(course.courseId) }}' class='btn btn-default' role='button'>
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nCourseShow'></span>
             </a>
-            <a class='btn btn-info' role='button'ng-controller='AddCorrelativeController as modalController'
+            <a class='btn btn-info' role='button' ng-controller='AddCorrelativeController as modalController'
             ng-click="modalController.open('md', controller.course.courseId, controller.course.name, course.courseId, course.name)">
               <span class='fa fa-pencil-square-o' aria-hidden='true'></span>
               <span translate='i18nAddCorrelative'></span>

@@ -1,14 +1,14 @@
 'use strict';
 
 define(['paw', 'services/modalFactory', 'services/Students', 'services/flashMessages'], function(paw) {
-  paw.controller('UnenrollController',
+  paw.controller('FinalUnenrollController',
     ['modalFactory', '$log', 'Students', '$route', 'flashMessages',
     function (modalFactory, $log, Students, $route, flashMessages) {
-      var modalTemplateUrl = 'views/modals/enroll.html';
+      var modalTemplateUrl = 'views/modals/final_enroll.html';
       var onSuccess = function(result) {
-        Students.unenroll(result.docket, result.courseId)
+        Students.finalUnenroll(result.docket, result.id)
           .then(function(response) {
-            flashMessages.setSuccess('i18nUnenrollSuccess');
+            flashMessages.setSuccess('i18nFinalUnenrollSuccess');
             $route.reload();
           }, function(response) {
             flashMessages.setError('i18nFormErrors');
@@ -21,39 +21,39 @@ define(['paw', 'services/modalFactory', 'services/Students', 'services/flashMess
         $log.info(msg);
       };
 
-      this.open = function (size, title, docket, fullName, courseName, courseId) {
-        var resolve = getResolve(title, docket, fullName, courseId, courseName);
-        modalFactory.create(size, 'UnenrollModalInstanceController', modalTemplateUrl, resolve, onSuccess, onFailure);
+      this.open = function (size, title, docket, fullName, courseName, finalExamDate, id) {
+        var resolve = getResolve(title, docket, fullName, courseName, finalExamDate, id);
+        modalFactory.create(size, 'FinalUnenrollModalInstanceController', modalTemplateUrl, resolve, onSuccess, onFailure);
       };
     }]);
 
-    paw.controller('UnenrollModalInstanceController',
-    function($uibModalInstance, title, docket, fullName, courseId, courseName) {
+    paw.controller('FinalUnenrollModalInstanceController',
+    function($uibModalInstance, title, docket, fullName, courseName, finalExamDate, id) {
       this.title = title;
-      this.fullName = fullName;
       this.docket = docket;
-      this.courseId = courseId;
+      this.fullName = fullName;
       this.courseName = courseName;
+      this.finalExamDate = finalExamDate;
+      this.id = id;
 
       var _this = this;
 
       this.ok = function () {
         $uibModalInstance.close({
-          title: title,
           docket: docket,
           fullName: fullName,
-          courseId: courseId,
-          courseName: courseName
+          courseName: courseName,
+          finalExamDate: finalExamDate,
+          id: id
         });
       };
 
       this.cancel = function () {
-        $uibModalInstance.dismiss('Enroll modal dismissed at: ' + new Date());
+        $uibModalInstance.dismiss('Final inscription unenroll modal dismissed at: ' + new Date());
       };
     });
 
-
-    function getResolve(title, docket, fullName, courseId, courseName) {
+    function getResolve(title, docket, fullName, courseName, finalExamDate, id) {
       return {
         title: function() {
           return title;
@@ -61,14 +61,17 @@ define(['paw', 'services/modalFactory', 'services/Students', 'services/flashMess
         docket: function () {
           return docket;
         },
-        fullName: function() {
+        fullName: function () {
           return fullName;
-        },
-        courseId: function () {
-          return courseId;
         },
         courseName: function () {
           return courseName;
+        },
+        finalExamDate: function () {
+          return finalExamDate;
+        },
+        id: function() {
+          return id;
         }
       };
     };

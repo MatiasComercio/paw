@@ -1,44 +1,8 @@
 'use strict';
-
-define(['paw'], function(paw) {
-  paw.controller('StudentsInscriptionsCtrl', ['$routeParams', function($routeParams) {
+define(['paw','services/Students','services/Paths', 'controllers/modals/EnrollController'], function(paw) {
+  paw.controller('StudentsInscriptionsCtrl', ['$routeParams', 'Students', '$log', 'Paths', function($routeParams, Students, $log, Paths) {
     var _this = this;
     var docket = $routeParams.docket; // For future Service calls
-
-    this.student = {
-      docket: '55019',
-      firstName: 'Matías',
-      lastName: 'Mercado',
-      email: 'mmercado@itba.edu.ar',
-      genre: 'Masculino',
-      dni: '38917403',
-      birthday: '1995-05-04',
-      address: {
-        country: 'Argentina',
-        city: 'Buenos Aires',
-        neighborhood: 'Almagro',
-        number: '682',
-        street: 'Corrientes',
-        floor: '2',
-        door: 'A',
-        telephone: '1544683390',
-        zipCode: '1100'
-      },
-      availableCourses: [
-        {
-          courseId: '72.03',
-          credits: 3,
-          name: 'Introducción a Informática',
-          semester: 1
-        },
-        {
-          courseId: '94.21',
-          credits: 6,
-          name: 'Formacion General I',
-          semester: 5
-        }
-      ]
-    };
 
     this.filter = {
       id: $routeParams.id,
@@ -47,5 +11,22 @@ define(['paw'], function(paw) {
     this.resetSearch = function() {
       this.filter = {};
     };
+
+    Students.get(docket).then(function(student) {
+      _this.student = student;
+      _this.student.all('courses').customGET('available').then(function(courses) {
+        _this.student.availableCourses = courses;
+      });
+    }, function(response) {
+      $log.info('Response status: ' + response.status);
+      if (response.status === 404) {
+        Paths.get().notFound().go();
+      }
+    });
+
+    this.getCoursePath = function(courseId) {
+      return Paths.get().courses({courseId: courseId}).path;
+    };
+
   }]);
 });

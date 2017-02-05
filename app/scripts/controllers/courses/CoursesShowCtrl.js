@@ -11,13 +11,6 @@ define(['paw','services/Courses','services/Paths', 'controllers/modals/DeleteCor
       return date.split('-')[2] + '/' + date.split('-')[1] + '/' + date.split('-')[0] + ' ' + time;
     };
 
-    this.getCorrelativePath = function(correlativeId) {
-      return Paths.get().courses({courseId: correlativeId}).path;
-    };
-    this.getFinalInscriptionPath = function(finalInscriptionId) {
-      return Paths.get().courses({courseId: courseId}).finals({inscriptionId: finalInscriptionId}).path;
-    };
-
     Courses.get(courseId).then(function(course) {
       _this.course = course;
       Courses.setOnSubSidebar(course);
@@ -34,8 +27,12 @@ define(['paw','services/Courses','services/Paths', 'controllers/modals/DeleteCor
       }
     });
 
-    // this.getFinalInscriptionPath = function(finalInscriptionId) {
-    //   return Paths.get().courses({courseId: courseId}).path;
-    // };
+    this.getCorrelativePath = function(correlativeId) {
+      return Paths.get().courses({courseId: correlativeId}).path;
+    };
+    this.getFinalInscriptionPath = function(finalInscriptionId) {
+      return Paths.get().courses({courseId: courseId}).finals({inscriptionId: finalInscriptionId}).path;
+    };
+
   }]);
 });

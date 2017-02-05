@@ -9,6 +9,7 @@ public class FinalInscriptionIndexDTO {
 
   //private CourseDTO course;
   private String courseId;
+  private String name;
 
   private int id;
   private LocalDateTime finalExamDate;
@@ -25,6 +26,13 @@ public class FinalInscriptionIndexDTO {
 
   public void setCourseId(String courseId) {
     this.courseId = courseId;
+  }
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public int getId() {

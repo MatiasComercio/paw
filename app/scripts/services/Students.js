@@ -15,11 +15,19 @@ define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], 
             if (what === 'courses') {
               return data.courses;
             }
+            if (what === 'finalInscriptions') {
+              return data.finalInscriptions;
+            }
             if (what === 'grades') {
               var transcript = data.transcript;
               transcript.currentCredits = data.currentCredits;
               transcript.totalCredits = data.totalCredits;
               return transcript;
+            }
+            return data;
+          } else if (operation === 'get') {
+            if (what === 'available') {
+              return data.courses || data.finalInscriptions;
             }
             return data;
           } else if (operation === 'post') {
@@ -84,6 +92,26 @@ define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], 
 
     rest.update = function(student) {
       return student.customPOST(student);
+    };
+
+    rest.enroll = function(docket, courseId) {
+      var body = {
+        courseId: courseId
+      };
+      return rest.one('students', docket).all('courses').customPOST(body);
+    };
+
+    rest.unenroll = function(docket, courseId) {
+      return rest.one('students', docket).one('courses', courseId).customDELETE();
+    };
+
+    rest.finalEnroll = function(docket, id) {
+      console.log(id);
+      return rest.one('students', docket).one('finalInscriptions', id).customPOST();
+    };
+
+    rest.finalUnenroll = function(docket, id) {
+      return rest.one('students', docket).one('finalInscriptions', id).customDELETE();
     };
 
     return rest;

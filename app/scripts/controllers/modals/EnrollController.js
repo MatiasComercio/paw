@@ -1,14 +1,14 @@
 'use strict';
 
 define(['paw', 'services/modalFactory', 'services/Students', 'services/flashMessages'], function(paw) {
-  paw.controller('UnenrollController',
+  paw.controller('EnrollController',
     ['modalFactory', '$log', 'Students', '$route', 'flashMessages',
     function (modalFactory, $log, Students, $route, flashMessages) {
       var modalTemplateUrl = 'views/modals/enroll.html';
       var onSuccess = function(result) {
-        Students.unenroll(result.docket, result.courseId)
+        Students.enroll(result.docket, result.courseId)
           .then(function(response) {
-            flashMessages.setSuccess('i18nUnenrollSuccess');
+            flashMessages.setSuccess('i18nEnrollSuccess');
             $route.reload();
           }, function(response) {
             flashMessages.setError('i18nFormErrors');
@@ -23,11 +23,11 @@ define(['paw', 'services/modalFactory', 'services/Students', 'services/flashMess
 
       this.open = function (size, title, docket, fullName, courseName, courseId) {
         var resolve = getResolve(title, docket, fullName, courseId, courseName);
-        modalFactory.create(size, 'UnenrollModalInstanceController', modalTemplateUrl, resolve, onSuccess, onFailure);
+        modalFactory.create(size, 'EnrollModalInstanceController', modalTemplateUrl, resolve, onSuccess, onFailure);
       };
     }]);
 
-    paw.controller('UnenrollModalInstanceController',
+    paw.controller('EnrollModalInstanceController',
     function($uibModalInstance, title, docket, fullName, courseId, courseName) {
       this.title = title;
       this.fullName = fullName;
@@ -51,7 +51,6 @@ define(['paw', 'services/modalFactory', 'services/Students', 'services/flashMess
         $uibModalInstance.dismiss('Enroll modal dismissed at: ' + new Date());
       };
     });
-
 
     function getResolve(title, docket, fullName, courseId, courseName) {
       return {
