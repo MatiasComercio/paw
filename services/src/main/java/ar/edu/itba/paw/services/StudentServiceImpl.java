@@ -387,7 +387,7 @@ public class StudentServiceImpl implements StudentService {
 
   @Transactional
   @Override
-  public boolean checkFinalCorrelatives(int docket, String courseId) {
+  public boolean checkFinalCorrelatives(int docket, final String courseId) {
 
     final List<Course> correlatives = courseService.getCorrelativesByFilter(courseId, null);
     final List<Course> approvedCourses = studentDao.getApprovedFinalCourses(docket);
@@ -400,7 +400,7 @@ public class StudentServiceImpl implements StudentService {
 
   @Transactional
   @Override
-  public boolean addFinalGrade(Integer id, Integer docket, BigDecimal grade) {
+  public boolean addFinalGrade(final Integer id, final Integer docket, final BigDecimal grade) {
 
     final FinalInscription fi = courseService.getFinalInscription(id);
     final Student student = studentDao.getByDocket(docket);
@@ -409,8 +409,8 @@ public class StudentServiceImpl implements StudentService {
       return false;
     }
 
-    for (Grade grade1 : student.getGrades()) {
-      if (grade1.getCourse().equals(fi.getCourse()) && BigDecimal.valueOf(4).compareTo(grade1.getGrade()) <= 0 && grade1.getFinalGrades().size() < 3){
+	  for (final Grade grade1 : student.getGrades()) {
+		  if (grade1.getCourse().equals(fi.getCourse()) && BigDecimal.valueOf(4).compareTo(grade1.getGrade()) <= 0 && grade1.getFinalGrades().size() < 3){
 
         FinalGrade fg = new FinalGrade.Builder(null, grade).build();
         studentDao.addFinalGrade(grade1, fg);
