@@ -284,8 +284,8 @@ public class CourseHibernateDao implements CourseDao {
     }
 
     @Override
-    public List<Student> getStudentsThatPassedCourse(final String courseId) {
-        final List<Student> studentsPassed = new LinkedList<>();
+    public Map<Student, Grade> getStudentsThatPassedCourse(final String courseId) {
+        final Map<Student, Grade> studentsPassed = new HashMap<>();
 
         final TypedQuery<Grade> query = em.createQuery("select gr from Grade as gr where gr.course.courseId = :id and gr.grade >= 4", Grade.class);
         query.setParameter("id", courseId);
@@ -295,7 +295,7 @@ public class CourseHibernateDao implements CourseDao {
             for(Grade grade : grades){
                 for(FinalGrade finalGrade : grade.getFinalGrades()){
                     if(BigDecimal.valueOf(4).compareTo(finalGrade.getGrade()) <= 0){
-                        studentsPassed.add(grade.getStudent());
+                        studentsPassed.put(grade.getStudent(), grade);
                     }
                 }
             }

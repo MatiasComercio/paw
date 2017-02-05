@@ -2,11 +2,13 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalInscription;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface CourseService {
@@ -149,7 +151,7 @@ public interface CourseService {
    * @param studentFilter The list of filters to apply
    * @return The list of students that passed the course and complies with the given filters
    */
-    List<Student> getStudentsThatPassedCourse(String courseId, StudentFilter studentFilter);
+    Map<Student, Grade> getStudentsThatPassedCourse(String courseId, StudentFilter studentFilter);
 
     /**
      * Get the final inscriptions corresponding to a course.

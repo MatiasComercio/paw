@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalInscription;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -23,6 +24,7 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.Response.*;
@@ -165,11 +167,11 @@ public class CourseController {
     final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
             .docket(docket).firstName(firstName).lastName(lastName).build();
 
-    final List<Student> approvedStudents = cs.getStudentsThatPassedCourse(courseId, studentFilter);
+    final Map<Student, Grade> approvedStudents = cs.getStudentsThatPassedCourse(courseId, studentFilter);
 
-    final List<StudentIndexDTO> studentsList = approvedStudents.stream().map(student -> mapper.convertToStudentIndexDTO(student)).collect(Collectors.toList());
+    final List<StudentWithGradeDTO> studentsList = mapper.convertToStudentsWithGradeDTO(approvedStudents);
 
-    return ok(new StudentsList(studentsList)).build();
+    return ok(new StudentsWithGradeList(studentsList)).build();
   }
 
   @GET

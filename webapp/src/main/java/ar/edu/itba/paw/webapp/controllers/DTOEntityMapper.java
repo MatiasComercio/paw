@@ -10,8 +10,7 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DTOEntityMapper {
@@ -139,5 +138,22 @@ public class DTOEntityMapper {
     studentSessionDTO.setAuthorities(authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
 
     return studentSessionDTO;
+  }
+
+  List<StudentWithGradeDTO> convertToStudentsWithGradeDTO(final Map<Student, Grade> studentsWithGrade) {
+    final List<StudentWithGradeDTO> studentWithGradeDTOS = new ArrayList<>(studentsWithGrade.size());
+
+    for(final Map.Entry<Student, Grade> entry : studentsWithGrade.entrySet()) {
+      final StudentIndexDTO studentIndexDTO = convertToStudentIndexDTO(entry.getKey());
+      final Grade grade = entry.getValue();
+      final StudentWithGradeDTO studentWithGradeDTO = new StudentWithGradeDTO();
+
+      studentWithGradeDTO.setStudent(studentIndexDTO);
+      studentWithGradeDTO.setGrade(grade.getGrade());
+
+      studentWithGradeDTOS.add(studentWithGradeDTO);
+    }
+
+    return studentWithGradeDTOS;
   }
 }
