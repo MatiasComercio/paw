@@ -53,6 +53,11 @@ public class UserServiceImpl implements UserService {
 		return userDao.existsEmail(email);
 	}
 
+	@Override
+	public boolean userExists(final int dni) {
+		return userDao.userExists(dni);
+	}
+
 	/* Test purpose only */
 	/* default */ void setUserDao(UserDao userDao) {
 		this.userDao = userDao;

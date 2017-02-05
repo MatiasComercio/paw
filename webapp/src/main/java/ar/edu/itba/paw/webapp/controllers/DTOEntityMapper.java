@@ -78,7 +78,11 @@ public class DTOEntityMapper {
   }
 
   FinalInscriptionIndexDTO convertToFinalInscriptionIndexDTO(FinalInscription finalInscription) {
-    return modelMapper.map(finalInscription, FinalInscriptionIndexDTO.class);
+	  final FinalInscriptionIndexDTO finalInscriptionIndexDTO = modelMapper.map(finalInscription, FinalInscriptionIndexDTO.class);
+
+	  finalInscriptionIndexDTO.setName(finalInscription.getCourse().getName());
+
+	  return finalInscriptionIndexDTO;
   }
 
   FinalInscription convertToFinalInscription(FinalInscriptionDTO finalinscriptionDTO, Course course) {

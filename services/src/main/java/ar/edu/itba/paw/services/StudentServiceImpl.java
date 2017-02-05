@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.*;
 import ar.edu.itba.paw.models.users.Student;
+import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,7 +66,9 @@ public class StudentServiceImpl implements StudentService {
   @Override
   public boolean create(final Student student) {
     student.setRole(Role.STUDENT);
-    if (student.getEmail() == null || Objects.equals(student.getEmail(), "")) {
+	  student.getAddress().setDni(student.getDni());
+	  student.setPassword(User.DEFAULT_PASSWORD);
+	  if (student.getEmail() == null || Objects.equals(student.getEmail(), "")) {
       student.setEmail(userService.createEmail(student));
     }
     if(student.getAddress() != null){

@@ -80,4 +80,5 @@ public interface UserDao {
 	boolean existsEmail(String email);
 
 
+	boolean userExists(int dni);
 }

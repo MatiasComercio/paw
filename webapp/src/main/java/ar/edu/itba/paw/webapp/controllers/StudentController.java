@@ -3,6 +3,7 @@ package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
+import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Grade;
@@ -43,6 +44,9 @@ public class StudentController {
   private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(StudentController.class);
 
   @Autowired
+  private UserService us;
+
+  @Autowired
   private StudentService ss;
 
   @Autowired
@@ -58,13 +62,9 @@ public class StudentController {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response studentsIndex(
-          @Min(value = 1)
-          @QueryParam("docket") final Integer docket,
-          @Size(max=50)
-          @QueryParam("firstName") final String firstName,
-          @Size(max=50)
-          @QueryParam("lastName") final String lastName){
+  public Response studentsIndex(@Min(value = 1) @QueryParam("docket") final Integer docket,
+                                @Size(max = 50) @QueryParam("firstName") final String firstName,
+                                @Size(max = 50) @QueryParam("lastName") final String lastName) {
     final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
             .docket(docket).firstName(firstName).lastName(lastName).build();
 
@@ -77,10 +77,10 @@ public class StudentController {
 
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response studentsNew(@Valid final UserNewDTO userNewDTO) throws ValidationException{
+  public Response studentsNew(@Valid final UserNewDTO userNewDTO) throws ValidationException {
     final Student student = mapper.convertToStudent(userNewDTO);
 
-    if(ss.getByDni(student.getDni()) != null) {
+    if (us.userExists(student.getDni())) {
       return status(Status.CONFLICT).build();
     }
     if(!ss.create(student)) {
@@ -96,13 +96,17 @@ public class StudentController {
   @Produces(MediaType.APPLICATION_JSON)
   public Response studentsShow(@PathParam("docket") final int docket) {
     final Student student = ss.getByDocket(docket);
+
     if(student == null) {
       return status(Status.NOT_FOUND).build();
     }
 
-
-
+	  if (student.getDni() != LoggedUser.getDni() && !LoggedUser.isAdmin()) {
+		  LOGGER.debug("Student with dni {} tried to access student with dni {}", LoggedUser.getDni(), student.getDni());
+		  return status(Status.FORBIDDEN).build();
+	  }
     final StudentShowDTO studentShowDTO = mapper.convertToStudentShowDTO(student);
+
     return ok(studentShowDTO).build();
   }
 
@@ -119,7 +123,7 @@ public class StudentController {
     }
 
 	  final int dni = LoggedUser.getDni();
-	  if(dni != oldStudent.getDni() && !LoggedUser.isAdmin()) {
+	  if (dni != oldStudent.getDni() && !LoggedUser.isAdmin()) {
 		  return status(Status.FORBIDDEN).build();
 	  }
 
@@ -134,7 +138,7 @@ public class StudentController {
   @Path("/{docket}")
   public Response studentsDestroy(@PathParam("docket") final int docket) {
 	  ss.deleteStudent(docket);
-    return noContent().build();
+	  return noContent().build();
   }
 
   @GET
@@ -178,7 +182,7 @@ public class StudentController {
 
     final int dni = LoggedUser.getDni();
     if(dni != student.getDni() && !LoggedUser.isAdmin()) {
-    	return status(Status.FORBIDDEN).build();
+	    return status(Status.FORBIDDEN).build();
     }
 
     final Course course = cs.getByCourseID(inscriptionDTO.getCourseId());
@@ -186,12 +190,11 @@ public class StudentController {
       return status(Status.BAD_REQUEST).build();
     }
 
-    boolean result = ss.enroll(student, course);
+	  boolean enrolled = ss.enroll(student, course);
 
-    if(!result){
-      return status(Status.BAD_REQUEST).build();
-      // TODO: Decide what to return
-    }
+	  if (!enrolled) {
+		  return status(Status.CONFLICT).build();
+	  }
     return status(Status.OK).build();
   }
 
@@ -202,13 +205,13 @@ public class StudentController {
           @Pattern(regexp="\\d{2}\\.\\d{2}")
           @PathParam("courseId") final String courseId){
 	  final Student student = ss.getByDocket(docket);
-	  if(student == null){
+	  if (student == null) {
 		  return status(Status.NOT_FOUND).build();
 	  }
 
     final int dni = LoggedUser.getDni();
     if(dni != student.getDni() && !LoggedUser.isAdmin()) {
-    	return status(Status.FORBIDDEN).build();
+	    return status(Status.FORBIDDEN).build();
     }
 
     final Course course = cs.getByCourseID(courseId);
@@ -278,7 +281,7 @@ public class StudentController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Path("/{docket}/grades")
   public Response studentsGradesNew(@PathParam("docket") final Integer docket,
-                                       @Valid final GradeDTO gradeDTO){
+                                    @Valid final GradeDTO gradeDTO) {
 
     final Student student = ss.getByDocket(docket);
     if(student == null){
@@ -319,7 +322,7 @@ public class StudentController {
     }
 
 	  final int dni = LoggedUser.getDni();
-	  if(dni != student.getDni() && !LoggedUser.isAdmin()) {
+	  if (dni != student.getDni() && !LoggedUser.isAdmin()) {
 		  return status(Status.FORBIDDEN).build();
 	  }
 

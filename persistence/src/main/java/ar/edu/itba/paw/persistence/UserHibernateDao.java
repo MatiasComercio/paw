@@ -84,9 +84,6 @@ public class UserHibernateDao implements UserDao {
 		query.setParameter(DNI_PARAM, dni);
 		query.setMaxResults(ONE);
 		final List<User> users = query.getResultList();
-		if (users.isEmpty()) {
-			return false;
-		}
 		final User user = users.get(FIRST);
 
 		if(prevPassword != null && !user.getPassword().equals(prevPassword)) {
@@ -121,6 +118,16 @@ public class UserHibernateDao implements UserDao {
 				.setMaxResults(1).getResultList();
 
 		return !emails.isEmpty();
+	}
+
+	@Override
+	public boolean userExists(final int dni) {
+		final TypedQuery<User> query = em.createQuery(GET_BY_DNI, User.class);
+		query.setParameter(DNI_PARAM, dni);
+		query.setMaxResults(ONE);
+		final List<User> users = query.getResultList();
+
+		return !users.isEmpty();
 	}
 
 	// QueryFilter
