@@ -12,7 +12,15 @@ define([], function() {
         templateUrl: 'views/login.html',
         controller: 'LoginCtrl'
       },
-      '/users/:dni/change_password': {
+      '/not_found': {
+        templateUrl: 'views/not_found.html',
+        controller: 'NotFoundCtrl'
+      },
+      '/server_error': {
+        templateUrl: 'views/server_error.html',
+        controller: 'ServerErrorCtrl'
+      },
+      '/users/change_password': {
         templateUrl: 'views/user/change_password.html',
         controller: 'UserChangePasswordCtrl',
         relativePath: '/user'

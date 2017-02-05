@@ -37,6 +37,7 @@ define([], function() {
     i18nAdminEdit: 'Editar perfil',
     i18nAdminResetPassword: 'Resetear contraseña',
     i18nAdminEditPassword: 'Cambiar contraseña',
+    i18nAdminDelete: 'Eliminar',
 
     // Student subSidebar
     i18nStudentShow: 'Ver perfil',
@@ -149,9 +150,9 @@ define([], function() {
 
     // New
     i18nCoursesButtonNew: 'Agregar',
-    i18nCourseWithCourseIdAlreadyExists: 'Ya existe un curso con ese código',
-    i18nCourseSuccessfullyCreated: 'El curso se ha creado exitosamente',
-    i18nCourseSuccessfullyUpdated: 'El curso se ha editado exitosamente',
+    i18nCourseWithCourseIdAlreadyExists: 'Ya existe una materia con ese código',
+    i18nCourseSuccessfullyCreated: 'La materia se ha creado exitosamente',
+    i18nCourseSuccessfullyUpdated: 'La materia se ha editado exitosamente',
     i18nInvalidBirthday: 'La fecha debe ser anterior a la fecha actual',
     i18nInvalidFinalExamDate: 'La fecha del examen debe ser posterior a la fecha actual',
 
@@ -187,8 +188,8 @@ define([], function() {
 
     // Modals
     i18nModalStudentDocket: 'Legajo del alumno',
-    i18nModalCourseName: 'Nombre del alumno',
-    i18nModalCourseId: 'Código del curso',
+    i18nModalCourseName: 'Nombre de la materia',
+    i18nModalCourseId: 'Código de la materia',
     i18nModalCorrelativeName: 'Nombre de la correlativa',
     i18nModalCorrelativeId: 'Código de la correlativa',
     i18nModalStudentFullName: 'Nombre del alumno',
@@ -210,6 +211,25 @@ define([], function() {
     i18nPasswordResetSuccess: 'La contraseña ha sido reseteada exitosamente',
     i18nInvalidUsernameOrPassword: 'Usuario y/o contraseña incorrecta',
     i18nStudentSuccessfullyCreated: 'El alumno se ha creado exitosamente',
-    i18nStudentSuccessfullyUpdated: 'El alumno se ha editado exitosamente'
+    i18nStudentSuccessfullyUpdated: 'El alumno se ha editado exitosamente',
+    i18nStudentSuccessfullyDeleted: 'El alumno se ha eliminado exitosamente',
+    i18nAdminSuccessfullyDeleted: 'El administrador se ha eliminado exitosamente',
+    i18nCourseSuccessfullyDeleted: 'La materia se ha eliminado exitosamente',
+    i18nPasswordSuccessfullyUpdated: 'La contraseña ha sido modificada exitosamente',
+    i18nWrongOriginalPassword: 'La contraseña actual es incorrecta',
+
+    // Not found page
+    i18nNotFoundPageTitle: 'Página no encontrada',
+    i18nNotFoundPageDescription: 'Parece que ha ingresado una URL inválida. Por favor, vaya al inicio y comience de nuevo',
+    i18nGoHome: 'Ir al inicio',
+
+    // Server error page
+    i18nServerErrorPageTitle: 'Ha ocurrido un error',
+    i18nServerErrorPageDescription: 'Disculpe las molestias ocasionadas. Trabajaremos para arreglar el problema lo antes posible. Vuelva a intentarlo más tarde',
+
+    // Footer
+    i18nFooterText: 'Desarrollado por alumnos de Ingeniería en Informática',
+    i18nFooterCopyright: 'SGA ITBA © Copyright 2017',
+    i18nFooterVersion: 'Versión: 2.0.0'
   };
 });

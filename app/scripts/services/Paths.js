@@ -12,7 +12,9 @@ define([], function() {
         edit: {
           path: pathsService.get().admins(admin).edit().path
         },
-        resetPassword: true
+        resetPassword: true,
+        // delete admin endpoint is not ready yet
+        delete: false
       };
 
       // user should be an admin
@@ -23,7 +25,7 @@ define([], function() {
 
       if (admin.dni === user.dni) {
         actions.editPassword = {
-          path: pathsService.get().users(admin).editPassword().path
+          path: pathsService.get().users().editPassword().path
         };
       }
 
@@ -36,7 +38,7 @@ define([], function() {
         return undefined;
       }
 
-      return {
+      var actions = {
         show: {
           path: pathsService.get().students(student).path
         },
@@ -44,9 +46,6 @@ define([], function() {
           path: pathsService.get().students(student).edit().path
         },
         resetPassword: true,
-        editPassword: {
-          path: pathsService.get().users(student).editPassword().path
-        },
         courses: {
           path: pathsService.get().students(student).courses().path
         },
@@ -59,11 +58,16 @@ define([], function() {
         finals: {
           path: pathsService.get().students(student).finals().path
         },
-        // +++xremove: should be on the Students/Users Service
-        delete: {
-          path: '/users/123/delete'
-        }
+        delete: true
       };
+
+      if (student.dni === user.dni) {
+        actions.editPassword = {
+          path: pathsService.get().users().editPassword().path
+        };
+      }
+
+      return actions;
     };
 
     pathsService.getCourseActions = function(course, user) {
@@ -86,10 +90,7 @@ define([], function() {
         addFinal: {
           path: pathsService.get().courses(course).finalInscriptions().new().path
         },
-        delete: {
-          // +++xremove: should be on the Courses Service
-          path: pathsService.get().courses(course).path + '/delete'
-        }
+        delete: true
       };
     };
 
@@ -131,11 +132,11 @@ define([], function() {
       };
 
       _this.serverError = function() {
-        return append('/serverError');
+        return append('/server_error');
       };
 
       _this.notFound = function() {
-        return append('/notFound');
+        return append('/not_found');
       };
 
       // users

@@ -44,11 +44,13 @@ define(
             user.admin = true;
             user.authorities.admins = true;
             user.profileUrl = Paths.get().admins(user).path;
+            user.locationUrl = Paths.get().admins(user).absolutePath();
             user.authorities.disableInscriptions = inscriptionsEnabled;
           } else { // role === 'STUDENT'
             user.student = true;
             user.authorities.admins = false;
             user.profileUrl = Paths.get().students(user).path;
+            user.locationUrl = Paths.get().students(user).absolutePath();
           };
 
           return user;

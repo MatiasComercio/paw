@@ -16,6 +16,10 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
       return rest.one('users', dni).all('password').all('reset').customPOST();
     };
 
+    rest.updatePassword = function(passwordForm, dni) {
+      return rest.one('users', dni).all('password').all('change').customPOST(passwordForm);
+    };
+
     return rest;
   }]);
 });

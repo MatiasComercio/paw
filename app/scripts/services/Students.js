@@ -114,6 +114,10 @@ define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], 
       return rest.one('students', docket).one('finalInscriptions', id).customDELETE();
     };
 
+    rest.remove = function(student) {
+      return student.remove();
+    };
+
     return rest;
   }]);
 });

@@ -1,31 +1,35 @@
 'use strict';
 
-define(['paw', 'services/modalFactory'], function(paw) {
+define(['paw', 'services/modalFactory', 'services/Courses',
+'services/Paths', 'services/flashMessages'], function(paw) {
   paw.controller('DeleteCourseController',
-    ['modalFactory', '$log',
-    function (modalFactory, $log) {
+    ['modalFactory', '$log', 'Courses', 'Paths', 'flashMessages',
+    function (modalFactory, $log, Courses, Paths, flashMessages) {
       var modalTemplateUrl = 'views/modals/delete_course.html';
-      var onSuccess = function(url) {
-        $log.info('POST ' + url);
+      var onSuccess = function(course) {
+        Courses.remove(course).then(function() {
+          flashMessages.setSuccess('i18nCourseSuccessfullyDeleted');
+          Paths.get().courses().go();
+        });
       };
 
       var onFailure = function(msg) {
         $log.info(msg);
       };
 
-      this.open = function (size, url, id, name) {
-        var resolve = getResolve(url, id, name);
+      this.open = function (size, course) {
+        var resolve = getResolve(course);
         modalFactory.create(size, 'DeleteCourseModalInstanceController', modalTemplateUrl, resolve, onSuccess, onFailure);
       };
     }]);
 
     paw.controller('DeleteCourseModalInstanceController',
-    function ($uibModalInstance, url, id, name) {
-      this.id = id;
-      this.name = name;
+    function ($uibModalInstance, course) {
+      this.id = course.courseId;
+      this.name = course.name;
 
       this.ok = function () {
-        $uibModalInstance.close(url);
+        $uibModalInstance.close(course);
       };
 
       this.cancel = function () {
@@ -33,16 +37,10 @@ define(['paw', 'services/modalFactory'], function(paw) {
       };
     });
 
-    function getResolve(url, id, name) {
+    function getResolve(course) {
       return {
-        url: function () {
-          return url;
-        },
-        id: function () {
-          return id;
-        },
-        name: function () {
-          return name;
+        course: function () {
+          return course;
         }
       };
     };

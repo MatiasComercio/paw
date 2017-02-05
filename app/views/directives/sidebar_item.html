@@ -1,5 +1,5 @@
-<div class='sidebar-item no-select'>
-  <a ng-show='controller.item' ng-click='select()' ng-class='{active: opened}' class='main-item'>
+<div class='sidebar-item no-select' ng-show='controller.item'>
+  <a ng-click='select()' ng-class='{active: opened}' class='main-item'>
     <div class='main-item-text'>
       <div class='text-container'>
         <i class='{{ controller.icon }}' aria-hidden='true'></i>

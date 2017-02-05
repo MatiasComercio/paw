@@ -73,6 +73,10 @@ define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], 
       return admin.customPOST(admin);
     };
 
+    rest.remove = function(admin) {
+      return admin.remove();
+    };
+
     return rest;
   }]);
 });
