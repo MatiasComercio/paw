@@ -207,6 +207,7 @@ public class CourseController {
 
 					if (studentCourses == null || !studentCourses.contains(course)) {
 						httpStatusList.add(String.valueOf(docket), Status.CONFLICT);
+					} else {
 						final Grade grade = new Grade.Builder(null, student, course.getId(), course.getCourseId(), gradeValue).build();
 
 						grade.setCourse(course);

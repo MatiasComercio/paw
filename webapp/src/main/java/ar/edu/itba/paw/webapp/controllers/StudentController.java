@@ -320,11 +320,6 @@ public class StudentController {
       return status(Status.NOT_FOUND).build();
     }
 
-	  final int dni = LoggedUser.getDni();
-	  if (dni != student.getDni() && !LoggedUser.isAdmin()) {
-		  return status(Status.FORBIDDEN).build();
-	  }
-
     final Course course = cs.getByCourseID(gradeDTO.getCourseId());
     if(course == null){
       return status(Status.BAD_REQUEST).build();

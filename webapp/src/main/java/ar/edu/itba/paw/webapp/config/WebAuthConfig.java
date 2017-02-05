@@ -40,13 +40,21 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 					.authorizeRequests()
 
 						// StudentController permissions
+						.antMatchers(HttpMethod.POST, API_PREFIX_VERSION + "/students/*/finalInscriptions/*/qualify").hasAuthority("ADMIN")
 						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students/*/grades/*").hasAuthority("EDIT_GRADE")
 						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students/*/grades").hasAuthority("ADD_GRADE")
+						.antMatchers(HttpMethod.DELETE, API_PREFIX_VERSION + "/students/*").hasAuthority("DELETE_STUDENT")
 						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students").hasAuthority("ADD_STUDENT")
-						.antMatchers(HttpMethod.DELETE, API_PREFIX_VERSION + "/students").hasAuthority("DELETE_STUDENT")
 
 						// CourseController permissions
-						.antMatchers(HttpMethod.POST, API_PREFIX_VERSION + "courses/finalInscriptions/*/grades").hasAuthority("ADMIN")
+
+
+						.antMatchers(HttpMethod.POST, API_PREFIX_VERSION + "/courses/*/finalInscriptions/*/qualify").hasAuthority("ADMIN")
+						.antMatchers(HttpMethod.POST, API_PREFIX_VERSION + "/courses/*/finalInscriptions/*").hasAuthority("ADMIN")
+						.antMatchers(HttpMethod.DELETE, API_PREFIX_VERSION + "/courses/*/finalInscriptions/*").hasAuthority("ADMIN")
+						.antMatchers(HttpMethod.POST, API_PREFIX_VERSION + "/courses/*/finalInscriptions").hasAuthority("ADMIN")
+						.antMatchers(HttpMethod.POST, API_PREFIX_VERSION + "/courses/*/students/qualify").hasAuthority("ADMIN")
+						.antMatchers(HttpMethod.GET, API_PREFIX_VERSION + "/courses/*/correlatives/available").hasAuthority("ADMIN")
 						.antMatchers(HttpMethod.DELETE, API_PREFIX_VERSION + "/courses/*/correlatives/*").hasAuthority("DELETE_CORRELATIVE")
 						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/courses/*/correlatives").hasAuthority("ADD_CORRELATIVE")
 						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/courses/*").hasAuthority("EDIT_COURSE")
