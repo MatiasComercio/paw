@@ -26,6 +26,9 @@ define(
           if (_this.user !== undefined) {
             if (_this.user.authorities.admins) {
               _this.sidebar.admins = sidebarAdmins();
+              _this.sidebar.admins.actions.inscriptions = {
+                enabled: _this.user.authorities.disableInscriptions
+              };
             }
             if (_this.user.authorities.students) {
               _this.sidebar.students = sidebarStudents();
@@ -33,6 +36,8 @@ define(
             if (_this.user.authorities.courses) {
               _this.sidebar.courses = sidebarCourses();
             }
+          } else {
+            _this.sidebar = {};
           }
         };
         navDataService.registerObserverCallback('user', userUpdateCallback);
@@ -40,15 +45,21 @@ define(
 
         // handle inscription enable/disable changes
         var inscriptionsEnabledCallback = function() {
+          var inscriptionsEnabled = navDataService.get('inscriptionsEnabled');
+          if (_this.user) {
+            _this.user.authorities.viewInscriptions = inscriptionsEnabled;
+            _this.user.authorities.addInscription = inscriptionsEnabled;
+            _this.user.authorities.deleteInscription = inscriptionsEnabled;
+            if (_this.user.admin) {
+              _this.user.authorities.disableInscriptions = inscriptionsEnabled;
+            }
+          }
           if (_this.sidebar.admins) {
-            _this.sidebar.admins.actions.inscriptions.enabled =
-            navDataService.get('inscriptionsEnabled');
+            _this.sidebar.admins.actions.inscriptions.enabled = inscriptionsEnabled;
           }
         };
         navDataService.registerObserverCallback('inscriptionsEnabled', inscriptionsEnabledCallback);
-
-        // this info should be filled with an API call to /courses/inscriptions (or similar)
-        navDataService.set('inscriptionsEnabled', true);
+        inscriptionsEnabledCallback();
 
         // handle subSidebar changes
         var subSidebarCallback = function() {
@@ -97,11 +108,6 @@ define(
             },
             new: {
               path: Paths.get().admins().new().path
-            },
-            inscriptions: {
-              enabled: true,
-              // +++xremove
-              path: '/courses/inscriptions'
             }
           }
         };

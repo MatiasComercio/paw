@@ -38,9 +38,9 @@ function(config, dependencyResolverFor, i18n, authenticationService, pathsServic
 
   // define Paths service
   paw.service('Paths', [
-    '$location',
-    function($location) {
-      return pathsService($location);
+    '$location', '$log',
+    function($location, $log) {
+      return pathsService($location, $log);
     }
   ]);
 
@@ -51,6 +51,7 @@ function(config, dependencyResolverFor, i18n, authenticationService, pathsServic
   function ($rootScope, $location, Authentication, Restangular, Paths) {
     // enumerate routes that don't need authentication
     var routesThatDontRequireAuth = [Paths.get().login().path];
+    var adminRoutes = [Paths.get().admins().path];
 
     // check if current location matches route
     var routeClean = function (route) {
@@ -61,7 +62,21 @@ function(config, dependencyResolverFor, i18n, authenticationService, pathsServic
       );
     };
 
+    // check if current location matches route
+    var adminRoute = function (route) {
+      return _.find(adminRoutes,
+        function (adminRoute) {
+          return adminRoute === route;
+        }
+      );
+    };
+
     $rootScope.$on('$routeChangeStart', function (event, next, current) {
+      // if logged in and trying to access loggin => redirect to students
+      if (Authentication.isLoggedIn() && ($location.url() === Paths.get().login().absolutePath())) {
+        Paths.get().go();
+      }
+
       // if route requires auth and user is not logged in
       if (!routeClean($location.url()) && !Authentication.isLoggedIn()) {
         // redirect back to login
@@ -78,7 +93,11 @@ function(config, dependencyResolverFor, i18n, authenticationService, pathsServic
           propagateError = false;
         } else if (response.status === 403) {
           // invalid permissions
-          Paths.get().unauthorized().go();
+          Paths.get().notFound().go();
+          propagateError = false;
+        } else if (response.status === 404) {
+          // invalid permissions
+          Paths.get().notFound().go();
           propagateError = false;
         }
 

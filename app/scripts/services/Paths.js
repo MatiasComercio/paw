@@ -1,28 +1,41 @@
 'use strict';
 
 define([], function() {
-  return function($location) {
+  return function($location, $log) {
     var pathsService = {};
 
-    pathsService.getAdminActions = function(admin) {
-      return {
+    pathsService.getAdminActions = function(admin, user) {
+      var actions = {
         show: {
           path: pathsService.get().admins(admin).path
         },
         edit: {
           path: pathsService.get().admins(admin).edit().path
         },
-        resetPassword: {
-          // +++xremove: should be on the Admins/Users Service
-          path: pathsService.get().admins(admin).path + '/resetPassword'
-        },
-        editPassword: {
-          path: pathsService.get().admins(admin).editPassword().path
-        }
+        resetPassword: true
       };
+
+      // user should be an admin
+      if (!user.admin) {
+        $log.warn('User should be an admin');
+        return undefined;
+      }
+
+      if (admin.dni === user.dni) {
+        actions.editPassword = {
+          path: pathsService.get().users(admin).editPassword().path
+        };
+      }
+
+      return actions;
     };
 
-    pathsService.getStudentActions = function(student) {
+    pathsService.getStudentActions = function(student, user) {
+      if (user.student && (user.docket !== student.docket)) {
+        $log.warn('Student trying to access another student');
+        return undefined;
+      }
+
       return {
         show: {
           path: pathsService.get().students(student).path
@@ -30,12 +43,9 @@ define([], function() {
         edit: {
           path: pathsService.get().students(student).edit().path
         },
-        // +++xremove: should be on the Students/Users Service
-        resetPassword: {
-          path: pathsService.get().students(student).path + '/resetPassword'
-        },
+        resetPassword: true,
         editPassword: {
-          path: pathsService.get().students(student).editPassword().path
+          path: pathsService.get().users(student).editPassword().path
         },
         courses: {
           path: pathsService.get().students(student).courses().path
@@ -56,7 +66,7 @@ define([], function() {
       };
     };
 
-    pathsService.getCourseActions = function(course) {
+    pathsService.getCourseActions = function(course, user) {
       return {
         show: {
           path: pathsService.get().courses(course).path
@@ -72,6 +82,9 @@ define([], function() {
         },
         addCorrelative: {
           path: pathsService.get().courses(course).addCorrelative().path
+        },
+        addFinal: {
+          path: pathsService.get().courses(course).finalInscriptions().new().path
         },
         delete: {
           // +++xremove: should be on the Courses Service
@@ -117,11 +130,20 @@ define([], function() {
         return append('/unauthorized');
       };
 
+      _this.serverError = function() {
+        return append('/serverError');
+      };
+
       _this.notFound = function() {
         return append('/notFound');
       };
 
       // users
+      _this.users = function(user) {
+        var updated = append('/users');
+        return user === undefined ? updated : append('/' + user.dni);
+      };
+
       _this.admins = function(admin) {
         var updated = append('/admins');
         return admin === undefined ? updated : append('/' + admin.dni);
@@ -141,7 +163,7 @@ define([], function() {
       };
 
       _this.editPassword = function() {
-        return append('/password');
+        return append('/change_password');
       };
 
       _this.grades = function() {
@@ -155,6 +177,10 @@ define([], function() {
       _this.finals = function(final) {
         var updated = append('/final_inscriptions');
         return final === undefined ? updated : append('/' + final.inscriptionId);
+      };
+
+      _this.finalInscriptions = function() {
+        return append('/final_inscriptions');
       };
 
       // courses

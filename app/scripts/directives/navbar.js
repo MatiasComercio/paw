@@ -40,6 +40,7 @@ function(paw) {
 
         scope.logout = function() {
           navDataService.remove('user');
+          navDataService.remove('subSidebar');
           Authentication.logout();
           Paths.get().login().go();
         };
