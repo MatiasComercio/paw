@@ -23,21 +23,23 @@ define(
         // handle user updates
         var userUpdateCallback = function() {
           _this.user = navDataService.get('user');
-          if (_this.user !== undefined) {
-            if (_this.user.authorities.admins) {
-              _this.sidebar.admins = sidebarAdmins();
-              _this.sidebar.admins.actions.inscriptions = {
-                enabled: _this.user.authorities.disableInscriptions
-              };
-            }
-            if (_this.user.authorities.students) {
-              _this.sidebar.students = sidebarStudents();
-            }
-            if (_this.user.authorities.courses) {
-              _this.sidebar.courses = sidebarCourses();
-            }
-          } else {
-            _this.sidebar = {};
+          _this.sidebar = {};
+          if (_this.user === undefined) {
+            return;
+          }
+
+          // user defined
+          if (_this.user.authorities.admins) {
+            _this.sidebar.admins = sidebarAdmins();
+            _this.sidebar.admins.actions.inscriptions = {
+              enabled: _this.user.authorities.disableInscriptions
+            };
+          }
+          if (_this.user.authorities.students) {
+            _this.sidebar.students = sidebarStudents();
+          }
+          if (_this.user.authorities.courses) {
+            _this.sidebar.courses = sidebarCourses();
           }
         };
         navDataService.registerObserverCallback('user', userUpdateCallback);

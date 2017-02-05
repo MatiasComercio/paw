@@ -25,6 +25,9 @@ define(
         _this.flashMessages.errors = flashMessages.getErrors();
         _this.flashMessages.successes = flashMessages.getSuccesses();
         flashMessages.clear();
+
+        // restart subSidebar
+        navDataService.remove('subSidebar');
       });
     }]);
   }

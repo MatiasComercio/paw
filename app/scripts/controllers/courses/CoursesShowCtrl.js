@@ -20,6 +20,7 @@ define(['paw','services/Courses','services/Paths', 'controllers/modals/DeleteCor
 
     Courses.get(courseId).then(function(course) {
       _this.course = course;
+      Courses.setOnSubSidebar(course);
       _this.course.getList('correlatives').then(function(correlatives) {
         _this.course.correlatives = correlatives;
       });

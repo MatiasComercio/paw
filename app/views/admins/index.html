@@ -8,7 +8,7 @@
     <div class='filter-fields'>
       <div class='own-input-group'>
         <span class='search-label' translate=i18nDni></span>
-        <input type='text' class='form-input-field' ng-model='controller.filter.DNI' placeholder="{{ 'i18nDni' | translate }}..."/>
+        <input type='text' class='form-input-field' ng-model='controller.filter.dni' placeholder="{{ 'i18nDni' | translate }}..."/>
       </div>
       <div class='own-input-group'>
         <span class='search-label' translate='i18nFirstName'></span>
@@ -20,10 +20,6 @@
       </div>
     </div>
     <div class='filter-buttons'>
-      <button class='btn btn-default' type='submit'>
-        <span class='fa fa-search' aria-hidden='true'></span>
-        <span translate='i18nSearchButton' translate ></span>
-      </button>
       <button class='btn btn-default' ng-click='controller.resetSearch()' type='submit'>
         <span class='fa fa-repeat' aria-hidden='true'></span>
         <span translate='i18nResetButton'></span>
@@ -44,10 +40,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-hide='controller.admins.length > 0' class='bg-warning'>
+        <tr ng-hide='filtered.length > 0' class='bg-warning'>
           <td colspan='4' class='text-danger text-center' translate='i18nNoStudentsFound'></td>
         </tr>
-        <tr ng-repeat='admin in controller.admins'>
+        <tr ng-repeat='admin in controller.admins | filter:controller.filter as filtered'>
           <td>{{ admin.dni }}</td>
           <td>{{ admin.firstName }}</td>
           <td>{{ admin.lastName }}</td>

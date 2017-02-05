@@ -8,7 +8,7 @@
     <div class='filter-container'>
       <div class='filter-fields'>
         <div class='own-input-group'>
-          <span class='search-label' translate=i18nDocket></span>
+          <span class='search-label' translate='i18nDocket'></span>
           <input type='text' class='form-input-field' ng-model='controller.filter.docket' placeholder="{{ 'i18nDocket' | translate }}..."/>
         </div>
         <div class='own-input-group'>
@@ -21,10 +21,6 @@
         </div>
       </div>
       <div class='filter-buttons'>
-        <button class='btn btn-default' type='submit'>
-          <span class='fa fa-search' aria-hidden='true'></span>
-          <span translate='i18nSearchButton' translate ></span>
-        </button>
         <button class='btn btn-default' ng-click='controller.resetSearch()' type='submit'>
           <span class='fa fa-repeat' aria-hidden='true'></span>
           <span translate='i18nResetButton'></span>
@@ -45,15 +41,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-hide='controller.students.length > 0' class='bg-warning'>
+          <tr ng-hide='filtered.length > 0' class='bg-warning'>
             <td colspan='4' class='text-danger text-center' translate='i18nNoStudentsFound'></td>
           </tr>
-          <tr ng-repeat='student in controller.students'>
+          <tr ng-repeat='student in controller.students | filter:controller.filter as filtered'>
             <td>{{ student.docket }}</td>
             <td>{{ student.firstName }}</td>
             <td>{{ student.lastName }}</td>
             <td class='actions-container'>
-              <a ng-href='{{ student.profileUrl }}' class='btn btn-default' role='button'>
+              <a ng-hide='controller.user.student && (controller.user.docket !== student.docket) ' ng-href='{{ student.profileUrl }}' class='btn btn-default' role='button'>
                 <span class='fa fa-user' aria-hidden='true'></span>
                 <span translate='i18nStudentShow'></span>
               </a>

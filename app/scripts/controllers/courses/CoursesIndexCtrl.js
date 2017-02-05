@@ -5,7 +5,7 @@ define(['paw','services/Courses','services/Paths'], function(paw) {
     var _this = this;
     this.filter = {
       courseId: $routeParams.courseId,
-      courseName: $routeParams.courseName
+      name: $routeParams.courseName
     };
     this.resetSearch = function() {
       this.filter = {};
