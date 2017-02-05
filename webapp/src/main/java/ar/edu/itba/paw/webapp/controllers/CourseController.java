@@ -1,6 +1,7 @@
 package ar.edu.itba.paw.webapp.controllers;
 
 import ar.edu.itba.paw.interfaces.CourseService;
+import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalInscription;
 import ar.edu.itba.paw.models.Grade;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,9 @@ public class CourseController {
 
   @Autowired
   private CourseService cs;
+
+	@Autowired
+	private StudentService ss;
 
   @Autowired
   private DTOEntityMapper mapper;
@@ -147,6 +152,50 @@ public class CourseController {
 
     return ok(new StudentsList(studentsList)).build();
   }
+
+	@POST
+	@Path("/{courseId}/students/qualify")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response coursesStudentsQualify(@PathParam("courseId") final String courseId,
+	                                       @Valid final List<QualifyStudent> qualifiedStudents) {
+		final HTTPResponseList httpStatusList = new HTTPResponseList(qualifiedStudents.size());
+
+		final Course course = cs.getByCourseID(courseId);
+
+		if (course == null) {
+			return status(Status.NOT_FOUND).build();
+		}
+
+		if (qualifiedStudents.size() != 0) {
+
+			for (final QualifyStudent qualifyStudent : qualifiedStudents) {
+				final int docket = qualifyStudent.getDocket();
+				final BigDecimal gradeValue = qualifyStudent.getGrade();
+
+				final Student student = ss.getByDocket(qualifyStudent.getDocket());
+
+				if (student == null) {
+					httpStatusList.add(String.valueOf(docket), Status.NOT_FOUND);
+				} else {
+					final List<Course> studentCourses = ss.getStudentCourses(docket, null);
+
+					if (studentCourses == null || !studentCourses.contains(course)) {
+						httpStatusList.add(String.valueOf(docket), Status.CONFLICT);
+						final Grade grade = new Grade.Builder(null, student, course.getId(), course.getCourseId(), gradeValue).build();
+
+						grade.setCourse(course);
+
+						final int gradeId = ss.addGrade(grade);
+
+						final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(gradeId)).build();
+						httpStatusList.add(uri.toString(), Status.CREATED);
+					}
+				}
+			}
+		}
+		return Response.status(207).entity(httpStatusList).build();
+	}
 
   //TODO: It seems that it never returned the grade, should we do it?
   @GET
@@ -317,4 +366,35 @@ public class CourseController {
     return noContent().build();
   }
 
+	@POST
+	@Path("/{courseId}/finalInscriptions/{finalInscriptionId}/qualify")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response courseFinalInscriptionQualify(@Pattern(regexp = "\\d{2}\\.\\d{2}") @PathParam("courseId") final String courseId,
+	                                              @PathParam("finalInscriptionId") final int finalInscriptionId,
+	                                              @Valid List<QualifyStudent> qualifiedStudents) {
+		if (cs.getByCourseID(courseId) == null || cs.getFinalInscription(finalInscriptionId) == null) {
+			return status(Status.NOT_FOUND).build();
+		}
+
+		final FinalInscription finalInscription = cs.getFinalInscription(finalInscriptionId);
+		if (!cs.getCourseFinalInscriptions(courseId).contains(finalInscription)) {
+			return status(Status.NOT_FOUND).build();
+		}
+
+		final HTTPResponseList httpStatusList = new HTTPResponseList(qualifiedStudents.size());
+
+		for (final QualifyStudent qualifyStudent : qualifiedStudents) {
+			final int docket = qualifyStudent.getDocket();
+			final BigDecimal grade = qualifyStudent.getGrade();
+
+			if (!ss.addFinalGrade(finalInscriptionId, docket, grade)) {
+				httpStatusList.add(String.valueOf(docket), Status.CONFLICT);
+			} else {
+				httpStatusList.add(String.valueOf(docket), Status.NO_CONTENT);
+			}
+		}
+
+		return status(207).entity(httpStatusList).build();
+	}
 }
