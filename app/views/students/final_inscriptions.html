@@ -30,16 +30,17 @@
           <td colspan='4' class='text-danger text-center' translate='i18nNoFinalExamsFound'></td>
         </tr>
         <tr ng-repeat='inscription in controller.student.finalInscriptionsAvailable'>
-          <td>{{controller.formatDate(inscription.finalExamDate)}}</td>
+          <td>{{inscription.finalExamDate | date: 'dd/MM/yyyy HH:mm'}}</td>
           <td>{{ inscription.vacancy }}/{{ inscription.maxVacancy }}</td>
           <td ng-show="inscription.state == 'OPEN'" translate='i18nInscriptionOpen'></td>
           <td ng-show="inscription.state == 'CLOSED'" translate='i18nInscriptionClosed'></td>
           <td class='actions-container'>
-            <a class='btn btn-default' role='button'>
+            <a ng-href='{{ controller.getFinalInscriptionPath(inscription.courseId, inscription.id) }}' class='btn btn-default' role='button'>
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nInformation'></span>
             </a>
-            <a class='btn btn-info' role='button'>
+            <a class='btn btn-info' role='button' ng-controller='FinalEnrollController as modalController'
+            ng-click="modalController.open('md', 'i18nEnroll', controller.student.docket, controller.student.fullName, inscription.name, inscription.finalExamDate, inscription.id)">
               <span class='fa fa-list-alt' aria-hidden='true'></span>
               <span translate='i18nFinalEnroll'></span>
             </a>
@@ -67,16 +68,17 @@
           <td colspan='4' class='text-danger text-center' translate='i18nNoFinalExamsFound'></td>
         </tr>
         <tr ng-repeat='inscription in controller.student.finalInscriptionsTaken'>
-          <td>{{controller.formatDate(inscription.finalExamDate)}}</td>
+          <td>{{inscription.finalExamDate | date: 'dd/MM/yyyy HH:mm'}}</td>
           <td>{{ inscription.vacancy }}/{{ inscription.maxVacancy }}</td>
           <td ng-show="inscription.state == 'OPEN'" translate='i18nInscriptionOpen'></td>
           <td ng-show="inscription.state == 'CLOSED'" translate='i18nInscriptionClosed'></td>
           <td class='actions-container'>
-            <a class='btn btn-default' role='button'>
+            <a ng-href='{{ controller.getFinalInscriptionPath(inscription.courseId, inscription.id) }}' class='btn btn-default' role='button'>
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nInformation'></span>
             </a>
-            <a class='btn btn-danger' role='button'>
+            <a class='btn btn-danger' role='button' ng-controller='FinalUnenrollController as modalController'
+            ng-click="modalController.open('md', 'i18nUnenroll', controller.student.docket, controller.student.fullName, inscription.name, inscription.finalExamDate, inscription.id)">
               <span class='fa fa-list-alt' aria-hidden='true'></span>
               <span translate='i18nUnenroll'></span>
             </a>

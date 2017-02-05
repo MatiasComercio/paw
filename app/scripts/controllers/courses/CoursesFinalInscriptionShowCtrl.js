@@ -1,62 +1,28 @@
 'use strict';
 
-define(['paw'], function(paw) {
-  paw.controller('CoursesFinalInscriptionShowCtrl', ['$routeParams', function($routeParams) {
+define(['paw','services/Courses','services/Paths'], function(paw) {
+  paw.controller('CoursesFinalInscriptionShowCtrl', ['$routeParams', 'Courses', '$log', 'Paths', function($routeParams, Courses, $log, Paths) {
+
     var _this = this;
     var courseId = $routeParams.courseId;
     var inscriptionId = $routeParams.inscriptionId;
 
-    this.formatDate = function(finalExamDate) {
-      var date = finalExamDate.split('T')[0];
-      var time = finalExamDate.split('T')[1];
-      return date.split('-')[2] + '/' + date.split('-')[1] + '/' + date.split('-')[0] + ' ' + time;
+    Courses.get(courseId).then(function(course) {
+      _this.course = course;
+      _this.course.all('finalInscriptions').get(inscriptionId).then(function(finalInscription) {
+        _this.course.inscription = finalInscription;
+        _this.course.inscription.students = finalInscription.history;
+      });
+    }, function(response) {
+      $log.info('Response status: ' + response.status);
+      if (response.status === 404) {
+        Paths.get().notFound().go();
+      }
+    });
+
+    this.getStudentPath = function(docket) {
+      return Paths.get().students({docket: docket}).path;
     };
 
-    this.course = {
-      courseId: '72.03',
-      credits: 3,
-      name: 'Introducción a Informática',
-      semester: 1,
-      inscription: {
-        id: '1',
-        courseId: '93.42',
-        vacancy: '12',
-        maxVacancy: '50',
-        finalExamDate: '2017-01-20T18:45',
-        state: 'OPEN',
-        students: [
-          {
-            firstName: 'Matías',
-            lastName: 'Mercado',
-            docket: '55019'
-          },
-          {
-            firstName: 'Facundo',
-            lastName: 'Mercado',
-            docket: '51202'
-          },
-          {
-            firstName: 'Gibar',
-            lastName: 'Sin',
-            docket: '54655'
-          },
-          {
-            firstName: 'Obi Wan',
-            lastName: 'Kenobi',
-            docket: '12000'
-          },
-          {
-            firstName: 'Darth',
-            lastName: 'Vader',
-            docket: '66666'
-          },
-          {
-            firstName: 'Luke',
-            lastName: 'Skywalker',
-            docket: '53222'
-          }
-        ]
-      }
-    };
   }]);
 });

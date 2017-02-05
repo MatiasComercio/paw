@@ -17,7 +17,7 @@
   <div class='data-container'>
     <div class='data-item'>
       <p class='bold static-label' translate='i18nFinalExamDate'></p>
-      <p class='break-words'>{{controller.formatDate(controller.course.inscription.finalExamDate)}}</p>
+      <p class='break-words'>{{controller.course.inscription.finalExamDate | date: 'dd/MM/yyyy HH:mm:ss'}}</p>
     </div>
     <div class='data-item'>
       <p class='bold static-label' translate='i18nVacancy'></p>
@@ -55,17 +55,13 @@
           <td>{{ student.firstName }}</td>
           <td>{{ student.lastName }}</td>
           <td class='actions-container'>
-            <a class='btn btn-default' role='button'>
+            <a ng-href='{{ controller.getStudentPath(student.docket) }}' class='btn btn-default' role='button'>
               <span class='fa fa-user' aria-hidden='true'></span>
               <span translate='i18nStudentShow'></span>
             </a>
             <a class='btn btn-info' role='button'>
               <span class='fa fa-pencil-square-o' aria-hidden='true'></span>
               <span translate='i18nQualify'></span>
-            </a>
-            <a class='btn btn-danger' role='button'>
-              <span class='fa fa-list-alt' aria-hidden='true'></span>
-              <span translate='i18nUnenroll'></span>
             </a>
           </td>
         </tr>

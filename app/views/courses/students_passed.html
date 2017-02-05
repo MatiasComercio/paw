@@ -58,13 +58,13 @@
         <tr ng-hide='controller.course.passedStudents.length > 0' class='bg-warning'>
           <td colspan='5' class='text-danger text-center' translate='i18nNoStudentsFound'></td>
         </tr>
-        <tr ng-repeat='student in controller.course.passedStudents'>
-          <td>{{ student.docket }}</td>
-          <td>{{ student.firstName }}</td>
-          <td>{{ student.lastName }}</td>
-          <td>{{ student.grade }}</td>
+        <tr ng-repeat='studentInfo in controller.course.passedStudents'>
+          <td>{{ studentInfo.student.docket }}</td>
+          <td>{{ studentInfo.student.firstName }}</td>
+          <td>{{ studentInfo.student.lastName }}</td>
+          <td>{{ studentInfo.grade }}</td>
           <td class='actions-container'>
-            <a class='btn btn-default' role='button'>
+            <a ng-href='{{ controller.getStudentPath(studentInfo.student.docket) }}' class='btn btn-default' role='button'>
               <span class='fa fa-user' aria-hidden='true'></span>
               <span translate='i18nStudentShow'></span>
             </a>

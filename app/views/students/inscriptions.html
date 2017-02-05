@@ -60,13 +60,14 @@
           <td>{{ course.credits }}</td>
           <td>{{ course.semester }}</td>
           <td class='actions-container'>
-            <a class='btn btn-info' role='button'>
-              <span class='fa fa-list-alt' aria-hidden='true'></span>
-              <span translate='i18nEnroll'></span>
-            </a>
-            <a class='btn btn-default' role='button'>
+            <a ng-href='{{controller.getCoursePath(course.courseId)}}' class='btn btn-default' role='button'>
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nCourseShow'></span>
+            </a>
+            <a class='btn btn-info' role='button' ng-controller='EnrollController as modalController'
+            ng-click="modalController.open('md', 'i18nEnroll', controller.student.docket, controller.student.fullName, course.name, course.courseId)">
+              <span class='fa fa-list-alt' aria-hidden='true'></span>
+              <span translate='i18nEnroll'></span>
             </a>
           </td>
         </tr>

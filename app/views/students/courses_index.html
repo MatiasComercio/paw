@@ -65,7 +65,7 @@
               <span translate='i18nCourseShow'></span>
             </a>
             <a class='btn btn-danger' role='button' ng-controller='UnenrollController as modalController'
-            ng-click="modalController.open('md', controller.student.docket, course.name, course.courseId)">
+            ng-click="modalController.open('md', 'i18nUnenroll', controller.student.docket, controller.student.fullName, course.name, course.courseId)">
               <span class='fa fa-trash' aria-hidden='true'></span>
               <span translate='i18nUnenroll'></span>
             </a>
