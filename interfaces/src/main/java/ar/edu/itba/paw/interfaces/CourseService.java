@@ -15,15 +15,14 @@ public interface CourseService {
     /**
      *
      * @param course The course to be persisted in the database.
-     * @return The Result code of the insertion.
      */
-    boolean create(Course course);
+    void create(Course course);
 
     /**
      * Update a course
      * @param courseId Id the previous course.
      * @param course Modified course.
-     * @return The result code of the insertion.
+     * @return The true if the course was updated
      */
     boolean update(String courseId, Course course);
 
@@ -65,8 +64,6 @@ public interface CourseService {
     /**
      * Attempts to delete the course with the given id
      * @param id of the course to delete
-     * @return true if the course was deleted;
-     *         false in other case;
      */
     boolean deleteCourse(String id);
 
@@ -108,9 +105,10 @@ public interface CourseService {
      *
      * @param courseId The id of the course.
      * @param correlativeId The id of the correlative for the given course.
-     * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
+     * @return true if the correlative was deleted;
+     *         false if either of the correlatives did not exist
      */
-    boolean deleteCorrelative(String courseId, String correlativeId);
+    void deleteCorrelative(String courseId, String correlativeId);
 
     /**
      *
@@ -127,10 +125,9 @@ public interface CourseService {
     /**
      *
      * @param courseId The id of the course.
-     * @param courseFilter The course's filter. If null, no filter is applied.
      * @return A list of correlatives courses to the given course, with the filter applied.
      */
-    List<Course> getCorrelativesByFilter(String courseId, CourseFilter courseFilter);
+    List<Course> getCorrelativeCourses(String courseId);
 
     /**
      *

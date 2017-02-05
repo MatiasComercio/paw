@@ -3,7 +3,6 @@ package ar.edu.itba.paw.persistence;
 import ar.edu.itba.paw.interfaces.UserDao;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.User;
-import ar.edu.itba.paw.shared.Result;
 import ar.edu.itba.paw.shared.UserFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,11 +43,11 @@ public class UserHibernateDao implements UserDao {
 		final User u = users.get(FIRST);
 
 		return builder.firstName(u.getFirstName()).lastName(u.getLastName()).address(u.getAddress())
-				.genre(u.getGenre()).birthday(u.getBirthday()).email(u.getEmail()).password(u.getPassword())
-				.build();
+						.genre(u.getGenre()).birthday(u.getBirthday()).email(u.getEmail()).password(u.getPassword())
+						.build();
 	}
 
-	@Override // +++xchange: return only one role
+	@Override
 	public List<Role> getRole(final int dni) {
 		// write "from..." not "select...". The second form will be causing an exception
 		final TypedQuery<User> query = em.createQuery(GET_BY_DNI, User.class);
@@ -66,15 +65,12 @@ public class UserHibernateDao implements UserDao {
 	}
 
 	@Override
-	public Result create(final User user, final Role role) {
+	public void create(final User user, final Role role) {
 		em.persist(user);
-		return Result.OK;
 	}
 
-	@Override /* +++xremove when service function with the same name is removed */
-	public Result delete(final int dni) {
-		// this method should not be directly called
-		// use delete method of subclasses DAO implementations
+	@Override
+	public void delete(final int dni) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -96,10 +92,9 @@ public class UserHibernateDao implements UserDao {
 	}
 
 	@Override
-	public Result update(final int dni, final User user) {
+	public void update(final int dni, final User user) {
 		em.merge(user);
 		LOGGER.debug("[update] - {}", user);
-		return Result.OK;
 	}
 
 	@Override
@@ -115,7 +110,7 @@ public class UserHibernateDao implements UserDao {
 		final Predicate equalsPredicate = builder.equal(user.get("email"), email);
 
 		final List<String> emails = em.createQuery(query.select(user.get("email")).where(equalsPredicate))
-				.setMaxResults(1).getResultList();
+						.setMaxResults(1).getResultList();
 
 		return !emails.isEmpty();
 	}
@@ -162,9 +157,9 @@ public class UserHibernateDao implements UserDao {
 
 		/* package-private */ CriteriaQuery<T> getQuery() {
 			return query.where(builder.and(predicates.toArray(new Predicate[] {}))).orderBy(
-					builder.asc(root.get("lastName")),
-					builder.asc(root.get("firstName")),
-					builder.asc(root.get("dni"))
+							builder.asc(root.get("lastName")),
+							builder.asc(root.get("firstName")),
+							builder.asc(root.get("dni"))
 			);
 		}
 
@@ -176,10 +171,10 @@ public class UserHibernateDao implements UserDao {
 
 			if (id != null){
 				p = builder.like(
-						root.get(
-								type.getSingularAttribute(attribute, id.getClass())
-						).as(String.class),
-						"%" + escapeFilter(id) + "%"
+								root.get(
+												type.getSingularAttribute(attribute, id.getClass())
+								).as(String.class),
+								"%" + escapeFilter(id) + "%"
 				);
 				predicates.add(p);
 			}
@@ -195,16 +190,16 @@ public class UserHibernateDao implements UserDao {
 			addPredicate("lastName", keyword);
 		}
 
-		private <Y> void  addPredicate(final String attribute, final Object keyword) {
+		private void addPredicate(final String attribute, final Object keyword) {
 			final Predicate p;
 			if (keyword != null) {
 				p = builder.like(
-						builder.lower(
-								root.get(
-										type.getSingularAttribute(attribute, keyword.getClass())
-								).as(String.class)
-						),
-						"%" + escapeFilter(keyword).toLowerCase() + "%"
+								builder.lower(
+												root.get(
+																type.getSingularAttribute(attribute, keyword.getClass())
+												).as(String.class)
+								),
+								"%" + escapeFilter(keyword).toLowerCase() + "%"
 				);
 				predicates.add(p);
 			}

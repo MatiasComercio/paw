@@ -77,9 +77,10 @@ public class CourseController {
   public Response coursesNew(@Valid final CourseDTO courseDTO) {
     final Course course = mapper.convertToCourse(courseDTO);
 
-    if(!cs.create(course)) {
-      return status(Status.BAD_REQUEST).build();
+    if (cs.getByCourseID(course.getCourseId()) != null) {
+      return status(Status.CONFLICT).build();
     }
+    cs.create(course);
     final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(course.getCourseId())).build();
 
     return created(uri).build();
@@ -221,7 +222,6 @@ public class CourseController {
 		return Response.status(207).entity(httpStatusList).build();
 	}
 
-  //TODO: It seems that it never returned the grade, should we do it?
   @GET
   @Path("/{courseId}/students/passed")
   @Produces(MediaType.APPLICATION_JSON)
@@ -238,10 +238,11 @@ public class CourseController {
     }
 
     final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
-            .docket(docket).firstName(firstName).lastName(lastName).build();
-
+            .docket(docket)
+            .firstName(firstName)
+            .lastName(lastName)
+            .build();
     final Map<Student, Grade> approvedStudents = cs.getStudentsThatPassedCourse(courseId, studentFilter);
-
     final List<StudentWithGradeDTO> studentsList = mapper.convertToStudentsWithGradeDTO(approvedStudents);
 
     return ok(new StudentsWithGradeList(studentsList)).build();
@@ -300,10 +301,14 @@ public class CourseController {
   public Response coursesCorrelativesDestroy(@PathParam("courseId") final String courseId,
                                              @PathParam("correlativeId") final String correlativeId) {
 
+	  if (cs.getByCourseID(courseId) == null || cs.getByCourseID(correlativeId) == null) {
+		  return status(Status.NOT_FOUND).build();
+	  }
 
-    if(!cs.deleteCorrelative(courseId, correlativeId)) {
-      return status(Status.BAD_REQUEST).build();
+    if (courseId.equals(correlativeId)) {
+      return status(Status.CONFLICT).build();
     }
+	  cs.deleteCorrelative(courseId, correlativeId);
 
     return noContent().build();
   }

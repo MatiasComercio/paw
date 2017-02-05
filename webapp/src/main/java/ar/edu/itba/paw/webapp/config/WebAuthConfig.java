@@ -75,6 +75,6 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(final WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/static/**", "/WEB-INF/jsp/base/**", "/favicon.ico", "/errors/401");
+		web.ignoring().antMatchers("/favicon.ico");
 	}
 }

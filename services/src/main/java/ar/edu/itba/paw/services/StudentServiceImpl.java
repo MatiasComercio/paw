@@ -38,16 +38,11 @@ public class StudentServiceImpl implements StudentService {
   @Transactional
   @Override
   public List<Course> getStudentCourses(final int docket, final CourseFilter courseFilter) {
-
-    List<Course> courses = studentDao.getStudentCourses(docket);
-    if (courses == null) {
-      return null;
-    }
-
-    List<Course> coursesFiltered = courseService.getByFilter(courseFilter);
-
+    final List<Course> courses = studentDao.getStudentCourses(docket);
+    final List<Course> coursesFiltered = courseService.getByFilter(courseFilter);
     final List<Course> rCourses = new LinkedList<>();
-    for (Course c : coursesFiltered) {
+
+    for (final Course c : coursesFiltered) {
       if (courses.contains(c)) {
         rCourses.add(c);
       }
@@ -64,7 +59,7 @@ public class StudentServiceImpl implements StudentService {
 
   @Transactional
   @Override
-  public boolean create(final Student student) {
+  public void create(final Student student) {
     student.setRole(Role.STUDENT);
 	  student.getAddress().setDni(student.getDni());
 	  student.setPassword(User.DEFAULT_PASSWORD);
@@ -74,27 +69,28 @@ public class StudentServiceImpl implements StudentService {
     if(student.getAddress() != null){
       student.getAddress().setDni(student.getDni());
     }
-    return studentDao.create(student);
+    studentDao.create(student);
   }
 
   @Transactional
   @Override
-  public boolean deleteStudent(final int docket) {
-    return studentDao.deleteStudent(docket);
+  public void deleteStudent(final int docket) {
+    studentDao.deleteStudent(docket);
   }
 
   @Transactional
   @Override
   public int addGrade(final Grade grade) {
-    int id = studentDao.addGrade(grade);
+    final int id = studentDao.addGrade(grade);
     studentDao.unenroll(grade.getStudentDocket(), grade.getCourseId());
+
     return id;
   }
 
   @Transactional
   @Override
-  public boolean editGrade(final Grade newGrade, final BigDecimal oldGrade) {
-    return studentDao.editGrade(newGrade, oldGrade);
+  public void editGrade(final Grade newGrade) {
+    studentDao.editGrade(newGrade);
   }
 
   @Transactional
@@ -103,9 +99,9 @@ public class StudentServiceImpl implements StudentService {
     final Student oldStudent = getByDocket(student.getDocket());
 
 		/* Set Remaining information that cannot be updated by the user via this method */
-		student.setDni(oldStudent.getDni());
+    student.setDni(oldStudent.getDni());
     student.setId_seq(oldStudent.getId_seq());
-		student.setDocket(oldStudent.getDocket());
+    student.setDocket(oldStudent.getDocket());
     student.getAddress().setId_seq(oldStudent.getAddress().getId_seq());
     student.setPassword(oldStudent.getPassword());
     student.setEmail(oldStudent.getEmail());
@@ -142,10 +138,10 @@ public class StudentServiceImpl implements StudentService {
 
   @Transactional
   @Override
-  public Integer getPassedCredits(final int docket) {
+  public int getPassedCredits(final int docket) {
     final List<Course> list = getApprovedCourses(docket);
 
-    Integer amount = 0;
+    int amount = 0;
 
     for (Course course : list) {
       amount += course.getCredits();
@@ -158,8 +154,8 @@ public class StudentServiceImpl implements StudentService {
     return userService.existsEmail(email);
   }
 
-  public boolean createProcedure(final Procedure procedure) {
-    return studentDao.createProcedure(procedure);
+  public void createProcedure(final Procedure procedure) {
+    studentDao.createProcedure(procedure);
   }
 
   @Transactional
@@ -182,10 +178,6 @@ public class StudentServiceImpl implements StudentService {
 
     final List<Course> courses = courseService.getByFilter(courseFilter);
 
-    if (courses == null) {
-      return null;
-    }
-
     final List<Course> currentCourses = getStudentCourses(docket, null);
     if (currentCourses != null) {
       courses.removeAll(currentCourses);
@@ -203,7 +195,8 @@ public class StudentServiceImpl implements StudentService {
   @Override
   public boolean enroll(final Student student, final Course course) {
 
-    List<Course> available = getAvailableInscriptionCourses(student.getDocket(), null);
+    final List<Course> available = getAvailableInscriptionCourses(student.getDocket(), null);
+
     if(!available.contains(course)){
       return false;
     }
@@ -213,6 +206,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     studentDao.enroll(student.getDocket(), course.getCourseId());
+
     return true;
   }
 
@@ -220,7 +214,7 @@ public class StudentServiceImpl implements StudentService {
   @Override
   public boolean checkCorrelatives(final int docket, final String courseId) {
     final List<String> correlatives = courseService.getCorrelativesIds(courseId);
-    final List<String> approvedCourses = getApprovedCourses(docket).stream().map(course -> course.getCourseId()).collect(Collectors.toList());;
+    final List<String> approvedCourses = getApprovedCourses(docket).stream().map(Course::getCourseId).collect(Collectors.toList());
 
     for (String correlative : correlatives){
       if (!approvedCourses.contains(correlative)){
@@ -317,20 +311,11 @@ public class StudentServiceImpl implements StudentService {
     return dni <= 0 ? null : studentDao.getByDni(dni);
   }
 
-  /* Test purpose only */
-	/* default */ void setStudentDao(final StudentDao studentDao) {
-    this.studentDao = studentDao;
-  }
-  /* Test purpose only */
-	/* default */ void setCourseService(final CourseService courseService) {
-    this.courseService = courseService;
-  }
-
   @Transactional
   @Override
   public List<FinalInscription> getAvailableFinalInscriptions(Student student) {
 
-    List<FinalInscription> finalInscriptions = new ArrayList<>();
+    final List<FinalInscription> finalInscriptions = new ArrayList<>();
 
     //inscription.getVacancy() < inscription.getMaxVacancy() The inscription should be visible even when full
     for(FinalInscription inscription : studentDao.getAllFinalInscriptions()){
@@ -357,7 +342,7 @@ public class StudentServiceImpl implements StudentService {
       return false;
     }
 
-    List<FinalInscription> finalInscriptionsForCourse = courseService.getCourseFinalInscriptions(finalInscription.getCourse().getCourseId());
+    final List<FinalInscription> finalInscriptionsForCourse = courseService.getCourseFinalInscriptions(finalInscription.getCourse().getCourseId());
     for (FinalInscription inscription : finalInscriptionsForCourse) {
       if (inscription.getHistory().contains(student))
         return false;
@@ -392,19 +377,15 @@ public class StudentServiceImpl implements StudentService {
   @Override
   public boolean checkFinalCorrelatives(int docket, final String courseId) {
 
-    final List<Course> correlatives = courseService.getCorrelativesByFilter(courseId, null);
-    final List<Course> approvedCourses = studentDao.getApprovedFinalCourses(docket);
+	  final List<Course> correlatives = courseService.getCorrelativeCourses(courseId);
+	  final List<Course> approvedCourses = studentDao.getApprovedFinalCourses(docket);
 
-    if (approvedCourses.containsAll(correlatives))
-      return true;
-    return false;
-
+    return approvedCourses.containsAll(correlatives);
   }
 
   @Transactional
   @Override
-  public boolean addFinalGrade(final Integer id, final Integer docket, final BigDecimal grade) {
-
+  public boolean addFinalGrade(final int id, final int docket, final BigDecimal gradeValue) {
     final FinalInscription fi = courseService.getFinalInscription(id);
     final Student student = studentDao.getByDocket(docket);
 
@@ -412,11 +393,10 @@ public class StudentServiceImpl implements StudentService {
       return false;
     }
 
-	  for (final Grade grade1 : student.getGrades()) {
-		  if (grade1.getCourse().equals(fi.getCourse()) && BigDecimal.valueOf(4).compareTo(grade1.getGrade()) <= 0 && grade1.getFinalGrades().size() < 3){
-
-        FinalGrade fg = new FinalGrade.Builder(null, grade).build();
-        studentDao.addFinalGrade(grade1, fg);
+    for (final Grade currGrade : student.getGrades()) {
+      if (currGrade.getCourse().equals(fi.getCourse()) && BigDecimal.valueOf(4).compareTo(currGrade.getGrade()) <= 0 && currGrade.getFinalGrades().size() < 3) {
+        FinalGrade fg = new FinalGrade.Builder(null, gradeValue).build();
+        studentDao.addFinalGrade(currGrade, fg);
         studentDao.deleteStudentFinalInscription(student, fi);
         return true;
       }
