@@ -2,10 +2,12 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalInscription;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CourseDao {
 
@@ -153,7 +155,7 @@ public interface CourseDao {
      * @return The list of students that passed the course
      */
 
-    List<Student> getStudentsThatPassedCourse(String courseId);
+    Map<Student, Grade> getStudentsThatPassedCourse(String courseId);
 
 
     /**

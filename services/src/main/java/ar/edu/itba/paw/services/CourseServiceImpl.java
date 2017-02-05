@@ -5,6 +5,7 @@ import ar.edu.itba.paw.interfaces.CourseService;
 import ar.edu.itba.paw.interfaces.StudentService;
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalInscription;
+import ar.edu.itba.paw.models.Grade;
 import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 import ar.edu.itba.paw.shared.StudentFilter;
@@ -12,10 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -287,15 +285,14 @@ public class CourseServiceImpl implements CourseService {
 
     @Transactional
     @Override
-    public List<Student> getStudentsThatPassedCourse(final String courseId, final StudentFilter studentFilter) {
-        final List<Student> passedStudents = courseDao.getStudentsThatPassedCourse(courseId);
-        final List<Student> result = new LinkedList<>();
+    public Map<Student, Grade> getStudentsThatPassedCourse(final String courseId, final StudentFilter studentFilter) {
+        final Map<Student, Grade> passedStudents = courseDao.getStudentsThatPassedCourse(courseId);
+        final Map<Student, Grade> result = new HashMap<>();
 
         final List<Student> studentsFilter = studentService.getByFilter(studentFilter);
         for (Student student : studentsFilter) {
-            if (passedStudents.contains(student)) {
-                student.setGrades(student.getGrades());
-                result.add(student);
+            if (passedStudents.get(student) != null) {
+                result.put(student, passedStudents.get(student));
             }
         }
 
