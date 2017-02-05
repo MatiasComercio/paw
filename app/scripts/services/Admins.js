@@ -1,8 +1,8 @@
 'use strict';
 
-define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
-  paw.service('Admins', ['AuthenticatedRestangular', 'Paths',
-  function(AuthenticatedRestangular, Paths) {
+define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], function(paw) {
+  paw.service('Admins', ['AuthenticatedRestangular', 'Paths', 'navDataService',
+  function(AuthenticatedRestangular, Paths, navDataService) {
     // this is needed as an array is expected from Restangular own methods
     // not needed if we are going to use Restangular's custom* methods
     var rest = AuthenticatedRestangular.withConfig(function(RestangularConfigurer) {
@@ -33,6 +33,26 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
     var subject = rest.all('admins');
 
     // add own methods as follows
+    rest.setOnSubSidebar = function(admin) {
+      var _this = {};
+      var getUserCallback = function() {
+        // get the user
+        _this.user = navDataService.get('user');
+        if (!_this.user) {
+          return; // nothing to set
+        }
+
+        var subSidebar = {};
+        subSidebar.admin = admin;
+        subSidebar.admin.actions = Paths.getAdminActions(admin, _this.user);
+
+        // register the current sidebar
+        navDataService.set('subSidebar', subSidebar);
+      };
+      navDataService.registerObserverCallback('user', getUserCallback);
+      getUserCallback();
+    };
+
     rest.getList = function() {
       return subject.getList();
     };
@@ -43,6 +63,14 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
 
     rest.inscriptions = function(body) {
       return subject.all('inscriptions').customPOST(body);
+    };
+
+    rest.new = function(admin) {
+      return rest.all('admins').post(admin);
+    };
+
+    rest.update = function(admin) {
+      return admin.customPOST(admin);
     };
 
     return rest;

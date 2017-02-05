@@ -11,6 +11,13 @@
   </div>
   <!-- /Page Heading -->
 
+  <!-- Errors -->
+  <div class='flash-messages' ng-show='controller.errors'>
+    <xalert ng-repeat='error in controller.errors' msg='{{ error }}' type='danger'>
+    </xalert>
+  </div>
+  <!-- Errors -->
+
   <!-- Content -->
   <div class='required-fields'>
     <span translate='i18nRequiredFields'/>
@@ -102,7 +109,7 @@
     </div>
     <!-- /Course Data -->
     <div class='buttons-container'>
-      <input type='submit' class='btn btn-action' ng-click='form.$valid && controller.update(controller.course)' value="{{ 'i18nCoursesButtonNew' | translate }}" />
+      <input type='submit' class='btn btn-action' ng-click='form.$valid && controller.new(controller.course)' value="{{ 'i18nCoursesButtonNew' | translate }}" />
       <input type='button' class='btn btn-default' ng-click='controller.cancel()' value="{{ 'i18nButtonCancel' | translate }}" />
     </div>
   </form>

@@ -79,16 +79,24 @@
         <label for='birthday'>
           <span translate='i18nBirthday'/>
         </label>
-        <input type='date' name='birthday' id='birthday' class='form-input-field' ng-model='controller.admin.birthday' placeholder="{{ 'i18nBirthdayPlaceholder' | translate}}"/>
+        <input type='date' name='birthday' id='birthday' class='form-input-field' ng-model='controller.editedAdmin.birthday' placeholder="{{ 'i18nBirthdayPlaceholder' | translate}}" max="{{ controller.maxDate | date:'yyyy-MM-dd'}}" />
+        <div ng-messages='form.birthday.$error' ng-show='form.birthday.$touched || form.$submitted' class='form-errors' role='alert'>
+          <div ng-message='date'>
+            <p translate='i18nInvalidFormatDate'></p>
+          </div>
+          <div ng-message='max'>
+            <p translate='i18nInvalidBirthday'></p>
+          </div>
+        </div>
       </div>
       <div class='data-item'>
         <label translate='i18nGenre'/>
         <div class='align-to-input-field'>
           <label class='radio-inline'>
-            <input type='radio' name='genre' ng-model='controller.editedAdmin.genre' value="{{'i18nMale' | translate }}"/> <span translate='i18nMale'/>
+            <input type='radio' name='genre' ng-model='controller.editedAdmin.genre' value='M'/> <span translate='i18nMale'/>
           </label>
           <label class='radio-inline'>
-            <input type='radio' name='genre' ng-model='controller.editedAdmin.genre' value="{{'i18nFemale' | translate }}"/> <span translate='i18nFemale'/>
+            <input type='radio' name='genre' ng-model='controller.editedAdmin.genre' value='F'/> <span translate='i18nFemale'/>
           </label>
         </div>
       </div>
@@ -99,7 +107,7 @@
         <label for='telephone'>
           <span translate='i18nTelephone'/>
         </label>
-        <input type='text' name='telephone' id='telephone' class='form-input-field' ng-model='controller.editedAdmin.address.telephone' ng-pattern="'^[0-9]{1,15}$'"/>
+        <input type='text' name='telephone' id='telephone' class='form-input-field' ng-model='controller.editedAdmin.address.telephone' ng-pattern="'^[0-9]{1,11}$'"/>
         <div ng-messages='form.telephone.$error' ng-show='form.telephone.$touched || form.$submitted' class='form-errors' role='alert'>
           <div ng-message='pattern'>
             <p translate='i18nFormErrorTelephone'></p>
@@ -167,7 +175,7 @@
           <span translate='i18nNeighborhood'/>
           (<span class='text-danger' translate='i18nRequiredIcon'/>)
         </label>
-        <input type='text' name='neighborhood' id='neighborhood' class='form-input-field' ng-model='controller.admin.editedAdmin.neighborhood' required ng-minlength='2' ng-maxlength='50'/>
+        <input type='text' name='neighborhood' id='neighborhood' class='form-input-field' ng-model='controller.editedAdmin.address.neighborhood' required ng-minlength='2' ng-maxlength='50'/>
         <div ng-messages='form.neighborhood.$error' ng-show='form.neighborhood.$touched || form.$submitted' class='form-errors' role='alert'>
           <div ng-message='required'>
             <p translate='i18nRequiredField'></p>
@@ -208,7 +216,7 @@
           <span translate='i18nNumber'/>
           (<span class='text-danger' translate='i18nRequiredIcon'/>)
         </label>
-        <input type='text' name='number' id='number' class='form-input-field' ng-model='controller.admin.address.number' required ng-pattern="'^[1-9][0-9]{0,15}$'"/>
+        <input type='text' name='number' id='number' class='form-input-field' ng-model='controller.editedAdmin.address.number' required ng-pattern="'^[1-9][0-9]{0,9}$'"/>
         <div ng-messages='form.number.$error' ng-show='form.number.$touched || form.$submitted' class='form-errors' role='alert'>
           <div ng-message='required'>
             <p translate='i18nRequiredField'></p>
@@ -220,7 +228,7 @@
       </div>
       <div class='data-item'>
         <label for='floor' translate='i18nFloor'/>
-        <input type='text' name='floor' id='floor' class='form-input-field' ng-model='controller.editedAdmin.address.floor' ng-pattern="'^[1-9][0-9]{0,15}$'"/>
+        <input type='text' name='floor' id='floor' class='form-input-field' ng-model='controller.editedAdmin.address.floor' ng-pattern="'^[1-9][0-9]{0,10}$'"/>
         <div ng-messages='form.floor.$error' ng-show='form.floor.$touched || form.$submitted' class='form-errors' role='alert'>
           <div ng-message='pattern'>
             <p translate='i18nNumericField'></p>

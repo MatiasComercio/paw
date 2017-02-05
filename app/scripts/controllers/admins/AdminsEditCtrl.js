@@ -1,46 +1,36 @@
 'use strict';
 
-define(['paw'], function(paw) {
-  paw.controller('AdminsEditCtrl', [
-    '$routeParams',
-    '$log',
-    '$window',
-    'Paths',
-    function($routeParams, $log, $window, Paths) {
-      var _this = this;
+define(['paw', 'services/Admins', 'services/flashMessages'], function(paw) {
+  paw.controller('AdminsEditCtrl',
+  ['$window', 'Paths', 'Admins', 'flashMessages', '$route', '$log', '$filter', '$routeParams',
+  function($window, Paths, Admins, flashMessages, $route, $log, $filter, $routeParams) {
+    var _this = this;
 
-      var dni = $routeParams.adminDni;
+    var dni = $routeParams.adminDni;
 
-      this.admin = {
-        firstName: 'Matías',
-        lastName: 'Mercado',
-        email: 'mmercado@itba.edu.ar',
-        genre: 'Masculino',
-        dni: '38917403',
-        birthday: '1995-05-04',
-        address: {
-          country: 'Argentina',
-          city: 'Buenos Aires',
-          neighborhood: 'Almagro',
-          number: '682',
-          street: 'Corrientes',
-          floor: '2',
-          door: 'A',
-          telephone: '1544683390',
-          zipCode: '1100'
-        }
-      };
+    Admins.get(dni).then(function(admin) {
+      _this.admin = admin;
+      Admins.setOnSubSidebar(admin);
+      _this.admin.birthday = new Date(_this.admin.birthday);
+      // Restangular method to clone the current admin object
+      _this.editedAdmin = Admins.copy(admin);
+    });
 
-      this.editedAdmin = angular.copy(this.admin);
+    this.update = function(admin) {
+      var editedAdmin = Admins.copy(admin);
+      editedAdmin.birthday = $filter('date')(admin.birthday, 'yyyy-MM-dd');
+      Admins.update(editedAdmin).then(function(response) {
+        flashMessages.setSuccess('i18nAdminSuccessfullyUpdated');
+        Paths.get().admins(_this.admin).go();
+      }, function(response) {
+        $log.warn(JSON.stringify(response));
+        flashMessages.setError('i18nFormErrors');
+        $route.reload();
+      });
+    };
 
-      this.cancel = function() {
-        $window.history.back();
-      };
-
-      this.update = function(editedAdmin) {
-        var path = Paths.get().admins(_this.admin);
-        $log.info('POST ' + path.absolutePath() + ' ' + JSON.stringify(editedAdmin));
-        path.go();
-      };
-    }]);
-  });
+    this.cancel = function() {
+      $window.history.back();
+    };
+  }]);
+});

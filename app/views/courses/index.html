@@ -13,14 +13,10 @@
         </div>
         <div class='own-input-group'>
           <span class='search-label' translate='i18nCourseName'></span>
-          <input type='text' class='form-input-field' ng-model='controller.filter.courseName' placeholder="{{ 'i18nCourseName' | translate }}..."/>
+          <input type='text' class='form-input-field' ng-model='controller.filter.name' placeholder="{{ 'i18nCourseName' | translate }}..."/>
         </div>
       </div>
       <div class='filter-buttons'>
-        <button class='btn btn-default' type='submit'>
-          <span class='fa fa-search' aria-hidden='true'></span>
-          <span translate='i18nSearchButton' translate ></span>
-        </button>
         <button class='btn btn-default' ng-click='controller.resetSearch()' type='submit'>
           <span class='fa fa-repeat' aria-hidden='true'></span>
           <span translate='i18nResetButton'></span>
@@ -42,10 +38,10 @@
           </tr>
         </thead>
         <tbody>
-          <tr ng-hide='controller.courses.length > 0' class='bg-warning'>
+          <tr ng-hide='filtered.length > 0' class='bg-warning'>
             <td colspan='5' class='text-danger text-center' translate='i18nNoCoursesFound'></td>
           </tr>
-          <tr ng-repeat='course in controller.courses'>
+          <tr ng-repeat='course in controller.courses | filter:controller.filter as filtered'>
             <td>{{ course.courseId }}</td>
             <td>{{ course.name }}</td>
             <td>{{ course.credits }}</td>

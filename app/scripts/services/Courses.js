@@ -1,8 +1,8 @@
 'use strict';
 
-define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
-  paw.service('Courses', ['AuthenticatedRestangular', 'Paths',
-  function(AuthenticatedRestangular, Paths) {
+define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], function(paw) {
+  paw.service('Courses', ['AuthenticatedRestangular', 'Paths', 'navDataService',
+  function(AuthenticatedRestangular, Paths, navDataService) {
     // this is needed as an array is expected from Restangular own methods
     // not needed if we are going to use Restangular's custom* methods
     var rest = AuthenticatedRestangular.withConfig(function(RestangularConfigurer) {
@@ -43,6 +43,26 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
 
     var subject = rest.all('courses');
 
+    rest.setOnSubSidebar = function(course) {
+      var _this = {};
+      var getUserCallback = function() {
+        // get the user
+        _this.user = navDataService.get('user');
+        if (!_this.user) {
+          return; // nothing to set
+        }
+
+        var subSidebar = {};
+        subSidebar.course = course;
+        subSidebar.course.actions = Paths.getCourseActions(course, _this.user);
+
+        // register the current sidebar
+        navDataService.set('subSidebar', subSidebar);
+      };
+      navDataService.registerObserverCallback('user', getUserCallback);
+      getUserCallback();
+    };
+
     // add own methods as follows
     rest.getList = function() {
       return subject.getList();
@@ -65,6 +85,14 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
 
     rest.unenroll = function(docket, courseId) {
       return rest.one('students', docket).one('courses', courseId).customDELETE();
+    };
+
+    rest.new = function(course) {
+      return rest.all('courses').post(course);
+    };
+
+    rest.update = function(originalCourse, editedCourse) {
+      return originalCourse.customPOST(editedCourse);
     };
 
     return rest;

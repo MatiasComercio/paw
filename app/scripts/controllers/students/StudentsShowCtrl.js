@@ -7,11 +7,7 @@ define(['paw','services/Students','services/Paths'], function(paw) {
 
     Students.get(docket).then(function(student) {
       _this.student = student;
-    }, function(response) {
-      $log.info('Response status: ' + response.status);
-      if (response.status === 404) {
-        Paths.get().notFound().go();
-      }
+      Students.setOnSubSidebar(student);
     });
   }]);
 });

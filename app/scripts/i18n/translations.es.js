@@ -66,6 +66,11 @@ define([], function() {
     i18nStudentsNewButton: 'Agregar Alumno',
     i18nAdminsNewButton: 'Agregar Administrador',
     i18nFinalInscriptionNewButton: 'Agregar',
+    i18nInvalidFormatDate: 'Formato de fecha inválido',
+    i18nUserWithGIvenDNIExists: 'Ya existe un usuario con el DNI indicado',
+    i18nAdminSuccessfullyCreated: 'El administrador se ha creado exitosamente',
+    i18nAdminSuccessfullyUpdated: 'El administrador se ha editado exitosamente',
+
 
     // User Update
     i18nRequiredFields: 'Campos Obligatorios',
@@ -143,6 +148,11 @@ define([], function() {
 
     // New
     i18nCoursesButtonNew: 'Agregar',
+    i18nCourseWithCourseIdAlreadyExists: 'Ya existe un curso con ese código',
+    i18nCourseSuccessfullyCreated: 'El curso se ha creado exitosamente',
+    i18nCourseSuccessfullyUpdated: 'El curso se ha editado exitosamente',
+    i18nInvalidBirthday: 'La fecha debe ser anterior a la fecha actual',
+
     // Final Exams
     i18nFinalExams: 'Exámenes Finales',
     i18nFinalExam: 'Exámen Final',
@@ -166,8 +176,8 @@ define([], function() {
     // Form errors
     i18nInvalidDate: 'La fecha seleccionada es inválida.',
     i18nFormErrorDni: 'El DNI debe tener 8 dígitos.',
-    i18nNumericField: 'El valor ingresado debe ser un número válido.',
-    i18nFormErrorTelephone: 'El número de teléfono ingresado es inválido.',
+    i18nNumericField: 'El valor ingresado debe ser un número válido (la cantidad de dígitos debe ser apropiada)',
+    i18nFormErrorTelephone: 'El número de teléfono ingresado es inválido (sólo números ; máximo 11 dígitos)',
     i18nRequiredField: 'Este campo es requerido',
     i18nLengthPrefix: 'Este campo debe tener entre',
     i18nLengthAnd: 'y',
@@ -189,6 +199,8 @@ define([], function() {
     i18nSuccess: '¡Éxito! - ',
     i18nError: '¡Error! - ',
     i18nPasswordResetSuccess: 'La contraseña ha sido reseteada exitosamente',
-    i18nInvalidUsernameOrPassword: 'Usuario y/o contraseña incorrecta'
+    i18nInvalidUsernameOrPassword: 'Usuario y/o contraseña incorrecta',
+    i18nStudentSuccessfullyCreated: 'El alumno se ha creado exitosamente',
+    i18nStudentSuccessfullyUpdated: 'El alumno se ha editado exitosamente'
   };
 });

@@ -1,8 +1,8 @@
 'use strict';
 
-define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
-  paw.service('Students', ['AuthenticatedRestangular', 'Paths',
-  function(AuthenticatedRestangular, Paths) {
+define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], function(paw) {
+  paw.service('Students', ['AuthenticatedRestangular', 'Paths', 'navDataService',
+  function(AuthenticatedRestangular, Paths, navDataService) {
     // this is needed as an array is expected from Restangular own methods
     // not needed if we are going to use Restangular's custom* methods
     var rest = AuthenticatedRestangular.withConfig(function(RestangularConfigurer) {
@@ -42,6 +42,26 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
     var subject = rest.all('students');
 
     // add own methods as follows
+    rest.setOnSubSidebar = function(student) {
+      var _this = {};
+      var getUserCallback = function() {
+        // get the user
+        _this.user = navDataService.get('user');
+        if (!_this.user) {
+          return; // nothing to set
+        }
+
+        var subSidebar = {};
+        subSidebar.student = student;
+        subSidebar.student.actions = Paths.getStudentActions(student, _this.user);
+
+        // register the current sidebar
+        navDataService.set('subSidebar', subSidebar);
+      };
+      navDataService.registerObserverCallback('user', getUserCallback);
+      getUserCallback();
+    };
+
     rest.getList = function() {
       return subject.getList();
     };
@@ -56,6 +76,14 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
         grade: newGrade
       };
       return rest.one('students', docket).one('grades', gradeId).customPOST(body);
+    };
+
+    rest.new = function(student) {
+      return rest.all('students').post(student);
+    };
+
+    rest.update = function(student) {
+      return student.customPOST(student);
     };
 
     return rest;
