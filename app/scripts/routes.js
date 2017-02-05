@@ -61,7 +61,7 @@ define([], function() {
         relativePath: '/students'
       },
       '/students/:docket/final_inscriptions': {
-        templateUrl: '/views/students/final_inscriptions.html',
+        templateUrl: 'views/students/final_inscriptions.html',
         controller: 'StudentsFinalInscriptionsCtrl',
         relativePath: '/students'
       },
@@ -121,7 +121,7 @@ define([], function() {
         relativePath: '/admins'
       },
       '/admins/:adminDni': {
-        templateUrl: '/views/admins/show.html',
+        templateUrl: 'views/admins/show.html',
         controller: 'AdminsShowCtrl',
         relativePath: '/admins'
       },
