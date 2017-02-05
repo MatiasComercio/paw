@@ -196,7 +196,6 @@ public class StudentController {
   }
 
   @DELETE
-  @Consumes(MediaType.APPLICATION_JSON)
   @Path("/{docket}/courses/{courseId}")
   public Response studentsCoursesDestroy(
           @PathParam("docket") final Integer docket,
