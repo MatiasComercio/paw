@@ -51,7 +51,7 @@
             <td>{{ course.credits }}</td>
             <td>{{ course.semester }}</td>
             <td class='actions-container'>
-              <a class='btn btn-default' role='button'>
+              <a ng-href='{{ course.showUrl }}' class='btn btn-default' role='button'>
                 <span class='fa fa-info-circle' aria-hidden='true'></span>
                 <span translate='i18nCourseShow'></span>
               </a>

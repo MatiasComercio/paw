@@ -1,8 +1,8 @@
 'use strict';
 
 define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
-  paw.service('Students', ['AuthenticatedRestangular',
-  function(AuthenticatedRestangular) {
+  paw.service('Students', ['AuthenticatedRestangular', 'Paths',
+  function(AuthenticatedRestangular, Paths) {
     // this is needed as an array is expected from Restangular own methods
     // not needed if we are going to use Restangular's custom* methods
     var rest = AuthenticatedRestangular.withConfig(function(RestangularConfigurer) {
@@ -11,6 +11,9 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
           if (operation === 'getList') {
             if (what === 'students') {
               return data.students;
+            }
+            if (what === 'courses') {
+              return data.courses;
             }
             if (what === 'grades') {
               var transcript = data.transcript;
@@ -31,6 +34,7 @@ define(['paw', 'services/AuthenticatedRestangular'], function(paw) {
       });
       RestangularConfigurer.extendModel('students', function(student) {
         student.fullName = student.firstName + ' ' + student.lastName;
+        student.profileUrl = Paths.get().students(student).path;
         return student;
       });
     });

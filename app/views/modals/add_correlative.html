@@ -1,0 +1,21 @@
+<div class='modal-header'>
+  <h4 class='modal-title' id='modal-title' translate='i18nCourseAddCorrelative'></h4>
+</div>
+<div class='modal-body'>
+  <p class='break-words'>
+    <span class='bold' translate='i18nModalCourseId'></span>: {{ controller.courseId }}
+  </p>
+  <p class='break-words'>
+    <span class='bold' translate='i18nModalCourseName'></span>: {{ controller.courseName }}
+  </p>
+  <p class='break-words'>
+    <span class='bold' translate='i18nModalCorrelativeId'></span>: {{ controller.correlativeId }}
+  </p>
+  <p class='break-words'>
+    <span class='bold' translate='i18nModalCorrelativeName'></span>: {{ controller.correlativeName }}
+  </p>
+</div>
+<div class='modal-footer'>
+  <button class='btn btn-default' type='button' ng-click="controller.cancel()" translate='i18nCancel'></button>
+  <button class='btn btn-info' type='button' ng-click='controller.ok()' translate='i18nConfirm'></button>
+</div>

@@ -1,41 +1,9 @@
 'use strict';
 
-define(['paw'], function(paw) {
-  paw.controller('CoursesCorrelativesNewCtrl', ['$routeParams', function($routeParams) {
+define(['paw','services/Courses','services/Paths', 'controllers/modals/AddCorrelativeController'], function(paw) {
+  paw.controller('CoursesCorrelativesNewCtrl', ['$routeParams', 'Courses', '$log', 'Paths', function($routeParams, Courses, $log, Paths) {
     var _this = this;
-
-    this.course = {
-      courseId: '72.03',
-      credits: 3,
-      name: 'Introducción a Informática',
-      semester: 1,
-      availableCorrelatives: [
-        {
-          courseId: '72.03',
-          credits: 3,
-          name: 'Introducción a Informática',
-          semester: 1
-        },
-        {
-          courseId: '94.21',
-          credits: 6,
-          name: 'Formacion General I',
-          semester: 5
-        },
-        {
-          courseId: '72.03',
-          credits: 3,
-          name: 'Introducción a Informática',
-          semester: 1
-        },
-        {
-          courseId: '94.21',
-          credits: 6,
-          name: 'Formacion General I',
-          semester: 5
-        }
-      ]
-    };
+    var courseId = $routeParams.courseId;
 
     this.filter = {
       id: $routeParams.id,
@@ -43,6 +11,22 @@ define(['paw'], function(paw) {
     };
     this.resetSearch = function() {
       this.filter = {};
+    };
+
+    Courses.get(courseId).then(function(course) {
+      _this.course = course;
+      _this.course.all('correlatives').customGET('available').then(function(correlatives) {
+        _this.course.availableCorrelatives = correlatives;
+      });
+    }, function(response) {
+      $log.info('Response status: ' + response.status);
+      if (response.status === 404) {
+        Paths.get().notFound().go();
+      }
+    });
+
+    this.getCoursePath = function(courseId) {
+      return Paths.get().courses({courseId: courseId}).path;
     };
 
   }]);

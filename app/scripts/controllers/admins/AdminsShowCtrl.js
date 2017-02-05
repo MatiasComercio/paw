@@ -1,28 +1,17 @@
 'use strict';
 
-define(['paw'], function(paw) {
-  paw.controller('AdminsShowCtrl', ['$routeParams', function($routeParams) {
+define(['paw','services/Admins','services/Paths'], function(paw) {
+  paw.controller('AdminsShowCtrl', ['$routeParams', 'Admins', '$log', 'Paths', function($routeParams, Admins, $log, Paths) {
     var _this = this;
     var dni = $routeParams.adminDni; // For future Service calls
 
-    this.admin = {
-      firstName: 'Matías',
-      lastName: 'Mercado',
-      email: 'mmercado@itba.edu.ar',
-      genre: 'Masculino',
-      dni: '38917403',
-      birthday: '1995-05-04',
-      address: {
-        country: 'Argentina',
-        city: 'Buenos Aires',
-        neighborhood: 'Almagro',
-        number: '682',
-        street: 'Corrientes',
-        floor: '2',
-        door: 'A',
-        telephone: '1544683390',
-        zipCode: '1100'
+    Admins.get(dni).then(function(admin) {
+      _this.admin = admin;
+    }, function(response) {
+      $log.info('Response status: ' + response.status);
+      if (response.status === 404) {
+        Paths.get().notFound().go();
       }
-    };
+    });
   }]);
 });
