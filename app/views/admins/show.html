@@ -33,7 +33,8 @@
     </div>
     <div class='data-item'>
       <p class='bold static-label' translate='i18nGenre'></p>
-      <p class='break-words'>{{controller.admin.genre}}</p>
+      <p class='break-words' ng-show="controller.admin.genre === 'M' ">{{ 'i18nMale' | translate }}</p>
+      <p class='break-words' ng-show="controller.admin.genre === 'F' ">{{ 'i18nFemale' | translate }}</p>
     </div>
     <div class='data-item'>
       <p class='bold static-label' translate='i18nTelephone'></p>

@@ -8,6 +8,8 @@ define(['paw', 'services/Students', 'services/flashMessages'], function(paw) {
 
     var docket = $routeParams.docket;
 
+    this.maxDate = new Date();
+
     Students.get(docket).then(function(student) {
       _this.student = student;
       Students.setOnSubSidebar(student);

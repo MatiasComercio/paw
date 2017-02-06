@@ -8,6 +8,8 @@ define(['paw', 'services/Admins', 'services/flashMessages'], function(paw) {
 
     var dni = $routeParams.adminDni;
 
+    this.maxDate = new Date();
+
     Admins.get(dni).then(function(admin) {
       _this.admin = admin;
       Admins.setOnSubSidebar(admin);

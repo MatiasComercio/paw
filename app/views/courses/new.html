@@ -20,8 +20,7 @@
 
   <!-- Content -->
   <div class='required-fields'>
-    <span translate='i18nRequiredFields'/>
-    (<span class='text-danger' translate='i18nRequiredIcon'/>)
+    {{ 'i18nRequiredFields' | translate }} ({{ 'i18nRequiredIcon' | translate }})
   </div>
   <form name='form' novalidate class='data-container'>
     <!-- Course Data -->
@@ -29,8 +28,7 @@
         <!-- Course ID -->
         <div class='data-item'>
           <label for='courseId'>
-            <span translate='i18nCourseId'/>
-            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+            {{ 'i18nCourseId' | translate }} ({{ 'i18nRequiredIcon' | translate }})
           </label>
           <input type='text' name='courseId' id='courseId' class='form-input-field' ng-model='controller.course.courseId' required ng-pattern="'^[1-9][0-9]\\.[0-9][0-9]$'"/>
           <div ng-messages='form.courseId.$error' ng-show='form.courseId.$touched || form.$submitted' class='form-errors' role='alert' ng-messages-multiple>
@@ -46,8 +44,7 @@
         <!-- Course Name -->
         <div class='data-item'>
           <label for='courseName'>
-            <span translate='i18nCourseName'/>
-            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+            {{ 'i18nCourseName' | translate }} ({{ 'i18nRequiredIcon' | translate }})
           </label>
           <input type='text' name='courseName' id='courseName' class='form-input-field' ng-model='controller.course.name' required ng-minlength='2' ng-maxlength='50'/>
           <div ng-messages='form.courseName.$error' ng-show='form.courseName.$touched || form.$submitted' class='form-errors' role='alert' ng-messages-multiple>
@@ -67,8 +64,7 @@
         <!-- Credits -->
         <div class='data-item'>
           <label for='credits'>
-            <span translate='i18nCredits'/>
-            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+            {{ 'i18nCredits' | translate }} ({{ 'i18nRequiredIcon' | translate }})
           </label>
           <input type='text' name='credits' id='credits' class='form-input-field' ng-model='controller.course.credits' required pattern='^([1-9]|1[0-9]|20)$'/>
           <div ng-messages='form.credits.$error' ng-show='form.credits.$touched || form.$submitted' class='form-errors' role='alert' ng-messages-multiple>
@@ -88,8 +84,7 @@
         <!-- Semester -->
         <div class='data-item'>
           <label for='semester'>
-            <span translate='i18nSemester'/>
-            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+            {{ 'i18nSemester' | translate }} ({{ 'i18nRequiredIcon' | translate }})
           </label>
           <input type='text' name='semester' id='semester' class='form-input-field' ng-model='controller.course.semester' required pattern='^([1-9]|1[0-9]|20)$'/>
           <div ng-messages='form.semester.$error' ng-show='form.semester.$touched || form.$submitted' class='form-errors' role='alert' ng-messages-multiple>

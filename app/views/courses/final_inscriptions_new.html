@@ -12,12 +12,14 @@
     </h2>
   </div>
   <!-- /Page Heading -->
+  <div class='required-fields'>
+    {{ 'i18nRequiredFields' | translate }} ({{ 'i18nRequiredIcon' | translate }})
+  </div>
   <form name='form' novalidate class='data-container'>
     <div class='data-container'>
       <div class='data-item'>
         <label for='vacancy'>
-          <span translate='i18nVacancy'/>
-          (<span class='text-danger' translate='i18nRequiredIcon'/>)
+          {{ 'i18nVacancy' | translate }} ({{ 'i18nRequiredIcon' | translate }})
         </label>
         <input type='text' name='vacancy' id='vacancy' class='form-input-field' ng-model='controller.finalInscription.vacancy' required ng-pattern="'^[1-9][0-9]{0,15}$'"/>
         <div ng-messages='form.vacancy.$error' ng-show='form.vacancy.$touched || form.$submitted' class='form-errors' role='alert'>
@@ -31,8 +33,7 @@
       </div>
       <div class='data-item'>
         <label for='finalExamDate'>
-          <span translate='i18nFinalExamDate'/>
-          (<span class='text-danger' translate='i18nRequiredIcon'/>)
+          {{ 'i18nFinalExamDate' | translate }} ({{ 'i18nRequiredIcon' | translate }})
         </label>
         <input type='datetime-local' name='finalExamDate' id='finalExamDate' class='form-input-field' ng-model='controller.finalInscription.finalExamDate' required min='{{controller.currentDate}}' placeholder="{{ 'i18nfinalExamDatePlaceholder' | translate}}"/>
         <div ng-messages='form.finalExamDate.$error' ng-show='form.finalExamDate.$touched || form.$submitted' class='form-errors' role='alert'>

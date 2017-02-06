@@ -20,8 +20,7 @@
 
   <!-- Content -->
   <div class='required-fields'>
-    <span translate='i18nRequiredFields'/>
-    (<span class='text-danger' translate='i18nRequiredIcon'/>)
+    {{ 'i18nRequiredFields' | translate }} ({{ 'i18nRequiredIcon' | translate }})
   </div>
   <form name='form' novalidate class='data-container'>
     <!-- User Data -->
@@ -29,8 +28,7 @@
       <!-- dni -->
         <div class='data-item'>
           <label for='dni'>
-            <span translate='i18nDni'/>
-            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+            {{ 'i18nDni' | translate }} ({{ 'i18nRequiredIcon' | translate }})
           </label>
           <input type='text' name='dni' id='dni' class='form-input-field' ng-model='controller.student.dni' required ng-pattern="'^[1-9][0-9]{7}$'"/>
           <div ng-messages='form.dni.$error' ng-show='form.dni.$touched || form.$submitted' class='form-errors' role='alert'>
@@ -46,8 +44,7 @@
       <!-- firstName and lastName -->
         <div class='data-item'>
           <label for='firstName'>
-            <span translate='i18nFirstName'/>
-            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+            {{ 'i18nFirstName' | translate }} ({{ 'i18nRequiredIcon' | translate }})
           </label>
           <input type='text' name='firstName' id='firstName' class='form-input-field' ng-model='controller.student.firstName' required ng-minlength='2' ng-maxlength='50'/>
           <div ng-messages='form.firstName.$error' ng-show='form.firstName.$touched || form.$submitted' class='form-errors' role='alert'>
@@ -65,8 +62,7 @@
         </div>
         <div class='data-item'>
           <label for='lastName'>
-            <span translate='i18nLastName'/>
-            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+            {{ 'i18nLastName' | translate }} ({{ 'i18nRequiredIcon' | translate }})
           </label>
           <input type='text' name='lastName' id='lastName' class='form-input-field' ng-model='controller.student.lastName' required ng-minlength='2' ng-maxlength='50'/>
           <div ng-messages='form.lastName.$error' ng-show='form.lastName.$touched || form.$submitted' class='form-errors' role='alert'>
@@ -87,7 +83,7 @@
       <!-- birthday and genre -->
         <div class='data-item'>
           <label for='birthday'>
-            <span translate='i18nBirthday'/>
+            {{ 'i18nBirthday' | translate }}
           </label>
           <input type='date' name='birthday' id='birthday' class='form-input-field' ng-model='controller.student.birthday' placeholder="{{ 'i18nBirthdayPlaceholder' | translate}}" max="{{ controller.maxDate | date:'yyyy-MM-dd'}}" />
           <div ng-messages='form.birthday.$error' ng-show='form.birthday.$touched || form.$submitted' class='form-errors' role='alert'>
@@ -100,7 +96,7 @@
           </div>
         </div>
         <div class='data-item'>
-          <label translate='i18nGenre'/>
+          <label>{{ 'i18nGenre' | translate }}</label>
           <div class='align-to-input-field'>
             <label class='radio-inline'>
               <input type='radio' name='genre' ng-model='controller.student.genre' value='M'/> <span translate='i18nMale'/>
@@ -115,7 +111,7 @@
       <!-- telephone  -->
         <div class='data-item'>
           <label for='telephone'>
-            <span translate='i18nTelephone'/>
+            {{ 'i18nTelephone' | translate }}
           </label>
           <input type='text' name='telephone' id='telephone' class='form-input-field' ng-model='controller.student.address.telephone' ng-pattern="'^[0-9]{1,11}$'"/>
           <div ng-messages='form.telephone.$error' ng-show='form.telephone.$touched || form.$submitted' class='form-errors' role='alert'>
@@ -133,8 +129,7 @@
       <!-- country and city -->
         <div class='data-item'>
           <label for='country'>
-            <span translate='i18nCountry'/>
-            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+            {{ 'i18nCountry' | translate }} ({{ 'i18nRequiredIcon' | translate }})
           </label>
           <input type='text' name='country' id='country' class='form-input-field' ng-model='controller.student.address.country' required ng-minlength='2' ng-maxlength='50'/>
           <div ng-messages='form.country.$error' ng-show='form.country.$touched || form.$submitted' class='form-errors' role='alert'>
@@ -152,8 +147,7 @@
         </div>
         <div class='data-item'>
           <label for='city'>
-            <span translate='i18nCity'/>
-            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+            {{ 'i18nCity' | translate }} ({{ 'i18nRequiredIcon' | translate }})
           </label>
           <input type='text' name='city' id='city' class='form-input-field' ng-model='controller.student.address.city' required ng-minlength='2' ng-maxlength='50'/>
           <div ng-messages='form.city.$error' ng-show='form.city.$touched || form.$submitted' class='form-errors' role='alert'>
@@ -174,8 +168,7 @@
       <!-- neighborhood and street -->
         <div class='data-item'>
           <label for='neighborhood'>
-            <span translate='i18nNeighborhood'/>
-            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+            {{ 'i18nNeighborhood' | translate }} ({{ 'i18nRequiredIcon' | translate }})
           </label>
           <input type='text' name='neighborhood' id='neighborhood' class='form-input-field' ng-model='controller.student.address.neighborhood' required ng-minlength='2' ng-maxlength='50'/>
           <div ng-messages='form.neighborhood.$error' ng-show='form.neighborhood.$touched || form.$submitted' class='form-errors' role='alert'>
@@ -193,8 +186,7 @@
         </div>
         <div class='data-item'>
           <label for='street'>
-            <span translate='i18nStreet'/>
-            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+            {{ 'i18nStreet' | translate }} ({{ 'i18nRequiredIcon' | translate }})
           </label>
           <input type='text' name='street' id='street' class='form-input-field' ng-model='controller.student.address.street' required  ng-minlength='2' ng-maxlength='50'/>
           <div ng-messages='form.street.$error' ng-show='form.street.$touched || form.$submitted' class='form-errors' role='alert'>
@@ -215,8 +207,7 @@
       <!-- number and floor -->
         <div class='data-item'>
           <label for='number'>
-            <span translate='i18nNumber'/>
-            (<span class='text-danger' translate='i18nRequiredIcon'/>)
+            {{ 'i18nNumber' | translate }} ({{ 'i18nRequiredIcon' | translate }})
           </label>
           <input type='text' name='number' id='number' class='form-input-field' ng-model='controller.student.address.number' required ng-pattern="'^[1-9][0-9]{0,9}$'"/>
           <div ng-messages='form.number.$error' ng-show='form.number.$touched || form.$submitted' class='form-errors' role='alert'>
@@ -229,7 +220,7 @@
           </div>
         </div>
         <div class='data-item'>
-          <label for='floor' translate='i18nFloor'/>
+          <label for='floor'>{{ 'i18nFloor' | translate }}</label>
           <input type='text' name='floor' id='floor' class='form-input-field' ng-model='controller.student.address.floor' ng-pattern="'^[1-9][0-9]{0,10}$'"/>
           <div ng-messages='form.floor.$error' ng-show='form.floor.$touched || form.$submitted' class='form-errors' role='alert'>
             <div ng-message='pattern'>
@@ -241,11 +232,11 @@
 
       <!-- door and zipcode -->
         <div class='data-item'>
-          <label for='door' translate='i18nDoor'/>
+          <label for='door'>{{ 'i18nDoor' | translate }}</label>
           <input type='text' id='door' class='form-input-field' ng-model='controller.student.address.door'/>
         </div>
         <div class='data-item'>
-          <label for='zipCode' translate='i18nZipCode'/>
+          <label for='zipCode'>{{ 'i18nZipCode' | translate }}</label>
           <input type='text' name='zipCode' id='zipCode' class='form-input-field' ng-model='controller.student.address.zipCode' ng-pattern="'^[1-9][0-9]{0,15}$'"/>
           <div ng-messages='form.zipCode.$error' ng-show='form.zipCode.$touched || form.$submitted' class='form-errors' role='alert'>
             <div ng-message='pattern'>
