@@ -31,7 +31,7 @@ function(paw) {
       Courses.qualifyFinalInscription(_this.course, inscriptionId, qualifiedStudents).then(function(response) {
         flashMessages.setSuccess('i18nQualifySuccessfully');
         if (response.status === 204) {
-          Paths.get().courses(_this.course).finalInscriptions().go();
+          Paths.get().courses(_this.course).go();
         } else {
           $route.reload();
         }
@@ -44,6 +44,7 @@ function(paw) {
 
     Courses.get(courseId).then(function(course) {
       _this.course = course;
+      Courses.setOnSubSidebar(course);
       _this.course.all('finalInscriptions').get(inscriptionId).then(function(finalInscription) {
         _this.course.inscription = finalInscription;
         _this.course.inscription.students = finalInscription.history;

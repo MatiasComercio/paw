@@ -15,6 +15,10 @@
 </head>
 <body ng-controller='BodyCtrl as controller'>
 
+  <div class='loader-container' ng-show='showLoader' prevent-scroll>
+    <img src='images/spin.gif' class='no-select'>
+  </div>
+
   <!-- site navigation elements -->
   <xnavbar></xnavbar>
   <xsidebar></xsidebar>
@@ -42,7 +46,7 @@
     <!-- \content -->
 
     <!-- footer -->
-    <div class='footer'>
+    <div class='footer' ng-cloak>
       <span translate='i18nFooterCopyright'></span>
     </div>
     <!-- \footer -->

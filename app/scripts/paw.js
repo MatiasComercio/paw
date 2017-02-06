@@ -84,6 +84,40 @@ function(config, dependencyResolverFor, i18n, authenticationService, pathsServic
       }
     });
 
+    // Code taken & adapted from:
+    // http://stackoverflow.com/questions/24088610/restangular-spinner
+    var pendingRequests = 0;
+
+    Restangular.addRequestInterceptor(
+      function (element, operation, what, url) {
+        if (pendingRequests === 0) {
+          $rootScope.showLoader = true;
+        }
+        pendingRequests++;
+        return element;
+      }
+    );
+
+    Restangular.addResponseInterceptor(
+      function (data, operation, what, url, response, deferred) {
+        pendingRequests--;
+        if (pendingRequests === 0) {
+          $rootScope.showLoader = false;
+        }
+        return data;
+      }
+    );
+
+    Restangular.addErrorInterceptor(
+      function(response, deferred, responseHandler) {
+        pendingRequests--;
+        if (pendingRequests === 0) {
+          $rootScope.showLoader = false;
+        }
+        return true; // error not handled
+      }
+    );
+
     Restangular.setErrorInterceptor(
       function(response, deferred, responseHandler) {
         var propagateError = true;
