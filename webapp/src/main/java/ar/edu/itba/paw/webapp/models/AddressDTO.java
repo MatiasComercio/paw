@@ -3,7 +3,7 @@ package ar.edu.itba.paw.webapp.models;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
+import javax.xml.bind.annotation.XmlElement;
 
 public class AddressDTO {
 
@@ -29,17 +29,21 @@ public class AddressDTO {
   @Min(0)
   private Integer number;
 
-  @Min(0)
-  private Integer floor;
+	@XmlElement(defaultValue = "[]")
+	@Min(0)
+	private Integer floor;
 
-  @Size(max=10)
-  private String door;
+	@XmlElement(defaultValue = "[]")
+	@Size(max=10)
+	private String door;
 
-  @Min(0)
-  private Long telephone;
+	@XmlElement(defaultValue = "[]")
+	@Min(0)
+	private Long telephone;
 
-  @Min(0)
-  private Integer zipCode;
+	@XmlElement(defaultValue = "[]")
+	@Min(0)
+	private Integer zipCode;
 
   public AddressDTO() {
     // Just for Jersey =)
