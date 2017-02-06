@@ -226,6 +226,11 @@ define([], function() {
     i18nPasswordSuccessfullyUpdated: 'La contraseña ha sido modificada exitosamente',
     i18nWrongOriginalPassword: 'La contraseña actual es incorrecta',
     i18nQualifySuccessfully: 'La calificación ha sido exitosa',
+		i18nCorrelativesMissing: 'Faltan correlativas',
+		i18nCorrelativesConflict: 'Existen conflictos',
+		i18nMaxVacancyReached: 'No hay cupos disponibles',
+		i18nFinalInscriptionClosed: 'Inscripción cerrada',
+		i18nOtherInscriptionEnrolled: 'Ya se encuentra inscripto en otro final de la misma materia',	
 
     // Not found page
     i18nNotFoundPageTitle: 'Página no encontrada',

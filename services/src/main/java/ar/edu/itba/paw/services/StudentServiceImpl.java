@@ -191,6 +191,34 @@ public class StudentServiceImpl implements StudentService {
     return courses;
   }
 
+	@Transactional
+	@Override
+	public Map<Course, Boolean> getAvailableInscriptionCoursesMap(int docket) {
+		final Map<Course, Boolean> inscriptionsMap = new HashMap<>();
+		final List<Course> available = courseService.getByFilter(null);
+
+		final List<Course> currentCourses = getStudentCourses(docket, null);
+		if (currentCourses != null) {
+			available.removeAll(currentCourses);
+		}
+
+		final List<Course> approvedCourses = getApprovedCourses(docket);
+		if (currentCourses != null && approvedCourses != null) {
+			available.removeAll(approvedCourses);
+		}
+
+		// Convert the list to a map, indicating whether the student approved the correlatives
+		for(Course course : available){
+			if (!checkCorrelatives(docket, course.getCourseId())) {
+				inscriptionsMap.put(course, false);
+			} else{
+				inscriptionsMap.put(course, true);
+			}
+		}
+
+		return inscriptionsMap;
+	}
+
   @Transactional
   @Override
   public boolean enroll(final Student student, final Course course) {
@@ -326,6 +354,28 @@ public class StudentServiceImpl implements StudentService {
     }
     return finalInscriptions;
   }
+
+	@Transactional
+	@Override
+	public Map<FinalInscription, Boolean> getAvailableFinalInscriptionsMap(final Student student) {
+		final Map<FinalInscription, Boolean> finalInscriptions = new HashMap<>();
+
+		//inscription.getVacancy() < inscription.getMaxVacancy() The inscription should be visible even when full
+		for(FinalInscription inscription : studentDao.getAllFinalInscriptions()){
+			if(studentDao.canTakeCourseFinal(student.getDocket(), inscription.getCourse().getId()) &&
+							!inscription.getHistory().contains(student) ){
+
+				// The final inscription is visible so far, but we have to check the correlatives
+				if(!checkFinalCorrelatives(student.getDocket(), inscription.getCourse().getCourseId())){
+					finalInscriptions.put(inscription, false);
+				} else {
+					finalInscriptions.put(inscription, true);
+				}
+
+			}
+		}
+		return finalInscriptions;
+	}
 
   @Transactional
   @Override

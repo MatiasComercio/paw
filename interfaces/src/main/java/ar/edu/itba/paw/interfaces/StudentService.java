@@ -8,6 +8,7 @@ import ar.edu.itba.paw.shared.StudentFilter;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface StudentService {
 
@@ -103,6 +104,15 @@ public interface StudentService {
      */
     List<Course> getAvailableInscriptionCourses(int docket, CourseFilter courseFilter);
 
+    /**
+     * Gets the map of the courses the student with the given docket can enroll in, with a boolean
+     * indicating for each course whether the student has approved all correlatives
+     * @param docket       The student's docket
+     * @return The map of the courses the student with the given docket can enroll in;
+     * an empty map will be returned if no course is available
+     */
+    Map<Course,Boolean> getAvailableInscriptionCoursesMap(int docket);
+
 
     /**
      * Enrolls the given student into the specified course,
@@ -195,6 +205,14 @@ public interface StudentService {
     List<FinalInscription> getAvailableFinalInscriptions(Student student);
 
     /**
+     * Returns a map containing the available final inscriptions for the student, and for each
+     * inscriptions a boolean indicating whether the student approved the necessary correlatives
+     * @param student The student.
+     * @return The final inscriptions map
+     */
+    Map<FinalInscription,Boolean> getAvailableFinalInscriptionsMap(Student student);
+
+    /**
      * Adds the given student to the Final Inscription instance
      * @param student the student
      * @param finalInscription the final inscription to have added the student
@@ -242,5 +260,7 @@ public interface StudentService {
      * @return a list containing the procedures
      */
     List<Procedure> getProcedures(int docket);
+
+
 
 }

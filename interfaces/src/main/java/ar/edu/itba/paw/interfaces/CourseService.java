@@ -136,6 +136,15 @@ public interface CourseService {
      */
     List<Course> getAvailableAddCorrelatives(String courseId, CourseFilter courseFilter);
 
+  /**
+   *
+   * @param courseId The id of the course
+   * @return A map of the courses that are available to be added as correlatives for the given course, with
+   * a boolean indicating whether the correlative would create a loop.
+   * (Also the boolean is false if the correlative's semester is greater than the course's semester)
+   */
+    Map<Course,Boolean> getAvailableAddCorrelativesMap(Course courseId);
+
     /**
      * Get the total credits of the plan.
      * @return Integer indicating the total credits of the plan.
@@ -197,4 +206,5 @@ public interface CourseService {
    * @param finalInscriptionId the final inscription's Id
    */
   void closeFinalInscription(int finalInscriptionId);
+
 }

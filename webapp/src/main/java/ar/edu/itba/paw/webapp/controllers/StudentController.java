@@ -31,6 +31,7 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.Response.*;
@@ -228,26 +229,23 @@ public class StudentController {
   @Path("/{docket}/courses/available")
   public Response studentsCoursesAvailable(
           @Min(value = 1)
-          @PathParam("docket") final Integer docket,
-          @Size(max=5)
-          @QueryParam("id") final String courseID,
-          @Size(max=50)
-          @QueryParam("name") final String courseName){
+          @PathParam("docket") final Integer docket){
 
     final Student student = ss.getByDocket(docket);
     if(student == null){
       return status(Status.NOT_FOUND).build();
     }
 
-    final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder().
-            id(courseID).keyword(courseName).build();
+    final Map<Course, Boolean> availableCourses = ss.getAvailableInscriptionCoursesMap(docket);
 
-    final List<Course> courses = ss.getAvailableInscriptionCourses(docket, courseFilter);
+    final List<AvailableCourseDTO> coursesList = availableCourses.entrySet().stream()
+            .map( entry ->
+                    new AvailableCourseDTO(mapper.convertToCourseDTO(entry.getKey()), entry.getValue())).collect(Collectors.toList());
 
-    final List<CourseDTO> coursesList = courses.stream()
-            .map(course -> mapper.convertToCourseDTO(course)).collect(Collectors.toList());
-
-    return ok(new CoursesList(coursesList)).build();
+//    final List<AvailableCourseDTO> coursesList = availableCourses.stream()
+//            .map(course -> mapper.convertToCourseDTO(course)).collect(Collectors.toList());
+//
+    return ok(new AvailableCoursesList(coursesList)).build();
   }
 
   @GET
@@ -394,12 +392,19 @@ public class StudentController {
       return status(Status.FORBIDDEN).build();
     }
 
-    final List<FinalInscription> finalInscriptions = ss.getAvailableFinalInscriptions(student);
+    final Map<FinalInscription, Boolean> availableInscriptions = ss.getAvailableFinalInscriptionsMap(student);
 
-    final List<FinalInscriptionIndexDTO> list = finalInscriptions.stream()
-            .map(finalInscription -> mapper.convertToFinalInscriptionIndexDTO(finalInscription)).collect(Collectors.toList());
+    List<AvailableFinalInscriptionDTO> inscriptions = availableInscriptions.entrySet().stream()
+            .map(entry -> new AvailableFinalInscriptionDTO(mapper.convertToFinalInscriptionIndexDTO(entry.getKey()),
+                    entry.getValue())).collect(Collectors.toList());
 
-    return ok(new FinalInscriptionsList(list)).build();
+
+//    final List<FinalInscription> finalInscriptions = ss.getAvailableFinalInscriptions(student);
+//
+//    final List<FinalInscriptionIndexDTO> list = finalInscriptions.stream()
+//            .map(finalInscription -> mapper.convertToFinalInscriptionIndexDTO(finalInscription)).collect(Collectors.toList());
+
+    return ok(new AvailableFinalInscriptionsList(inscriptions)).build();
   }
 
   @POST

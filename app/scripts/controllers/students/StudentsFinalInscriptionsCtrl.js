@@ -26,5 +26,44 @@ function(paw) {
     this.getFinalInscriptionPath = function(courseId, finalInscriptionId) {
       return Paths.get().courses({courseId: courseId}).finals({inscriptionId: finalInscriptionId}).path;
     };
+
+		this.otherInscriptionTaken = function(inscription) {
+			var otherInscriptionDefined = _this.student.finalInscriptionsTaken.find(function(takenInscription) {
+				return takenInscription.courseId === inscription.courseId;
+			});
+			return otherInscriptionDefined ? true : false;
+		};
+
+		this.isAvailable = function(inscriptionInfo) {
+			var inscription = inscriptionInfo.inscription;
+			if (!inscriptionInfo.available) {
+				return false;
+			}
+			if (inscription.vacancy === inscription.maxVacancy || inscription.state === 'CLOSED') {
+				return false;
+			}
+			if (this.otherInscriptionTaken(inscription)) {
+				return false;
+			}
+			return true;
+		};
+
+		this.getErrorMessage = function(inscriptionInfo) {
+			var inscription = inscriptionInfo.inscription;
+			if (!inscriptionInfo.available) {
+				return 'i18nCorrelativesMissing';
+			}
+			if (inscription.state === 'CLOSED') {
+				return 'i18nFinalInscriptionClosed';
+			}
+			if (inscription.vacancy === inscription.maxVacancy) {
+				return 'i18nMaxVacancyReached';
+			}
+			if (this.otherInscriptionTaken(inscription)) {
+				return 'i18nOtherInscriptionEnrolled';
+			}
+			return 'i18nCorrelativesConflict';
+		};
+
   }]);
 });

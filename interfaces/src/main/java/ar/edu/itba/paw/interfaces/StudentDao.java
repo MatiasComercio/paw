@@ -149,7 +149,8 @@ public interface StudentDao {
 		*
 		* @param docket The student's docket
 		* @param courseId The course's id
-		* @return A boolean indicating whether the given student can take the course's final exam
+		* @return A boolean indicating whether the given student can take the course's final exam. That is,
+		* the student approved the course but didn't approve all the finals.
 		*/
 	boolean canTakeCourseFinal(int docket, int courseId);
 
