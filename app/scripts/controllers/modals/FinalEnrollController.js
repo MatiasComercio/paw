@@ -11,6 +11,11 @@ define(['paw', 'services/modalFactory', 'services/Students', 'services/flashMess
             flashMessages.setSuccess('i18nFinalEnrollSuccess');
             $route.reload();
           }, function(response) {
+            if (response.status === 409) { // Didn't pass all correlatives
+              flashMessages.setError('i18nFinalEnrollError');
+              $route.reload();
+              return;
+            }
             flashMessages.setError('i18nFormErrors');
             $log.warn('[ERROR] - Response: ' + JSON.stringify(response));
             $route.reload();

@@ -11,6 +11,11 @@ define(['paw', 'services/modalFactory', 'services/Courses', 'services/flashMessa
             flashMessages.setSuccess('i18nAddCorrelativeSuccess');
             $route.reload();
           }, function(response) {
+            if (response.status === 409) { // Correlativity Loop
+              flashMessages.setError('i18nAddCorrelativeError');
+              $route.reload();
+              return;
+            }
             flashMessages.setError('i18nFormErrors');
             $log.warn('[ERROR] - Response: ' + JSON.stringify(response));
             $route.reload();

@@ -1,9 +1,10 @@
 'use strict';
 
-define(['paw', 'services/modalFactory', 'services/Students', 'services/flashMessages'], function(paw) {
+define(['paw', 'services/Paths', 'services/modalFactory', 'services/Students', 'services/flashMessages'], function(paw) {
   paw.controller('EnrollController',
-    ['modalFactory', '$log', 'Students', '$route', 'flashMessages',
-    function (modalFactory, $log, Students, $route, flashMessages) {
+    ['modalFactory', '$log', 'Students', '$route', 'flashMessages', 'Paths',
+    function (modalFactory, $log, Students, $route, flashMessages, Paths) {
+      var _this = this;
       var modalTemplateUrl = 'views/modals/enroll.html';
       var onSuccess = function(result) {
         Students.enroll(result.docket, result.courseId)
@@ -11,6 +12,11 @@ define(['paw', 'services/modalFactory', 'services/Students', 'services/flashMess
             flashMessages.setSuccess('i18nEnrollSuccess');
             $route.reload();
           }, function(response) {
+            if (response.status === 409) { // Didn't pass all correlatives
+              flashMessages.setError('i18nEnrollError');
+              $route.reload();
+              return;
+            }
             flashMessages.setError('i18nFormErrors');
             $log.warn('[ERROR] - Response: ' + JSON.stringify(response));
             $route.reload();
