@@ -22,11 +22,6 @@ define(
             _this.carreerPrecentage = transcript.currentCredits / transcript.totalCredits * 100;
           }
         });
-      }, function(response) {
-        $log.info('Response status: ' + response.status);
-        if (response.status === 404) {
-          Paths.get().notFound().go();
-        }
       });
 
       this.getCoursePath = function(courseId) {

@@ -117,6 +117,14 @@ define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], 
       return course.remove();
     };
 
+    rest.qualify = function(course, qualifiedStudents) {
+      return course.all('students').all('qualify').customPOST(qualifiedStudents);
+    };
+
+    rest.qualifyFinalInscription = function(course, inscriptionId, qualifiedStudents) {
+      return course.one('finalInscriptions', inscriptionId).all('qualify').customPOST(qualifiedStudents);
+    };
+
     return rest;
   }]);
 });

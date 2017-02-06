@@ -121,7 +121,7 @@ define([], function() {
     i18nShowCourse: 'Ver materia',
     i18nStudyBeingTaken: 'Cursando',
     i18nFullName: 'Nombre y Apellido',
-    i18nGradeInvalidRange: 'La nota debe ser mayor o igual a 1 y menor o igual a 10',
+    i18nGradeInvalidRange: 'La nota debe estar entre 1 y 10',
     i18nOneDecimalOnly: 'La nota debe ser un número entero o un número decimal con un sólo decimal. Ejemplos: 10 ; 5.5 ; 3.4',
     i18nCarreerPercentageCompleted: 'Porcentaje de carrera completado',
     i18nApprovedCredits: 'Créditos aprobados',
@@ -137,8 +137,10 @@ define([], function() {
 
     // Courses Students Index
     i18nQualify: 'Calificar',
+    i18nQualifyAll: 'Calificar a todos',
     // Courses Students Approved
     i18nGrade: 'Nota',
+    i18nGrades: 'Notas',
 
     // Correlatives
     i18nAddCorrelative: 'Agregar correlatividad',
@@ -217,6 +219,7 @@ define([], function() {
     i18nCourseSuccessfullyDeleted: 'La materia se ha eliminado exitosamente',
     i18nPasswordSuccessfullyUpdated: 'La contraseña ha sido modificada exitosamente',
     i18nWrongOriginalPassword: 'La contraseña actual es incorrecta',
+    i18nQualifySuccessfully: 'La calificación ha sido exitosa',
 
     // Not found page
     i18nNotFoundPageTitle: 'Página no encontrada',

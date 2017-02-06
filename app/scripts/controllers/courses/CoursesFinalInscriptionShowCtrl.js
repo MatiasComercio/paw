@@ -1,11 +1,32 @@
 'use strict';
 
-define(['paw','services/Courses','services/Paths'], function(paw) {
-  paw.controller('CoursesFinalInscriptionShowCtrl', ['$routeParams', 'Courses', '$log', 'Paths', function($routeParams, Courses, $log, Paths) {
-
+define(['paw','services/Courses','services/Paths', 'services/flashMessages'], function(paw) {
+  paw.controller('CoursesFinalInscriptionShowCtrl',
+  ['$routeParams', 'Courses', '$log', 'Paths', 'flashMessages', '$route',
+  function($routeParams, Courses, $log, Paths, flashMessages, $route) {
     var _this = this;
     var courseId = $routeParams.courseId;
     var inscriptionId = $routeParams.inscriptionId;
+
+    this.qualifyAll = false;
+
+    this.qualify = function() {
+      var qualifiedStudents = _this.course.inscription.students.map(function(student) {
+          if (student.grade) {
+              return {docket: student.docket, grade: student.grade};
+          }
+      }).filter(function(s) {
+          return s !== undefined;
+      });
+      Courses.qualifyFinalInscription(_this.course, inscriptionId, qualifiedStudents).then(function(response) {
+        flashMessages.setSuccess('i18nQualifySuccessfully');
+        $route.reload();
+      }, function(response) {
+        flashMessages.setError('i18nFormErrors');
+        $log.warn('[ERROR] - Response: ' + JSON.stringify(response));
+        $route.reload();
+      });
+    };
 
     Courses.get(courseId).then(function(course) {
       _this.course = course;
@@ -13,16 +34,10 @@ define(['paw','services/Courses','services/Paths'], function(paw) {
         _this.course.inscription = finalInscription;
         _this.course.inscription.students = finalInscription.history;
       });
-    }, function(response) {
-      $log.info('Response status: ' + response.status);
-      if (response.status === 404) {
-        Paths.get().notFound().go();
-      }
     });
 
     this.getStudentPath = function(docket) {
       return Paths.get().students({docket: docket}).path;
     };
-
   }]);
 });

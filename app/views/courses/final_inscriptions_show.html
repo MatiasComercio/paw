@@ -36,37 +36,63 @@
 
   <!-- Students -->
   <h3 translate='i18nFinalStudents' class='page-sub-header'></h3>
-  <div class='table-responsive'>
-    <table class='table table-hover'>
-      <thead>
-        <tr>
-          <th translate='i18nDocket'></th>
-          <th translate='i18nFirstName'></th>
-          <th translate='i18nLastName'></th>
-          <th translate='i18nActions'></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-hide='controller.course.inscription.students.length > 0' class='bg-warning'>
-          <td colspan='4' class='text-danger text-center' translate='i18nNoStudentsFound'></td>
-        </tr>
-        <tr ng-repeat='student in controller.course.inscription.students'>
-          <td>{{ student.docket }}</td>
-          <td>{{ student.firstName }}</td>
-          <td>{{ student.lastName }}</td>
-          <td class='actions-container'>
-            <a ng-href='{{ controller.getStudentPath(student.docket) }}' class='btn btn-default' role='button'>
-              <span class='fa fa-user' aria-hidden='true'></span>
-              <span translate='i18nStudentShow'></span>
-            </a>
-            <a class='btn btn-info' role='button'>
-              <span class='fa fa-pencil-square-o' aria-hidden='true'></span>
-              <span translate='i18nQualify'></span>
-            </a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <form name='form' novalidate>
+    <div class='qualify-all-container'>
+      <a class='btn btn-action qualify-all' ng-click='controller.qualifyAll = !controller.qualifyAll'
+         ng-hide='controller.qualifyAll || controller.course.inscription.students.length <= 0' role='button'>
+        <span class='fa fa-graduation-cap' aria-hidden='true'></span>
+        <span translate='i18nQualifyAll'></span>
+      </a>
+      <a class='btn btn-action qualify-all' ng-click='form.$valid && controller.qualify()'
+         ng-show='controller.qualifyAll' role='button'>
+        <span class='fa fa-graduation-cap' aria-hidden='true'></span>
+        <span translate='i18nQualify'></span>
+      </a>
+      <a class='btn btn-default qualify-all' ng-click='controller.qualifyAll = !controller.qualifyAll'
+         ng-show='controller.qualifyAll' role='button'>
+        <span translate='i18nCancel'></span>
+      </a>
+    </div>
+    <div class='table-responsive'>
+      <table class='table table-hover'>
+        <thead>
+          <tr>
+            <th translate='i18nDocket'></th>
+            <th translate='i18nFirstName'></th>
+            <th translate='i18nLastName'></th>
+            <th translate='i18nActions' ng-hide='controller.qualifyAll'></th>
+            <th translate='i18nGrades' ng-show='controller.qualifyAll'></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-hide='controller.course.inscription.students.length > 0' class='bg-warning'>
+            <td colspan='4' class='text-danger text-center' translate='i18nNoStudentsFound'></td>
+          </tr>
+          <tr ng-repeat='student in controller.course.inscription.students'>
+            <td>{{ student.docket }}</td>
+            <td>{{ student.firstName }}</td>
+            <td>{{ student.lastName }}</td>
+            <td class='actions-container'>
+              <a ng-href='{{ controller.getStudentPath(student.docket) }}' ng-hide='controller.qualifyAll' class='btn btn-default' role='button'>
+                <span class='fa fa-user' aria-hidden='true'></span>
+                <span translate='i18nStudentShow'></span>
+              </a>
+              <div class='data-item' ng-show='controller.qualifyAll'>
+                <input type='number' step="0.1" name='grade{{$index}}' id='grade' class='form-input-field' ng-model='student.grade' min='1' max='10' />
+                <div ng-messages="form['grade'+$index].$error" ng-show="form['grade'+$index].$touched || form.$submitted" class='form-errors' role='alert'>
+                  <div ng-message='step'>
+                    <p translate='i18nOneDecimalOnly'></p>
+                  </div>
+                  <div ng-message-exp="['min', 'max']">
+                    <span translate='i18nGradeInvalidRange'></span>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
   <!-- /Students -->
 </div>

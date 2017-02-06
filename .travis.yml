@@ -20,7 +20,7 @@ install:
   - npm install -g bower
   - bower install
 script:
-  - npm test
+  # - npm test
   - mvn clean package -DurlPath='' sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN}
 after_success:
   - mvn clean test jacoco:report
