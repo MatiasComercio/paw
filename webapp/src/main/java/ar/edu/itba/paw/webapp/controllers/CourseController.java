@@ -36,96 +36,98 @@ import static javax.ws.rs.core.Response.*;
 @Path("/courses")
 public class CourseController {
 
-  private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
+	private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CourseController.class);
 
-  /** Fields **/
+	/**
+	 * Fields
+	 **/
 
-  @Autowired
-  private CourseService cs;
+	@Autowired
+	private CourseService cs;
 
 	@Autowired
 	private StudentService ss;
 
-  @Autowired
-  private DTOEntityMapper mapper;
+	@Autowired
+	private DTOEntityMapper mapper;
 
 
-  @Context
-  private UriInfo uriInfo;
+	@Context
+	private UriInfo uriInfo;
 
-  /** API Methods **/
+	/** API Methods **/
 
-  @GET
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response coursesIndex(@Size(max=5)
-                               @QueryParam("courseId") final String courseId,
-                               @Size(max=50)
-                               @QueryParam("name") final String name) {
-    final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder()
-            .id(courseId)
-            .keyword(name)
-            .build();
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response coursesIndex(@Size(max = 5)
+	                             @QueryParam("courseId") final String courseId,
+	                             @Size(max = 50)
+	                             @QueryParam("name") final String name) {
+		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder()
+						.id(courseId)
+						.keyword(name)
+						.build();
 
-    final List<Course> coursesFiltered = cs.getByFilter(courseFilter);
-    final List<CourseDTO> coursesList = coursesFiltered.stream().map(course -> mapper.convertToCourseDTO(course)).collect(Collectors.toList());
+		final List<Course> coursesFiltered = cs.getByFilter(courseFilter);
+		final List<CourseDTO> coursesList = coursesFiltered.stream().map(course -> mapper.convertToCourseDTO(course)).collect(Collectors.toList());
 
-    return ok(new CoursesList(coursesList)).build();
-  }
+		return ok(new CoursesList(coursesList)).build();
+	}
 
-  @POST
-  @Consumes(MediaType.APPLICATION_JSON)
-  public Response coursesNew(@Valid final CourseDTO courseDTO) {
-    final Course course = mapper.convertToCourse(courseDTO);
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response coursesNew(@Valid final CourseDTO courseDTO) {
+		final Course course = mapper.convertToCourse(courseDTO);
 
-    if (cs.getByCourseID(course.getCourseId()) != null) {
-      return status(Status.CONFLICT).build();
-    }
-    cs.create(course);
-    final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(course.getCourseId())).build();
+		if (cs.getByCourseID(course.getCourseId()) != null) {
+			return status(Status.CONFLICT).build();
+		}
+		cs.create(course);
+		final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(course.getCourseId())).build();
 
-    return created(uri).build();
-  }
+		return created(uri).build();
+	}
 
-  @GET
-  @Path("/{courseId}")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response coursesShow(@PathParam("courseId") final String courseId) {
-    final Course course = cs.getByCourseID(courseId);
+	@GET
+	@Path("/{courseId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response coursesShow(@PathParam("courseId") final String courseId) {
+		final Course course = cs.getByCourseID(courseId);
 
-    if(course == null) {
-      return status(Status.NOT_FOUND).build();
-    }
+		if (course == null) {
+			return status(Status.NOT_FOUND).build();
+		}
 
-    final CourseDTO courseDTO = mapper.convertToCourseDTO(course);
-    return ok(courseDTO).build();
-  }
+		final CourseDTO courseDTO = mapper.convertToCourseDTO(course);
+		return ok(courseDTO).build();
+	}
 
-  @POST
-  @Path("/{courseId}")
-  @Consumes(MediaType.APPLICATION_JSON)
-  public Response coursesUpdate(@PathParam("courseId") final String courseId,
-                                @Valid final CourseDTO courseDTO) {
-    if(cs.getByCourseID(courseId) == null) {
-      return status(Status.NOT_FOUND).build();
-    }
+	@POST
+	@Path("/{courseId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response coursesUpdate(@PathParam("courseId") final String courseId,
+	                              @Valid final CourseDTO courseDTO) {
+		if (cs.getByCourseID(courseId) == null) {
+			return status(Status.NOT_FOUND).build();
+		}
 
-	  if (cs.getByCourseID(courseDTO.getCourseId()) != null && !courseId.equals(courseDTO.getCourseId())) {
-		  LOGGER.debug("Attempting to update course {} with courseId {}, which already exists", courseId, courseDTO.getCourseId());
-		  return status(Status.CONFLICT).entity(createJSONEntryMessage("conflictField", "courseId")).build();
-	  }
+		if (cs.getByCourseID(courseDTO.getCourseId()) != null && !courseId.equals(courseDTO.getCourseId())) {
+			LOGGER.debug("Attempting to update course {} with courseId {}, which already exists", courseId, courseDTO.getCourseId());
+			return status(Status.CONFLICT).entity(createJSONEntryMessage("conflictField", "courseId")).build();
+		}
 
-    final Course courseUpdated = mapper.convertToCourse(courseDTO);
-    if(!cs.update(courseId, courseUpdated)) {
-	    return status(Status.CONFLICT).entity(createJSONEntryMessage("conflictField", "semester")).build();
-    }
+		final Course courseUpdated = mapper.convertToCourse(courseDTO);
+		if (!cs.update(courseId, courseUpdated)) {
+			return status(Status.CONFLICT).entity(createJSONEntryMessage("conflictField", "semester")).build();
+		}
 
-	  if (!courseId.equals(courseDTO.getCourseId())) {
-		  final URI uri = uriInfo.getBaseUriBuilder().path("/courses/" + String.valueOf(courseUpdated.getCourseId())).build();
-		  return ok(uri).build();
-	  }
+		if (!courseId.equals(courseDTO.getCourseId())) {
+			final URI uri = uriInfo.getBaseUriBuilder().path("/courses/" + String.valueOf(courseUpdated.getCourseId())).build();
+			return ok(uri).build();
+		}
 
-	  return noContent().build();
-  }
+		return noContent().build();
+	}
 
 	private String createJSONEntryMessage(final String key, final String value) {
 		final StringBuilder json = new StringBuilder();
@@ -144,39 +146,39 @@ public class CourseController {
 		return json.toString();
 	}
 
-  @DELETE
-  @Path("/{courseId}")
-  public Response coursesDestroy(@PathParam("courseId") final String courseId) {
-    if(!cs.deleteCourse(courseId)) {
-      return Response.status(Status.CONFLICT).build(); //TODO: check what to return -- Look at PRECONDITION_FAILED
-    }
+	@DELETE
+	@Path("/{courseId}")
+	public Response coursesDestroy(@PathParam("courseId") final String courseId) {
+		if (!cs.deleteCourse(courseId)) {
+			return Response.status(Status.CONFLICT).build(); //TODO: check what to return -- Look at PRECONDITION_FAILED
+		}
 
-    return Response.noContent().build();
-  }
+		return Response.noContent().build();
+	}
 
-  @GET
-  @Path("/{courseId}/students")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response coursesStudentsIndex(@PathParam("courseId") final String courseId,
-                                       @Min(value = 1)
-                                       @QueryParam("docket") final Integer docket,
-                                       @Size(max=50)
-                                       @QueryParam("firstName") final String firstName,
-                                       @Size(max=50)
-                                       @QueryParam("lastName") final String lastName) {
-    final Course course = cs.getByCourseID(courseId);
+	@GET
+	@Path("/{courseId}/students")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response coursesStudentsIndex(@PathParam("courseId") final String courseId,
+	                                     @Min(value = 1)
+	                                     @QueryParam("docket") final Integer docket,
+	                                     @Size(max = 50)
+	                                     @QueryParam("firstName") final String firstName,
+	                                     @Size(max = 50)
+	                                     @QueryParam("lastName") final String lastName) {
+		final Course course = cs.getByCourseID(courseId);
 
-    if(course == null) {
-      return status(Status.NOT_FOUND).build();
-    }
-    final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
-            .docket(docket).firstName(firstName).lastName(lastName).build();
-    final List<Student> courseStudents = cs.getCourseStudents(courseId, studentFilter);
+		if (course == null) {
+			return status(Status.NOT_FOUND).build();
+		}
+		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+						.docket(docket).firstName(firstName).lastName(lastName).build();
+		final List<Student> courseStudents = cs.getCourseStudents(courseId, studentFilter);
 
-    final List<StudentIndexDTO> studentsList = courseStudents.stream().map(student -> mapper.convertToStudentIndexDTO(student)).collect(Collectors.toList());
+		final List<StudentIndexDTO> studentsList = courseStudents.stream().map(student -> mapper.convertToStudentIndexDTO(student)).collect(Collectors.toList());
 
-    return ok(new StudentsList(studentsList)).build();
-  }
+		return ok(new StudentsList(studentsList)).build();
+	}
 
 	@POST
 	@Path("/{courseId}/students/qualify")
@@ -223,202 +225,202 @@ public class CourseController {
 		return Response.status(207).entity(httpStatusList).build();
 	}
 
-  @GET
-  @Path("/{courseId}/students/passed")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response coursesStudentsPassedIndex(@PathParam("courseId") final String courseId,
-                                             @Min(value = 1)
-                                             @QueryParam("docket") final Integer docket,
-                                             @Size(max=50)
-                                             @QueryParam("firstName") final String firstName,
-                                             @Size(max=50)
-                                             @QueryParam("lastName") final String lastName) {
-    final Course course = cs.getByCourseID(courseId);
-    if(course == null) {
-      return status(Status.NOT_FOUND).build();
-    }
+	@GET
+	@Path("/{courseId}/students/passed")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response coursesStudentsPassedIndex(@PathParam("courseId") final String courseId,
+	                                           @Min(value = 1)
+	                                           @QueryParam("docket") final Integer docket,
+	                                           @Size(max = 50)
+	                                           @QueryParam("firstName") final String firstName,
+	                                           @Size(max = 50)
+	                                           @QueryParam("lastName") final String lastName) {
+		final Course course = cs.getByCourseID(courseId);
+		if (course == null) {
+			return status(Status.NOT_FOUND).build();
+		}
 
-    final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
-            .docket(docket)
-            .firstName(firstName)
-            .lastName(lastName)
-            .build();
-    final Map<Student, Grade> approvedStudents = cs.getStudentsThatPassedCourse(courseId, studentFilter);
-    final List<StudentWithGradeDTO> studentsList = mapper.convertToStudentsWithGradeDTO(approvedStudents);
+		final StudentFilter studentFilter = new StudentFilter.StudentFilterBuilder()
+						.docket(docket)
+						.firstName(firstName)
+						.lastName(lastName)
+						.build();
+		final Map<Student, Grade> approvedStudents = cs.getStudentsThatPassedCourse(courseId, studentFilter);
+		final List<StudentWithGradeDTO> studentsList = mapper.convertToStudentsWithGradeDTO(approvedStudents);
 
-    return ok(new StudentsWithGradeList(studentsList)).build();
-  }
+		return ok(new StudentsWithGradeList(studentsList)).build();
+	}
 
-  @GET
-  @Path("/{courseId}/correlatives")
-  public Response coursesCorrelativesShow(@PathParam("courseId") final String courseId) {
-    if(cs.getByCourseID(courseId) == null) {
-      return status(Status.NOT_FOUND).build();
-    }
-    final List<String> correlativesIds = cs.getCorrelativesIds(courseId);
-    final List<Course> correlatives = new ArrayList<>(correlativesIds.size());
+	@GET
+	@Path("/{courseId}/correlatives")
+	public Response coursesCorrelativesShow(@PathParam("courseId") final String courseId) {
+		if (cs.getByCourseID(courseId) == null) {
+			return status(Status.NOT_FOUND).build();
+		}
+		final List<String> correlativesIds = cs.getCorrelativesIds(courseId);
+		final List<Course> correlatives = new ArrayList<>(correlativesIds.size());
 
-    for(String correlativeId : correlativesIds) {
-      correlatives.add(cs.getByCourseID(correlativeId));
-    }
+		for (String correlativeId : correlativesIds) {
+			correlatives.add(cs.getByCourseID(correlativeId));
+		}
 
-    final List<CourseDTO> correlativesDTO = correlatives.stream().map(correlative -> mapper.convertToCourseDTO(correlative)).collect(Collectors.toList());
+		final List<CourseDTO> correlativesDTO = correlatives.stream().map(correlative -> mapper.convertToCourseDTO(correlative)).collect(Collectors.toList());
 
-    return ok(new CoursesList(correlativesDTO)).build();
-  }
+		return ok(new CoursesList(correlativesDTO)).build();
+	}
 
-  @POST
-  @Path("/{courseId}/correlatives")
-  @Consumes(MediaType.APPLICATION_JSON)
-  public Response coursesCorrelativesNew(@PathParam("courseId") final String courseId,
-                                         @Valid final CorrelativeDTO correlativeDTO) {
-    if(!cs.addCorrelative(courseId, correlativeDTO.getCorrelativeId())) {
-      return status(Status.BAD_REQUEST).build();
-    }
+	@POST
+	@Path("/{courseId}/correlatives")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response coursesCorrelativesNew(@PathParam("courseId") final String courseId,
+	                                       @Valid final CorrelativeDTO correlativeDTO) {
+		if (!cs.addCorrelative(courseId, correlativeDTO.getCorrelativeId())) {
+			return status(Status.BAD_REQUEST).build();
+		}
 
-    return noContent().build();
-  }
+		return noContent().build();
+	}
 
 
-  @GET
-  @Path("/{courseId}/correlatives/available")
-  public Response coursesCorrelativesAvailableIndex(@Size(max=5)  @PathParam("courseId") final String courseId,
-                                                    @Size(max=5)  @QueryParam("correlativeId") final String correlativeId,
-                                                    @Size(max=50) @QueryParam("name") final String name) {
-    final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder()
-            .id(correlativeId)
-            .keyword(name)
-            .build();
+	@GET
+	@Path("/{courseId}/correlatives/available")
+	public Response coursesCorrelativesAvailableIndex(@Size(max = 5) @PathParam("courseId") final String courseId,
+	                                                  @Size(max = 5) @QueryParam("correlativeId") final String correlativeId,
+	                                                  @Size(max = 50) @QueryParam("name") final String name) {
+		final CourseFilter courseFilter = new CourseFilter.CourseFilterBuilder()
+						.id(correlativeId)
+						.keyword(name)
+						.build();
 
-    final List<Course> coursesFiltered = cs.getAvailableAddCorrelatives(courseId, courseFilter);
-    final List<CourseDTO> coursesList = coursesFiltered.stream().map(course -> mapper.convertToCourseDTO(course)).collect(Collectors.toList());
+		final List<Course> coursesFiltered = cs.getAvailableAddCorrelatives(courseId, courseFilter);
+		final List<CourseDTO> coursesList = coursesFiltered.stream().map(course -> mapper.convertToCourseDTO(course)).collect(Collectors.toList());
 
-    return ok(new CoursesList(coursesList)).build();
+		return ok(new CoursesList(coursesList)).build();
 
-  }
+	}
 
-  @DELETE
-  @Path("/{courseId}/correlatives/{correlativeId}")
-  public Response coursesCorrelativesDestroy(@PathParam("courseId") final String courseId,
-                                             @PathParam("correlativeId") final String correlativeId) {
+	@DELETE
+	@Path("/{courseId}/correlatives/{correlativeId}")
+	public Response coursesCorrelativesDestroy(@PathParam("courseId") final String courseId,
+	                                           @PathParam("correlativeId") final String correlativeId) {
 
-	  if (cs.getByCourseID(courseId) == null || cs.getByCourseID(correlativeId) == null) {
-		  return status(Status.NOT_FOUND).build();
-	  }
+		if (cs.getByCourseID(courseId) == null || cs.getByCourseID(correlativeId) == null) {
+			return status(Status.NOT_FOUND).build();
+		}
 
-    if (courseId.equals(correlativeId)) {
-      return status(Status.CONFLICT).build();
-    }
-	  cs.deleteCorrelative(courseId, correlativeId);
+		if (courseId.equals(correlativeId)) {
+			return status(Status.CONFLICT).build();
+		}
+		cs.deleteCorrelative(courseId, correlativeId);
 
-    return noContent().build();
-  }
+		return noContent().build();
+	}
 
-  @GET
-  @Path("/{courseId}/finalInscriptions")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response coursesFinalInscriptionsIndex(
-          @Pattern(regexp="\\d{2}\\.\\d{2}")
-          @PathParam("courseId") final String courseId) {
+	@GET
+	@Path("/{courseId}/finalInscriptions")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response coursesFinalInscriptionsIndex(
+					@Pattern(regexp = "\\d{2}\\.\\d{2}")
+					@PathParam("courseId") final String courseId) {
 
-    final Course course = cs.getByCourseID(courseId);
-    if(course == null){
-      return status(Status.NOT_FOUND).build();
-    }
+		final Course course = cs.getByCourseID(courseId);
+		if (course == null) {
+			return status(Status.NOT_FOUND).build();
+		}
 
-    List<FinalInscription> finalInscriptions = cs.getCourseFinalInscriptions(courseId);
+		List<FinalInscription> finalInscriptions = cs.getCourseFinalInscriptions(courseId);
 
-    final List<FinalInscriptionIndexDTO> list = finalInscriptions.stream()
-            .map(finalInscription -> mapper.convertToFinalInscriptionIndexDTO(finalInscription)).collect(Collectors.toList());
+		final List<FinalInscriptionIndexDTO> list = finalInscriptions.stream()
+						.map(finalInscription -> mapper.convertToFinalInscriptionIndexDTO(finalInscription)).collect(Collectors.toList());
 
-    return ok(new FinalInscriptionsList(list)).build();
-  }
+		return ok(new FinalInscriptionsList(list)).build();
+	}
 
-  @POST
-  @Path("/{courseId}/finalInscriptions")
-  @Consumes(MediaType.APPLICATION_JSON)
-  public Response coursesFinalInscriptionsNew(
-          @Pattern(regexp="\\d{2}\\.\\d{2}")
-          @PathParam("courseId") final String courseId,
-          @Valid final FinalInscriptionDTO finalinscriptionDTO) {
+	@POST
+	@Path("/{courseId}/finalInscriptions")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response coursesFinalInscriptionsNew(
+					@Pattern(regexp = "\\d{2}\\.\\d{2}")
+					@PathParam("courseId") final String courseId,
+					@Valid final FinalInscriptionDTO finalinscriptionDTO) {
 
-    final Course course = cs.getByCourseID(courseId);
-    if(course == null){
-      return status(Status.NOT_FOUND).build();
-    }
+		final Course course = cs.getByCourseID(courseId);
+		if (course == null) {
+			return status(Status.NOT_FOUND).build();
+		}
 
-    FinalInscription finalInscription = mapper.convertToFinalInscription(finalinscriptionDTO, course);
+		FinalInscription finalInscription = mapper.convertToFinalInscription(finalinscriptionDTO, course);
 
-    int id = cs.addFinalInscription(finalInscription);
+		int id = cs.addFinalInscription(finalInscription);
 
-    final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(id)).build();
-    return created(uri).build();
-  }
+		final URI uri = uriInfo.getAbsolutePathBuilder().path(String.valueOf(id)).build();
+		return created(uri).build();
+	}
 
-  @GET
-  @Path("/{courseId}/finalInscriptions/{finalInscriptionId}")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response coursesFinalInscriptionsShow(
-          @Pattern(regexp="\\d{2}\\.\\d{2}")
-          @PathParam("courseId") final String courseId,
-          @PathParam("finalInscriptionId") final int finalInscriptionId) {
+	@GET
+	@Path("/{courseId}/finalInscriptions/{finalInscriptionId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response coursesFinalInscriptionsShow(
+					@Pattern(regexp = "\\d{2}\\.\\d{2}")
+					@PathParam("courseId") final String courseId,
+					@PathParam("finalInscriptionId") final int finalInscriptionId) {
 
-    final Course course = cs.getByCourseID(courseId);
-    if(course == null){
-      return status(Status.NOT_FOUND).build();
-    }
+		final Course course = cs.getByCourseID(courseId);
+		if (course == null) {
+			return status(Status.NOT_FOUND).build();
+		}
 
-    final FinalInscription finalInscription = cs.getFinalInscription(finalInscriptionId);
-    if(finalInscription == null) {
-      return status(Status.NOT_FOUND).build();
-    }
+		final FinalInscription finalInscription = cs.getFinalInscription(finalInscriptionId);
+		if (finalInscription == null) {
+			return status(Status.NOT_FOUND).build();
+		}
 
-    final FinalInscriptionDTO finalInscriptionDTO = mapper.convertToFinalInscriptionDTO(
-            finalInscription,
-            cs.getFinalStudents(finalInscriptionId));
+		final FinalInscriptionDTO finalInscriptionDTO = mapper.convertToFinalInscriptionDTO(
+						finalInscription,
+						cs.getFinalStudents(finalInscriptionId));
 
-    return ok(finalInscriptionDTO).build();
-  }
+		return ok(finalInscriptionDTO).build();
+	}
 
-  @DELETE
-  @Path("/{courseId}/finalInscriptions/{finalInscriptionId}")
-  public Response coursesFinalInscriptionsDestroy(
-          @Pattern(regexp="\\d{2}\\.\\d{2}")
-          @PathParam("courseId") final String courseId,
-          @PathParam("finalInscriptionId") final int finalInscriptionId) {
+	@DELETE
+	@Path("/{courseId}/finalInscriptions/{finalInscriptionId}")
+	public Response coursesFinalInscriptionsDestroy(
+					@Pattern(regexp = "\\d{2}\\.\\d{2}")
+					@PathParam("courseId") final String courseId,
+					@PathParam("finalInscriptionId") final int finalInscriptionId) {
 
-    final Course course = cs.getByCourseID(courseId);
-    if(course == null){
-      return status(Status.NOT_FOUND).build();
-    }
+		final Course course = cs.getByCourseID(courseId);
+		if (course == null) {
+			return status(Status.NOT_FOUND).build();
+		}
 
-    cs.deleteFinalInscription(finalInscriptionId);
-    return noContent().build();
-  }
+		cs.deleteFinalInscription(finalInscriptionId);
+		return noContent().build();
+	}
 
 	@POST
 	@Path("/{courseId}/finalInscriptions/{finalInscriptionId}/qualify")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response courseFinalInscriptionsQualify(@Pattern(regexp = "\\d{2}\\.\\d{2}") @PathParam("courseId") final String courseId,
-	                                              @PathParam("finalInscriptionId") final int finalInscriptionId,
-	                                              @Valid List<QualifyStudent> qualifiedStudents) {
+	                                               @PathParam("finalInscriptionId") final int finalInscriptionId,
+	                                               @Valid List<QualifyStudent> qualifiedStudents) {
 		if (cs.getByCourseID(courseId) == null ){
 			return status(Status.NOT_FOUND).build();
 		}
 
 		final FinalInscription finalInscription = cs.getFinalInscription(finalInscriptionId);
-  if(finalInscription == null){
-    return status(Status.NOT_FOUND).build();
-  }
+		if (finalInscription == null) {
+			return status(Status.NOT_FOUND).build();
+		}
 
 		if (!cs.getCourseFinalInscriptions(courseId).contains(finalInscription)) {
 			return status(Status.NOT_FOUND).build();
 		}
 
-		if(finalInscription.isOpen()){
-    return status(Status.CONFLICT).build();
-  }
+		if(finalInscription.isOpen()) {
+			return status(Status.CONFLICT).build();
+		}
 
 		final HTTPResponseList httpStatusList = new HTTPResponseList(qualifiedStudents.size());
 
@@ -433,35 +435,37 @@ public class CourseController {
 			}
 		}
 
- if(cs.getFinalStudents(finalInscriptionId).isEmpty()){
-   cs.deleteFinalInscription(finalInscriptionId);
- }
+		if (cs.getFinalStudents(finalInscriptionId).isEmpty()) {
+			cs.deleteFinalInscription(finalInscriptionId);
+
+			return noContent().build();
+		}
 
 		return status(207).entity(httpStatusList).build();
 	}
 
 
-  @POST
-  @Path("/{courseId}/finalInscriptions/{finalInscriptionId}/close")
-  public Response coursesFinalInscriptionsClose(@Pattern(regexp = "\\d{2}\\.\\d{2}") @PathParam("courseId") final String courseId,
-                            @PathParam("finalInscriptionId") final int finalInscriptionId) {
+	@POST
+	@Path("/{courseId}/finalInscriptions/{finalInscriptionId}/close")
+	public Response coursesFinalInscriptionsClose(@Pattern(regexp = "\\d{2}\\.\\d{2}") @PathParam("courseId") final String courseId,
+	                                              @PathParam("finalInscriptionId") final int finalInscriptionId) {
 
-    if (cs.getByCourseID(courseId) == null ){
-      return status(Status.NOT_FOUND).build();
-    }
+		if (cs.getByCourseID(courseId) == null) {
+			return status(Status.NOT_FOUND).build();
+		}
 
-    final FinalInscription finalInscription = cs.getFinalInscription(finalInscriptionId);
-    if(finalInscription == null){
-      return status(Status.NOT_FOUND).build();
-    }
+		final FinalInscription finalInscription = cs.getFinalInscription(finalInscriptionId);
+		if (finalInscription == null) {
+			return status(Status.NOT_FOUND).build();
+		}
 
-    if (!cs.getCourseFinalInscriptions(courseId).contains(finalInscription)) {
-      return status(Status.NOT_FOUND).build();
-    }
+		if (!cs.getCourseFinalInscriptions(courseId).contains(finalInscription)) {
+			return status(Status.NOT_FOUND).build();
+		}
 
-    cs.closeFinalInscription(finalInscriptionId);
+		cs.closeFinalInscription(finalInscriptionId);
 
-    return noContent().build();
-  }
+		return noContent().build();
+	}
 
 }
