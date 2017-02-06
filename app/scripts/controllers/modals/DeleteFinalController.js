@@ -2,14 +2,14 @@
 
 define(['paw', 'services/modalFactory', 'services/Courses', 'services/flashMessages'], function(paw) {
   paw.controller('DeleteFinalController',
-    ['modalFactory', '$log', 'Courses', '$route', 'flashMessages',
-    function (modalFactory, $log, Courses, $route, flashMessages) {
+    ['modalFactory', '$log', 'Courses', '$route', 'flashMessages', 'Paths',
+    function (modalFactory, $log, Courses, $route, flashMessages, Paths) {
       var modalTemplateUrl = 'views/modals/delete_final.html';
       var onSuccess = function(result) {
         Courses.deleteFinalInscription(result.courseId, result.id)
           .then(function(response) {
             flashMessages.setSuccess('i18nDeleteFinalSuccess');
-            $route.reload();
+            Paths.get().courses({courseId: result.courseId}).go();
           }, function(response) {
             flashMessages.setError('i18nFormErrors');
             $log.warn('[ERROR] - Response: ' + JSON.stringify(response));

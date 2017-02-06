@@ -2,16 +2,18 @@
 
 define(['paw', 'services/Courses', 'services/flashMessages'], function(paw) {
   paw.controller('CoursesFinalInscriptionNewCtrl',
-  ['$routeParams', 'Courses', '$window', '$filter', 'flashMessages', '$log', '$route', 'Paths',
-  function($routeParams, Courses, $window, $filter, flashMessages, $log, $route, Paths) {
-
+  ['$routeParams', 'Courses', '$window', '$filter', 'flashMessages', '$log', '$route', 'Paths', 'navDataService',
+  function($routeParams, Courses, $window, $filter, flashMessages, $log, $route, Paths, navDataService) {
       var _this = this;
       this.courseId = $routeParams.courseId;
+
+      navDataService.checkUserIsAdmin();
 
       this.currentDate = new Date();
 
       Courses.get(this.courseId).then(function(course) {
         _this.course = course;
+        Courses.setOnSubSidebar(course);
       }, function(response) {
         $log.info('Response status: ' + response.status);
         if (response.status === 404) {

@@ -24,7 +24,7 @@ define([], function() {
     i18nAddFinalInscription: 'Agregar inscripción a final',
 
     // Login
-    i18nLogin: 'Iniciar Sesión',
+    i18nLogin: 'Iniciar sesión',
     i18nPassword: 'Contraseña',
     i18nChangePassword: 'Cambiar contraseña',
     i18nCurrentPassword: 'Contraseña actual',
@@ -57,7 +57,7 @@ define([], function() {
     i18nCourseEdit: 'Editar',
     i18nCourseStudents: 'Alumnos inscriptos',
     i18nCourseApproved: 'Historial de aprobados',
-    i18nCourseAddCorrelative: 'Agregar correlativa',
+    i18nCourseAddCorrelative: 'Agregar correlatividad',
     i18nCourseDelete: 'Eliminar',
     i18nFinalDelete: 'Eliminar',
 
@@ -65,8 +65,8 @@ define([], function() {
     i18nActions: 'Acciones',
 
     // New
-    i18nStudentsNewButton: 'Agregar Alumno',
-    i18nAdminsNewButton: 'Agregar Administrador',
+    i18nStudentsNewButton: 'Agregar',
+    i18nAdminsNewButton: 'Agregar',
     i18nFinalInscriptionNewButton: 'Agregar',
     i18nInvalidFormatDate: 'Formato de fecha inválido',
     i18nUserWithGIvenDNIExists: 'Ya existe un usuario con el DNI indicado',
@@ -75,12 +75,12 @@ define([], function() {
 
 
     // User Update
-    i18nRequiredFields: 'Campos Obligatorios',
+    i18nRequiredFields: 'Campos obligatorios',
     i18nRequiredIcon: '*',
     i18nMale: 'Masculino',
     i18nFemale: 'Femenino',
     i18nBirthdayPlaceholder: 'yyyy-mm-dd',
-    i18nButtonSaveChanges: 'Guardar Cambios',
+    i18nButtonSaveChanges: 'Guardar cambios',
     i18nButtonCancel: 'Cancelar',
 
     // User Show
@@ -90,7 +90,7 @@ define([], function() {
     i18nDocket: 'Legajo',
     i18nFirstName: 'Nombre',
     i18nLastName: 'Apellido',
-    i18nBirthday: 'Fecha de Nacimiento',
+    i18nBirthday: 'Fecha de nacimiento',
     i18nEmail: 'Email',
     i18nGenre: 'Género',
     i18nTelephone: 'Teléfono',
@@ -101,13 +101,13 @@ define([], function() {
     i18nNumber: 'Altura',
     i18nFloor: 'Piso Nro.',
     i18nDoor: 'Dpto.',
-    i18nZipCode: 'Cód. Postal',
+    i18nZipCode: 'Código postal',
 
     // Course Show
     i18nCourses: 'Materias',
     i18nInformation: 'Información',
     // Students Inscriptions
-    i18nUnenroll: 'Dar de Baja',
+    i18nUnenroll: 'Dar de baja',
     // Students Inscriptions
     i18nEnroll: 'Matricularse',
 
@@ -145,7 +145,7 @@ define([], function() {
     // Correlatives
     i18nAddCorrelative: 'Agregar correlatividad',
     // Courses Edit
-    i18nInvalidCourseCode: 'Código inválido. Los códigos de materia tienen la forma "71.02".',
+    i18nInvalidCourseCode: 'Código inválido. Los códigos de materia tienen la forma "71.02" y no pueden empezar con 0',
     i18nNumberRangePrefix: 'El valor de este campo debe estar entre',
     i18nNumberRangeAnd: 'y',
     i18nNumberRangeSuffix: '.',
@@ -153,14 +153,15 @@ define([], function() {
     // New
     i18nCoursesButtonNew: 'Agregar',
     i18nCourseWithCourseIdAlreadyExists: 'Ya existe una materia con ese código',
+    i18nCourseInvalidSemesterLogic: 'Por favor revise que el cuatrimestre de esta materia no sea posterior al de alguna materia correlativa',
     i18nCourseSuccessfullyCreated: 'La materia se ha creado exitosamente',
     i18nCourseSuccessfullyUpdated: 'La materia se ha editado exitosamente',
     i18nInvalidBirthday: 'La fecha debe ser anterior a la fecha actual',
     i18nInvalidFinalExamDate: 'La fecha del examen debe ser posterior a la fecha actual',
 
     // Final Exams
-    i18nFinalExams: 'Exámenes Finales',
-    i18nFinalExam: 'Exámen Final',
+    i18nFinalExams: 'Exámenes finales',
+    i18nFinalExam: 'Exámen final',
     i18nFinalExamsTaken: 'Exámenes a los que se encuentra inscripto',
     i18nVacancy: 'Cupos',
     i18nState: 'Estado',
@@ -179,14 +180,14 @@ define([], function() {
     i18nNoCoursesFound: 'No se encontraron materias disponibles',
 
     // Form errors
-    i18nInvalidDate: 'La fecha seleccionada es inválida.',
-    i18nFormErrorDni: 'El DNI debe tener 8 dígitos.',
+    i18nInvalidDate: 'La fecha seleccionada es inválida',
+    i18nFormErrorDni: 'El DNI debe tener 8 dígitos',
     i18nNumericField: 'El valor ingresado debe ser un número válido (la cantidad de dígitos debe ser apropiada)',
     i18nFormErrorTelephone: 'El número de teléfono ingresado es inválido (sólo números ; máximo 11 dígitos)',
     i18nRequiredField: 'Este campo es requerido',
     i18nLengthPrefix: 'Este campo debe tener entre',
     i18nLengthAnd: 'y',
-    i18nLengthSuffix: 'caracteres.',
+    i18nLengthSuffix: 'caracteres',
 
     // Modals
     i18nModalStudentDocket: 'Legajo del alumno',
@@ -196,7 +197,7 @@ define([], function() {
     i18nModalCorrelativeId: 'Código de la correlativa',
     i18nModalStudentFullName: 'Nombre del alumno',
     i18nModalDeleteFinal: 'Eliminar examen final',
-    i18nModalCloseFinal: 'Cerrar Final',
+    i18nModalCloseFinal: 'Cerrar final',
 
     // Flash messages
     i18nEditSuccess: 'La edición ha sido exitosa',
@@ -204,8 +205,8 @@ define([], function() {
     i18nDeleteFinalSuccess: 'Se ha eliminado el examen final',
     i18nDeleteCorrelativeSuccess: 'Se ha eliminado la correlatividad',
     i18nAddCorrelativeSuccess: 'Se ha agregado la correlatividad',
-    i18nEnrollSuccess: 'Se ha agregado la inscripción',
-    i18nFinalEnrollSuccess: 'Se ha agregado la inscripción',
+    i18nEnrollSuccess: 'La matrictulación ha sido exitosa',
+    i18nFinalEnrollSuccess: 'La inscripción al final ha sido exitosa',
     i18nUnenrollSuccess: 'Se ha eliminado la inscripción',
     i18nFinalUnenrollSuccess: 'Se ha eliminado la inscripción',
     i18nFormErrors: 'Hay errores en los datos ingresados',

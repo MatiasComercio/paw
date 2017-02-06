@@ -8,7 +8,7 @@
       </div>
       <div ng-repeat='course in controller.courses'>
         <hr />
-        <a ng-show='course' ng-click='controller.toggleCourse(course)' class='btn btn-info'>
+        <a ng-show='course' ng-click='controller.toggleCourse(course)' class='btn btn-action'>
         <p>{{ course.courseId }} - {{ course.name }}</p>
       </div>
     </div>
@@ -20,7 +20,7 @@
       </div>
       <div ng-repeat='student in controller.students'>
         <hr />
-        <a ng-show='student' ng-click='controller.toggleStudent(student)' class='btn btn-info'>
+        <a ng-show='student' ng-click='controller.toggleStudent(student)' class='btn btn-action'>
           {{ student.docket }} - {{ student.fullName }}
         </a>
       </div>

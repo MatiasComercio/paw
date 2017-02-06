@@ -41,7 +41,7 @@
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nInformation'></span>
             </a>
-            <a class='btn btn-info' role='button' ng-controller='FinalEnrollController as modalController'
+            <a class='btn btn-action' role='button' ng-controller='FinalEnrollController as modalController'
             ng-click="modalController.open('md', 'i18nEnroll', controller.student.docket, controller.student.fullName, inscription.name, inscription.finalExamDate, inscription.id)">
               <span class='fa fa-list-alt' aria-hidden='true'></span>
               <span translate='i18nFinalEnroll'></span>
@@ -68,7 +68,7 @@
       </thead>
       <tbody>
         <tr ng-hide='controller.student.finalInscriptionsTaken.length > 0' class='bg-warning'>
-          <td colspan='4' class='text-danger text-center' translate='i18nNoFinalExamsFound'></td>
+          <td colspan='5' class='text-danger text-center' translate='i18nNoFinalExamsFound'></td>
         </tr>
         <tr ng-repeat='inscription in controller.student.finalInscriptionsTaken'>
           <td>{{inscription.name}}</td>

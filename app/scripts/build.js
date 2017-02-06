@@ -125,6 +125,7 @@ require([
         'angular',
         'restangular',
         'paw',
+        'services/navDataService',
         'controllers/BodyCtrl'
     ],
     function() {

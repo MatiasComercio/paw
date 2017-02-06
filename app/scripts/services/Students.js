@@ -106,7 +106,6 @@ define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], 
     };
 
     rest.finalEnroll = function(docket, id) {
-      console.log(id);
       return rest.one('students', docket).one('finalInscriptions', id).customPOST();
     };
 

@@ -13,7 +13,8 @@
     }
   }
 
-  .qualify-all-container {
+  .qualify-all-container,
+  .final-instance-actions-container {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -27,6 +28,12 @@
       width: 300px;
       height: 35px;
       margin: 0 15px;
+    }
+
+    .final-instance-action {
+      width: 200px;
+      height: 35px;
+      margin: 15px;
     }
   }
 

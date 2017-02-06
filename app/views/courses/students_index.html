@@ -40,7 +40,7 @@
 
   <!-- Students -->
   <form name='form' novalidate>
-    <div class='qualify-all-container'>
+    <div class='qualify-all-container' ng-hide='controller.user.student' >
       <a class='btn btn-action qualify-all' ng-click='controller.qualifyAll = !controller.qualifyAll'
          ng-hide='controller.qualifyAll || controller.course.students.length <= 0' role='button'>
         <span class='fa fa-graduation-cap' aria-hidden='true'></span>
@@ -64,7 +64,7 @@
             <th translate='i18nDocket'></th>
             <th translate='i18nFirstName'></th>
             <th translate='i18nLastName'></th>
-            <th translate='i18nActions' ng-hide='controller.qualifyAll'></th>
+            <th translate='i18nActions' ng-hide='controller.user.student || controller.qualifyAll'></th>
             <th translate='i18nGrades' ng-show='controller.qualifyAll'></th>
           </tr>
         </thead>
@@ -76,7 +76,7 @@
             <td>{{ student.docket }}</td>
             <td>{{ student.firstName }}</td>
             <td>{{ student.lastName }}</td>
-            <td class='actions-container'>
+            <td class='actions-container' ng-hide='controller.user.student'>
               <a ng-href='{{ controller.getStudentPath(student.docket) }}' ng-hide='controller.qualifyAll' class='btn btn-default' role='button'>
                 <span class='fa fa-user' aria-hidden='true'></span>
                 <span translate='i18nStudentShow'></span>

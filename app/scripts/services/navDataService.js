@@ -76,6 +76,29 @@ define(
         });
       };
 
+      memory.saveUserTo = function(obj) {
+        var getUserCallback = function() {
+          // get the user
+          obj.user = memory.get('user');
+        };
+        memory.registerObserverCallback('user', getUserCallback);
+        getUserCallback();
+      };
+
+      memory.checkUserIsAdmin = function() {
+        var getUserCallback = function() {
+          var user = memory.get('user');
+          if (!user) {
+            return;
+          }
+          if (!user.admin) {
+            Paths.get().notFound().go();
+          }
+        };
+        memory.registerObserverCallback('user', getUserCallback);
+        getUserCallback();
+      };
+
       return memory;
     }]);
   }

@@ -61,7 +61,7 @@
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nInformation'></span>
             </a>
-            <a class='btn btn-danger' role='button' ng-controller='DeleteCorrelativeController as modalController'
+            <a class='btn btn-danger' ng-show='controller.user.admin' role='button' ng-controller='DeleteCorrelativeController as modalController'
             ng-click="modalController.open('md', controller.course.courseId, controller.course.name, course.courseId, course.name)">
               <span class='fa fa-trash' aria-hidden='true'></span>
               <span translate='i18nDeleteCorrelative'></span>
@@ -99,15 +99,10 @@
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nInformation'></span>
             </a>
-            <a class='btn btn-info' role='button' ng-controller='CloseFinalController as modalController'
+            <a class='btn btn-danger' role='button' ng-show="controller.user.admin && inscription.state === 'OPEN'" ng-controller='CloseFinalController as modalController'
             ng-click="modalController.open('md', 'i18nFinalDelete', controller.course.courseId, controller.course.name, inscription.finalExamDate, inscription.id)">
-              <span class='fa fa-trash' aria-hidden='true'></span>
+              <span class='fa fa-times-circle-o' aria-hidden='true'></span>
               <span translate='i18nModalCloseFinal'></span>
-            </a>
-            <a class='btn btn-danger' role='button' ng-controller='DeleteFinalController as modalController'
-            ng-click="modalController.open('md', 'i18nFinalDelete', controller.course.courseId, controller.course.name, inscription.finalExamDate, inscription.id)">
-              <span class='fa fa-trash' aria-hidden='true'></span>
-              <span translate='i18nFinalDelete'></span>
             </a>
           </td>
         </tr>

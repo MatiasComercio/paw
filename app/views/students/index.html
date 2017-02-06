@@ -37,7 +37,7 @@
             <th translate='i18nDocket'></th>
             <th translate='i18nFirstName'></th>
             <th translate='i18nLastName'></th>
-            <th translate='i18nActions'></th>
+            <th ng-show='controller.user.admin' translate='i18nActions'></th>
           </tr>
         </thead>
         <tbody>
@@ -48,8 +48,8 @@
             <td>{{ student.docket }}</td>
             <td>{{ student.firstName }}</td>
             <td>{{ student.lastName }}</td>
-            <td class='actions-container'>
-              <a ng-hide='controller.user.student && (controller.user.docket !== student.docket) ' ng-href='{{ student.profileUrl }}' class='btn btn-default' role='button'>
+            <td ng-show='controller.user.admin' class='actions-container'>
+              <a ng-href='{{ student.profileUrl }}' class='btn btn-default' role='button'>
                 <span class='fa fa-user' aria-hidden='true'></span>
                 <span translate='i18nStudentShow'></span>
               </a>

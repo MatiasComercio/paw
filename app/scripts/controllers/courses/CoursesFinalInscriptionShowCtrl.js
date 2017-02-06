@@ -1,15 +1,19 @@
 'use strict';
 
-define(['paw','services/Courses','services/Paths', 'services/flashMessages'], function(paw) {
+define(['paw','services/Courses','services/Paths', 'services/flashMessages',
+'controllers/modals/DeleteFinalController',
+'controllers/modals/CloseFinalController'],
+function(paw) {
   paw.controller('CoursesFinalInscriptionShowCtrl',
-  ['$routeParams', 'Courses', '$log', 'Paths', 'flashMessages', '$route',
-  function($routeParams, Courses, $log, Paths, flashMessages, $route) {
+  ['$routeParams', 'Courses', '$log', 'Paths', 'flashMessages', '$route', 'navDataService',
+  function($routeParams, Courses, $log, Paths, flashMessages, $route, navDataService) {
     var _this = this;
     var courseId = $routeParams.courseId;
     var inscriptionId = $routeParams.inscriptionId;
 
-    this.qualifyAll = false;
+    navDataService.saveUserTo(_this);
 
+    this.qualifyAll = false;
     this.qualify = function() {
       var qualifiedStudents = _this.course.inscription.students.map(function(student) {
           if (student.grade) {
@@ -18,9 +22,19 @@ define(['paw','services/Courses','services/Paths', 'services/flashMessages'], fu
       }).filter(function(s) {
           return s !== undefined;
       });
+
+      if (qualifiedStudents.length === 0) {
+        _this.qualifyAll = !_this.qualifyAll;
+        return;
+      }
+
       Courses.qualifyFinalInscription(_this.course, inscriptionId, qualifiedStudents).then(function(response) {
         flashMessages.setSuccess('i18nQualifySuccessfully');
-        $route.reload();
+        if (response.status === 204) {
+          Paths.get().courses(_this.course).finalInscriptions().go();
+        } else {
+          $route.reload();
+        }
       }, function(response) {
         flashMessages.setError('i18nFormErrors');
         $log.warn('[ERROR] - Response: ' + JSON.stringify(response));

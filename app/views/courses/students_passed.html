@@ -18,22 +18,18 @@
     <div class='filter-fields'>
       <div class='own-input-group'>
         <span class='search-label' translate=i18nDocket></span>
-        <input type='text' class='form-input-field' ng-model='controller.filter.docket' placeholder="{{ 'i18nDocket' | translate }}..."/>
+        <input type='text' class='form-input-field' ng-model='controller.filter.student.docket' placeholder="{{ 'i18nDocket' | translate }}..."/>
       </div>
       <div class='own-input-group'>
         <span class='search-label' translate='i18nFirstName'></span>
-        <input type='text' class='form-input-field' ng-model='controller.filter.firstName' placeholder="{{ 'i18nFirstName' | translate }}..."/>
+        <input type='text' class='form-input-field' ng-model='controller.filter.student.firstName' placeholder="{{ 'i18nFirstName' | translate }}..."/>
       </div>
       <div class='own-input-group'>
         <span class='search-label' translate='i18nLastName'></span>
-        <input type='text' class='form-input-field' ng-model='controller.filter.lastName' placeholder="{{ 'i18nLastName' | translate }}..."/>
+        <input type='text' class='form-input-field' ng-model='controller.filter.student.lastName' placeholder="{{ 'i18nLastName' | translate }}..."/>
       </div>
     </div>
     <div class='filter-buttons'>
-      <button class='btn btn-default' type='submit'>
-        <span class='fa fa-search' aria-hidden='true'></span>
-        <span translate='i18nSearchButton' translate ></span>
-      </button>
       <button class='btn btn-default' ng-click='controller.resetSearch()' type='submit'>
         <span class='fa fa-repeat' aria-hidden='true'></span>
         <span translate='i18nResetButton'></span>
@@ -51,19 +47,19 @@
           <th translate='i18nFirstName'></th>
           <th translate='i18nLastName'></th>
           <th translate='i18nGrade'></th>
-          <th translate='i18nActions'></th>
+          <th ng-show='controller.user.admin' translate='i18nActions'></th>
         </tr>
       </thead>
       <tbody>
-        <tr ng-hide='controller.course.passedStudents.length > 0' class='bg-warning'>
+        <tr ng-hide='filtered.length > 0' class='bg-warning'>
           <td colspan='5' class='text-danger text-center' translate='i18nNoStudentsFound'></td>
         </tr>
-        <tr ng-repeat='studentInfo in controller.course.passedStudents'>
+        <tr ng-repeat='studentInfo in controller.course.passedStudents | filter:controller.filter as filtered'>
           <td>{{ studentInfo.student.docket }}</td>
           <td>{{ studentInfo.student.firstName }}</td>
           <td>{{ studentInfo.student.lastName }}</td>
           <td>{{ studentInfo.grade }}</td>
-          <td class='actions-container'>
+          <td ng-show='controller.user.admin' class='actions-container'>
             <a ng-href='{{ controller.getStudentPath(studentInfo.student.docket) }}' class='btn btn-default' role='button'>
               <span class='fa fa-user' aria-hidden='true'></span>
               <span translate='i18nStudentShow'></span>

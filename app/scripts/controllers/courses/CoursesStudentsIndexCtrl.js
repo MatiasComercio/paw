@@ -3,8 +3,8 @@
 define(['paw','services/Courses','services/Paths',
 'controllers/modals/UnenrollController', 'services/flashMessages'], function(paw) {
   paw.controller('CoursesStudentsIndexCtrl',
-  ['$routeParams', 'Courses', '$log', 'Paths', '$route', 'flashMessages',
-  function($routeParams, Courses, $log, Paths, $route, flashMessages) {
+  ['$routeParams', 'Courses', '$log', 'Paths', '$route', 'flashMessages', 'navDataService',
+  function($routeParams, Courses, $log, Paths, $route, flashMessages, navDataService) {
     var _this = this;
     var courseId = $routeParams.courseId;
 
@@ -18,8 +18,9 @@ define(['paw','services/Courses','services/Paths',
       this.filter = {};
     };
 
-    this.qualifyAll = false;
+    navDataService.saveUserTo(_this);
 
+    this.qualifyAll = false;
     this.qualify = function() {
       var qualifiedStudents = _this.course.students.map(function(student) {
           if (student.grade) {
@@ -28,6 +29,12 @@ define(['paw','services/Courses','services/Paths',
       }).filter(function(s) {
           return s !== undefined;
       });
+
+      if (qualifiedStudents.length === 0) {
+        _this.qualifyAll = !_this.qualifyAll;
+        return;
+      }
+
       Courses.qualify(_this.course, qualifiedStudents).then(function(response) {
         flashMessages.setSuccess('i18nQualifySuccessfully');
         $route.reload();
@@ -40,6 +47,7 @@ define(['paw','services/Courses','services/Paths',
 
     Courses.get(courseId).then(function(course) {
       _this.course = course;
+      Courses.setOnSubSidebar(course);
       _this.course.getList('students').then(function(students) {
         _this.course.students = students;
       });

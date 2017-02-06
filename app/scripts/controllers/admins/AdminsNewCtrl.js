@@ -1,13 +1,16 @@
 'use strict';
 
-define(['paw', 'services/Admins', 'services/flashMessages'], function(paw) {
+define(['paw', 'services/Admins', 'services/flashMessages', 'services/navDataService'
+], function(paw) {
   paw.controller('AdminsNewCtrl',
-  ['$window', 'Paths', 'Admins', 'flashMessages', '$route', '$log', '$filter',
-  function($window, Paths, Admins, flashMessages, $route, $log, $filter) {
+  ['$window', 'Paths', 'Admins', 'flashMessages', '$route', '$log', '$filter', 'navDataService',
+  function($window, Paths, Admins, flashMessages, $route, $log, $filter, navDataService) {
     var _this = this;
     _this.student = {};
 
     _this.maxDate = new Date();
+
+    navDataService.checkUserIsAdmin();
 
     this.new = function(admin) {
       _this.errors = [];

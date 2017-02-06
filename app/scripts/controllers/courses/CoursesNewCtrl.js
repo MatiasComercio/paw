@@ -1,10 +1,12 @@
 'use strict';
 
-define(['paw', 'services/Paths', 'services/Courses', 'services/flashMessages'], function(paw) {
+define(['paw', 'services/Paths', 'services/Courses', 'services/flashMessages', 'services/navDataService'], function(paw) {
   paw.controller('CoursesNewCtrl',
-  ['$window', 'Paths', 'Courses', '$log', '$route', 'flashMessages',
-  function($window, Paths, Courses, $log, $route, flashMessages) {
+  ['$window', 'Paths', 'Courses', '$log', '$route', 'flashMessages', 'navDataService',
+  function($window, Paths, Courses, $log, $route, flashMessages, navDataService) {
       var _this = this;
+
+      navDataService.checkUserIsAdmin();
 
       this.new = function(course) {
         _this.errors = [];

@@ -1,14 +1,20 @@
 'use strict';
 
-define(['paw', 'services/navDataService', 'services/flashMessages', 'services/Users'], function(paw) {
+define(['paw', 'services/navDataService', 'services/flashMessages', 'services/Users',
+'services/Admins', 'services/Students'], function(paw) {
   paw.controller('UserChangePasswordCtrl',
-  ['$window', 'navDataService', 'flashMessages', 'Users', '$route',
-  function($window, navDataService, flashMessages, Users, $route) {
+  ['$window', 'navDataService', 'flashMessages', 'Users', '$route', 'Admins', 'Students',
+  function($window, navDataService, flashMessages, Users, $route, Admins, Students) {
     var _this = this;
     _this.errors = [];
 
     var getUserCallback = function() {
       _this.user = navDataService.get('user');
+      if (_this.user.admin) {
+        Admins.setOnSubSidebar(_this.user);
+      } else {
+        Students.setOnSubSidebar(_this.user);
+      }
     };
     navDataService.registerObserverCallback('user', getUserCallback);
     getUserCallback();

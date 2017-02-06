@@ -2,7 +2,7 @@
 
 define([], function() {
   return {
-    defaultRoutePath: '/',
+    defaultRoutePath: '/not_found',
     routes: {
       '/': {
         templateUrl: 'views/home.html',

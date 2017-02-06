@@ -1,12 +1,16 @@
 'use strict';
 
-define(['paw', 'services/Courses', 'services/flashMessages'], function(paw) {
+define(['paw', 'services/Courses', 'services/flashMessages', 'services/navDataService'],
+function(paw) {
   paw.controller('CoursesEditCtrl',
   ['$window', 'Paths', 'Courses', 'flashMessages', '$route', '$log', '$filter', '$routeParams',
-  function($window, Paths, Courses, flashMessages, $route, $log, $filter, $routeParams) {
+  'navDataService',
+  function($window, Paths, Courses, flashMessages, $route, $log, $filter, $routeParams, navDataService) {
     var _this = this;
 
     var courseId = $routeParams.courseId;
+
+    navDataService.checkUserIsAdmin();
 
     Courses.get(courseId).then(function(course) {
       _this.course = course;
@@ -23,9 +27,15 @@ define(['paw', 'services/Courses', 'services/flashMessages'], function(paw) {
         Paths.get().courses({courseId: course.courseId}).go();
       }, function(response) {
         if (response.status === 409) { // course id repeated
-          _this.errors = [
-            'i18nCourseWithCourseIdAlreadyExists'
-          ];
+          if (response.data.conflictField === 'semester') {
+            _this.errors = [
+              'i18nCourseInvalidSemesterLogic'
+            ];
+          } else {
+            _this.errors = [
+              'i18nCourseWithCourseIdAlreadyExists'
+            ];
+          }
           return;
         }
         $log.warn(JSON.stringify(response));

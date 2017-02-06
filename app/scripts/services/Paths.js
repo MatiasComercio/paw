@@ -191,11 +191,11 @@ define([], function() {
       };
 
       _this.approved = function() {
-        return append('/approved');
+        return append('/students/passed');
       };
 
       _this.addCorrelative = function() {
-        return append('/correlatives');
+        return append('/correlatives/new');
       };
 
       return _this;

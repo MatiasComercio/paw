@@ -34,10 +34,23 @@
   </div>
   <!-- /Final Inscription Data -->
 
+  <div class='final-instance-actions-container' ng-show='controller.user.admin'>
+    <a class='btn btn-danger final-instance-action' role='button' ng-controller='DeleteFinalController as modalController'
+    ng-click="modalController.open('md', 'i18nFinalDelete', controller.course.courseId, controller.course.name, controller.course.inscription.finalExamDate, controller.course.inscription.id)">
+      <span class='fa fa-trash' aria-hidden='true'></span>
+      <span translate='i18nFinalDelete'></span>
+    </a>
+    <a class='btn btn-danger final-instance-action' role='button' ng-show="controller.course.inscription.state === 'OPEN'" ng-controller='CloseFinalController as modalController'
+    ng-click="modalController.open('md', 'i18nFinalDelete', controller.course.courseId, controller.course.name, controller.course.inscription.finalExamDate, controller.course.inscription.id)">
+      <span class='fa fa-times-circle-o' aria-hidden='true'></span>
+      <span translate='i18nModalCloseFinal'></span>
+    </a>
+  </div>
+
   <!-- Students -->
   <h3 translate='i18nFinalStudents' class='page-sub-header'></h3>
   <form name='form' novalidate>
-    <div class='qualify-all-container'>
+    <div class='qualify-all-container' ng-show="controller.course.inscription.state === 'CLOSED' && controller.user.admin">
       <a class='btn btn-action qualify-all' ng-click='controller.qualifyAll = !controller.qualifyAll'
          ng-hide='controller.qualifyAll || controller.course.inscription.students.length <= 0' role='button'>
         <span class='fa fa-graduation-cap' aria-hidden='true'></span>
@@ -60,7 +73,7 @@
             <th translate='i18nDocket'></th>
             <th translate='i18nFirstName'></th>
             <th translate='i18nLastName'></th>
-            <th translate='i18nActions' ng-hide='controller.qualifyAll'></th>
+            <th translate='i18nActions' ng-hide='controller.qualifyAll || !controller.user.admin'></th>
             <th translate='i18nGrades' ng-show='controller.qualifyAll'></th>
           </tr>
         </thead>
@@ -72,7 +85,7 @@
             <td>{{ student.docket }}</td>
             <td>{{ student.firstName }}</td>
             <td>{{ student.lastName }}</td>
-            <td class='actions-container'>
+            <td class='actions-container' ng-show='controller.user.admin'>
               <a ng-href='{{ controller.getStudentPath(student.docket) }}' ng-hide='controller.qualifyAll' class='btn btn-default' role='button'>
                 <span class='fa fa-user' aria-hidden='true'></span>
                 <span translate='i18nStudentShow'></span>

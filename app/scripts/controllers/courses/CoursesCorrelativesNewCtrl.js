@@ -6,7 +6,7 @@ define(['paw','services/Courses','services/Paths', 'controllers/modals/AddCorrel
     var courseId = $routeParams.courseId;
 
     this.filter = {
-      id: $routeParams.id,
+      courseId: $routeParams.id,
       name: $routeParams.name
     };
     this.resetSearch = function() {
@@ -15,19 +15,14 @@ define(['paw','services/Courses','services/Paths', 'controllers/modals/AddCorrel
 
     Courses.get(courseId).then(function(course) {
       _this.course = course;
+      Courses.setOnSubSidebar(course);
       _this.course.all('correlatives').customGET('available').then(function(correlatives) {
         _this.course.availableCorrelatives = correlatives;
       });
-    }, function(response) {
-      $log.info('Response status: ' + response.status);
-      if (response.status === 404) {
-        Paths.get().notFound().go();
-      }
     });
 
     this.getCoursePath = function(courseId) {
       return Paths.get().courses({courseId: courseId}).path;
     };
-
   }]);
 });

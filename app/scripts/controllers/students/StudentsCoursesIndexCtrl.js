@@ -1,20 +1,27 @@
 'use strict';
 
-define(['paw','services/Students','services/Paths', 'controllers/modals/UnenrollController'], function(paw) {
-  paw.controller('StudentsCoursesIndexCtrl', ['$routeParams', 'Students', '$log', 'Paths', function($routeParams, Students, $log, Paths) {
+define(['paw','services/Students','services/Paths',
+'services/navDataService',
+'controllers/modals/UnenrollController'], function(paw) {
+  paw.controller('StudentsCoursesIndexCtrl',
+  ['$routeParams', 'Students', '$log', 'Paths', 'navDataService',
+  function($routeParams, Students, $log, Paths, navDataService) {
     var _this = this;
     var docket = $routeParams.docket; // For future Service calls
 
     this.filter = {
-      id: $routeParams.id,
+      courseId: $routeParams.id,
       name: $routeParams.name
     };
     this.resetSearch = function() {
       this.filter = {};
     };
 
+    navDataService.saveUserTo(_this);
+
     Students.get(docket).then(function(student) {
       _this.student = student;
+      Students.setOnSubSidebar(student);
 
       _this.student.getList('courses').then(function(courses) {
         _this.student.courses = courses;

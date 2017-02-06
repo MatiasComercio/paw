@@ -18,7 +18,7 @@
     <div class='filter-fields'>
       <div class='own-input-group'>
         <span class='search-label' translate=i18nCourseId></span>
-        <input type='text' class='form-input-field' ng-model='controller.filter.id' placeholder="{{ 'i18nCourseId' | translate }}..."/>
+        <input type='text' class='form-input-field' ng-model='controller.filter.courseId' placeholder="{{ 'i18nCourseId' | translate }}..."/>
       </div>
       <div class='own-input-group'>
         <span class='search-label' translate='i18nCourseName'></span>
@@ -26,10 +26,6 @@
       </div>
     </div>
     <div class='filter-buttons'>
-      <button class='btn btn-default' type='submit'>
-        <span class='fa fa-search' aria-hidden='true'></span>
-        <span translate='i18nSearchButton' translate ></span>
-      </button>
       <button class='btn btn-default' ng-click='controller.resetSearch()' type='submit'>
         <span class='fa fa-repeat' aria-hidden='true'></span>
         <span translate='i18nResetButton'></span>
@@ -51,10 +47,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-hide='controller.student.availableCourses.length > 0' class='bg-warning'>
+        <tr ng-hide='filtered.length > 0' class='bg-warning'>
           <td colspan='5' class='text-danger text-center' translate='i18nNoCoursesFound'></td>
         </tr>
-        <tr ng-repeat='course in controller.student.availableCourses'>
+        <tr ng-repeat='course in controller.student.availableCourses | filter:controller.filter as filtered'>
           <td>{{ course.courseId }}</td>
           <td>{{ course.name }}</td>
           <td>{{ course.credits }}</td>
@@ -64,7 +60,7 @@
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nCourseShow'></span>
             </a>
-            <a class='btn btn-info' role='button' ng-controller='EnrollController as modalController'
+            <a class='btn btn-action' role='button' ng-controller='EnrollController as modalController'
             ng-click="modalController.open('md', 'i18nEnroll', controller.student.docket, controller.student.fullName, course.name, course.courseId)">
               <span class='fa fa-list-alt' aria-hidden='true'></span>
               <span translate='i18nEnroll'></span>

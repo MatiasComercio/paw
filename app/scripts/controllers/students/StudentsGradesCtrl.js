@@ -4,18 +4,23 @@ define(
     'paw',
     'services/Students',
     'services/Paths',
-    'controllers/modals/EditCourseGradeController'
+    'controllers/modals/EditCourseGradeController',
+    'services/navDataService'
   ], function(paw) {
     paw.controller('StudentsGradesCtrl',
     ['$routeParams',
     'Students',
     '$log',
     'Paths',
-    function($routeParams, Students, $log, Paths) {
+    'navDataService',
+    function($routeParams, Students, $log, Paths, navDataService) {
       var _this = this;
+
+      navDataService.saveUserTo(_this);
 
       Students.get($routeParams.docket).then(function(student) {
         _this.student = student;
+        Students.setOnSubSidebar(student);
         _this.student.getList('grades').then(function(transcript) {
           _this.student.transcript = transcript;
           if (transcript.totalCredits > 0) {

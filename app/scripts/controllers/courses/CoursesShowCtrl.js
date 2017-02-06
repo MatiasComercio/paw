@@ -1,9 +1,15 @@
 'use strict';
 
-define(['paw','services/Courses','services/Paths', 'controllers/modals/DeleteCorrelativeController', 'controllers/modals/DeleteFinalController', 'controllers/modals/CloseFinalController'], function(paw) {
-  paw.controller('CoursesShowCtrl', ['$routeParams', 'Courses', '$log', 'Paths', function($routeParams, Courses, $log, Paths) {
+define(['paw','services/Courses','services/Paths',
+'controllers/modals/DeleteCorrelativeController',
+'controllers/modals/CloseFinalController'], function(paw) {
+  paw.controller('CoursesShowCtrl',
+  ['$routeParams', 'Courses', '$log', 'Paths', 'navDataService',
+  function($routeParams, Courses, $log, Paths, navDataService) {
     var _this = this;
     var courseId = $routeParams.courseId;
+
+    navDataService.saveUserTo(_this);
 
     Courses.get(courseId).then(function(course) {
       _this.course = course;
@@ -14,11 +20,6 @@ define(['paw','services/Courses','services/Paths', 'controllers/modals/DeleteCor
       _this.course.getList('finalInscriptions').then(function(finalInscriptions) {
         _this.course.finalInscriptions = finalInscriptions;
       });
-    }, function(response) {
-      $log.info('Response status: ' + response.status);
-      if (response.status === 404) {
-        Paths.get().notFound().go();
-      }
     });
 
     this.getCorrelativePath = function(correlativeId) {

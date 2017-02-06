@@ -68,12 +68,6 @@
                 <span class='fa fa-info-circle' aria-hidden='true'></span>
                 <span translate='i18nShowCourse'></span>
               </a>
-              <a class='btn btn-action' role='button' ng-show='study.grade && study.finalGrades.length === 0'
-                  ng-controller='EditCourseGradeController as modalController'
-                  ng-click="modalController.open('md', controller.student.docket, controller.student.fullName, study.courseCodId, study.courseName, study.grade, study.id)">
-                <span class='fa fa-pencil-square-o' aria-hidden='true'></span>
-                <span translate='i18nEditCourseGrade'></span>
-              </a>
             </td>
           </tr>
         </tbody>

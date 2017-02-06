@@ -22,6 +22,7 @@
   }
 
   .content-container {
+    min-height: calc(100vh - 2 * #{$navbarHeight} - #{$containerPadding});
     .ng-view-container {
     }
   }
@@ -33,7 +34,8 @@
     align-items: center;
     background: $mine-shaft;
     color: $silver-chalice;
-    margin: 15px -30px 0;
+    height: $navbarHeight;
+    margin: 0 -30px;
     padding: 15px;
     .no-margin {
       margin: 0;

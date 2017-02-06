@@ -8,10 +8,13 @@ function(paw) {
   function(Paths, $log, Authentication, navDataService, flashMessages, $route) {
     var _this = this;
 
+    navDataService.remove('user');
+
     this.login = function(user) {
       // user would never be undefined as the form has to be valid before calling this method
       // and that means that the user has to have some value defined
       Authentication.login(user).then(function(authToken) {
+        navDataService.remove('user');
         Authentication.setToken(authToken);
         navDataService.fetchUser();
         Paths.get().index().go();
