@@ -306,33 +306,6 @@ public class StudentController {
     return created(uri).build();
   }
 
-  @POST
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Path("/{docket}/grades/{gradeId}")
-  public Response studentsGradesUpdate(
-          @PathParam("docket") final Integer docket,
-          @Min(1)
-          @PathParam("gradeId") final Integer gradeId,
-          @Valid final GradeDTO gradeDTO){
-
-    final Student student = ss.getByDocket(docket);
-    if(student == null){
-      return status(Status.NOT_FOUND).build();
-    }
-
-    final Course course = cs.getByCourseID(gradeDTO.getCourseId());
-    if(course == null){
-      return status(Status.BAD_REQUEST).build();
-    }
-
-    Grade grade = mapper.convertToGrade(gradeDTO, student, course, gradeId);
-
-    ss.editGrade(grade);
-
-    return noContent().build();
-
-  }
-
   @GET
   @Path("/{docket}/finalInscriptions")
   public Response studentsFinalInscriptionsIndex(@PathParam("docket") final Integer docket){
