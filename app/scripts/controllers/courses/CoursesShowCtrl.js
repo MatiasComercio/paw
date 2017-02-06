@@ -1,6 +1,6 @@
 'use strict';
 
-define(['paw','services/Courses','services/Paths', 'controllers/modals/DeleteCorrelativeController', 'controllers/modals/DeleteFinalController'], function(paw) {
+define(['paw','services/Courses','services/Paths', 'controllers/modals/DeleteCorrelativeController', 'controllers/modals/DeleteFinalController', 'controllers/modals/CloseFinalController'], function(paw) {
   paw.controller('CoursesShowCtrl', ['$routeParams', 'Courses', '$log', 'Paths', function($routeParams, Courses, $log, Paths) {
     var _this = this;
     var courseId = $routeParams.courseId;

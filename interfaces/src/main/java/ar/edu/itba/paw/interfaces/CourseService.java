@@ -179,7 +179,7 @@ public interface CourseService {
     int addFinalInscription(FinalInscription finalInscription);
 
     /**
-     * Get the student's inscribed in a FinalInscription
+     * Get the student's enrolled in a FinalInscription
      * @param id The FinalInscription's id
      * @return The list of students
      */
@@ -190,4 +190,11 @@ public interface CourseService {
      * @param finalInscriptionId The final inscription's id
      */
     void deleteFinalInscription(int finalInscriptionId);
+
+
+  /**
+   * Sets the final inscription state to close
+   * @param finalInscriptionId the final inscription's Id
+   */
+  void closeFinalInscription(int finalInscriptionId);
 }

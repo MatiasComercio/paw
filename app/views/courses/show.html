@@ -99,6 +99,11 @@
               <span class='fa fa-info-circle' aria-hidden='true'></span>
               <span translate='i18nInformation'></span>
             </a>
+            <a class='btn btn-info' role='button' ng-controller='CloseFinalController as modalController'
+            ng-click="modalController.open('md', 'i18nFinalDelete', controller.course.courseId, controller.course.name, inscription.finalExamDate, inscription.id)">
+              <span class='fa fa-trash' aria-hidden='true'></span>
+              <span translate='i18nModalCloseFinal'></span>
+            </a>
             <a class='btn btn-danger' role='button' ng-controller='DeleteFinalController as modalController'
             ng-click="modalController.open('md', 'i18nFinalDelete', controller.course.courseId, controller.course.name, inscription.finalExamDate, inscription.id)">
               <span class='fa fa-trash' aria-hidden='true'></span>

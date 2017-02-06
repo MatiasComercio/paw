@@ -374,7 +374,7 @@ public class StudentController {
 
     boolean done = ss.addStudentFinalInscription(student, finalInscription);
     if(!done){
-      return status(Status.BAD_REQUEST).build();
+      return status(Status.CONFLICT).build();
     }
 
     return noContent().build();
@@ -446,8 +446,8 @@ public class StudentController {
       return status(Status.NOT_FOUND).build();
     }
 
-    if(!ss.addFinalGrade(inscriptionId, docket, gradeDTO.getGrade())) {
-      return status(Status.BAD_REQUEST).build();
+    if(!finalInscription.isOpen() || !ss.addFinalGrade(inscriptionId, docket, gradeDTO.getGrade())) {
+      return status(Status.CONFLICT).build();
     }
 
     return noContent().build();

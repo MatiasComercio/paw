@@ -288,9 +288,7 @@ public class CourseHibernateDao implements CourseDao {
     @Override
     public int addFinalInscription(final FinalInscription finalInscription) {
         final Session session = em.unwrap(Session.class);
-
         session.save(finalInscription);
-
         return finalInscription.getId();
     }
 
@@ -298,6 +296,15 @@ public class CourseHibernateDao implements CourseDao {
     public void deleteFinalInscription(final int finalInscriptionId) {
         final FinalInscription finalInscription = getFinalInscription(finalInscriptionId);
         em.remove(finalInscription);
+    }
+
+    @Override
+    public void closeFinalInscription(int finalInscriptionId) {
+        final FinalInscription finalInscription = getFinalInscription(finalInscriptionId);
+        final Session session = em.unwrap(Session.class);
+
+        finalInscription.setState(FinalInscription.FinalInscriptionState.CLOSED);
+        session.save(finalInscription);
     }
 
     //QueryFilter

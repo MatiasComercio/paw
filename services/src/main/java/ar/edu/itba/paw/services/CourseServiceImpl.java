@@ -296,4 +296,9 @@ public class CourseServiceImpl implements CourseService {
         return set;
     }
 
+    @Transactional
+    @Override
+    public void closeFinalInscription(final int finalInscriptionId) {
+        courseDao.closeFinalInscription(finalInscriptionId);
+    }
 }

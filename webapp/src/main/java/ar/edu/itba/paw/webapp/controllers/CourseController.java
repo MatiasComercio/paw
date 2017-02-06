@@ -400,17 +400,25 @@ public class CourseController {
 	@Path("/{courseId}/finalInscriptions/{finalInscriptionId}/qualify")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response courseFinalInscriptionQualify(@Pattern(regexp = "\\d{2}\\.\\d{2}") @PathParam("courseId") final String courseId,
+	public Response courseFinalInscriptionsQualify(@Pattern(regexp = "\\d{2}\\.\\d{2}") @PathParam("courseId") final String courseId,
 	                                              @PathParam("finalInscriptionId") final int finalInscriptionId,
 	                                              @Valid List<QualifyStudent> qualifiedStudents) {
-		if (cs.getByCourseID(courseId) == null || cs.getFinalInscription(finalInscriptionId) == null) {
+		if (cs.getByCourseID(courseId) == null ){
 			return status(Status.NOT_FOUND).build();
 		}
 
 		final FinalInscription finalInscription = cs.getFinalInscription(finalInscriptionId);
+  if(finalInscription == null){
+    return status(Status.NOT_FOUND).build();
+  }
+
 		if (!cs.getCourseFinalInscriptions(courseId).contains(finalInscription)) {
 			return status(Status.NOT_FOUND).build();
 		}
+
+		if(finalInscription.isOpen()){
+    return status(Status.CONFLICT).build();
+  }
 
 		final HTTPResponseList httpStatusList = new HTTPResponseList(qualifiedStudents.size());
 
@@ -425,6 +433,35 @@ public class CourseController {
 			}
 		}
 
+ if(cs.getFinalStudents(finalInscriptionId).isEmpty()){
+   cs.deleteFinalInscription(finalInscriptionId);
+ }
+
 		return status(207).entity(httpStatusList).build();
 	}
+
+
+  @POST
+  @Path("/{courseId}/finalInscriptions/{finalInscriptionId}/close")
+  public Response coursesFinalInscriptionsClose(@Pattern(regexp = "\\d{2}\\.\\d{2}") @PathParam("courseId") final String courseId,
+                            @PathParam("finalInscriptionId") final int finalInscriptionId) {
+
+    if (cs.getByCourseID(courseId) == null ){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    final FinalInscription finalInscription = cs.getFinalInscription(finalInscriptionId);
+    if(finalInscription == null){
+      return status(Status.NOT_FOUND).build();
+    }
+
+    if (!cs.getCourseFinalInscriptions(courseId).contains(finalInscription)) {
+      return status(Status.NOT_FOUND).build();
+    }
+
+    cs.closeFinalInscription(finalInscriptionId);
+
+    return noContent().build();
+  }
+
 }

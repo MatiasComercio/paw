@@ -188,4 +188,9 @@ public interface CourseDao {
      */
     void deleteFinalInscription(int finalInscriptionId);
 
+    /**
+     * Sets the final inscription state to close
+     * @param finalInscriptionId the final inscription's id
+     */
+    void closeFinalInscription(int finalInscriptionId);
 }

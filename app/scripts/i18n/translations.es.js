@@ -196,9 +196,11 @@ define([], function() {
     i18nModalCorrelativeId: 'Código de la correlativa',
     i18nModalStudentFullName: 'Nombre del alumno',
     i18nModalDeleteFinal: 'Eliminar examen final',
+    i18nModalCloseFinal: 'Cerrar Final',
 
     // Flash messages
     i18nEditSuccess: 'La edición ha sido exitosa',
+    i18nCloseFinalSuccess: 'Se ha cerrado la inscripcion a final',
     i18nDeleteFinalSuccess: 'Se ha eliminado el examen final',
     i18nDeleteCorrelativeSuccess: 'Se ha eliminado la correlatividad',
     i18nAddCorrelativeSuccess: 'Se ha agregado la correlatividad',
