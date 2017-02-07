@@ -104,8 +104,10 @@ public class CourseServiceImpl implements CourseService {
       return false;
     }
 
-    if(courseDao.getCourseFinalInscriptions(courseId) != null) {
-      return false;
+	  final List<FinalInscription> courseFinalInscriptions = courseDao.getCourseFinalInscriptions(courseId);
+
+	  if (courseFinalInscriptions != null && !courseFinalInscriptions.isEmpty()) {
+		  return false;
     }
 
     deleteCourseCorrelatives(courseId);

@@ -33,7 +33,6 @@ public class AddressDTO {
 	@Min(0)
 	private Integer floor;
 
-	@XmlElement(defaultValue = "[]")
 	@Size(max=10)
 	private String door;
 
