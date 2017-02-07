@@ -150,7 +150,7 @@ public class CourseController {
 	@Path("/{courseId}")
 	public Response coursesDestroy(@PathParam("courseId") final String courseId) {
 		if (!cs.deleteCourse(courseId)) {
-			return Response.status(Status.CONFLICT).build(); //TODO: check what to return -- Look at PRECONDITION_FAILED
+			return Response.status(Status.CONFLICT).build();
 		}
 
 		return Response.noContent().build();
