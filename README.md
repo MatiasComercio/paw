@@ -3,8 +3,6 @@
 [![Build Status](https://travis-ci.org/MatiasComercio/paw.svg?branch=development)](https://travis-ci.org/MatiasComercio/paw)
 
 
-<!-- TOC depthFrom:1 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
-
 - [SGA - Sistema de Gestión Académica](#sga-sistema-de-gestin-acadmica)
 	- [Git pre push hook](#git-pre-push-hook)
 	- [Dependencies for contributing on front-end app](#dependencies-for-contributing-on-front-end-app)
@@ -18,8 +16,6 @@
 	- [Build](#build)
 	- [Accounts](#accounts)
 	- [Authors](#authors)
-
-<!-- /TOC -->
 
 ## Git pre push hook
 
