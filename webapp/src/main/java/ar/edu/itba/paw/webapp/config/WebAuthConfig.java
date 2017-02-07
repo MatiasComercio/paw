@@ -45,6 +45,8 @@ public class WebAuthConfig extends WebSecurityConfigurerAdapter {
 						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students/*/grades").hasAuthority("ADD_GRADE")
 						.antMatchers(HttpMethod.DELETE, API_PREFIX_VERSION + "/students/*").hasAuthority("DELETE_STUDENT")
 						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students").hasAuthority("ADD_STUDENT")
+            .antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students/*/courses").hasAuthority("ADD_INSCRIPTION")
+            .antMatchers(HttpMethod.DELETE,   API_PREFIX_VERSION + "/students/*/courses/*").hasAuthority("DELETE_INSCRIPTION")
 
 						// CourseController permissions
 
