@@ -1,0 +1,113 @@
+<div ng-controller='CoursesShowCtrl as controller' class='courses-show-container'>
+  <!-- Page Heading -->
+  <div class='page-header break-words'>
+    <h1 class='inline'>
+      <span translate='i18nCourses'></span>
+    </h1>
+    <h2 class='inline'>
+      <span> - </span>
+      <span> {{controller.course.name}}</span>
+      <small> - </small>
+      <small translate='i18nInformation'></small>
+    </h2>
+  </div>
+  <!-- /Page Heading -->
+
+  <!-- Course Data -->
+  <div class='data-container'>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nCourseId'></p>
+      <p class='break-words'>{{controller.course.courseId}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nCourseName'></p>
+      <p class='break-words'>{{controller.course.name}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nCredits'></p>
+      <p class='break-words'>{{controller.course.credits}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nSemester'></p>
+      <p class='break-words'>{{controller.course.semester}}</p>
+    </div>
+  </div>
+  <!-- /Course Data -->
+
+  <!-- Correlatives -->
+  <h3 translate='i18nCorrelatives' class='page-sub-header'></h3>
+  <div class='table-responsive'>
+    <table class='table table-hover'>
+      <thead>
+        <tr>
+          <th translate='i18nCourseId'></th>
+          <th translate='i18nCourseName'></th>
+          <th translate='i18nCredits'></th>
+          <th translate='i18nSemester'></th>
+          <th translate='i18nActions'></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-hide='controller.course.correlatives.length > 0' class='bg-warning'>
+          <td colspan='5' class='text-danger text-center' translate='i18nNoCorrelativesFound'></td>
+        </tr>
+        <tr ng-repeat="course in controller.course.correlatives | orderBy:'+semester'">
+          <td>{{ course.courseId }}</td>
+          <td>{{ course.name }}</td>
+          <td>{{ course.credits }}</td>
+          <td>{{ course.semester }}</td>
+          <td class='actions-container'>
+            <a ng-href='{{ controller.getCorrelativePath(course.courseId) }}' class='btn btn-default' role='button'>
+              <span class='fa fa-info-circle' aria-hidden='true'></span>
+              <span translate='i18nInformation'></span>
+            </a>
+            <a class='btn btn-danger' ng-show='controller.user.admin' role='button' ng-controller='DeleteCorrelativeController as modalController'
+            ng-click="modalController.open('md', controller.course.courseId, controller.course.name, course.courseId, course.name)">
+              <span class='fa fa-trash' aria-hidden='true'></span>
+              <span translate='i18nDeleteCorrelative'></span>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- /Correlatives -->
+
+  <!-- Final Exams -->
+  <h3 translate='i18nFinalExams' class='page-sub-header'></h3>
+  <div class='table-responsive'>
+    <table class='table table-hover'>
+      <thead>
+        <tr>
+          <th translate='i18nFinalExamDate'></th>
+          <th translate='i18nVacancy'></th>
+          <th translate='i18nState'></th>
+          <th translate='i18nActions'></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-hide='controller.course.finalInscriptions.length > 0' class='bg-warning'>
+          <td colspan='4' class='text-danger text-center' translate='i18nNoFinalExamsFound'></td>
+        </tr>
+        <tr ng-repeat="inscription in controller.course.finalInscriptions | orderBy:'+finalExamDate'">
+          <td>{{inscription.finalExamDate | date: 'dd/MM/yyyy HH:mm'}}</td>
+          <td>{{ inscription.vacancy }}/{{ inscription.maxVacancy }}</td>
+          <td ng-show="inscription.state == 'OPEN'" translate='i18nInscriptionOpen'></td>
+          <td ng-show="inscription.state == 'CLOSED'" translate='i18nInscriptionClosed'></td>
+          <td class='actions-container'>
+            <a ng-href='{{ controller.getFinalInscriptionPath(inscription.id) }}' class='btn btn-default' role='button'>
+              <span class='fa fa-info-circle' aria-hidden='true'></span>
+              <span translate='i18nInformation'></span>
+            </a>
+            <a class='btn btn-danger' role='button' ng-show="controller.user.admin && inscription.state === 'OPEN'" ng-controller='CloseFinalController as modalController'
+            ng-click="modalController.open('md', 'i18nFinalDelete', controller.course.courseId, controller.course.name, inscription.finalExamDate, inscription.id)">
+              <span class='fa fa-times-circle-o' aria-hidden='true'></span>
+              <span translate='i18nModalCloseFinal'></span>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- /Final Exams -->
+</div>

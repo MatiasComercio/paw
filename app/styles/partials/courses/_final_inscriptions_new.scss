@@ -1,0 +1,21 @@
+@import 'modules/variables/importer';
+
+.courses-final-inscriptions-new-container {
+
+  .data-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+
+    .data-item {
+      width: 250px;
+      padding: 5px;
+    }
+  }
+  .buttons-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+}

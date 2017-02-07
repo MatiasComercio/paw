@@ -1,15 +1,17 @@
 package ar.edu.itba.paw.webapp.config;
 
+import ar.edu.itba.paw.webapp.auth.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.concurrent.TimeUnit;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -17,88 +19,72 @@ import java.util.concurrent.TimeUnit;
 		"ar.edu.itba.paw.webapp.auth"
 )
 public class WebAuthConfig extends WebSecurityConfigurerAdapter {
-	private static final String KEY = "B/1+wzD9jv8UwBZke9EZHfAclHDYre9msPR54UfhXmhx8OBQXrQb0URl9mBwGPBK\n" +
-			"ZExc4gxayeTxEPT3DIwMCZfCdMBVh4yjhzJ46AzummsrpyHeo2TgRtWRW+KCTtwo\n" +
-			"19kyrxbMpc8dEY9YO2ghNT0ZOcwtvEu13kzngevUsPV9pWsKdRXGgt5HV3rpuvJ7\n" +
-			"M0rL3BeV4L2HxkGcs6lfFgsHPxeQvtXLInwdTlrba0TjhN7AdC9vu3000CPmhRGL\n" +
-			"4opte33ukexjtkzRXoMdYsDv+pbbufi+vlcl439dwMl9toEhFpKt74ZmPfd989m2\n" +
-			"cvSzTN3iOdjfYlf2jMecDV/s05Cs1k4WgCuXYeBY7KVm0hDH3qSzUwPy2I8lH+Pv\n" +
-			"ECeypIH0fXNiJurARZ+TndcHicM0ENyEdtM8z8x77oneYioidGC6InotO3FiPiiP\n" +
-			"g5gkCMmZKgKdwrHqyT7+/TEUd6dggmHyUgLcSdIb6kznwof/vnbGaoIpyGJqGBc/\n" +
-			"rOk4WY61BOQAwnqxg/81vXTv+xFRSjhHWEoSNToshpZwXKq1OvM4s6xIENBXdz6p\n" +
-			"V3t4aUYxW7+wBxKxOkl4lq/2MFcTG0szMyiq4E9qrz4kSL6lKEzM/9arXX6+2uOy\n" +
-			"ccSr02tkCPLSl05R+/unRZJbOTAgFrvLQvl0dFawj7HQaS0sPf53NenXzU9gmVgo\n" +
-			"ZlINm2XKpmf3xOTCS81TS7ReKj4NMGAw0y0WhXasn18ziTEEK9im99SECsZC/hUU\n" +
-			"JXBgahepbHqkv8HzJkhV0ExhVn88OOv+Ma2X95ZARmkpbPVBhERRfWVSns12NQzX\n" +
-			"FAmS+LCbTTaE2xsz0PDSGZwKIFa5lh2QxKaNlSaaYLbOwVtYxf0CdNQHpvBYJSjj\n" +
-			"v5BNMyleYKCZAuLTqTRDuEPn08sPpii2bOafiKPWJ/dgqRjB2sJKpEj0E9IcO5Mk\n" +
-			"/SbjyQB7KD0ZwbCQyRC7ffaxjiHkOJV8GwC1x5wB0H5uSfPRIvOmm9FDiZeexbUc\n" +
-			"EiOYfXiqetKJe9dTcLKFKRYZDHIj3fZThasbA7nC2qthNHy/0T/UFksmMO+VnOUe\n" +
-			"Nm8Zq0DFZqQx6Q/FMUFWZbZvJDT8YtBATX6XkxHGpkWapnkidowDdsWeWT44HCfk\n" +
-			"uxCXTkhNRmoQAgOr5Eev2Zda7+ydFK6jxweC5hvR+diobD6ItHllAdBaoOj9hVVs\n" +
-			"tJ53S9JXi/az7+UlzxUtPgk4kO1jrulQ5XiN2tn6R2pv1ncnIHdqhaQHjSBkUZik\n" +
-			"vUf8FRscFkvo2EbtKPPLQiY6A1yuvrpobCgWj6TOKeujALF6jzdhepsk7sL2Qg1g\n" +
-			"6Nah/Tu9I0VOloJlciQenA==\n";
 
-//	@Autowired
-//	private PawAuthenticationProvider authProvider;
+	private static final String API_PREFIX_VERSION = "/api/v1";
 
 	@Autowired
 	private UserDetailsService userDetailsService;
 
-	/*@Autowired
-	private SgaAuthenticationSuccessHandler authSuccessHandler;*/
+	@Autowired
+	private TokenAuthenticationService tokenAuthenticationService;
+
 
 	@Override
 	protected void configure(final HttpSecurity http) throws Exception {
+		http.csrf().disable(); //Configure CSRF Token
+
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+
 		http
-				.userDetailsService(userDetailsService)
-				.sessionManagement()
-				.invalidSessionUrl("/login")
-				// for maintenance
-//				.invalidSessionUrl("/inMaintenance")
+					.authorizeRequests()
 
-				.and().authorizeRequests()
-				.antMatchers("/login").anonymous()
-				.antMatchers("/admin/**").hasRole("VIEW_ADMIN")
-				.antMatchers("/admins/**").hasRole("VIEW_ADMINS")
-				.antMatchers("/**").authenticated()
+						// StudentController permissions
+						.antMatchers(HttpMethod.POST, API_PREFIX_VERSION + "/students/*/finalInscriptions/*/qualify").hasAuthority("ADMIN")
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students/*/grades/*").hasAuthority("EDIT_GRADE")
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students/*/grades").hasAuthority("ADD_GRADE")
+						.antMatchers(HttpMethod.DELETE, API_PREFIX_VERSION + "/students/*").hasAuthority("DELETE_STUDENT")
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students").hasAuthority("ADD_STUDENT")
+            .antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/students/*/courses").hasAuthority("ADD_INSCRIPTION")
+            .antMatchers(HttpMethod.DELETE,   API_PREFIX_VERSION + "/students/*/courses/*").hasAuthority("DELETE_INSCRIPTION")
 
-				// configuration when updating database; // for maintenance
-//				.antMatchers("/inMaintenance").anonymous()
-//				.antMatchers("/**").denyAll()
+						// CourseController permissions
 
-				.and().formLogin()
-				.usernameParameter("j_dni")
-				.passwordParameter("j_password")
-				.defaultSuccessUrl("/", false)
-//				.successHandler(authSuccessHandler)
-				.failureUrl("/login?error")
-				.loginPage("/login")
-				// for maintenance
-//				.loginPage("/inMaintenance")
-				.loginProcessingUrl("/login")
 
-				.and().rememberMe()
-				.rememberMeParameter("j_remember_me")
-				.userDetailsService(userDetailsService)
-				.key(KEY)
-				.tokenValiditySeconds((int) TimeUnit.DAYS.toSeconds(30))
+						.antMatchers(HttpMethod.POST, API_PREFIX_VERSION + "/courses/*/finalInscriptions/*/qualify").hasAuthority("ADMIN")
+						.antMatchers(HttpMethod.POST, API_PREFIX_VERSION + "/courses/*/finalInscriptions/*").hasAuthority("ADMIN")
+						.antMatchers(HttpMethod.DELETE, API_PREFIX_VERSION + "/courses/*/finalInscriptions/*").hasAuthority("ADMIN")
+						.antMatchers(HttpMethod.POST, API_PREFIX_VERSION + "/courses/*/finalInscriptions").hasAuthority("ADMIN")
+						.antMatchers(HttpMethod.POST, API_PREFIX_VERSION + "/courses/*/students/qualify").hasAuthority("ADMIN")
+						.antMatchers(HttpMethod.GET, API_PREFIX_VERSION + "/courses/*/correlatives/available").hasAuthority("ADMIN")
+						.antMatchers(HttpMethod.DELETE, API_PREFIX_VERSION + "/courses/*/correlatives/*").hasAuthority("DELETE_CORRELATIVE")
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/courses/*/correlatives").hasAuthority("ADD_CORRELATIVE")
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/courses/*").hasAuthority("EDIT_COURSE")
+						.antMatchers(HttpMethod.DELETE, API_PREFIX_VERSION + "/courses/*").hasAuthority("DELETE_COURSE")
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/courses").hasAuthority("ADD_COURSE")
 
-				.and().logout()
-				.logoutUrl("/logout")
-				.logoutSuccessUrl("/login?logout")
+						// UserController permissions
+						.antMatchers(HttpMethod.POST,   API_PREFIX_VERSION + "/users/*/password/reset").hasAuthority("RESET_PASSWORD")
 
-				.and().exceptionHandling()
-				.accessDeniedPage("/errors/403")
+						// AdminController
+						.antMatchers(API_PREFIX_VERSION + "/admins/**").hasAuthority("ADMIN")
 
-				.and().csrf() /* +++xcheck: how to correctly enable this */
-				.disable();
+
+						.antMatchers(HttpMethod.POST,API_PREFIX_VERSION + "/login").permitAll()
+						.antMatchers(API_PREFIX_VERSION + "/**").authenticated(); // For every resource except /login the user must be authenticated
+
+		http
+					.addFilterBefore(new StatelessLoginFilter("/api/v1/login", tokenAuthenticationService, userDetailsService, authenticationManager()), UsernamePasswordAuthenticationFilter.class)
+					.addFilterBefore(new StatelessAuthenticationFilter(tokenAuthenticationService), UsernamePasswordAuthenticationFilter.class)
+					.exceptionHandling().authenticationEntryPoint(new PlainTextBasicAuthenticationEntryPoint()) // resolves 401 Unauthenticated
+					.and()
+					.exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler()); // resolves 403 unauthorized to 404 Not found
+
+
 	}
 
 	@Override
 	public void configure(final WebSecurity web) throws Exception {
-		web.ignoring()
-				.antMatchers("/static/**", "/WEB-INF/jsp/base/**", "/favicon.ico", "/errors/403");
+		web.ignoring().antMatchers("/favicon.ico");
 	}
 }

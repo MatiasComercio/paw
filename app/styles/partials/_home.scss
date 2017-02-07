@@ -1,0 +1,27 @@
+.animate-show-hide {
+  transform: scaleY(1);
+  opacity: 1;
+
+  .nested {
+    height: 50px;
+  }
+
+  &.ng-hide {
+    transform: scaleY(0);
+    opacity: 0;
+
+    .nested {
+      height: 0;
+    }
+  }
+
+  &.ng-hide-add,
+  &.ng-hide-remove {
+    transform-origin:  top;
+    transition: all linear 0.5s;
+
+    .nested {
+      transition: all linear 0.5s;
+    }
+  }
+}

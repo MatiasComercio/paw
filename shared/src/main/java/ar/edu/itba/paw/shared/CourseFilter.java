@@ -1,7 +1,7 @@
 package ar.edu.itba.paw.shared;
 
 public class CourseFilter {
-    private Object keyword; /* TODO: Decide whether the service is obliged to create a Filter with at least one field */
+    private Object keyword;
     private Object id;
 
     private CourseFilter(CourseFilterBuilder builder) {

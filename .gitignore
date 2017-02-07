@@ -115,3 +115,18 @@ local.properties
 
 .DS_Store
 *.pg_dump
+
+# Front-End files
+*~
+node/
+etc/
+node_modules/
+bower_components/
+# symlink to bower_components on the projects folder
+app/bower_components
+dist/
+.sass-cache/
+.tmp/
+
+coverage/
+logs/

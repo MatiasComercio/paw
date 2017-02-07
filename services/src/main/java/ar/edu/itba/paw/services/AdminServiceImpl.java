@@ -6,6 +6,7 @@ import ar.edu.itba.paw.interfaces.UserService;
 import ar.edu.itba.paw.models.Procedure;
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.Admin;
+import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.shared.AdminFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,24 +32,37 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public boolean create(final Admin admin) {
+    public void create(final Admin admin) {
         admin.setRole(Role.ADMIN);
-        if (admin.getEmail() == null || Objects.equals(admin.getEmail(), "")) {
+	    admin.getAddress().setDni(admin.getDni());
+	    admin.setPassword(User.DEFAULT_PASSWORD);
+	    if (admin.getEmail() == null || Objects.equals(admin.getEmail(), "")) {
             admin.setEmail(userService.createEmail(admin));
         }
-        return adminDao.create(admin);
+        adminDao.create(admin);
     }
 
     @Transactional
     @Override
-    public boolean update(final int dni, final Admin admin) {
-        return adminDao.update(admin);
+    public void update(final Admin admin) {
+        final Admin oldAdmin = getByDni(admin.getDni());
+
+        admin.setId_seq(oldAdmin.getId_seq());
+        admin.setPassword(oldAdmin.getPassword());
+        admin.setEmail(oldAdmin.getEmail());
+        if(oldAdmin.getAddress() != null) {
+            admin.getAddress().setId_seq(oldAdmin.getAddress().getId_seq());
+        }
+        admin.getAddress().setDni(admin.getDni());
+        admin.setRole(oldAdmin.getRole());
+
+        adminDao.update(admin);
     }
 
     @Transactional
     @Override
-    public boolean deleteAdmin(final int dni) {
-        return adminDao.delete(dni);
+    public void deleteAdmin(final int dni) {
+        adminDao.delete(dni);
     }
 
     @Transactional
@@ -65,35 +79,18 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public boolean disableInscriptions() {
-        return adminDao.disableInscriptions();
-//        final boolean done = adminDao.disableAddInscriptions();
-//
-//        if(!done) {
-//            return false;
-//        }
-//        adminDao.disableDeleteInscriptions();
+    public void disableInscriptions() {
+        if(isInscriptionEnabled()) {
+            adminDao.disableInscriptions();
+        }
     }
 
     @Transactional
     @Override
-    public boolean enableInscriptions() {
-        return adminDao.enableInscriptions();
-//        // +++ ximprove: this should be only one method.
-//        boolean enableAddResult = adminDao.enableAddInscriptions();
-//        boolean enableDeleteResult = adminDao.enableDeleteInscriptions();
-//
-//        if(enableAddResult.equals(Result.ERROR_UNKNOWN) || enableDeleteResult.equals(Result.ERROR_UNKNOWN)){
-//            return false;
-//        }
-//
-////        if(enableAddResult.equals(Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS) &&
-////                enableDeleteResult.equals(Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS)){
-////            return Result.ADMIN_ALREADY_ENABLED_INSCRIPTIONS;
-////        }
-//
-////        return Result.OK;
-//        return true;
+    public void enableInscriptions() {
+        if(!isInscriptionEnabled()) {
+            adminDao.enableInscriptions();
+        }
     }
 
     @Transactional
@@ -114,7 +111,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public boolean answerProcedure(final Procedure procedure) {
-        return adminDao.answerProcedure(procedure);
+    public void answerProcedure(final Procedure procedure) {
+        adminDao.answerProcedure(procedure);
     }
 }

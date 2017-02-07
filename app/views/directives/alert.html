@@ -1,0 +1,7 @@
+<div class='alert alert-{{controller.type}}' ng-show='show'>
+  <span ng-show="controller.type === 'success'" class='bold' translate='i18nSuccess'></span>
+  <span ng-show="controller.type === 'danger'" class='bold' translate='i18nError'></span>
+
+  <span translate='{{ controller.msg }}'></span>
+  <a class='close' ng-click='show = !show' aria-label='close'>×</a>
+</div>

@@ -1,0 +1,60 @@
+@import 'modules/variables/importer';
+
+.loader-container {
+  background: $black;
+  opacity: 0.48;
+  height: 100%;
+  width: 100%;
+  z-index: $loaderZIndex;
+  position: fixed;
+  padding: 0;
+  margin: 0;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
+
+.container {
+  margin-top: $navbarHeight;
+  margin-left: $sidebarWidth;
+  margin-right: 0;
+  margin-bottom: 0;
+  padding: $containerPadding;
+  padding-bottom: 0;
+  width: calc(100% - #{$sidebarWidth});
+  transition: all linear $sidebarTransitionTime;
+
+  &.sidebar-hidden {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  /* Responsive: Portrait tablets and up */
+  @media screen and (max-width: $bootstrapMobileMaxWidth) {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .content-container {
+    min-height: calc(100vh - 2 * #{$navbarHeight} - #{$containerPadding});
+    .ng-view-container {
+    }
+  }
+
+  .footer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: $mine-shaft;
+    color: $silver-chalice;
+    height: $navbarHeight;
+    margin: 0 -30px;
+    padding: 15px;
+    .no-margin {
+      margin: 0;
+    }
+  }
+}

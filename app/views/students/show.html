@@ -1,0 +1,90 @@
+<div class='students-show-container' ng-controller='StudentsShowCtrl as controller'>
+  <!-- Page Heading -->
+  <div class='page-header break-words'>
+    <h1 class='inline'>
+      <span translate='i18nStudents'></span>
+    </h1>
+    <h2 class='inline'>
+      <span> - </span>
+      <span> {{controller.student.firstName}} {{controller.student.lastName}}</span>
+      <small> - </small>
+      <small translate='i18nProfile'></small>
+    </h2>
+  </div>
+  <!-- /Page Heading -->
+
+  <!-- User Data -->
+  <div class='data-container'>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nDni'></p>
+      <p class='break-words'>{{controller.student.dni}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nDocket'></p>
+      <p class='break-words'>{{controller.student.docket}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nFirstName'></p>
+      <p class='break-words'>{{controller.student.firstName}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nLastName'></p>
+      <p class='break-words'>{{controller.student.lastName}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nBirthday'></p>
+      <p class='break-words'>{{controller.student.birthday}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nGenre'></p>
+      <p class='break-words' ng-show="controller.student.genre === 'M' ">{{ 'i18nMale' | translate }}</p>
+      <p class='break-words' ng-show="controller.student.genre === 'F' ">{{ 'i18nFemale' | translate }}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nTelephone'></p>
+      <p class='break-words'>{{controller.student.address.telephone}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nEmail'></p>
+      <p class='break-words'>{{controller.student.email}}</p>
+    </div>
+  </div>
+  <!-- /User Data -->
+
+  <!-- Address Data -->
+  <div class='data-container user-address-data'>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nCountry'></p>
+      <p class='break-words'>{{controller.student.address.country}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nCity'></p>
+      <p class='break-words'>{{controller.student.address.city}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nNeighborhood'></p>
+      <p class='break-words'>{{controller.student.address.neighborhood}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nStreet'></p>
+      <p class='break-words'>{{controller.student.address.street}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nNumber'></p>
+      <p class='break-words'>{{controller.student.address.number}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nFloor'></p>
+      <p class='break-words'>{{controller.student.address.floor}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nDoor'></p>
+      <p class='break-words'>{{controller.student.address.door}}</p>
+    </div>
+    <div class='data-item'>
+      <p class='bold static-label' translate='i18nZipCode'></p>
+      <p class='break-words'>{{controller.student.address.zipCode}}</p>
+    </div>
+  </div>
+  <!-- /Address Data -->
+</div>

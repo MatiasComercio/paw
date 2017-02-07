@@ -19,16 +19,13 @@ public interface AdminService {
     /**
      *
      * @param admin The admin to be persisted in the database.
-     * @return  OK if the admin could be created;
-     *          ADMIN_EXISTS_DNI if there is an admin whose dni is equal to this new admin;
-     *          ERROR_UNKNOWN else;
      */
-    boolean create(Admin admin);
+    void create(Admin admin);
 
     /**
      * Gets all the data associated with the user that has the
      * given dni.
-     * @param dni
+     * @param dni the dni of the administrator
      * @return The admin that has the given dni; null if no admin was found.
      */
     Admin getByDni(int dni);
@@ -42,33 +39,25 @@ public interface AdminService {
     List<Admin> getByFilter(AdminFilter adminFilter);
 
     /**
-     * Delete the admin that matches the given dni.
-     * @param dni The admin's dni
-     * @return 	OK if the admin was deleted;
-     * 		ERROR_DNI_OUT_OF_BOUNDS if the dni is invalid;
-     * 		ERROR_UNKNOWN else;
+     * @param admin The updated admin
      */
-    boolean deleteAdmin(int dni);
+    void update(Admin admin);
 
     /**
-     * Update an admin
-     * @param dni  The dni of the old admin
-     * @param admin The new student
-     * @return The Result code of update
+     * Delete the admin that matches the given dni.
+     * @param dni The admin's dni
      */
-    boolean update(int dni, Admin admin);
+    void deleteAdmin(int dni);
 
     /**
      * Disables inscription authority for Students
-     * @return The Result code of the operation
      */
-    boolean disableInscriptions();
+    void disableInscriptions();
 
     /**
      * Enables inscription authority for Students
-     * @return The Result code of the operation
      */
-    boolean enableInscriptions();
+    void enableInscriptions();
 
     /**
      * @return A boolean indicating whether the inscriptions are enabled
@@ -93,8 +82,7 @@ public interface AdminService {
 
     /**
      * Answer an existing procedure
-     * @param procedure
-     * @return if the procedure was successfully answered
+     * @param procedure the answer to a procedure
      */
-    boolean answerProcedure(Procedure procedure);
+    void answerProcedure(Procedure procedure);
 }

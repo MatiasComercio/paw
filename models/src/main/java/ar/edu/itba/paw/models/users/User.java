@@ -13,11 +13,7 @@ import static javax.persistence.InheritanceType.JOINED;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy=JOINED)
-// not abstract anymore just for Hibernate
-	/* +++xcheck
-	Entities inside Student are causing the need of java.io.Serializable.
-	When the error is found, this Serializable shoudl be removed.
-	 */
+
 public class User implements Serializable {
 
 	public static final String DEFAULT_PASSWORD = "pass";
@@ -83,30 +79,28 @@ public class User implements Serializable {
 		this.role = new RoleClass(builder.role, null);
 	}
 
-//	public <T extends User, V extends Builder<T,V>> T merge(final T u, final Builder<T, V> builder) {
-//		final Integer id_seq = u.getId_seq() == null ? this.id_seq : u.getId_seq();
-//		final int dni = this.dni;
-//		final String firstName = u.getFirstName();
-//		final String lastName = u.getLastName();
-//		final Genre genre = u.getGenre() == null ? this.genre : u.getGenre();
-//		final LocalDate birthday = u.getBirthday() == null ? this.birthday : u.getBirthday();
-//		final String email = this.email;
-//		final Address address = this.address.merge(u.getAddress());
-//		final String password = u.getPassword() == null ? this.password : u.getPassword();
-//
-//		return
-//	}
-
 	public int getDni() {
 		return dni;
+	}
+
+	public void setDni(int dni) {
+		this.dni = dni;
 	}
 
 	public String getFirstName() {
 		return firstName == null ? "" : firstName;
 	}
 
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
 	public String getLastName() {
 		return lastName == null ? "" : lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getFullName() {
@@ -117,8 +111,20 @@ public class User implements Serializable {
 		return genre;
 	}
 
+	public void setGenre(Genre genre) {
+		this.genre = genre;
+	}
+
 	public LocalDate getBirthday() {
 		return birthday;
+	}
+
+	public void setBirthday(LocalDate birthday) {
+		this.birthday = birthday;
+	}
+
+	public String getEmail() {
+		return email == null ? "" : email;
 	}
 
 	// +++ximprove:
@@ -126,11 +132,6 @@ public class User implements Serializable {
 		if (email != null) {
 			this.email = email;
 		}
-	}
-
-
-	public String getEmail() {
-		return email == null ? "" : email;
 	}
 
 	/**
@@ -142,23 +143,39 @@ public class User implements Serializable {
 		return address;
 	}
 
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
 	public String getPassword() {
 		return password;
+	}
+
+	public void setPassword(final String password) {
+		this.password = password;
 	}
 
 	public Role getRole() {
 		return role == null ? null : role.getRole();
 	}
 
+	public void setRole(RoleClass role) {
+		this.role = role;
+	}
+
+	public RoleClass getRoleClass(){return role;}
+
 	public List<Procedure> getProcedures() {
 		return procedures;
 	}
 
-	// +++ximprove
+	public void setProcedures(List<Procedure> procedures) {
+		this.procedures = procedures;
+	}
+
 	public void setRole(final Role role) {
 		this.role = role == null ? null : new RoleClass(role, null);
 	}
-
 
 	public Collection<Authority> getAuthorities() {
 		return role == null ? Collections.EMPTY_SET : role.getAuthorities();
@@ -200,12 +217,53 @@ public class User implements Serializable {
 		this.id_seq = id_seq;
 	}
 
-	public void setPassword(final String password) {
-		this.password = password;
-	}
-
 	public void resetPassword() {
 		this.password = DEFAULT_PASSWORD;
+	}
+
+	public enum Genre {
+		M("Male"),
+		F("Female"),
+		N("");
+		/* Every time we add a value to the Enum, we have to add the map
+		a lowerCase representation of the toString of the Genre
+		 */
+		private static final Map<String, Genre> map = new HashMap<>();
+
+		static {
+			map.put("male", M);
+			map.put("female", F);
+			map.put("", N);
+		}
+
+		private final String genre;
+
+		Genre(final String genre) {
+			this.genre = genre;
+		}
+
+		public static String getGenre(final String genre) {
+			if (genre == null) {
+				return null;
+			}
+			final String filterLowerCase = genre.toLowerCase();
+
+			Genre returnGenre = map.get(filterLowerCase);
+
+			if (returnGenre != null) {
+				return returnGenre.name();
+			}
+			return null;
+		}
+
+		public String getString() {
+			return genre;
+		}
+
+		@Override
+		public String toString() {
+			return genre;
+		}
 	}
 
 	public static abstract class Builder<V extends User, T extends Builder<V,T>> {
@@ -286,50 +344,6 @@ public class User implements Serializable {
 				this.password = password;
 			}
 			return thisBuilder;
-		}
-	}
-
-	public enum Genre {
-		M("Male"),
-		F("Female"),
-		N("");
-		/* Every time we add a value to the Enum, we have to add the map
-		a lowerCase representation of the toString of the Genre
-		 */
-		private static final Map<String, Genre> map = new HashMap<>();
-		static {
-			map.put("male", M);
-			map.put("female", F);
-			map.put("", N);
-		}
-
-		private final String genre;
-
-		public static String getGenre(final String genre) {
-			if(genre == null) {
-				return null;
-			}
-			final String filterLowerCase = genre.toLowerCase();
-
-			Genre returnGenre =  map.get(filterLowerCase);
-
-			if(returnGenre != null) {
-				return returnGenre.name();
-			}
-			return null;
-		}
-
-		Genre(final String genre) {
-			this.genre = genre;
-		}
-
-		public String getString() {
-			return genre;
-		}
-
-		@Override
-		public String toString() {
-			return genre;
 		}
 	}
 }

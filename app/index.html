@@ -1,0 +1,70 @@
+<!doctype html>
+<html class='no-js'>
+<head>
+  <meta charset='utf-8'>
+  <title translate='i18nWebAbbreviation'></title>
+  <meta name='description' content=''>
+
+  <!-- Responsive viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- build:css(.tmp) styles/main.css -->
+  <link rel='stylesheet' href='styles/main.css'>
+  <!-- endbuild -->
+
+</head>
+<body ng-controller='BodyCtrl as controller'>
+
+  <div class='loader-container' ng-show='showLoader' prevent-scroll>
+    <img src='images/spin.gif' class='no-select'>
+  </div>
+
+  <!-- site navigation elements -->
+  <xnavbar></xnavbar>
+  <xsidebar></xsidebar>
+  <!-- \site navigation elements -->
+
+  <!-- dynamic content -->
+  <div class='container' ng-class="{'sidebar-hidden' : !controller.user}">
+    <div class='flash-messages' ng-show='controller.flashMessages'>
+      <xalert ng-repeat='error in controller.flashMessages.errors' msg='{{ error.msg }}' type='danger' xdisplay='{{ error.show }}'>
+      </xalert>
+      <xalert ng-repeat='success in controller.flashMessages.successes' msg='{{ success.msg }}' type='success' xdisplay='{{ success.show }}'>
+      </xalert>
+    </div>
+
+    <!--[if lt IE 7]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- content -->
+    <div class='content-container'>
+      <!-- ng-view -->
+      <div ng-view='' class='ng-view-container' autoscroll='true'></div>
+      <!-- \ng-view -->
+    </div>
+    <!-- \content -->
+
+    <!-- footer -->
+    <div class='footer' ng-cloak>
+      <span translate='i18nFooterCopyright'></span>
+    </div>
+    <!-- \footer -->
+  </div>
+  <!-- \dynamic content -->
+
+  <!-- where modals are injected when loaded -->
+  <div class='modal-parent'>
+  </div>
+  <!-- \where modals are injected when loaded -->
+
+  <!-- build:js(.) scripts/oldieshim.js -->
+  <!--[if lt IE 9]>
+  <script src="bower_components/es5-shim/es5-shim.js"></script>
+  <script src="bower_components/json3/lib/json3.js"></script>
+  <![endif]-->
+  <!-- endbuild -->
+  <script type='application/javascript' src='scripts/paths.js'></script>
+  <script type='application/javascript' src='bower_components/requirejs/require.js' data-main='scripts/build.js'></script>
+</body>
+</html>

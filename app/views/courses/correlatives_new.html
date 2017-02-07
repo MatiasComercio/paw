@@ -1,0 +1,75 @@
+<div ng-controller='CoursesCorrelativesNewCtrl as controller' class='courses-correlatives-new-container'>
+  <!-- Page Heading -->
+  <div class='page-header break-words'>
+    <h1 class='inline'>
+      <span translate='i18nCoursesPanelSection'></span>
+    </h1>
+    <h2 class='inline'>
+      <span> - </span>
+      <span> {{controller.course.name}} </span>
+      <small> - </small>
+      <small translate='i18nAddCorrelative'></small>
+    </h2>
+  </div>
+  <!-- /Page Heading -->
+
+  <!-- Filter -->
+  <div class='filter-container'>
+    <div class='filter-fields'>
+      <div class='own-input-group'>
+        <span class='search-label' translate=i18nCourseId></span>
+        <input type='text' class='form-input-field' ng-model='controller.filter.course.courseId' placeholder="{{ 'i18nCourseId' | translate }}..."/>
+      </div>
+      <div class='own-input-group'>
+        <span class='search-label' translate='i18nCourseName'></span>
+        <input type='text' class='form-input-field' ng-model='controller.filter.course.name' placeholder="{{ 'i18nCourseName' | translate }}..."/>
+      </div>
+    </div>
+    <div class='filter-buttons'>
+      <button class='btn btn-default' ng-click='controller.resetSearch()' type='submit'>
+        <span class='fa fa-repeat' aria-hidden='true'></span>
+        <span translate='i18nResetButton'></span>
+      </button>
+    </div>
+  </div>
+  <!-- /Filter -->
+
+  <!-- Content -->
+  <div class='table-responsive'>
+    <table class='table table-hover'>
+      <thead>
+        <tr>
+          <th translate='i18nCourseId'></th>
+          <th translate='i18nCourseName'></th>
+          <th translate='i18nCredits'></th>
+          <th translate='i18nSemester'></th>
+          <th class='actions-col' translate='i18nActions'></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-hide='filtered.length > 0' class='bg-warning'>
+          <td colspan='5' class='text-danger text-center' translate='i18nNoCoursesFound'></td>
+        </tr>
+        <tr ng-repeat="courseInfo in controller.course.availableCorrelatives | orderBy:'+course.semester' | filter:controller.filter as filtered">
+          <td>{{ courseInfo.course.courseId }}</td>
+          <td>{{ courseInfo.course.name }}</td>
+          <td>{{ courseInfo.course.credits }}</td>
+          <td>{{ courseInfo.course.semester }}</td>
+          <td class='actions-container'>
+          <a class='btn btn-action' role='button' ng-controller='AddCorrelativeController as modalController' ng-show='courseInfo.available'
+            ng-click="modalController.open('md', controller.course.courseId, controller.course.name, courseInfo.course.courseId, courseInfo.course.name)">
+            <span class='fa fa-list-alt' aria-hidden='true'></span>
+            <span translate='i18nAddCorrelative'></span>
+          </a>
+          <span class='error-message' ng-show='!courseInfo.available' translate='i18nCorrelativesConflict'/>
+            <a ng-href='{{ controller.getCoursePath(courseInfo.course.courseId) }}' class='btn btn-default' role='button'>
+              <span class='fa fa-info-circle' aria-hidden='true'></span>
+              <span translate='i18nCourseShow'></span>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- Content -->
+</div>

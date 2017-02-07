@@ -1,0 +1,32 @@
+@import 'modules/variables/importer';
+
+.students-edit-container {
+  .data-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .data-item {
+      width: 230px;
+      padding: 5px;
+
+      .align-to-input-field {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 35px;
+      }
+
+      .align-data-to-input-field {
+        height: 35px;
+        line-height: 35px;
+      }
+    }
+  }
+
+  .user-address-data {
+    padding-top: 15px;
+    border-top: 1px solid $gallery;
+  }
+}

@@ -18,7 +18,6 @@ public class Course {
     @Column(name = "course_id", length = 5, unique = true)
     private String courseId;
 
-    //TODO: Add Basic annotation
     @Column(length = 100, nullable = false, unique = true)
     private String name;
 
@@ -30,7 +29,6 @@ public class Course {
 
     @ManyToMany(
             cascade={CascadeType.PERSIST, CascadeType.MERGE},
-            //TODO: Delete targetEntity: Since Collection use generics (Set<Course>) it's not needed
             targetEntity=Course.class
     )
     @JoinTable(
@@ -42,7 +40,6 @@ public class Course {
 
     @ManyToMany(
             cascade={CascadeType.PERSIST, CascadeType.MERGE},
-            //TODO: Delete targetEntity: Since Collection use generics (Set<Course>) it's not needed
             targetEntity=Course.class
     )
     @JoinTable(
@@ -73,12 +70,24 @@ public class Course {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getCourseId() {
         return courseId;
     }
 
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getCredits() {
@@ -89,18 +98,6 @@ public class Course {
         this.credits = credits;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
-    }
-
     public List<Student> getStudents() {
         return this.students;
     }
@@ -109,12 +106,12 @@ public class Course {
         this.students = students;
     }
 
-    public void setSemester(int semester){
-        this.semester = semester;
-    }
-
     public int getSemester(){
         return this.semester;
+    }
+
+    public void setSemester(int semester) {
+        this.semester = semester;
     }
 
     public Set<Course> getCorrelatives() {
@@ -150,15 +147,9 @@ public class Course {
 
         if (credits != course.credits) return false;
         if (semester != course.semester) return false;
-        if (id != null ? !id.equals(course.id) : course.id != null) return false;
-        if (courseId != null ? !courseId.equals(course.courseId) : course.courseId != null) return false;
-        if (name != null ? !name.equals(course.name) : course.name != null) return false;
-        if (correlatives != null ? !correlatives.equals(course.correlatives) : course.correlatives != null)
-            return false;
-        if (upperCorrelatives != null ? !upperCorrelatives.equals(course.upperCorrelatives) : course.upperCorrelatives != null)
-            return false;
-        if (students != null ? !students.equals(course.students) : course.students != null) return false;
-        return approvedStudents != null ? approvedStudents.equals(course.approvedStudents) : course.approvedStudents == null;
+        if (!id.equals(course.id)) return false;
+        if (!courseId.equals(course.courseId)) return false;
+        return name.equals(course.name);
 
     }
 
@@ -169,11 +160,6 @@ public class Course {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + credits;
         result = 31 * result + semester;
-        //TODO:Removed due to SO firing
-        //result = 31 * result + (correlatives != null ? correlatives.hashCode() : 0);
-        //result = 31 * result + (upperCorrelatives != null ? upperCorrelatives.hashCode() : 0);
-        result = 31 * result + (students != null ? students.hashCode() : 0);
-        result = 31 * result + (approvedStudents != null ? approvedStudents.hashCode() : 0);
         return result;
     }
 
@@ -234,12 +220,12 @@ public class Course {
             return id;
         }
 
-        public String getCourseId() {
-            return courseId;
-        }
-
         public void setId(int id) {
             this.id = id;
+        }
+
+        public String getCourseId() {
+            return courseId;
         }
 
         public void setCourseId(String courseId) {

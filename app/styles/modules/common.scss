@@ -1,0 +1,124 @@
+@import 'modules/variables/importer';
+
+html {
+  height: 100%;
+}
+
+body {
+  background: $alabaster;
+
+  // content
+  .content {
+    padding-top: 50px;
+  }
+  // \content
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.inline {
+  display: inline;
+}
+
+hr {
+  padding: 0;
+  margin: 0px 10px;
+  border-top: 1px solid $silver-chalice;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.break-words {
+  display: inline-block;
+  word-wrap: break-word; /* Internet Explorer 5.5+ */
+  width: 100%; /* width is mandatory to make break-word work on Mozzila */
+}
+
+.bold {
+  font-weight: 700;
+}
+
+.no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari*/
+  -khtml-user-select: none; /* Konqueror */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+}
+
+// Customize scrollbar for Chrome and Opera browsers
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: $mine-shaft;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: $silver-chalice;
+}
+
+.row {
+  margin: 0;
+}
+
+.page-header {
+  margin: 0 0 15px;
+  padding-bottom: 15px;
+}
+
+.page-sub-header {
+  margin: 0;
+  padding: 30px 0 15px;
+}
+
+.btn {
+  border-radius: 0;
+  outline: none !important;
+}
+
+.btn-action {
+  background-color: $tropical-rain-forest;
+  border-color: $aqua-deep;
+  color: $gallery;
+
+  &:hover,
+  &:focus,
+  &:active {
+    background-color: $aqua-deep;
+    border-color: $aqua-deep;
+    color: $white;
+  }
+}
+
+.btn-default {
+  &:hover,
+  &:focus,
+  &:active {
+    color: $black;
+  }
+}
+
+.sym-button {
+  cursor: pointer;
+}
+
+// https://docs.angularjs.org/api/ng/directive/ngCloak
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
+.modal-content {
+  border-radius: 3px;
+}

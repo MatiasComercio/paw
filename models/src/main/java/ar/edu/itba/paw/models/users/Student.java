@@ -18,7 +18,6 @@ public class Student extends User {
 	@Column(unique = true, insertable = false, updatable = false)
 	private int docket;
 
-	// TODO +++xcheck if grades are being delete on cascade
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "student")
 	private List<Grade> grades;
 
@@ -44,12 +43,12 @@ public class Student extends User {
 		return docket;
 	}
 
-	public List<Grade> getGrades() {
-		return Collections.unmodifiableList(grades);
+	public void setDocket(int docket) {
+		this.docket = docket;
 	}
 
-	public void setStudentCourses(List<Course> studentCourses) {
-		this.studentCourses = studentCourses;
+	public List<Grade> getGrades() {
+		return Collections.unmodifiableList(grades);
 	}
 
 	public void setGrades(List<Grade> grades) {
@@ -103,6 +102,10 @@ public class Student extends User {
 
 	public List<Course> getStudentCourses() {
 		return studentCourses;
+	}
+
+	public void setStudentCourses(List<Course> studentCourses) {
+		this.studentCourses = studentCourses;
 	}
 
 	public static class Builder extends User.Builder<Student, Builder> {

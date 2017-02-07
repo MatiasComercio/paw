@@ -5,7 +5,6 @@ import ar.edu.itba.paw.models.users.Student;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -14,7 +13,7 @@ public class FinalInscription {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "finalInscription_finalInscriptionid_seq")
     @SequenceGenerator(sequenceName = "finalInscription_finalInscriptionid_seq", name = "finalInscription_finalInscriptionid_seq", allocationSize = 1)
-    private int id;
+    private Integer id;
 
     @Basic
     private int vacancy;
@@ -22,27 +21,11 @@ public class FinalInscription {
     @Basic
     private int maxVacancy;
 
-    @ManyToMany(
-            cascade = CascadeType.ALL
-    )
-//    @JoinTable(name="inscription", joinColumns=@JoinColumn(name="course_id", referencedColumnName = "id"),
-//            inverseJoinColumns=@JoinColumn(name="docket", referencedColumnName = "docket")
-//    )
-    private Set<Student> students;
-
     @ManyToMany()
     @JoinTable(name="finalinscription_student_history")
     private Set<Student> history;
 
-    public Set<Student> getHistory() {
-        return history;
-    }
-
-    public void setHistory(Set<Student> history) {
-        this.history = history;
-    }
-
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     private Course course;
 
     @Column(nullable = false)
@@ -52,24 +35,22 @@ public class FinalInscription {
     private FinalInscriptionState state = FinalInscriptionState.OPEN;
 
 
-    public enum FinalInscriptionState{
-        OPEN("OPEN"),
-        CLOSED("CLOSED");
+    protected FinalInscription() {
+        //Just for hibernate
+    }
 
-        private String state;
-
-        FinalInscriptionState(final String state) {
-            this.state = state;
-        }
-
-        public String getState() { return state; }
+    private FinalInscription(Builder builder) {
+        this.id = builder.id;
+        this.maxVacancy = builder.maxVacancy;
+        this.finalExamDate = builder.finalExamDate;
+        this.vacancy = 0;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -79,18 +60,6 @@ public class FinalInscription {
 
     public void setVacancy(int vacancy) {
         this.vacancy = vacancy;
-    }
-
-    public void setMaxVacancy(int maxVacancy) {
-        this.maxVacancy = maxVacancy;
-    }
-
-    public Set<Student> getStudents() {
-        return students;
-    }
-
-    public void setStudents(Set<Student> students) {
-        this.students = students;
     }
 
     public Course getCourse() {
@@ -117,15 +86,35 @@ public class FinalInscription {
         this.state = state;
     }
 
-    protected FinalInscription(){
-        //Just for hibernate
+    public Set<Student> getHistory() {
+        return history;
     }
 
-    private FinalInscription(Builder builder){
-        this.id = builder.id;
-        this.maxVacancy = builder.maxVacancy;
-        this.finalExamDate = builder.finalExamDate;
-        this.vacancy = 0;
+    public void setHistory(Set<Student> history) {
+        this.history = history;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FinalInscription that = (FinalInscription) o;
+
+        if (maxVacancy != that.maxVacancy) return false;
+        if (!id.equals(that.id)) return false;
+        if (!course.equals(that.course)) return false;
+        return finalExamDate.equals(that.finalExamDate);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + maxVacancy;
+        result = 31 * result + course.hashCode();
+        result = 31 * result + finalExamDate.hashCode();
+        return result;
     }
 
     public boolean isOpen(){
@@ -144,6 +133,25 @@ public class FinalInscription {
         return this.maxVacancy;
     }
 
+    public void setMaxVacancy(int maxVacancy) {
+        this.maxVacancy = maxVacancy;
+    }
+
+    public enum FinalInscriptionState {
+        OPEN("OPEN"),
+        CLOSED("CLOSED");
+
+        private String state;
+
+        FinalInscriptionState(final String state) {
+            this.state = state;
+        }
+
+        public String getState() {
+            return state;
+        }
+    }
+
     public static class Builder{
         private int id;
         private int vacancy;
@@ -156,8 +164,6 @@ public class FinalInscription {
             this.maxVacancy = maxVacancy;
             this.finalExamDate = finalExamDate;
 
-            //TODO: Debug purposes only
-            //this.finalExamDate = LocalDateTime.now();
             this.course = course;
         }
 

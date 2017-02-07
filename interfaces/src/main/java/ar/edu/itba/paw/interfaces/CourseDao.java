@@ -2,9 +2,12 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Course;
 import ar.edu.itba.paw.models.FinalInscription;
+import ar.edu.itba.paw.models.Grade;
+import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.shared.CourseFilter;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CourseDao {
 
@@ -17,11 +20,11 @@ public interface CourseDao {
 
     /**
      * Update a course
-     * @param id Id of the old course
+     * @param courseId Id of the old course
      * @param course Modified course
      * @return The result code of the insertion
      */
-    boolean update(int id, Course course);
+    boolean update(String courseId, Course course);
 
     /**
      * Get the course identified by an ID
@@ -30,14 +33,19 @@ public interface CourseDao {
      */
     Course getById(int id);
 
-
+    /**
+     * Gets the desired course by the course's ID code
+     * @param courseID the course's ID code
+     * @return the course if it exists; null otherwise.
+     */
+    Course getByCourseID(String courseID);
 
     /**
      * Gets the desired course by the identifier with the inscribed students
-     * @param id the id of the course
+     * @param courseId the id of the course
      * @return the course created, with a list of the inscribed students
      */
-    Course getCourseStudents(int id);
+    Course getCourseStudents(String courseId);
 
     /**
      * Get all the courses in the storage
@@ -55,21 +63,16 @@ public interface CourseDao {
 
     /**
      * Attempts to delete the course with the given id
-     * @param id of the course to delete
-     * @return OK if the course was deleted;
-     *         COURSE_EXISTS_INSCRIPTION if there are inscriptions in that course;
-     *         COURSE_EXISTS_GRADE if there grades tied to the course;
-     *         INVALID_INPUT_PARAMETERS if the ID is invalid;
-     *         ERROR_UNKNOWN else;
+     * @param courseId of the course to delete
      */
-    boolean deleteCourse(int id);
+    void deleteCourse(String courseId);
 
     /**
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that are requiered to enroll a student in the
      * given course)
      */
-    List<Integer> getCorrelatives(int courseId);
+    List<String> getCorrelativesIds(String courseId);
 
     /**
      * Check if a correlativity loop is formed
@@ -79,56 +82,54 @@ public interface CourseDao {
      * @return The boolean value indicating if the correlativity loop
      * is generated.
      */
-    boolean checkCorrelativityLoop(int id, int correlativeId);
+    boolean checkCorrelativityLoop(String id, String correlativeId);
 
     /**
      * Persist a correlativity
      *
      * @param id The id of the course who will have the correlativity
      * @param correlativeId The id of the course correlative course
-     * @return The insertion result.
      */
-    boolean addCorrelativity(int id, int correlativeId);
+    void addCorrelativity(String id, String correlativeId);
 
     /**
      * Check whether a course exists or not
      * @param id The id of the course;
      * @return The boolean indicating if the course exists
      */
-    boolean courseExists(int id);
+    boolean courseExists(String id);
 
     /**
      * @param courseId The id of the course.
      * @return The boolean indicating if the given course has any enrolled students.
      */
-    boolean inscriptionExists(int courseId);
+    boolean inscriptionExists(String courseId);
 
     /**
      * @param courseId The id of the course.
      * @return The boolean indicating whether there are any students with grades of the given course.
      */
-    boolean gradeExists(int courseId);
+    boolean gradeExists(String courseId);
 
     /**
      * @param courseId The id of the course.
      * @return List of correlatives for the given course (i.d. The courses that require this course to enroll a student in the
      * given course)
      */
-    List<Integer> getUpperCorrelatives(int courseId);
+    List<String> getUpperCorrelatives(String courseId);
 
     /**
      *
      * @param courseId The id of the course.
      * @param correlativeId The id of the correlative for the given course.
-     * @return OK if no errors were found, UNKNOWN_ERROR otherwise.
      */
-    boolean deleteCorrelative(int courseId, int correlativeId);
+    void deleteCorrelative(String courseId, String correlativeId);
 
     /**
      * Get the number of semesters.
      * @return Integer indicating the number of semesters
      */
-    Integer getTotalSemesters();
+    int getTotalSemesters();
 
     /**
      *
@@ -136,23 +137,60 @@ public interface CourseDao {
      * @return List of correlatives for the given course (i.d. The courses that are required to enroll a student in the
      * given course)
      */
-    List<Course> getCorrelativeCourses(int courseId);
+    List<Course> getCorrelativeCourses(String courseId);
 
     /**
      * Get the total credits of the plan.
      * @return Integer indicating the total credits of the plan.
      */
-    Integer getTotalPlanCredits();
+    int getTotalPlanCredits();
 
-    /* +++ xtest */
-    /* +++ xdocument */
-    Course getStudentsThatPassedCourse(int id);
+    /**
+     * Gets the student that passed both the given course and the course's final exam
+     * @param courseId The Course's Id
+     * @return The list of students that passed the course
+     */
+
+    Map<Student, Grade> getStudentsThatPassedCourse(String courseId);
 
 
     /**
-     * Get the open final inscriptions corresponding to a course.
-     * @param id The course's id
-     * @return The list containing all the final inscriptions.
+     * Get the final inscriptions corresponding to a course.
+     * @param courseId The course's id
+     * @return A list of all the final inscriptions for the given course
      */
-    List<FinalInscription> getOpenFinalInsciptions(Integer id);
+    List<FinalInscription> getCourseFinalInscriptions(String courseId);
+
+    /**
+     * Get the open final inscriptions corresponding to a course.
+     * @param courseId The course's id
+     * @return A list of all the open final inscriptions for the given course
+     */
+    List<FinalInscription> getCourseOpenFinalInscriptions(String courseId);
+
+    /**
+     * Get a final inscription by it's id
+     * @param id The given's final inscription's id
+     * @return The Final Inscription
+     */
+    FinalInscription getFinalInscription(int id);
+
+    /**
+     * Creates a new final inscription
+     * @param finalInscription The final inscription to be created
+     * @return The created inscription's id
+     */
+    int addFinalInscription(FinalInscription finalInscription);
+
+    /**
+     * Deletes the a final inscription with the given id
+     * @param finalInscriptionId The final inscription's id
+     */
+    void deleteFinalInscription(int finalInscriptionId);
+
+    /**
+     * Sets the final inscription state to close
+     * @param finalInscriptionId the final inscription's id
+     */
+    void closeFinalInscription(int finalInscriptionId);
 }

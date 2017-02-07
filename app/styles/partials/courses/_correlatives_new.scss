@@ -1,0 +1,40 @@
+@import 'modules/variables/importer';
+
+.courses-correlatives-new-container {
+  .table {
+    .actions-col {
+      min-width: 420px;
+      width: 420px;
+    }
+
+    .actions-container {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: flex-start;
+
+      .btn {
+        flex: 1;
+        align-items: center;
+        min-width: 185px;
+        max-width: 185px;
+        margin: 10px;
+        margin-left: 0;
+      }
+
+      .error-message {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+        min-width: 185px;
+        max-width: 185px;
+        margin-left: 0;
+        color: $persian-red;
+        margin: 10px;
+        margin-left: 0;
+
+      }
+    }
+  }
+}

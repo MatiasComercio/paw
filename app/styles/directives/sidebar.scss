@@ -1,0 +1,151 @@
+@import 'modules/variables/importer';
+
+.sidebar-container {
+  position: fixed;
+  height: calc(100vh - #{$navbarHeight});
+  width: $sidebarWidth;
+  background: $mine-shaft;
+  left: 0;
+  top: $navbarHeight;
+  z-index: $sidebarZIndex;
+  box-shadow: 2px 2px 5px rgba(0,0,0,.26);
+  display: none;
+  outline: none;
+  overflow: hidden;
+  border-radius: 0;
+  border: 0;
+  padding: 0;
+  display: flex;
+  align-items: left;
+  flex-direction: column;
+  overflow-y: auto;
+  color: $silver-chalice;
+
+  &.own-hidden {
+    left: -$sidebarWidth;
+    box-shadow: none;
+  }
+
+  .sidebar {
+    width: 100%;
+
+    .sidebar-item {
+      width: 100%;
+
+      .main-item {
+        @extend .sidebar-button;
+        padding: 15px 15px;
+
+        .main-item-text {
+          display: flex;
+          justify-content: space-between;
+
+          .caret-container {
+            padding-right: 10px;
+          }
+        }
+      }
+
+      .transcluded {
+        display: flex;
+        flex-direction: column;
+        transform: scaleY(1);
+        opacity: 1;
+
+        ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+        }
+
+        .sidebar-sub-item {
+          @extend .sidebar-button;
+          padding: 15px 30px;
+          height: $sidebarButtonHeight;
+          font-size: 13px;
+        }
+
+        &.ng-hide {
+          transform: scaleY(0);
+          opacity: 0;
+
+          .sidebar-sub-item {
+            padding: 0 30px;
+            height: 0;
+          }
+        }
+
+        &.ng-hide-add,
+        &.ng-hide-remove {
+          transform-origin:  top;
+          transition: all linear $sidebarItemTransitionTime;
+
+          .sidebar-sub-item {
+            transition: all linear $sidebarItemTransitionTime;
+          }
+        }
+      }
+    }
+  }
+
+  .sub-sidebar {
+    width: 100%;
+
+    .name {
+      padding: 15px;
+      padding-bottom: 0;
+      text-align: center;
+
+      p {
+        margin: 0;
+      }
+    }
+
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sub-sidebar-item {
+      @extend .sidebar-button;
+      padding: 15px 15px;
+    }
+  }
+
+  &.ng-hide {
+    left: -$sidebarWidth;
+    box-shadow: none;
+  }
+
+  &.ng-hide-add,
+  &.ng-hide-remove {
+    transition: all linear $sidebarTransitionTime;
+  }
+}
+
+.sidebar-button {
+  display: block;
+  color: $silver-chalice;
+  padding-right: 5px;
+  width: 100%;
+
+  &:hover,
+  &:focus {
+    cursor: pointer;
+    text-decoration: none;
+    color: $white;
+    background-color: $black;
+  }
+
+  &.danger:hover,
+  &.danger:focus {
+    background-color: $persian-red;
+  }
+
+  &.active {
+    text-decoration: none;
+    color: $white;
+    background-color: $black;
+  }
+}

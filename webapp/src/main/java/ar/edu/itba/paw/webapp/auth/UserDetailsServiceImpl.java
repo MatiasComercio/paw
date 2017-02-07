@@ -73,7 +73,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				.email(student.getEmail())
 				.password(student.getPassword());
 		for (Authority authority : student.getAuthorities()) {
-			studentDetailsBuilder.authority(new SimpleGrantedAuthority(authority.getRoleAuthority()));
+			studentDetailsBuilder.authority(new SimpleGrantedAuthority(authority.getAuthority()));
 		}
 		return studentDetailsBuilder.build();
 	}
@@ -93,7 +93,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 				.email(admin.getEmail())
 				.password(admin.getPassword());
 		for (Authority authority : admin.getAuthorities()) {
-			adminDetailsBuilder.authority(new SimpleGrantedAuthority(authority.getRoleAuthority()));
+			adminDetailsBuilder.authority(new SimpleGrantedAuthority(authority.getAuthority()));
 		}
 		return adminDetailsBuilder.build();
 	}

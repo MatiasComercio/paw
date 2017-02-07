@@ -1,0 +1,80 @@
+@import 'modules/variables/importer';
+
+.courses-final-inscriptions-show-container {
+  .data-container {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    .data-item {
+      width: 230px;
+      padding: 5px;
+    }
+  }
+
+  .qualify-all-container,
+  .final-instance-actions-container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 30px;
+    border-top: 1px solid $gallery;
+
+    .qualify-all {
+      width: 300px;
+      height: 35px;
+      margin: 0 15px;
+    }
+
+    .final-instance-action {
+      width: 200px;
+      height: 35px;
+      margin: 15px;
+    }
+  }
+
+  .table {
+    .actions-container {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: flex-start;
+
+      .btn {
+        flex: 1;
+        min-width: 175px;
+        max-width: 200px;
+        margin: 10px;
+        margin-left: 0;
+      }
+
+      .data-item {
+        display: flex;
+        align-items: center;
+
+        input[type='number'] {
+          margin: 0;
+          max-width: 100px;
+          min-width: 100px;
+          -moz-appearance: textfield;
+          text-align: center;
+
+          &::-webkit-outer-spin-button,
+          &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+        }
+
+        .form-errors {
+          margin: 0;
+          padding: 0 15px;
+        }
+      }
+    }
+  }
+}

@@ -72,7 +72,7 @@ public class StudentSessionDetails extends User implements UserSessionDetails {
 
 	@Override
 	public boolean hasAuthority(final String authority) {
-		final StringBuilder builder =  new StringBuilder("ROLE_");
+		final StringBuilder builder =  new StringBuilder();
 		return getAuthorities().contains(new SimpleGrantedAuthority(builder.append(authority).toString()));
 	}
 

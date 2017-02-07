@@ -16,7 +16,9 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.Collection;
 import java.util.List;
 
@@ -40,25 +42,13 @@ public class AdminHibernateDao implements AdminDao {
 
 	@Override
 	public List<Admin> getAllAdmins() {
-		/*
-		final CriteriaBuilder builder = em.getCriteriaBuilder();
-		final CriteriaQuery<String> query = builder.createQuery(String.class);
-		final Root<User> user = query.from(User.class);
-		final Predicate equalsPredicate = builder.equal(user.get("email"), email);
-
-		final List<String> emails = em.createQuery(query.select(user.get("email")).where(equalsPredicate))
-				.setMaxResults(1).getResultList();
-
-		return !emails.isEmpty();
-		 */
-
 		final CriteriaBuilder builder = em.getCriteriaBuilder();
 		final CriteriaQuery<Admin> queryForAdmins = builder.createQuery(Admin.class);
 		final Root<Admin> fromAdmins = queryForAdmins.from(Admin.class);
 		final CriteriaQuery<Admin> orderBy = queryForAdmins.orderBy(
-				builder.asc(fromAdmins.get("lastName")),
-				builder.asc(fromAdmins.get("firstName")),
-				builder.asc(fromAdmins.get("dni"))
+						builder.asc(fromAdmins.get("lastName")),
+						builder.asc(fromAdmins.get("firstName")),
+						builder.asc(fromAdmins.get("dni"))
 		);
 
 		final TypedQuery<Admin> query = em.createQuery(orderBy);
@@ -67,19 +57,15 @@ public class AdminHibernateDao implements AdminDao {
 	}
 
 	@Override
-	public boolean create(final Admin admin) {
+	public void create(final Admin admin) {
 		em.persist(admin);
 		LOGGER.debug("[create] - {}", admin);
-
-		return true;
 	}
 
 	@Override
-	public boolean update(final Admin admin) {
+	public void update(final Admin admin) {
 		em.merge(admin);
 		LOGGER.debug("[update] - {}", admin);
-
-		return true;
 	}
 
 	@Override
@@ -88,18 +74,15 @@ public class AdminHibernateDao implements AdminDao {
 	}
 
 	@Override
-	public boolean answerProcedure(final Procedure procedure) {
-		return procedureDao.updateProcedure(procedure);
+	public void answerProcedure(final Procedure procedure) {
+		procedureDao.updateProcedure(procedure);
 	}
 
 	@Override
-	public boolean delete(final int dni) {
-		// +++xtodo: have to implement front end
+	public void delete(final int dni) {
 		final Admin admin = getByDni(dni);
 		em.remove(admin);
 		LOGGER.debug("[delete] - {}", admin);
-
-		return true;
 	}
 
 	@Override
@@ -108,6 +91,7 @@ public class AdminHibernateDao implements AdminDao {
 		query.setParameter(DNI_PARAM, dni);
 		query.setMaxResults(ONE);
 		final List<Admin> admins = query.getResultList();
+
 		return admins.isEmpty() ? null : admins.get(FIRST);
 	}
 
@@ -122,89 +106,60 @@ public class AdminHibernateDao implements AdminDao {
 		return em.createQuery(queryFilter.getQuery()).getResultList();
 	}
 
-	/* +++xchange: all this logic should be on the service when authorities are migrated to runtime */
-	private boolean disableAddInscriptions() {
-		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
-		query.setParameter(ROLE_COLUMN, Role.STUDENT);
-		query.setMaxResults(ONE);
-		final List<RoleClass> roles = query.getResultList();
-		final RoleClass role =  roles.get(FIRST);
-		final Collection<Authority> authorities = role.getMutableAuthorities();
-
-		authorities.remove(new Authority("ADD_INSCRIPTION"));
-
-		em.persist(role);
-
-		return true;
+	private void disableAddInscriptions() {
+		removeAuthority(Role.STUDENT, "ADD_INSCRIPTION");
+		removeAuthority(Role.ADMIN,   "ADD_INSCRIPTION");
 	}
 
-	private boolean disableDeleteInscriptions() {
+	private void disableDeleteInscriptions() {
+		removeAuthority(Role.STUDENT, "DELETE_INSCRIPTION");
+		removeAuthority(Role.ADMIN,   "DELETE_INSCRIPTION");
+	}
+
+	private void removeAuthority(final Role role, final String authority) {
 		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
-		query.setParameter(ROLE_COLUMN, Role.STUDENT);
+		query.setParameter(ROLE_COLUMN, role);
 		query.setMaxResults(ONE);
-		final List<RoleClass> roles = query.getResultList();
-		final RoleClass role =  roles.get(FIRST);
-		final Collection<Authority> authorities = role.getMutableAuthorities();
+		final RoleClass roleClass = query.getResultList().get(FIRST);
+		final Collection<Authority> authorities = roleClass.getMutableAuthorities();
 
-		authorities.remove(new Authority("DELETE_INSCRIPTION"));
+		authorities.remove(new Authority(authority));
 
-		em.persist(role);
+		em.persist(roleClass);
+	}
 
-		return true;
+	private void addAuthority(final Role role, final String authority) {
+		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
+		query.setParameter(ROLE_COLUMN, role);
+		query.setMaxResults(ONE);
+		final RoleClass roleClass = query.getResultList().get(FIRST);
+		final Collection<Authority> authorities = roleClass.getMutableAuthorities();
+
+		authorities.add(new Authority(authority));
+
+		em.persist(roleClass);
 	}
 
 	@Override
-	public boolean disableInscriptions() {
-		if(disableAddInscriptions()) {
-			if(!disableDeleteInscriptions()) {
-				enableAddInscriptions();
-			} else {
-				return true;
-			}
-		}
-		return false;
+	public void disableInscriptions() {
+		disableAddInscriptions();
+		disableDeleteInscriptions();
 	}
 
 	@Override
-	public boolean enableInscriptions() {
-		if(enableAddInscriptions()) {
-			if(!enableDeleteInscriptions()) {
-				disableAddInscriptions();
-			} else {
-				return true;
-			}
-		}
-		return false;
+	public void enableInscriptions() {
+		enableAddInscriptions();
+		enableDeleteInscriptions();
 	}
 
-	private boolean enableAddInscriptions() {
-		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
-		query.setParameter(ROLE_COLUMN, Role.STUDENT);
-		query.setMaxResults(ONE);
-		final List<RoleClass> roles = query.getResultList();
-		final RoleClass role =  roles.get(FIRST);
-		final Collection<Authority> authorities = role.getMutableAuthorities();
-
-		authorities.add(new Authority("ADD_INSCRIPTION"));
-
-		em.persist(role);
-
-		return true;
+	private void enableAddInscriptions() {
+		addAuthority(Role.STUDENT, "ADD_INSCRIPTION");
+		addAuthority(Role.ADMIN, "ADD_INSCRIPTION");
 	}
 
-	private boolean enableDeleteInscriptions() {
-		final TypedQuery<RoleClass> query = em.createQuery(GET_ROLE, RoleClass.class);
-		query.setParameter(ROLE_COLUMN, Role.STUDENT);
-		query.setMaxResults(ONE);
-		final List<RoleClass> roles = query.getResultList();
-		final RoleClass role =  roles.get(FIRST);
-		final Collection<Authority> authorities = role.getMutableAuthorities();
-
-		authorities.add(new Authority("DELETE_INSCRIPTION"));
-
-		em.persist(role);
-
-		return true;
+	private void enableDeleteInscriptions() {
+		addAuthority(Role.STUDENT, "DELETE_INSCRIPTION");
+		addAuthority(Role.ADMIN, "DELETE_INSCRIPTION");
 	}
 
 	@Override

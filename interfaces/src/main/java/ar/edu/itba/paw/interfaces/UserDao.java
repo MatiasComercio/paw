@@ -2,7 +2,6 @@ package ar.edu.itba.paw.interfaces;
 
 import ar.edu.itba.paw.models.Role;
 import ar.edu.itba.paw.models.users.User;
-import ar.edu.itba.paw.shared.Result;
 
 import java.util.List;
 
@@ -35,20 +34,16 @@ public interface UserDao {
 	/**
 	 * Creates a new user with the given data
 	 * @param user the user's data
-	 * @return OK if the user was created;
-	 * 			USER_EXISTS_DNI if the user's dni already exists
-	 * 			ERROR_UNKNOWN else;
-     */
-	Result create(User user, final Role role);
+	 */
+	void create(User user, final Role role);
 
 	/**
 	 * Delete a user with the corresponding id
 	 * @param dni The user's dni
-	 * @return OK if the user was deleted.
 	 * @throws UnsupportedOperationException if the current implementation requires
 	 *         that a call to delete on User's subclasses DAO 's should be done instead
 	 */
-	Result delete(int dni);
+	void delete(int dni);
 
 	/**
 	 * Change the password of a given user
@@ -56,19 +51,16 @@ public interface UserDao {
 	 * @param prevPassword The user's previous password. If it is null, then the newPassword will step over the
 	 *                     previous password
 	 * @param newPassword The user's new password
-     * @return 	true if the password was changed; else false
-     */
+	 * @return true if the password was changed; else false
+	 */
 	boolean changePassword(int dni, String prevPassword, String newPassword);
 
 	/**
 	 * Update the user
 	 * @param dni the user's dni
 	 * @param user the new user's details
-	 * @return OK if the user's data was changed correctly
-	 * 		INVALID_INPUT_PARAMETERS if a parameter was not correct;
-	 * 		ERROR_UNKNOWN in other case;
 	 */
-	Result update(int dni, User user);
+	void update(int dni, User user);
 
 	/**
 	 * Reset a user's password to it's default value;
@@ -80,4 +72,5 @@ public interface UserDao {
 	boolean existsEmail(String email);
 
 
+	boolean userExists(int dni);
 }

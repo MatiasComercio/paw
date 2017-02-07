@@ -6,7 +6,7 @@
   <parent>
     <groupId>ar.edu.itba.paw</groupId>
     <artifactId>paw</artifactId>
-    <version>1.2.0.RELEASE</version>
+    <version>2.0.0.RELEASE</version>
   </parent>
 
   <artifactId>persistence</artifactId>

@@ -1,0 +1,33 @@
+language: java
+jdk:
+  - oraclejdk8
+branches:
+  only:
+  - master
+  - development
+  - stage
+node_js: 6.1
+before_install:
+  - curl -s -o $HOME/.nvm/nvm.sh https://raw.githubusercontent.com/creationix/nvm/v0.31.0/nvm.sh
+  - source $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - pip install --user codecov
+  - gem install compass
+install:
+  - npm install
+  - npm install -g bower
+  - bower install
+script:
+  # - npm test ==> run with the build below
+  - mvn clean package -DurlPath='' sonar:sonar -Dsonar.host.url=https://sonarqube.com -Dsonar.login=${SONAR_TOKEN}
+after_success:
+  - mvn clean test jacoco:report
+  - npm install -g codeclimate-test-reporter
+  - codecov
+  - codeclimate-test-reporter < coverage/**/lcov.info
+cache:
+  directories:
+    - '$HOME/.m2'
+    - '$HOME/.sonar/cache'

@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ar.edu.itba.paw</groupId>
   <artifactId>paw</artifactId>
-  <version>1.2.0.RELEASE</version>
+  <version>2.0.0.RELEASE</version>
   <modules>
     <module>webapp</module>
     <module>interfaces</module>
@@ -14,30 +14,123 @@
   </modules>
   <packaging>pom</packaging>
   <name>paw</name>
-    <properties>
-      <maven.compiler.source>1.8</maven.compiler.source>
-      <maven.compiler.target>1.8</maven.compiler.target>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	  <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>
-	  <org.springframework.version>4.2.6.RELEASE</org.springframework.version>
-      <spring.security.version>4.0.4.RELEASE</spring.security.version>
-      <org.hibernate.version>5.1.0.Final</org.hibernate.version>
-	  <servlet-api.version>3.1.0</servlet-api.version>
-      <org.slf4j.version>1.7.21</org.slf4j.version>
-      <ch.qos.logback.version>1.1.7</ch.qos.logback.version>
-      <org.logback.extensions.version>0.1.4</org.logback.extensions.version>
-      <jstl.version>1.2</jstl.version>
-      <org.hsqldb.version>2.3.1</org.hsqldb.version>
-      <junit.version>4.12</junit.version>
-      <mockito.version>1.10.19</mockito.version>
-      <org.postgresql>9.4-1200-jdbc41</org.postgresql>
-      <commons-lang3.version>3.4</commons-lang3.version>
-      <javax.validation-api.version>1.1.0.Final</javax.validation-api.version>
-      <org.hibernate-validator.version>5.2.4.Final</org.hibernate-validator.version>
-      <maven-war-plugin.version>2.6</maven-war-plugin.version>
-      <hibernate.jpa-api.version>1.0.0.Final</hibernate.jpa-api.version>
-      <org.jboss.logging>3.3.0.Final</org.jboss.logging>
-	</properties>
+  <repositories>
+    <repository>
+      <id>jersey-snapshot</id>
+      <url>https://maven.java.net/content/repositories/snapshots/</url>
+      <name>Jersey Snapshots</name>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven-eclipse-plugin.version>2.10</maven-eclipse-plugin.version>
+    <org.springframework.version>4.2.6.RELEASE</org.springframework.version>
+    <spring.security.version>4.0.4.RELEASE</spring.security.version>
+    <org.hibernate.version>5.1.0.Final</org.hibernate.version>
+    <servlet-api.version>3.1.0</servlet-api.version>
+    <org.slf4j.version>1.7.21</org.slf4j.version>
+    <ch.qos.logback.version>1.1.7</ch.qos.logback.version>
+    <org.logback.extensions.version>0.1.4</org.logback.extensions.version>
+    <jstl.version>1.2</jstl.version>
+    <org.hsqldb.version>2.3.1</org.hsqldb.version>
+    <junit.version>4.12</junit.version>
+    <mockito.version>1.10.19</mockito.version>
+    <org.postgresql>9.4-1200-jdbc41</org.postgresql>
+    <commons-lang3.version>3.4</commons-lang3.version>
+    <javax.validation-api.version>1.1.0.Final</javax.validation-api.version>
+    <org.hibernate-validator.version>5.2.4.Final</org.hibernate-validator.version>
+    <maven-war-plugin.version>3.0.0</maven-war-plugin.version>
+    <hibernate.jpa-api.version>1.0.0.Final</hibernate.jpa-api.version>
+    <org.jboss.logging>3.3.0.Final</org.jboss.logging>
+    <maven-surefire-plugin.version>2.15</maven-surefire-plugin.version>
+    <jacoco.version>0.7.8</jacoco.version>
+    <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.execution.data.file>
+    <skip.unit.tests>false</skip.unit.tests>
+    <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
+    <coveralls-maven-plugin.jacoco-report>${project.reporting.outputDirectory}/jacoco-ut/jacoco.xml</coveralls-maven-plugin.jacoco-report>
+    <sonar-maven-plugin.version>3.0.1</sonar-maven-plugin.version>
+    <jersey.version>3.0-SNAPSHOT</jersey.version>
+    <org.modelmapper.version>0.7.7</org.modelmapper.version>
+    <jersey.bean-validation>2.25</jersey.bean-validation>
+    <jwt.version>0.7.0</jwt.version>
+    <frontend-maven-plugin.version>1.3</frontend-maven-plugin.version>
+    <maven-enforcer-plugin.version>1.4.1</maven-enforcer-plugin.version>
+  </properties>
+  <profiles>
+    <!-- frontend build profile -->
+    <!--
+      Front end app will only be build if there is a Gruntfile.js
+      inside the root of the current module.
+      In this case, the Gruntfile is only present on paw module, which is the
+      module containing not only the frontend app, but also the other java modules
+      (interfaces, models, persistence, services, shared and webapp).
+      The other build plugins will also run for modules matching this profile.
+    -->
+    <profile>
+      <id>frontend build</id>
+      <activation>
+        <file>
+          <exists>Gruntfile.js</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <version>${frontend-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>install node and npm</id>
+                <goals>
+                  <goal>install-node-and-npm</goal>
+                </goals>
+                <configuration>
+                  <nodeVersion>v6.9.4</nodeVersion>
+                </configuration>
+              </execution>
+              <execution>
+                <id>npm install</id>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>bower install</id>
+                <goals>
+                  <goal>bower</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>grunt build</id>
+                <goals>
+                  <goal>grunt</goal>
+                </goals>
+                <configuration>
+                  <arguments>build --urlPath=${urlPath}</arguments>
+                </configuration>
+              </execution>
+              <execution>
+                <id>javascript tests</id>
+                <goals>
+                  <goal>karma</goal>
+                </goals>
+                <configuration>
+                  <karmaConfPath>karma.conf.ci.js</karmaConfPath>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- \frontend build profile -->
+  </profiles>
   <build>
     <plugins>
       <plugin>
@@ -55,8 +148,91 @@
         <version>${maven-war-plugin.version}</version>
         <configuration>
           <packagingExcludes>**/logback-test.xml</packagingExcludes>
+          <webResources>
+            <resource>
+              <!-- this is relative to the webapp module's pom.xml directory -->
+              <directory>../dist</directory>
+            </resource>
+          </webResources>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <argLine>${argLine}</argLine>
+          <skipTests>${skip.unit.tests}</skipTests>
+          <excludes>
+            <exclude>**/IT*.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eluder.coveralls</groupId>
+        <artifactId>coveralls-maven-plugin</artifactId>
+        <version>${coveralls-maven-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+        <executions>
+          <execution>
+            <id>pre-unit-test</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <destFile>${jacoco.ut.execution.data.file}</destFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <dataFile>${jacoco.ut.execution.data.file}</dataFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>${sonar-maven-plugin.version}</version>
+      </plugin>
+      <!-- Force user to specify urlPath -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-property</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireProperty>
+                  <property>urlPath</property>
+                  <message>
+You have to specify your app's path. If '/', then specify ''. \
+Examples:
+  "mvn clean package -DurlPath=''" if deployng app to '/'
+  "mvn clean package -DurlPath='/grupo1'" if deployng app to '/grupo1'
+                  </message>
+                </requireProperty>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- \Force user to specify urlPath -->
     </plugins>
   </build>
   <dependencyManagement>
@@ -178,7 +354,7 @@
       </dependency>
       <dependency>
         <!-- Added for the security/tags library, as mentioned here:
-      http://stackoverflow.com/questions/16099840/spring-security-taglib-cannot-be-found#answer-19896543-->
+        http://stackoverflow.com/questions/16099840/spring-security-taglib-cannot-be-found#answer-19896543-->
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-taglibs</artifactId>
         <version>${spring.security.version}</version>
@@ -272,6 +448,89 @@
         <version>${commons-lang3.version}</version>
       </dependency>
       <!-- /WordUtils class from Apache -->
+
+      <dependency>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.version}</version>
+      </dependency>
+
+      <!-- Jersey -->
+      <dependency>
+        <groupId>org.glassfish.jersey.containers</groupId>
+        <artifactId>jersey-container-servlet-core</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.ext</groupId>
+        <artifactId>jersey-spring4</artifactId>
+        <version>${jersey.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.glassfish.hk2.external</groupId>
+            <artifactId>bean-validator</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.core</groupId>
+        <artifactId>jersey-server</artifactId>
+        <version>${jersey.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.ext</groupId>
+        <artifactId>jersey-bean-validation</artifactId>
+        <version>${jersey.bean-validation}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <!-- Jersey -->
+
+      <!-- Jersey JSON -->
+      <dependency>
+        <groupId>org.glassfish.jersey.media</groupId>
+        <artifactId>jersey-media-moxy</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jersey.media</groupId>
+        <artifactId>jersey-media-jaxb</artifactId>
+        <version>${jersey.version}</version>
+      </dependency>
+      <!-- Entity-DTO Mapper -->
+      <dependency>
+        <groupId>org.modelmapper</groupId>
+        <artifactId>modelmapper</artifactId>
+        <version>${org.modelmapper.version}</version>
+      </dependency>
+
+      <!-- JSON JWT (User Token generator) -->
+      <dependency>
+        <groupId>io.jsonwebtoken</groupId>
+        <artifactId>jjwt</artifactId>
+        <version>${jwt.version}</version>
+      </dependency>
+      <!-- JSON JWT (User Token generator) -->
+
     </dependencies>
   </dependencyManagement>
+
+  <!-- More Project Information -->
+  <url>https://github.com/MatiasComercio/paw</url>
+
+  <!-- Environment Settings -->
+  <ciManagement>
+    <system>travis</system>
+    <url>https://travis-ci.org/MatiasComercio/paw</url>
+  </ciManagement>
 </project>

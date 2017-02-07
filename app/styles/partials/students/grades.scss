@@ -1,0 +1,106 @@
+@import 'modules/variables/importer';
+
+.students-grades-container {
+  .carreer-info-container {
+    .progress-bar-container {
+      border-radius: 0;
+      height: 35px;
+      margin: 0;
+
+      .progress-bar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
+  .no-courses-on-sga {
+    padding: 15px;
+    border: 1px solid $persian-red;
+  }
+
+  .course-id-col {
+    min-width: 50px;
+    width: 50px;
+  }
+
+  .course-name-col {
+    min-width: 250px;
+    width: 250px;
+  }
+
+  .grade-col {
+    min-width: 150px;
+    width: 150px;
+  }
+
+  .actions-col {
+    min-width: 150px;
+    width: 150px;
+  }
+
+  .table {
+    .actions-container {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+      justify-content: flex-start;
+
+      .btn {
+        max-width: 150px;
+        min-width: 150px;
+        margin: 10px;
+        margin-left: 0;
+      }
+    }
+  }
+
+  .text-successful {
+    color: $tropical-rain-forest;
+  }
+
+  .text-failure {
+    color: $persian-red;
+  }
+
+  .text-information {
+    color: $bay-of-many;
+  }
+}
+
+.modal-body.edit-course-grade {
+  .data-item {
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+
+    label {
+      margin: 0;
+    }
+
+    input[type='number'] {
+      margin: 0 10px;
+      max-width: 100px;
+      -moz-appearance: textfield;
+      text-align: center;
+
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
+
+    .break-words {
+      display: inline-block;
+      word-wrap: break-word; /* Internet Explorer 5.5+ */
+      width: 190px; /* width is mandatory to make break-word work on Mozzila */
+    }
+  }
+
+  .form-errors {
+    margin-top: 0;
+  }
+}

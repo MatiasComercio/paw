@@ -1,0 +1,22 @@
+<div class='modal-header'>
+  <h4 class='modal-title' id='modal-title' translate='{{controller.title}}'></h4>
+</div>
+<div class='modal-body'>
+  <p class='break-words'>
+    <span class='bold' translate='i18nModalStudentDocket'></span>: {{ controller.docket }}
+  </p>
+  <p class='break-words'>
+  <span class='bold' translate='i18nModalStudentFullName'></span>: {{ controller.fullName }}
+  </p>
+  <p class='break-words'>
+    <span class='bold' translate='i18nModalCourseId'></span>: {{ controller.courseId }}
+  </p>
+  <p class='break-words'>
+    <span class='bold' translate='i18nModalCourseName'></span>: {{ controller.courseName }}
+  </p>
+</div>
+<div class='modal-footer'>
+  <button class='btn btn-default' type='button' ng-click="controller.cancel()" translate='i18nCancel'></button>
+  <button ng-show="controller.title === 'i18nEnroll'" class='btn btn-action' type='button' ng-click='controller.ok()' translate='i18nConfirm'></button>
+  <button ng-show="controller.title === 'i18nUnenroll'" class='btn btn-danger' type='button' ng-click='controller.ok()' translate='i18nConfirm'></button>
+</div>

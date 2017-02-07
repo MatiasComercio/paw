@@ -106,6 +106,50 @@ public class Address implements Serializable {
 		return zipCode;
 	}
 
+	public void setId_seq(Integer id_seq) {
+		this.id_seq = id_seq;
+	}
+
+	public void setDni(Integer dni) {
+		this.dni = dni;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public void setNeighborhood(String neighborhood) {
+		this.neighborhood = neighborhood;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public void setNumber(Integer number) {
+		this.number = number;
+	}
+
+	public void setFloor(Integer floor) {
+		this.floor = floor;
+	}
+
+	public void setDoor(String door) {
+		this.door = door;
+	}
+
+	public void setTelephone(Long telephone) {
+		this.telephone = telephone;
+	}
+
+	public void setZipCode(Integer zipCode) {
+		this.zipCode = zipCode;
+	}
+
 	@Override
 	public boolean equals(final Object o) {
 		if (this == o) return true;
