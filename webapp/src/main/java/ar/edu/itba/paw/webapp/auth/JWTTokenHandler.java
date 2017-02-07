@@ -82,7 +82,7 @@ public class JWTTokenHandler implements TokenHandler {
               .getSubject();
 
       return username;
-    } catch (SignatureException | ExpiredJwtException e) {
+    } catch (final Exception e) { // SignatureException | ExpiredJwtException exceptions catched
       return null;
     }
 
