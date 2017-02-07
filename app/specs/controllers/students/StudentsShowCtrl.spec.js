@@ -7,45 +7,32 @@
 
 define(['paw',
 'angular-mocks',
+'api-responses',
+'spec-utils',
 'controllers/students/StudentsShowCtrl'],
 function() {
   describe('Students Show Ctrl', function() {
     beforeEach(module('paw'));
 
-    var expectedStudent = {
-      docket: '55019',
-      firstName: 'Matías',
-      lastName: 'Mercado',
-      email: 'mmercado@itba.edu.ar',
-      genre: 'Masculino',
-      dni: '38917403',
-      birthday: '1995-05-04',
-      address: {
-        country: 'Argentina',
-        city: 'Buenos Aires',
-        neighborhood: 'Almagro',
-        number: '682',
-        street: 'Corrientes',
-        floor: '2',
-        door: 'A',
-        telephone: '1544683390',
-        zipCode: '1100'
-      }
-    };
-
-    var expectedDocket = {docket: '55019'};
-
-    var $controller, controller, $routeParams;
+    var expectedStudent;
+    var expectedDocket;
+    var $controller, controller, $routeParams, $rootScope;
 
     beforeEach(inject(
-      function(_$controller_, _$routeParams_) {
+      function(_$controller_, _$routeParams_, apiResponses, Students, specUtils, _$rootScope_) {
         $controller = _$controller_;
         $routeParams = _$routeParams_;
+        expectedStudent = apiResponses.student;
+        expectedDocket = expectedStudent.docket;
+        specUtils.resolvePromise(Students, 'get', expectedStudent);
+        $rootScope = _$rootScope_;
         controller = $controller('StudentsShowCtrl', {$routeParams: expectedDocket});
-      }));
+        $rootScope.$apply();
+      }
+    ));
 
-      it('correctly fetch the student', function() {
-        expect(controller.student).toEqual(expectedStudent);
-      });
+    it('correctly fetch the student from the Students Service', function() {
+      expect(controller.student).toEqual(expectedStudent);
     });
   });
+});

@@ -15,181 +15,61 @@ function() {
     beforeEach(module('paw'));
 
     var $controller, $rootScope, controller, navDataServiceSpy, specUtilsService,
-    apiResponsesService;
+    apiResponsesService, $location;
 
     beforeEach(inject(
-    function(_$controller_, _$rootScope_, navDataService, specUtils, apiResponses) {
+    function(_$controller_, _$rootScope_, navDataService, specUtils, apiResponses, _$location_) {
       $controller = _$controller_;
       $rootScope = _$rootScope_;
       navDataServiceSpy = navDataService;
       specUtilsService = specUtils;
       apiResponsesService = apiResponses;
-      spyOn(navDataServiceSpy, 'set').and.callThrough();
+      $location = _$location_;
       controller = $controller('HomeCtrl');
     }));
 
-    it('sets the subSidebar on the navDataService', function() {
-      expect(navDataServiceSpy.set).toHaveBeenCalled();
-    });
-
-    describe('when admin is required', function() {
-      var subSidebarContent;
-      beforeEach(function() {
-        subSidebarContent = {admin: controller.fetchAdmin()};
-
-        $rootScope.$apply(function() {
-          controller.subSidebar = {};
-          controller.subSidebarUpdate(subSidebarContent);
-        });
-
-        var admin = subSidebarContent.admin;
-        subSidebarContent.admin.fullName = admin.firstName + ' ' + admin.lastName;
-      });
-
-      it('loads the sub sidebar with the given admin', function() {
-        expect(controller.subSidebar).toEqual(subSidebarContent);
-      });
-    });
-
-    describe('when student is required', function() {
-      var subSidebarContent;
-      beforeEach(function() {
-        subSidebarContent = {student: controller.fetchStudent()};
-
-        $rootScope.$apply(function() {
-          controller.subSidebar = {};
-          controller.subSidebarUpdate(subSidebarContent);
-        });
-
-        var student = subSidebarContent.student;
-        subSidebarContent.student.fullName = student.firstName + ' ' + student.lastName;
-      });
-
-      it('loads the sub sidebar with the given student', function() {
-        expect(controller.subSidebar).toEqual(subSidebarContent);
-      });
-    });
-
-    describe('when course is required', function() {
-      var subSidebarContent;
-      beforeEach(function() {
-        subSidebarContent = {course: controller.fetchCourse()};
-
-        $rootScope.$apply(function() {
-          controller.subSidebar = {};
-          controller.subSidebarUpdate(subSidebarContent);
-        });
-      });
-
-      it('loads the sub sidebar with the given course', function() {
-        expect(controller.subSidebar).toEqual(subSidebarContent);
-      });
-    });
-
-    describe('when toggle courses', function() {
-      var CoursesService;
-
-      beforeEach(inject(function(Courses) {
-        CoursesService = Courses;
-      }));
-
-      describe('when toggling all courses', function() {
-        describe('when courses array is empty', function() {
-          var expectedCourses;
-
-          beforeEach(function() {
-            expectedCourses = apiResponsesService.courses;
-            controller.courses = [];
-            specUtilsService.resolvePromise(CoursesService, 'getList', expectedCourses);
-            controller.toggleCourses();
-            $rootScope.$apply();
-          });
-
-          it('fills the array with the requested data', function() {
-            expect(controller.courses).toEqual(expectedCourses);
-          });
-        });
-
-        describe('when courses array is not empty', function() {
-          beforeEach(function() {
-            controller.courses = apiResponsesService.courses;
-            controller.toggleCourses();
-          });
-
-          it('empties the array', function() {
-            expect(controller.courses).toEqual([]);
-          });
-        });
-      });
-
-      describe('when toggling one course', function() {
-        var expectedCourse;
+    describe('when checking its tasks', function() {
+      // we are implicitly testing that it is subscribed to navDataService 'user'
+      describe('when user does not exists', function() {
         beforeEach(function() {
-          expectedCourse = apiResponsesService.courses;
-          var mockCourse = {
-            get: function() {}
-          };
-          specUtilsService.resolvePromise(mockCourse, 'get', expectedCourse);
-          controller.toggleCourse(mockCourse);
-          $rootScope.$apply();
+          navDataServiceSpy.set('user', undefined);
+          spyOn(navDataServiceSpy, 'get').and.callThrough();
+          spyOn($location, 'path');
+          // initialize the controller
+          $controller('HomeCtrl');
         });
 
-        it('fills the array with the requested data', function() {
-          expect(controller.course).toEqual(expectedCourse);
-        });
-      });
-    });
-
-    describe('when toggle students', function() {
-      var StudentsService;
-
-      beforeEach(inject(function(Students) {
-        StudentsService = Students;
-      }));
-
-      describe('when toggling all students', function() {
-        describe('when students array is empty', function() {
-          var expectedStudents;
-
-          beforeEach(function() {
-            expectedStudents = apiResponsesService.students;
-            controller.students = [];
-            specUtilsService.resolvePromise(StudentsService, 'getList', expectedStudents);
-            controller.toggleStudents();
-            $rootScope.$apply(); // for promises to be resolved
-          });
-
-          it('fills the array with the requested data', function() {
-            expect(controller.students).toEqual(expectedStudents);
-          });
+        it('gets the user from the navDataService', function() {
+          expect(navDataServiceSpy.get).toHaveBeenCalled();
         });
 
-        describe('when students array is not empty', function() {
-          beforeEach(function() {
-            controller.students = apiResponsesService.students;
-            controller.toggleStudents();
-          });
-
-          it('empties the array', function() {
-            expect(controller.students).toEqual([]);
-          });
+        it('does not redirect', function() {
+          expect($location.path).not.toHaveBeenCalled();
         });
       });
 
-      describe('when toggling one student', function() {
-        var expectedStudent;
+      describe('when user exists', function() {
+        var user;
+        var thisController;
         beforeEach(function() {
-          expectedStudent = apiResponsesService.student;
-          var mockStudent = {
-            get: function() {}
-          };
-          specUtilsService.resolvePromise(mockStudent, 'get', expectedStudent);
-          controller.toggleStudent(mockStudent);
-          $rootScope.$apply(); // for promises to be resolved
+          user = apiResponsesService.currentAdmin;
+          navDataServiceSpy.set('user', user);
+          spyOn(navDataServiceSpy, 'get').and.callThrough();
+          spyOn($location, 'path');
+          // initialize the controller
+          thisController = $controller('HomeCtrl');
         });
 
-        it('fills the array with the requested data', function() {
-          expect(controller.student).toEqual(expectedStudent);
+        it('gets the user from the navDataService', function() {
+          expect(navDataServiceSpy.get).toHaveBeenCalled();
+        });
+
+        it('saves the user', function() {
+          expect(thisController.user).toEqual(user);
+        });
+
+        it('redirect to its location url', function() {
+          expect($location.path).toHaveBeenCalledWith(user.locationUrl);
         });
       });
     });

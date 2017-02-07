@@ -7,94 +7,112 @@
 
 define(['paw',
 'angular-mocks',
+'api-responses',
+'spec-utils',
 'services/Paths',
 'controllers/students/StudentsEditCtrl'],
 function() {
   describe('Students Edit Ctrl', function() {
     beforeEach(module('paw'));
 
-    // Hardcoded data until Service call is tested
-    var expectedStudent = {
-      docket: '55019',
-      firstName: 'Matías',
-      lastName: 'Mercado',
-      email: 'mmercado@itba.edu.ar',
-      genre: 'Masculino',
-      dni: '38917403',
-      birthday: '1995-05-04',
-      address: {
-        country: 'Argentina',
-        city: 'Buenos Aires',
-        neighborhood: 'Almagro',
-        number: '682',
-        street: 'Corrientes',
-        floor: '2',
-        door: 'A',
-        telephone: '1544683390',
-        zipCode: '1100'
-      }
-    };
-    var docket = 55019;
+    var $controller, $rootScope, $log, $window, $location, controller, $routeParams,
+    StudentsService, specUtilsService, PathsService, $route;
 
-    var $controller, $rootScope, $log, $window, $location, controller;
-
-    var expectedDocket = {
-      docket: docket
-    };
+    var expectedStudent;
+    var expectedDocket;
 
     beforeEach(inject(
-      function(_$controller_, _$rootScope_, _$log_, _$window_, _$location_) {
+      function(_$controller_, _$routeParams_, apiResponses, Students,
+        specUtils, _$rootScope_, _$log_, _$window_, _$location_, Paths,
+        _$route_) {
         $controller = _$controller_;
+        $routeParams = _$routeParams_;
+        expectedStudent = apiResponses.student;
+        expectedDocket = {
+          docket: expectedStudent.docket
+        };
+        StudentsService = Students;
+        specUtilsService = specUtils;
+        specUtilsService.resolvePromise(StudentsService, 'get', expectedStudent);
         $rootScope = _$rootScope_;
+        PathsService = Paths;
+
         $log = _$log_;
         spyOn($log, 'info');
         $window = _$window_;
         spyOn($window.history, 'back');
         $location = _$location_;
         spyOn($location, 'path');
+
         controller = $controller('StudentsEditCtrl', {
           $routeParams: expectedDocket,
           $log: $log,
           $window: $window,
           $location: $location
         });
-      }));
 
-      it('correctly fetch the student', function() {
-        expect(controller.student).toEqual(expectedStudent);
+        $route = _$route_;
+
+        $rootScope.$apply();
+      }
+    ));
+
+    it('correctly fetch the student from the Students Service', function() {
+      expect(controller.student).toEqual(expectedStudent);
+    });
+
+    it('correctly fetch the student', function() {
+      expect(controller.student).toEqual(expectedStudent);
+    });
+
+    it('creates a copy of the fetched student', function() {
+      expect(specUtilsService.sanitizeRestangularOne(controller.editedStudent)).toEqual(expectedStudent);
+    });
+
+    describe('when calling the cancel function', function() {
+      beforeEach(function() {
+        controller.cancel();
       });
 
-      it('creates a copy of the fetched student', function() {
-        expect(controller.editedStudent).toEqual(expectedStudent);
+      it('is expected to go back on window history', function() {
+        expect($window.history.back).toHaveBeenCalled();
+      });
+    });
+
+    describe('when calling the update function', function() {
+      var editedStudent;
+      beforeEach(function() {
+        editedStudent = expectedStudent;
+        editedStudent.firstName = 'Other name';
       });
 
-      describe('when calling the cancel function', function() {
+      describe('when successfully updated', function() {
+        var expectedPath;
         beforeEach(function() {
-          controller.cancel();
-        });
-
-        it('is expected to go back on window history', function() {
-          expect($window.history.back).toHaveBeenCalled();
-        });
-      });
-
-      describe('when calling the update function', function() {
-        var editedStudent, expectedLog, expectedPath;
-        beforeEach(inject(function(Paths) {
-          editedStudent = expectedStudent;
-          editedStudent.firstName = 'Other name';
+          specUtilsService.resolvePromise(StudentsService, 'update', {status: 201});
+          expectedPath = PathsService.get().students({docket: expectedStudent.docket}).absolutePath();
           controller.update(editedStudent);
-          expectedPath = Paths.get().students({docket: docket}).absolutePath();
-          expectedLog = 'POST ' + expectedPath + ' ' + JSON.stringify(editedStudent);
-        }));
-
-        it('is expected to correctly log the post', function() {
-          expect($log.info).toHaveBeenCalledWith(expectedLog);
+          $rootScope.$apply();
         });
 
         it('is expected to redirect to student show view', function() {
           expect($location.path).toHaveBeenCalledWith(expectedPath);
         });
       });
+
+      describe('when updated with failure', function() {
+        var expectedPath;
+        beforeEach(function() {
+          specUtilsService.rejectPromise(StudentsService, 'update', {status: 409});
+          spyOn($route, 'reload');
+          controller.update(editedStudent);
+          $rootScope.$apply();
+        });
+
+        it('is expected to redirect to student show view', function() {
+          expect($route.reload).toHaveBeenCalled();
+        });
+      });
     });
   });
+});

@@ -12,92 +12,75 @@ function() {
   describe('Students Index Ctrl', function() {
     beforeEach(module('paw'));
 
-    // Hardcoded data until Service call is tested
-    var expectedStudents = [
-      {
-        firstName: 'Matías',
-        lastName: 'Mercado',
-        docket: '55019'
-      },
-      {
-        firstName: 'Facundo',
-        lastName: 'Mercado',
-        docket: '51202'
-      },
-      {
-        firstName: 'Gibar',
-        lastName: 'Sin',
-        docket: '54655'
-      },
-      {
-        firstName: 'Obi Wan',
-        lastName: 'Kenobi',
-        docket: '12000'
-      },
-      {
-        firstName: 'Darth',
-        lastName: 'Vader',
-        docket: '66666'
-      },
-      {
-        firstName: 'Luke',
-        lastName: 'Skywalker',
-        docket: '53222'
-      }];
+    var expectedParams = {
+      docket: 123,
+      firstName: 'Hello',
+      lastName: 'Test'
+    };
 
-      var $controller, $rootScope, controller;
+    var expectedStudents;
+    var $controller, controller, $routeParams, $rootScope;
 
-      var expectedParams = {
-        docket: 123,
-        firstName: 'Hello',
-        lastName: 'Test'
-      };
+    beforeEach(inject(
+      function(_$controller_, _$routeParams_, apiResponses, Students, specUtils, _$rootScope_) {
+        $controller = _$controller_;
+        $routeParams = _$routeParams_;
+        expectedStudents = apiResponses.students;
+        specUtils.resolvePromise(Students, 'getList', expectedStudents);
+        $rootScope = _$rootScope_;
+        controller = $controller('StudentsIndexCtrl', {$routeParams: expectedParams});
+        $rootScope.$apply();
+      }));
 
-      beforeEach(inject(
-        function(_$controller_, _$rootScope_) {
-          $controller = _$controller_;
-          $rootScope = _$rootScope_;
-          controller = $controller('StudentsIndexCtrl', {$routeParams: expectedParams});
+      it('correctly fetch the student from the Students Service', function() {
+        expect(controller.students).toEqual(expectedStudents);
+      });
+
+      describe('when testing the getStudentPath', function() {
+        var expectedPath;
+        beforeEach(inject(function(Paths) {
+          expectedPath = Paths.get().students({docket: 1}).path;
         }));
 
-        it('correctly fetch the students', function() {
-          expect(controller.students).toEqual(expectedStudents);
+        it('correctly returns the path', function() {
+          expect(controller.getStudentPath(1)).toEqual(expectedPath);
+        });
+      });
+
+      describe('when initializing the filter values', function() {
+        it('correctly fetch the docket', function() {
+          expect(controller.filter.docket).toEqual(expectedParams.docket);
         });
 
-        describe('when initializing the filter values', function() {
-          it('correctly fetch the docket', function() {
-            expect(controller.filter.docket).toEqual(expectedParams.docket);
-          });
-
-          it('correctly fetch the first name', function() {
-            expect(controller.filter.firstName).toEqual(expectedParams.firstName);
-          });
-
-          it('correctly fetch the last name', function() {
-            expect(controller.filter.lastName).toEqual(expectedParams.lastName);
-          });
+        it('correctly fetch the first name', function() {
+          expect(controller.filter.firstName).toEqual(expectedParams.firstName);
         });
 
-        describe('when reset button is clicked', function() {
-          beforeEach(function() {
-            controller.filter = {};
-            controller.filter.docket = 12345;
-            controller.filter.firstName = 'John';
-            controller.filter.lastName = 'Doe';
-            controller.resetSearch();
-          });
+        it('correctly fetch the last name', function() {
+          expect(controller.filter.lastName).toEqual(expectedParams.lastName);
+        });
+      });
 
-          it('clears the docket search input', function() {
-            expect(controller.filter).toEqual({});
-          });
+      describe('when reset button is clicked', function() {
+        beforeEach(function() {
+          controller.filter = {};
+          controller.filter.docket = 12345;
+          controller.filter.firstName = 'John';
+          controller.filter.lastName = 'Doe';
+          controller.resetSearch();
+        });
 
-          it('clears the firstName search input', function() {
-            expect(controller.filter).toEqual({});
-          });
+        it('clears the docket search input', function() {
+          expect(controller.filter).toEqual({});
+        });
 
-          it('clears the lastName search input', function() {
-            expect(controller.filter).toEqual({});
-          });
+        it('clears the firstName search input', function() {
+          expect(controller.filter).toEqual({});
+        });
+
+        it('clears the lastName search input', function() {
+          expect(controller.filter).toEqual({});
         });
       });
     });
+  });

@@ -156,7 +156,7 @@ define(['paw',
       describe('when inspecting the admin section', function() {
         var section;
         var sectionSelector = function (suffix) {
-          return "[ng-show='controller.subSidebar.admin" + (suffix || '') + "']";
+          return "[ng-show='controller.subSidebar.admin.actions" + (suffix || '') + "']";
         };
 
         beforeEach(function() {
@@ -168,26 +168,26 @@ define(['paw',
         });
 
         it('contains a show option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.show')).length).toBe(1);
+          expect(section.find(sectionSelector('.show')).length).toBe(1);
         });
 
         it('contains an edit option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.edit')).length).toBe(1);
+          expect(section.find(sectionSelector('.edit')).length).toBe(1);
         });
 
         it('contains an reset password option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.resetPassword')).length).toBe(1);
+          expect(section.find(sectionSelector('.resetPassword')).length).toBe(1);
         });
 
         it('contains an edit password option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.editPassword')).length).toBe(1);
+          expect(section.find(sectionSelector('.editPassword')).length).toBe(1);
         });
       });
 
       describe('when inspecting the student section', function() {
         var section;
         var sectionSelector = function (suffix) {
-          return "[ng-show='controller.subSidebar.student" + (suffix || '') + "']";
+          return "[ng-show='controller.subSidebar.student.actions" + (suffix || '') + "']";
         };
 
         beforeEach(function() {
@@ -199,46 +199,46 @@ define(['paw',
         });
 
         it('contains a show option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.show')).length).toBe(1);
+          expect(section.find(sectionSelector('.show')).length).toBe(1);
         });
 
         it('contains an edit option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.edit')).length).toBe(1);
+          expect(section.find(sectionSelector('.edit')).length).toBe(1);
         });
 
-        it('contains an reset password option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.resetPassword')).length).toBe(1);
+        it('contains an reset password option if action is present and user is admin', function() {
+          expect(section.find(sectionSelector('.resetPassword && controller.user.admin')).length).toBe(1);
         });
 
         it('contains an update password option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.editPassword')).length).toBe(1);
+          expect(section.find(sectionSelector('.editPassword')).length).toBe(1);
         });
 
         it('contains a courses option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.courses')).length).toBe(1);
+          expect(section.find(sectionSelector('.courses')).length).toBe(1);
         });
 
         it('contains a grades option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.grades')).length).toBe(1);
+          expect(section.find(sectionSelector('.grades')).length).toBe(1);
         });
 
-        it('contains an inscriptions option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.inscriptions')).length).toBe(1);
+        it('contains an inscriptions option if action is present && inscriptions are enabled', function() {
+          expect(section.find(sectionSelector('.inscriptions && controller.user.authorities.viewInscriptions')).length).toBe(1);
         });
 
         it('contains a finals option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.finals')).length).toBe(1);
+          expect(section.find(sectionSelector('.finals')).length).toBe(1);
         });
 
-        it('contains a delete option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.delete')).length).toBe(1);
+        it('contains a delete option if action is present and if user is an admin', function() {
+          expect(section.find(sectionSelector('.delete && controller.user.admin')).length).toBe(1);
         });
       });
 
       describe('when inspecting the course section', function() {
         var section;
         var sectionSelector = function (suffix) {
-          return "[ng-show='controller.subSidebar.course" + (suffix || '') + "']";
+          return "[ng-show='controller.subSidebar.course.actions" + (suffix || '') + "']";
         };
 
         beforeEach(function() {
@@ -250,28 +250,130 @@ define(['paw',
         });
 
         it('contains a show option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.show')).length).toBe(1);
+          expect(section.find(sectionSelector('.show')).length).toBe(1);
         });
 
-        it('contains an edit option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.edit')).length).toBe(1);
+        it('contains an edit option if action is present and user is an admin', function() {
+          expect(section.find(sectionSelector('.edit && controller.user.admin')).length).toBe(1);
         });
 
         it('contains a students option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.students')).length).toBe(1);
+          expect(section.find(sectionSelector('.students')).length).toBe(1);
         });
 
         it('contains an approved option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.approved')).length).toBe(1);
+          expect(section.find(sectionSelector('.approved')).length).toBe(1);
         });
 
-        it('contains a delete option if action is present', function() {
-          expect(section.find(sectionSelector('.actions.delete')).length).toBe(1);
+        it('contains a delete option if action is present and user is admin', function() {
+          expect(section.find(sectionSelector('.delete && controller.user.admin')).length).toBe(1);
         });
       });
     });
 
     describe('when testing the controller', function() {
+      var navDataServiceService;
+
+      beforeEach(inject(function(navDataService) {
+        navDataServiceService = navDataService;
+      }));
+
+      describe('when checking inscriptions enabled callback', function() {
+        describe('when inscriptions are enabled', function() {
+          describe('when user is defined', function() {
+            var thisUser;
+
+            beforeEach(inject(function(apiResponses) {
+              thisUser = apiResponses.currentAdmin;
+              scope.$apply(function() {
+                navDataServiceService.set('user', thisUser);
+                navDataServiceService.set('inscriptionsEnabled', true);
+              });
+            }));
+
+            it('sets him the view inscriptions authority', function() {
+              expect(thisUser.authorities.viewInscriptions).toBe(true);
+            });
+
+            it('sets him the add inscription authority', function() {
+              expect(thisUser.authorities.addInscription).toBe(true);
+            });
+
+            it('sets him the delete inscription authority', function() {
+              expect(thisUser.authorities.deleteInscription).toBe(true);
+            });
+
+            describe('when user is an admin', function() {
+              it('sets him the disable inscriptions authority', function() {
+                expect(thisUser.authorities.disableInscriptions).toBe(true);
+              });
+            });
+
+            describe('when user is a student', function() {
+              beforeEach(inject(function(apiResponses) {
+                thisUser = apiResponses.currentStudent;
+                scope.$apply(function() {
+                  navDataServiceService.set('user', thisUser);
+                  navDataServiceService.set('inscriptionsEnabled', true);
+                });
+              }));
+
+              it('does not set him the disable inscriptions authority', function() {
+                expect(thisUser.authorities.disableInscriptions).toBeUndefined();
+              });
+            });
+          });
+        });
+
+        describe('when inscriptions are disabled', function() {
+          describe('when user is defined', function() {
+            var thisUser;
+
+            beforeEach(inject(function(apiResponses) {
+              thisUser = apiResponses.currentAdmin;
+              scope.$apply(function() {
+                navDataServiceService.set('user', thisUser);
+                navDataServiceService.set('inscriptionsEnabled', false);
+              });
+            }));
+
+            it('sets him the view inscriptions authority', function() {
+              expect(thisUser.authorities.viewInscriptions).toBe(false);
+            });
+
+            it('sets him the add inscription authority', function() {
+              expect(thisUser.authorities.addInscription).toBe(false);
+            });
+
+            it('sets him the delete inscription authority', function() {
+              expect(thisUser.authorities.deleteInscription).toBe(false);
+            });
+
+            describe('when user is an admin', function() {
+              it('sets him the disable inscriptions authority', function() {
+                expect(thisUser.authorities.disableInscriptions).toBe(false);
+              });
+            });
+
+            describe('when user is a student', function() {
+              beforeEach(inject(function(apiResponses) {
+                thisUser = apiResponses.currentStudent;
+                scope.$apply(function() {
+                  navDataServiceService.set('user', thisUser);
+                  navDataServiceService.set('inscriptionsEnabled', false);
+                });
+              }));
+
+              it('does not set him the disable inscriptions authority', function() {
+                expect(thisUser.authorities.disableInscriptions).toBeUndefined();
+              });
+            });
+          });
+        });
+      });
+
+
+
       // we are implicitly testing that the controller is subscribed to user changes event
       describe('when there is no user defined', function() {
         beforeEach(inject(function(navDataService) {
@@ -301,10 +403,11 @@ define(['paw',
         });
 
         describe('when user has admins authority', function() {
+          var thisUser;
           beforeEach(inject(function(navDataService) {
             scope.$apply(function() {
-              var thisUser = user;
-              thisUser.authorities.admins = true;
+              thisUser = user;
+              thisUser.admin = true;
               navDataService.set('user', thisUser);
             });
           }));
@@ -319,10 +422,6 @@ define(['paw',
 
           it('sets new admins sidebar section', function() {
             expect(controller.sidebar.admins.actions.new.path).toBeDefined();
-          });
-
-          it('sets inscriptions admins sidebar section', function() {
-            expect(controller.sidebar.admins.actions.inscriptions.path).toBeDefined();
           });
         });
 

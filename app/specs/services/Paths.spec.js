@@ -27,8 +27,10 @@ function() {
     describe("when getting admin's actions", function() {
       var admin;
       var expectedActions;
+      var currentUser;
 
       beforeEach(function() {
+        currentUser = apiResponsesService.currentAdmin;
         admin = apiResponsesService.admin;
         expectedActions = {
           show: {
@@ -37,26 +39,28 @@ function() {
           edit: {
             path: '#!/admins/' + admin.dni + '/edit'
           },
-          resetPassword: {
-            path: '#!/admins/' + admin.dni + '/resetPassword'
-          },
+          resetPassword: true,
+          // delete admin endpoint is not ready yet
+          delete: false,
           editPassword: {
-            path: '#!/admins/' + admin.dni + '/password'
+            path: '#!/users/change_password'
           }
         };
       });
 
       it('returns the expected actions', function () {
-        expect(PathsService.getAdminActions(admin)).toEqual(expectedActions);
+        expect(PathsService.getAdminActions(admin, currentUser)).toEqual(expectedActions);
       });
     });
 
     describe("when getting student's actions", function() {
       var student;
       var expectedActions;
+      var currentUser;
 
       beforeEach(function() {
-        student = apiResponsesService.student;
+        currentUser = apiResponsesService.currentStudent;
+        student = apiResponsesService.currentStudent;
         expectedActions = {
           show: {
             path: '#!/students/' + student.docket
@@ -64,12 +68,7 @@ function() {
           edit: {
             path: '#!/students/' + student.docket + '/edit'
           },
-          resetPassword: {
-            path: '#!/students/' + student.docket + '/resetPassword'
-          },
-          editPassword: {
-            path: '#!/students/' + student.docket + '/password'
-          },
+          resetPassword: true,
           courses: {
             path: '#!/students/' + student.docket + '/courses'
           },
@@ -80,25 +79,28 @@ function() {
             path: '#!/students/' + student.docket + '/inscriptions'
           },
           finals: {
-            path: '#!/students/' + student.docket + '/finals'
+            path: '#!/students/' + student.docket + '/final_inscriptions'
           },
-          delete: {
-            path: '/users/123/delete'
+          delete: true,
+          editPassword: {
+            path: '#!/users/change_password'
           }
         };
       });
 
       it('returns the expected actions', function () {
-        expect(PathsService.getStudentActions(student)).toEqual(expectedActions);
+        expect(PathsService.getStudentActions(student, currentUser)).toEqual(expectedActions);
       });
     });
 
     describe("when getting course's actions", function() {
       var course;
       var expectedActions;
+      var currentUser;
 
       beforeEach(function() {
         course = apiResponsesService.course;
+        currentUser = apiResponsesService.currentAdmin;
         expectedActions = {
           show: {
             path: '#!/courses/' + course.courseId
@@ -110,25 +112,27 @@ function() {
             path: '#!/courses/' + course.courseId + '/students'
           },
           approved: {
-            path: '#!/courses/' + course.courseId + '/approved'
+            path: '#!/courses/' + course.courseId + '/students/passed'
           },
           addCorrelative: {
-            path: '#!/courses/' + course.courseId + '/correlatives'
+            path: '#!/courses/' + course.courseId + '/correlatives/new'
           },
-          delete: {
-            path: '#!/courses/' + course.courseId + '/delete'
-          }
+          addFinal: {
+            path: '#!/courses/' + course.courseId + '/final_inscriptions/new'
+          },
+          delete: true
         };
       });
 
       it('returns the expected actions', function () {
-        expect(PathsService.getCourseActions(course)).toEqual(expectedActions);
+        expect(PathsService.getCourseActions(course, currentUser)).toEqual(expectedActions);
       });
     });
 
     describe('when getting a custom path builder', function() {
       var expectedPath = '#!/login/logout/unauthorized/admins/students/new/edit' +
-      '/password/grades/inscriptions/finals/courses/approved/correlatives/';
+      '/change_password/grades/inscriptions/final_inscriptions/courses/students/passed' +
+      '/correlatives/new/';
 
       var newPath;
 

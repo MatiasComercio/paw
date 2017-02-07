@@ -13,7 +13,7 @@ define(['paw', 'services/Students', 'services/flashMessages'], function(paw) {
     Students.get(docket).then(function(student) {
       _this.student = student;
       Students.setOnSubSidebar(student);
-      _this.student.birthday = new Date(_this.student.birthday) || new Date();
+      _this.student.birthday = new Date(_this.student.birthday);
       // Restangular method to clone the current student object
       _this.editedStudent = Students.copy(student);
     });

@@ -22,9 +22,6 @@ define(['paw','services/Students', 'services/Paths', 'services/navDataService'],
 
     Students.getList().then(function(students) {
       _this.students = students;
-    }, function(response) {
-      $log.info('Response status: ' + response.status);
-      Paths.get().notFound().go();
     });
 
     this.getStudentPath = function(docket) {

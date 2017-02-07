@@ -89,10 +89,6 @@ define(['paw', 'services/AuthenticatedRestangular', 'services/navDataService'], 
       return rest.one('courses', courseId).one('correlatives', correlativeId).remove();
     };
 
-    rest.unenroll = function(docket, courseId) {
-      return rest.one('students', docket).one('courses', courseId).customDELETE();
-    };
-
     rest.new = function(course) {
       return rest.all('courses').post(course);
     };

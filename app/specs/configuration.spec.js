@@ -37,8 +37,8 @@ function() {
          index: function() {
            return Paths.get().index().absolutePath();
          },
-         unauthorized: function() {
-           return Paths.get().unauthorized().absolutePath();
+         notFound: function() {
+           return Paths.get().notFound().absolutePath();
          }
        };
       }));
@@ -100,8 +100,8 @@ function() {
           $rootScope.$apply();
         });
 
-        it('should redirect to unauthorized page', function() {
-          expect($location.path).toHaveBeenCalledWith(paths.unauthorized());
+        it('should redirect to notFound page', function() {
+          expect($location.path).toHaveBeenCalledWith(paths.notFound());
         });
       });
     });

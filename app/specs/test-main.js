@@ -59,6 +59,7 @@ require.config({
     'angular-messages': '../bower_components/angular-messages/angular-messages',
 
     // all directives templates should go here and on shim section
+    'alert-template': '../views/directives/alert.html',
     'backdrop-template': '../views/directives/backdrop.html',
     'navbar-template': '../views/directives/navbar.html',
     'sidebar-template': '../views/directives/sidebar.html',
@@ -142,6 +143,11 @@ require.config({
         ]
     },
     // all directives templates should be declared as follows
+    'alert-template': {
+      deps: [
+        'angular'
+      ]
+    },
     'backdrop-template': {
       deps: [
         'angular'

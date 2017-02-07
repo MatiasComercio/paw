@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>ar.edu.itba.paw</groupId>
   <artifactId>paw</artifactId>
-  <version>1.2.0.RELEASE</version>
+  <version>2.0.0.RELEASE</version>
   <modules>
     <module>webapp</module>
     <module>interfaces</module>
@@ -115,7 +115,7 @@
                   <arguments>build --urlPath=${urlPath}</arguments>
                 </configuration>
               </execution>
-              <!-- <execution>
+              <execution>
                 <id>javascript tests</id>
                 <goals>
                   <goal>karma</goal>
@@ -123,7 +123,7 @@
                 <configuration>
                   <karmaConfPath>karma.conf.ci.js</karmaConfPath>
                 </configuration>
-              </execution> -->
+              </execution>
             </executions>
           </plugin>
         </plugins>

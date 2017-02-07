@@ -47,39 +47,29 @@ define(['paw'], function(paw) {
         {
           'docket': 5,
           'firstName': 'Nicole',
-          'lastName': 'Carabajal'
+          'lastName': 'Carabajal',
+          profileUrl: '#!/students/5'
         },
         {
           'docket': 3,
           'firstName': 'Esteban',
-          'lastName': 'Fuentes'
+          'lastName': 'Fuentes',
+          profileUrl: '#!/students/3'
         },
         {
           'docket': 2,
           'firstName': 'Florencia Camila',
-          'lastName': 'Gomez'
-        },
-        {
-          'docket': 4,
-          'firstName': 'Lucia',
-          'lastName': 'Perez Lombardi'
-        },
-        {
-          'docket': 6,
-          'firstName': 'Juanasa',
-          'lastName': 'Rodriguez'
-        },
-        {
-          'docket': 10,
-          'firstName': 'Nicolas',
-          'lastName': 'Vazquez'
+          'lastName': 'Gomez',
+          profileUrl: '#!/students/2'
         }
       ];
 
       this.student = {
         'docket': 5,
         'firstName': 'Nicole',
-        'lastName': 'Carabajal'
+        'lastName': 'Carabajal',
+        birthday: '2017-02-07T21:50:48.220Z',
+        profileUrl: '#!/students/5'
       };
 
       // admins responses
@@ -102,8 +92,17 @@ define(['paw'], function(paw) {
         'lastName': 'Comercio Vazquez'
       };
 
+      var authorities = ['ADD_INSCRIPTION'];
+      authorities.students = true;
+      authorities.courses = true;
+      authorities.admins = true;
+      authorities.viewInscriptions = true;
+      authorities.addInscription = true;
+      authorities.deleteInscription = true;
+      authorities.disableInscriptions = true;
+
       this.currentAdmin = {
-        'birthday': '1995-06-10',
+        'birthday': new Date('1995-06-10'),
         'dni': 38457013,
         'email': 'a38457012@bait.edu.ar',
         'firstName': 'Matias Nicolas',
@@ -118,12 +117,41 @@ define(['paw'], function(paw) {
           'number': 399,
           'street': 'E. Madero'
         },
+        authorities: authorities,
+        admin: true,
+        profileUrl: '#!/admins/38457013',
+        locationUrl: '/admins/38457013'
+      };
+      this.currentAdmin.fullName = this.currentAdmin.firstName + ' ' + this.currentAdmin.lastName;
+
+      this.currentStudent = {
+        'birthday': '1995-06-10',
+        'dni': 38457013,
+        'docket': 55,
+        'email': 'a38457012@bait.edu.ar',
+        'firstName': 'Matias Nicolas',
+        'genre': 'M',
+        'lastName': 'Comercio Vazquez',
+        'role': 'STUDENT',
+        'address': {
+          'city': 'CABA',
+          'country': 'Argentina',
+          'door': '',
+          'neighborhood': 'Puerto Madero',
+          'number': 399,
+          'street': 'E. Madero'
+        },
         'authorities': {
           students: true,
           courses: true,
-          admins: true
+          admins: false,
+          viewInscriptions: true,
+          addInscription: true,
+          deleteInscription: true
         },
-        profileUrl: '#!/admins/38457013'
+        student: true,
+        profileUrl: '#!/students/55',
+        locationUrl: '/students/55'
       };
       this.currentAdmin.fullName = this.currentAdmin.firstName + ' ' + this.currentAdmin.lastName;
     }
