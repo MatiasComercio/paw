@@ -14,6 +14,7 @@ define(
     function(memoryFactory, Authentication, AuthenticatedRestangular, Paths) {
       var memory = memoryFactory.newMemory();
       var userKey = 'user';
+      var tokenKey = 'token';
 
       function areInscriptionsEnabled(user) {
         var disableInscriptionsDefined = user.authorities.find(function(a) {
@@ -71,6 +72,7 @@ define(
 
         // fetch the user
         rest.one('user').get().then(function(fetchedUser) {
+          memory.set(tokenKey, Authentication.getToken());
           // and set it on the navDataService
           memory.set(userKey, fetchedUser);
         });

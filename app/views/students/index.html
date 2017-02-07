@@ -44,7 +44,7 @@
           <tr ng-hide='filtered.length > 0' class='bg-warning'>
             <td colspan='4' class='text-danger text-center' translate='i18nNoStudentsFound'></td>
           </tr>
-          <tr ng-repeat='student in controller.students | filter:controller.filter as filtered'>
+          <tr ng-repeat="student in controller.students | orderBy:'+docket' | filter:controller.filter as filtered">
             <td>{{ student.docket }}</td>
             <td>{{ student.firstName }}</td>
             <td>{{ student.lastName }}</td>

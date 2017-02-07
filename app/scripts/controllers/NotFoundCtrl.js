@@ -1,10 +1,11 @@
 'use strict';
 
-define(['paw', 'services/Paths'],
+define(['paw', 'services/Paths', 'services/navDataService'],
 function(paw) {
   paw.controller('NotFoundCtrl',
-  ['Paths',
-  function(Paths) {
+  ['Paths', 'navDataService',
+  function(Paths, navDataService) {
+    navDataService.remove('user');
     this.indexPath = Paths.get().index().path;
   }]);
 });

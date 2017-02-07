@@ -8,15 +8,16 @@ define(['paw'], function(paw) {
       scope: {},
       bindToController: {
         msg: '@',
-        type: '@'
+        type: '@',
+        xdisplay: '@'
       },
       templateUrl: 'views/directives/alert.html',
       controller: function() {},
       controllerAs: 'controller'
     };
 
-    function link(scope, element, attrs) {
-      scope.show = true;
+    function link(scope, element, attrs, controller) {
+      scope.show = controller.xdisplay || true;
     }
   });
 });

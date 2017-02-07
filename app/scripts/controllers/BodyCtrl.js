@@ -5,11 +5,12 @@ define(
   'directives/navbar',
   'directives/sidebar',
   'directives/alert',
+  'services/Authentication',
   'services/navDataService',
   'services/flashMessages'],
   function(paw) {
-    paw.controller('BodyCtrl', ['$rootScope', 'navDataService', 'flashMessages', '$location',
-    function($rootScope, navDataService, flashMessages) {
+    paw.controller('BodyCtrl', ['$rootScope', 'navDataService', 'flashMessages', 'Authentication',
+    function($rootScope, navDataService, flashMessages, Authentication) {
       var _this = this;
       var getUser = function() {
         _this.user = navDataService.get('user');
@@ -20,6 +21,17 @@ define(
       this.flashMessages = {};
 
       $rootScope.$on('$routeChangeStart', function (event, next, current) {
+        // if token has changed, reload user
+        if (Authentication.getToken() !== navDataService.get('token')) {
+          navDataService.remove('user');
+          navDataService.set('token', Authentication.getToken());
+          navDataService.fetchUser();
+        }
+
+        if (Authentication.isLoggedIn() && navDataService.get('user') === undefined) {
+          navDataService.fetchUser();
+        }
+
         // flash messages
         _this.flashMessages = {};
         _this.flashMessages.errors = flashMessages.getErrors();

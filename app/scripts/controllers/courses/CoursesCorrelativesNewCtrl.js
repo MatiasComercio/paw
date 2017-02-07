@@ -6,11 +6,10 @@ define(['paw','services/Courses','services/Paths', 'controllers/modals/AddCorrel
     var courseId = $routeParams.courseId;
 
     this.filter = {
-      courseId: $routeParams.id,
-      name: $routeParams.name
+      course: {}
     };
     this.resetSearch = function() {
-      this.filter = {};
+      this.filter.course = {};
     };
 
     Courses.get(courseId).then(function(course) {

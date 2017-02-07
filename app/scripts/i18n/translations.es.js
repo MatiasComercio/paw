@@ -122,9 +122,11 @@ define([], function() {
     i18nStudyBeingTaken: 'Cursando',
     i18nFullName: 'Nombre y Apellido',
     i18nGradeInvalidRange: 'La nota debe estar entre 1 y 10',
+    i18nIntegerOnly: 'La nota debe ser un número entero entre 1 y 10',
     i18nOneDecimalOnly: 'La nota debe ser un número entero o un número decimal con un sólo decimal. Ejemplos: 10 ; 5.5 ; 3.4',
     i18nCarreerPercentageCompleted: 'Porcentaje de carrera completado',
     i18nApprovedCredits: 'Créditos aprobados',
+    i18nAverage: 'Promedio lineal (finales aprobados)',
 
     // Courses Index
     i18nCourseId: 'Código',
@@ -180,7 +182,7 @@ define([], function() {
     i18nNoCoursesFound: 'No se encontraron materias disponibles',
 
     // Form errors
-    i18nInvalidDate: 'La fecha seleccionada es inválida',
+    i18nInvalidDate: 'La fecha seleccionada debe ser posterior a la fecha actual',
     i18nFormErrorDni: 'El DNI debe tener 8 dígitos',
     i18nNumericField: 'El valor ingresado debe ser un número válido (la cantidad de dígitos debe ser apropiada)',
     i18nFormErrorTelephone: 'El número de teléfono ingresado es inválido (sólo números ; máximo 11 dígitos)',
@@ -223,14 +225,15 @@ define([], function() {
     i18nStudentSuccessfullyDeleted: 'El alumno se ha eliminado exitosamente',
     i18nAdminSuccessfullyDeleted: 'El administrador se ha eliminado exitosamente',
     i18nCourseSuccessfullyDeleted: 'La materia se ha eliminado exitosamente',
+    i18nCourseDeleteHasAssociatedInformation: 'No se ha podido eliminar el curso debido a que tiene información asociada',
     i18nPasswordSuccessfullyUpdated: 'La contraseña ha sido modificada exitosamente',
     i18nWrongOriginalPassword: 'La contraseña actual es incorrecta',
     i18nQualifySuccessfully: 'La calificación ha sido exitosa',
 		i18nCorrelativesMissing: 'Faltan correlativas',
-		i18nCorrelativesConflict: 'Existen conflictos',
+		i18nCorrelativesConflict: 'No apta',
 		i18nMaxVacancyReached: 'No hay cupos disponibles',
 		i18nFinalInscriptionClosed: 'Inscripción cerrada',
-		i18nOtherInscriptionEnrolled: 'Ya se encuentra inscripto en otro final de la misma materia',	
+		i18nOtherInscriptionEnrolled: 'Ya se encuentra inscripto en otro final de la misma materia',
 
     // Not found page
     i18nNotFoundPageTitle: 'Página no encontrada',

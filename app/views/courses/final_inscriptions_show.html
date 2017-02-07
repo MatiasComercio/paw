@@ -81,7 +81,7 @@
           <tr ng-hide='controller.course.inscription.students.length > 0' class='bg-warning'>
             <td colspan='4' class='text-danger text-center' translate='i18nNoStudentsFound'></td>
           </tr>
-          <tr ng-repeat='student in controller.course.inscription.students'>
+          <tr ng-repeat="student in controller.course.inscription.students | orderBy:'+docket'">
             <td>{{ student.docket }}</td>
             <td>{{ student.firstName }}</td>
             <td>{{ student.lastName }}</td>
@@ -91,13 +91,13 @@
                 <span translate='i18nStudentShow'></span>
               </a>
               <div class='data-item' ng-show='controller.qualifyAll'>
-                <input type='number' step="0.1" name='grade{{$index}}' id='grade' class='form-input-field' ng-model='student.grade' min='1' max='10' />
+                <input type='number' step='1' name='grade{{$index}}' id='grade' class='form-input-field' ng-model='student.grade' min='1' max='10' />
                 <div ng-messages="form['grade'+$index].$error" ng-show="form['grade'+$index].$touched || form.$submitted" class='form-errors' role='alert'>
                   <div ng-message='step'>
-                    <p translate='i18nOneDecimalOnly'></p>
+                    <span translate='i18nIntegerOnly'></span>
                   </div>
                   <div ng-message-exp="['min', 'max']">
-                    <span translate='i18nGradeInvalidRange'></span>
+                    <span translate='i18nIntegerOnly'></span>
                   </div>
                 </div>
               </div>

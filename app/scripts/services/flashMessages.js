@@ -10,7 +10,7 @@ define(['paw'], function(paw) {
     };
 
     memory.setError = function(error) {
-      memory.errors.push(error);
+      memory.errors.push({msg: error, show: true});
     };
 
     memory.getSuccesses = function() {
@@ -18,7 +18,7 @@ define(['paw'], function(paw) {
     };
 
     memory.setSuccess = function(success) {
-      memory.successes.push(success);
+      memory.successes.push({msg: success, show: true});
     };
 
     memory.clear = function() {

@@ -22,11 +22,10 @@ define(['paw','services/Students','services/Paths', 'services/navDataService',
     navDataService.saveUserTo(_this);
 
     this.filter = {
-      courseId: $routeParams.id,
-      name: $routeParams.name
+      course: {}
     };
     this.resetSearch = function() {
-      this.filter = {};
+      this.filter.course = {};
     };
 
     Students.get(docket).then(function(student) {

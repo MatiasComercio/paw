@@ -5,6 +5,11 @@ define([], function() {
     var pathsService = {};
 
     pathsService.getAdminActions = function(admin, user) {
+      if (!admin) {
+        $log.warn('Admin is undefined');
+        return undefined;
+      }
+
       var actions = {
         show: {
           path: pathsService.get().admins(admin).path
@@ -33,6 +38,11 @@ define([], function() {
     };
 
     pathsService.getStudentActions = function(student, user) {
+      if (!student) {
+        $log.warn('Student is undefined');
+        return undefined;
+      }
+
       if (user.student && (user.docket !== student.docket)) {
         $log.warn('Student trying to access another student');
         return undefined;
@@ -71,6 +81,11 @@ define([], function() {
     };
 
     pathsService.getCourseActions = function(course, user) {
+      if (!course) {
+        $log.warn('Course is undefined');
+        return undefined;
+      }
+
       return {
         show: {
           path: pathsService.get().courses(course).path

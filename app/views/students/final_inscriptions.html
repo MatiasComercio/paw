@@ -30,25 +30,24 @@
         <tr ng-hide='controller.student.finalInscriptionsAvailable.length > 0' class='bg-warning'>
           <td colspan='5' class='text-danger text-center' translate='i18nNoFinalExamsFound'></td>
         </tr>
-        <tr ng-repeat='inscriptionInfo in controller.student.finalInscriptionsAvailable'>
+        <tr ng-repeat="inscriptionInfo in controller.student.finalInscriptionsAvailable | orderBy:'+inscription.finalExamDate' ">
           <td>{{ inscriptionInfo.inscription.name }}</td>
           <td>{{ inscriptionInfo.inscription.finalExamDate | date: 'dd/MM/yyyy HH:mm'}}</td>
           <td>{{ inscriptionInfo.inscription.vacancy }}/{{ inscriptionInfo.inscription.maxVacancy }}</td>
           <td ng-show="inscriptionInfo.inscription.state == 'OPEN'" translate='i18nInscriptionOpen'></td>
           <td ng-show="inscriptionInfo.inscription.state == 'CLOSED'" translate='i18nInscriptionClosed'></td>
           <td class='actions-container'>
-            <a ng-href='{{ controller.getFinalInscriptionPath(inscriptionInfo.inscription.courseId, inscriptionInfo.inscription.id) }}' class='btn btn-default' role='button'>
-              <span class='fa fa-info-circle' aria-hidden='true'></span>
-              <span translate='i18nInformation'></span>
-            </a>
             <a class='btn btn-action' role='button' ng-controller='FinalEnrollController as modalController' ng-show='controller.isAvailable(inscriptionInfo)'
-            ng-click="modalController.open('md', 'i18nFinalEnroll', controller.student.docket, controller.student.fullName, inscriptionInfo.inscription.name, inscriptionInfo.inscription.finalExamDate, inscriptionInfo.inscription.id)">
+              ng-click="modalController.open('md', 'i18nFinalEnroll', controller.student.docket, controller.student.fullName, inscriptionInfo.inscription.name, inscriptionInfo.inscription.finalExamDate, inscriptionInfo.inscription.id)">
               <span class='fa fa-list-alt' aria-hidden='true'></span>
               <span translate='i18nFinalEnroll'></span>
             </a>
-						<span ng-show='!controller.isAvailable(inscriptionInfo)' translate='{{ controller.getErrorMessage(inscriptionInfo) }}' class='error-message'>
-
-						</td>
+            <span ng-show='!controller.isAvailable(inscriptionInfo)' translate='{{ controller.getErrorMessage(inscriptionInfo) }}' class='error-message'></span>
+            <a ng-href='{{ controller.getFinalInscriptionPath(inscriptionInfo.inscription.courseId, inscriptionInfo.inscription.id) }}' class='btn btn-default' role='button'>
+              <span class='fa fa-info-circle' aria-hidden='true'></span>
+              <span translate='i18nShowCourse'></span>
+            </a>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -72,7 +71,7 @@
         <tr ng-hide='controller.student.finalInscriptionsTaken.length > 0' class='bg-warning'>
           <td colspan='5' class='text-danger text-center' translate='i18nNoFinalExamsFound'></td>
         </tr>
-        <tr ng-repeat='inscription in controller.student.finalInscriptionsTaken'>
+        <tr ng-repeat="inscription in controller.student.finalInscriptionsTaken | orderBy:'+finalExamDate'">
           <td>{{inscription.name}}</td>
           <td>{{inscription.finalExamDate | date: 'dd/MM/yyyy HH:mm'}}</td>
           <td>{{ inscription.vacancy }}/{{ inscription.maxVacancy }}</td>
@@ -84,11 +83,11 @@
               <span translate='i18nInformation'></span>
             </a>
             <a class='btn btn-danger' role='button' ng-controller='FinalUnenrollController as modalController'
-            ng-click="modalController.open('md', 'i18nUnenroll', controller.student.docket, controller.student.fullName, inscription.name, inscription.finalExamDate, inscription.id)">
+              ng-click="modalController.open('md', 'i18nUnenroll', controller.student.docket, controller.student.fullName, inscription.name, inscription.finalExamDate, inscription.id)">
               <span class='fa fa-list-alt' aria-hidden='true'></span>
               <span translate='i18nUnenroll'></span>
             </a>
-						</td>
+          </td>
         </tr>
       </tbody>
     </table>

@@ -122,6 +122,9 @@ function(config, dependencyResolverFor, i18n, authenticationService, pathsServic
       function(response, deferred, responseHandler) {
         var propagateError = true;
         if (response.status === 401) {
+          // it could happen that the token is invalid and that's causing the 401 status
+          // user will be removed at the LoginCtrl
+          Authentication.logout();
           // should login again
           Paths.get().login().go();
           propagateError = false;

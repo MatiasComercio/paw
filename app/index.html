@@ -27,9 +27,9 @@
   <!-- dynamic content -->
   <div class='container' ng-class="{'sidebar-hidden' : !controller.user}">
     <div class='flash-messages' ng-show='controller.flashMessages'>
-      <xalert ng-repeat='error in controller.flashMessages.errors' msg='{{ error }}' type='danger'>
+      <xalert ng-repeat='error in controller.flashMessages.errors' msg='{{ error.msg }}' type='danger' xdisplay='{{ error.show }}'>
       </xalert>
-      <xalert ng-repeat='success in controller.flashMessages.successes' msg='{{ success }}' type='success'>
+      <xalert ng-repeat='success in controller.flashMessages.successes' msg='{{ success.msg }}' type='success' xdisplay='{{ success.show }}'>
       </xalert>
     </div>
 

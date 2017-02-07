@@ -3,13 +3,16 @@
 define(['paw', 'services/modalFactory', 'services/Courses',
 'services/Paths', 'services/flashMessages'], function(paw) {
   paw.controller('DeleteCourseController',
-    ['modalFactory', '$log', 'Courses', 'Paths', 'flashMessages',
-    function (modalFactory, $log, Courses, Paths, flashMessages) {
+    ['modalFactory', '$log', 'Courses', 'Paths', 'flashMessages', '$route',
+    function (modalFactory, $log, Courses, Paths, flashMessages, $route) {
       var modalTemplateUrl = 'views/modals/delete_course.html';
       var onSuccess = function(course) {
         Courses.remove(course).then(function() {
           flashMessages.setSuccess('i18nCourseSuccessfullyDeleted');
           Paths.get().courses().go();
+        }, function() {
+          flashMessages.setError('i18nCourseDeleteHasAssociatedInformation');
+          $route.reload();
         });
       };
 

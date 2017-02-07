@@ -43,7 +43,7 @@
         <tr ng-hide='filtered.length > 0' class='bg-warning'>
           <td colspan='4' class='text-danger text-center' translate='i18nNoStudentsFound'></td>
         </tr>
-        <tr ng-repeat='admin in controller.admins | filter:controller.filter as filtered'>
+        <tr ng-repeat="admin in controller.admins | orderBy:'+dni' | filter:controller.filter as filtered">
           <td>{{ admin.dni }}</td>
           <td>{{ admin.firstName }}</td>
           <td>{{ admin.lastName }}</td>

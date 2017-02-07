@@ -24,7 +24,7 @@ function(paw) {
     });
 
     this.getFinalInscriptionPath = function(courseId, finalInscriptionId) {
-      return Paths.get().courses({courseId: courseId}).finals({inscriptionId: finalInscriptionId}).path;
+      return Paths.get().courses({courseId: courseId}).path;
     };
 
 		this.otherInscriptionTaken = function(inscription) {

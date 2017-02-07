@@ -13,7 +13,7 @@
         <label for='dni'>
           {{ 'i18nDni' | translate }}
         </label>
-        <input type='text' name='dni' id='dni' class='form-input-field' ng-model='controller.user.dni' required/>
+        <input type='number' name='dni' id='dni' class='form-input-field' ng-model='controller.user.dni' required/>
         <div ng-messages='form.dni.$error' ng-show='form.dni.$touched || form.$submitted' class='form-errors' role='alert'>
           <div ng-message='required'>
             <p translate='i18nRequiredField'></p>

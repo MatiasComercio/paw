@@ -24,7 +24,7 @@ define([], function() {
       $cookies.put(tokenKey, token);
     };
 
-    authenticationService.getToken = function(token) {
+    authenticationService.getToken = function() {
       return $cookies.get(tokenKey);
     };
 

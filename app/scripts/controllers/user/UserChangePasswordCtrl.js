@@ -10,7 +10,7 @@ define(['paw', 'services/navDataService', 'services/flashMessages', 'services/Us
 
     var getUserCallback = function() {
       _this.user = navDataService.get('user');
-      if (_this.user.admin) {
+      if (_this.user && _this.user.admin) {
         Admins.setOnSubSidebar(_this.user);
       } else {
         Students.setOnSubSidebar(_this.user);
@@ -25,9 +25,8 @@ define(['paw', 'services/navDataService', 'services/flashMessages', 'services/Us
         $route.reload();
       }, function(response) {
         if (response.status === 409) { // dni repeated
-          _this.errors = [
-            'i18nWrongOriginalPassword'
-          ];
+          flashMessages.setError('i18nWrongOriginalPassword');
+          $route.reload();
           return;
         }
         $log.warn(JSON.stringify(response));
