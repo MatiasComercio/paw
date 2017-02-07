@@ -19,8 +19,6 @@ public class Procedure {
     @Column(name = "title", nullable = false, length = 64)
     private String title;
 
-//    @Column(name = "sender_id", nullable = false, updatable = false)
-//    private int sender;
     @ManyToOne
     @JoinColumn(name = "sender_id", referencedColumnName = "dni" /*, nullable = false makes it fail to add for constraint*/)
     private User sender;
@@ -94,14 +92,14 @@ public class Procedure {
         return state;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public void setState(final ProcedureState state) {
+        this.state = state;
     }
 
     // Setters //
 
-    public void setState(final ProcedureState state) {
-        this.state = state;
+    public LocalDateTime getDate() {
+        return date;
     }
 
     // Equals and Hashcode //

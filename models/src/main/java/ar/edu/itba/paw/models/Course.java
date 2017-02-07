@@ -18,7 +18,6 @@ public class Course {
     @Column(name = "course_id", length = 5, unique = true)
     private String courseId;
 
-    //TODO: Add Basic annotation
     @Column(length = 100, nullable = false, unique = true)
     private String name;
 
@@ -30,7 +29,6 @@ public class Course {
 
     @ManyToMany(
             cascade={CascadeType.PERSIST, CascadeType.MERGE},
-            //TODO: Delete targetEntity: Since Collection use generics (Set<Course>) it's not needed
             targetEntity=Course.class
     )
     @JoinTable(
@@ -42,7 +40,6 @@ public class Course {
 
     @ManyToMany(
             cascade={CascadeType.PERSIST, CascadeType.MERGE},
-            //TODO: Delete targetEntity: Since Collection use generics (Set<Course>) it's not needed
             targetEntity=Course.class
     )
     @JoinTable(
@@ -73,12 +70,24 @@ public class Course {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getCourseId() {
         return courseId;
     }
 
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getCredits() {
@@ -89,18 +98,6 @@ public class Course {
         this.credits = credits;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
-    }
-
     public List<Student> getStudents() {
         return this.students;
     }
@@ -109,12 +106,12 @@ public class Course {
         this.students = students;
     }
 
-    public void setSemester(int semester){
-        this.semester = semester;
-    }
-
     public int getSemester(){
         return this.semester;
+    }
+
+    public void setSemester(int semester) {
+        this.semester = semester;
     }
 
     public Set<Course> getCorrelatives() {
@@ -223,12 +220,12 @@ public class Course {
             return id;
         }
 
-        public String getCourseId() {
-            return courseId;
-        }
-
         public void setId(int id) {
             this.id = id;
+        }
+
+        public String getCourseId() {
+            return courseId;
         }
 
         public void setCourseId(String courseId) {

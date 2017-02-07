@@ -22,10 +22,9 @@ public class AdminsUpdateDTO {
   @Size(min=2, max=50)
   private String lastName;
 
-  //TODO: Validate genre
   private User.Genre genre;
 
-  @XmlJavaTypeAdapter(LocalDateAdapter.class) //TODO: Improve, see if we can validate if the date is incorrect, so an error is returned, instead of mapping it to null
+  @XmlJavaTypeAdapter(LocalDateAdapter.class)
   private LocalDate birthday;
 
   @NotNull

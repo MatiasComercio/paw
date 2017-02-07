@@ -6,8 +6,6 @@ import ar.edu.itba.paw.models.users.Student;
 import ar.edu.itba.paw.models.users.User;
 import ar.edu.itba.paw.webapp.models.*;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.modelmapper.spi.MatchingStrategy;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.*;
@@ -61,12 +59,12 @@ public class DTOEntityMapper {
   }
 
   Course convertToCourse(final CourseDTO courseDTO) {
-    final MatchingStrategy originalMatchingStrategy = modelMapper.getConfiguration().getMatchingStrategy();
-
-    //TODO: Check if this can be improved
-    modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-    final Course course = modelMapper.map(courseDTO, Course.class);
-    modelMapper.getConfiguration().setMatchingStrategy(originalMatchingStrategy);
+    final Course course = new Course.Builder(null)
+            .courseId(courseDTO.getCourseId())
+            .name(courseDTO.getName())
+            .credits(courseDTO.getCredits())
+            .semester(courseDTO.getSemester())
+            .build();
 
     return course;
   }

@@ -21,12 +21,6 @@ public class CourseDTO {
   @Min(1)
   private int semester;
 
-//  TODO: Add all this endpoints in CourseController
-//  private Set<Course> correlatives;
-//  private Set<Course> upperCorrelatives;
-//  private List<Student> students;
-//  private List<Student> approvedStudents;
-
 
   public CourseDTO() {
 

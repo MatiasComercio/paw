@@ -35,17 +35,15 @@ public class FinalInscription {
     private FinalInscriptionState state = FinalInscriptionState.OPEN;
 
 
-    public enum FinalInscriptionState{
-        OPEN("OPEN"),
-        CLOSED("CLOSED");
+    protected FinalInscription() {
+        //Just for hibernate
+    }
 
-        private String state;
-
-        FinalInscriptionState(final String state) {
-            this.state = state;
-        }
-
-        public String getState() { return state; }
+    private FinalInscription(Builder builder) {
+        this.id = builder.id;
+        this.maxVacancy = builder.maxVacancy;
+        this.finalExamDate = builder.finalExamDate;
+        this.vacancy = 0;
     }
 
     public int getId() {
@@ -62,10 +60,6 @@ public class FinalInscription {
 
     public void setVacancy(int vacancy) {
         this.vacancy = vacancy;
-    }
-
-    public void setMaxVacancy(int maxVacancy) {
-        this.maxVacancy = maxVacancy;
     }
 
     public Course getCourse() {
@@ -123,17 +117,6 @@ public class FinalInscription {
         return result;
     }
 
-    protected FinalInscription(){
-        //Just for hibernate
-    }
-
-    private FinalInscription(Builder builder){
-        this.id = builder.id;
-        this.maxVacancy = builder.maxVacancy;
-        this.finalExamDate = builder.finalExamDate;
-        this.vacancy = 0;
-    }
-
     public boolean isOpen(){
         return this.state == FinalInscriptionState.OPEN;
     }
@@ -150,6 +133,25 @@ public class FinalInscription {
         return this.maxVacancy;
     }
 
+    public void setMaxVacancy(int maxVacancy) {
+        this.maxVacancy = maxVacancy;
+    }
+
+    public enum FinalInscriptionState {
+        OPEN("OPEN"),
+        CLOSED("CLOSED");
+
+        private String state;
+
+        FinalInscriptionState(final String state) {
+            this.state = state;
+        }
+
+        public String getState() {
+            return state;
+        }
+    }
+
     public static class Builder{
         private int id;
         private int vacancy;
@@ -162,8 +164,6 @@ public class FinalInscription {
             this.maxVacancy = maxVacancy;
             this.finalExamDate = finalExamDate;
 
-            //TODO: Debug purposes only
-            //this.finalExamDate = LocalDateTime.now();
             this.course = course;
         }
 
