@@ -1,9 +1,15 @@
 # SGA - Sistema de Gestión Académica
 
 [![Build Status](https://travis-ci.org/MatiasComercio/paw.svg?branch=development)](https://travis-ci.org/MatiasComercio/paw)
+[![Code Climate](https://codeclimate.com/github/MatiasComercio/paw/badges/gpa.svg)](https://codeclimate.com/github/MatiasComercio/paw)
+[![Test Coverage](https://codeclimate.com/github/MatiasComercio/paw/badges/coverage.svg)](https://codeclimate.com/github/MatiasComercio/paw/coverage)
 
+[![SonarQube][2]][1]
 
-<!-- TOC depthFrom:1 depthTo:3 withLinks:1 updateOnSave:1 orderedList:0 -->
+  [1]: https://sonarqube.com/dashboard?id=ar.edu.itba.paw%3Apaw
+  [2]: http://www.qatestingtools.com/sites/default/files/tools_shortcuts/sonarqube-150px.png
+
+![Quality Gate](https://sonarqube.com/api/badges/gate?key=ar.edu.itba.paw:paw) ![Coverage Gate](https://sonarqube.com/api/badges/measure?key=ar.edu.itba.paw:paw&metric=coverage&blinking=true) ![Code Smells Gate](https://sonarqube.com/api/badges/measure?key=ar.edu.itba.paw:paw&metric=code_smells&blinking=true) ![Bugs Gate](https://sonarqube.com/api/badges/measure?key=ar.edu.itba.paw:paw&metric=bugs&blinking=true) ![Vulnerabilities](https://sonarqube.com/api/badges/measure?key=ar.edu.itba.paw:paw&metric=vulnerabilities&blinking=true)
 
 - [SGA - Sistema de Gestión Académica](#sga-sistema-de-gestin-acadmica)
 	- [Git pre push hook](#git-pre-push-hook)
@@ -18,8 +24,6 @@
 	- [Build](#build)
 	- [Accounts](#accounts)
 	- [Authors](#authors)
-
-<!-- /TOC -->
 
 ## Git pre push hook
 
@@ -90,9 +94,9 @@ For building the whole web app, just run
 
 Examples:
 
-  `mvn clean package -DurlPath=''` if deployng app to '/'
+  `mvn clean package -DurlPath=''` if deploying app to '/'
 
-  `mvn clean package -DurlPath='/grupo1'` if deployng app to '/grupo1'
+  `mvn clean package -DurlPath='/grupo1'` if deploying app to '/grupo1'
 
 ## Accounts
 - Admin:
@@ -107,4 +111,6 @@ Examples:
 - Matías Nicolás Comercio Vázquez
 - Gonzalo Exequiel Ibars Ingman
 - Matías Mercado
+
+## Contributors
 - Juan Martín Pascale
